@@ -1,0 +1,1 @@
+En este modulo se tendra todas las pantallas e información sobre usuarios, perfiles, roles , etc. Y su administración
