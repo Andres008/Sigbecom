@@ -21,7 +21,7 @@ public class UsrLicenciaSocio implements Serializable {
 
 	//bi-directional many-to-one association to UsrSocio
 	@ManyToOne
-	@JoinColumn(name="id_socio")
+	@JoinColumn(name="cedula_socio")
 	private UsrSocio usrSocio;
 
 	//bi-directional many-to-one association to UsrTipoLicencia

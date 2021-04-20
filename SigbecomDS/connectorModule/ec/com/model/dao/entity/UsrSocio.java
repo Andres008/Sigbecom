@@ -18,10 +18,8 @@ public class UsrSocio implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@Id
-	@SequenceGenerator(name="USR_SOCIO_IDSOCIO_GENERATOR", sequenceName="SEQ_USR_SOCIO")
-	@GeneratedValue(strategy=GenerationType.SEQUENCE, generator="USR_SOCIO_IDSOCIO_GENERATOR")
-	@Column(name="id_socio")
-	private long idSocio;
+	@Column(name="cedula_socio")
+	private String cedulaSocio;
 
 	private String clave;
 
@@ -36,6 +34,9 @@ public class UsrSocio implements Serializable {
 	@Temporal(TemporalType.DATE)
 	@Column(name="fecha_baja")
 	private Date fechaBaja;
+
+	@Column(name="id_socio")
+	private BigDecimal idSocio;
 
 	@Column(name="ingresos_mensuales")
 	private BigDecimal ingresosMensuales;
@@ -111,12 +112,12 @@ public class UsrSocio implements Serializable {
 	public UsrSocio() {
 	}
 
-	public long getIdSocio() {
-		return this.idSocio;
+	public String getCedulaSocio() {
+		return this.cedulaSocio;
 	}
 
-	public void setIdSocio(long idSocio) {
-		this.idSocio = idSocio;
+	public void setCedulaSocio(String cedulaSocio) {
+		this.cedulaSocio = cedulaSocio;
 	}
 
 	public String getClave() {
@@ -157,6 +158,14 @@ public class UsrSocio implements Serializable {
 
 	public void setFechaBaja(Date fechaBaja) {
 		this.fechaBaja = fechaBaja;
+	}
+
+	public BigDecimal getIdSocio() {
+		return this.idSocio;
+	}
+
+	public void setIdSocio(BigDecimal idSocio) {
+		this.idSocio = idSocio;
 	}
 
 	public BigDecimal getIngresosMensuales() {
