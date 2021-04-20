@@ -13,5 +13,7 @@
 			<attribute name="owner.project.facets" value="java"/>
 		</attributes>
 	</classpathentry>
+	<classpathentry kind="src" path="/SigbecomEJB"/>
+	<classpathentry kind="src" path="/SigbecomDS"/>
 	<classpathentry kind="output" path="build/classes"/>
 </classpath>
