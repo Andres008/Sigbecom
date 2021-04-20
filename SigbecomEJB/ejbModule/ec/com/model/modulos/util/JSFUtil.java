@@ -50,7 +50,7 @@ public class JSFUtil {
 	 * @param detalle Detalle del mensaje. Puede ser null.
 	 */
 	public static void crearMensajeFATAL(String detalle){
-		crearMensaje(FacesMessage.SEVERITY_FATAL, "Atenci髇 se produjo un ERROR FATAL",detalle);
+		crearMensaje(FacesMessage.SEVERITY_FATAL, "Atenci贸n se produjo un ERROR FATAL",detalle);
 	}
 	
 	/**
@@ -59,7 +59,7 @@ public class JSFUtil {
 	 * @param detalle Detalle del mensaje. Puede ser null.
 	 */
 	public static void crearMensajeERROR(String detalle){
-		crearMensaje(FacesMessage.SEVERITY_ERROR, "Atenci髇 se produjo un ERROR",detalle);
+		crearMensaje(FacesMessage.SEVERITY_ERROR, "Atenci贸n se produjo un ERROR",detalle);
 	}
 	
 	/**
@@ -68,7 +68,7 @@ public class JSFUtil {
 	 * @param detalle Detalle del mensaje. Puede ser null.
 	 */
 	public static void crearMensajeWARN(String mensaje,String detalle){
-		crearMensaje(FacesMessage.SEVERITY_WARN, "Atenci髇 se produjo una ADVERTENCIA.",detalle);
+		crearMensaje(FacesMessage.SEVERITY_WARN, "Atenci贸n se produjo una ADVERTENCIA.",detalle);
 	}
 	
 	/**
@@ -77,6 +77,6 @@ public class JSFUtil {
 	 * @param detalle Detalle del mensaje. Puede ser null.
 	 */
 	public static void crearMensajeINFO(String detalle){
-		crearMensaje(FacesMessage.SEVERITY_INFO, "Atenci髇.",detalle);
+		crearMensaje(FacesMessage.SEVERITY_INFO, "Atenci贸n.",detalle);
 	}
 }

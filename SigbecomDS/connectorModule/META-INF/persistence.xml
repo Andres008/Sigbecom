@@ -3,12 +3,38 @@
 	<persistence-unit name="SigbecomDS">
 		<jta-data-source>java:/SigbecomDS</jta-data-source>
 		<class>ec.com.model.dao.entity.AutMenu</class>
+		<class>ec.com.model.dao.entity.AutParametrosGenerale</class>
 		<class>ec.com.model.dao.entity.AutPerfile</class>
 		<class>ec.com.model.dao.entity.AutRol</class>
 		<class>ec.com.model.dao.entity.AutRolPerfil</class>
-		<class>ec.com.model.dao.entity.AutUsuario</class>
+		<class>ec.com.model.dao.entity.GesDiscapacidad</class>
+		<class>ec.com.model.dao.entity.GesDiscapacidadPersona</class>
+		<class>ec.com.model.dao.entity.GesEstadoCivil</class>
+		<class>ec.com.model.dao.entity.GesEtnia</class>
+		<class>ec.com.model.dao.entity.GesGenero</class>
+		<class>ec.com.model.dao.entity.GesPariente</class>
 		<class>ec.com.model.dao.entity.GesPersona</class>
+		<class>ec.com.model.dao.entity.GesTipoSangre</class>
 		<class>ec.com.model.dao.entity.LogCategoriaEvento</class>
 		<class>ec.com.model.dao.entity.LogGeneral</class>
+		<class>ec.com.model.dao.entity.UsrAgencia</class>
+		<class>ec.com.model.dao.entity.UsrArea</class>
+		<class>ec.com.model.dao.entity.UsrCanton</class>
+		<class>ec.com.model.dao.entity.UsrCargo</class>
+		<class>ec.com.model.dao.entity.UsrConsanguinidad</class>
+		<class>ec.com.model.dao.entity.UsrCuentaSocio</class>
+		<class>ec.com.model.dao.entity.UsrInstitucionBancaria</class>
+		<class>ec.com.model.dao.entity.UsrInstitucionEducativa</class>
+		<class>ec.com.model.dao.entity.UsrInstruccion</class>
+		<class>ec.com.model.dao.entity.UsrLicenciaSocio</class>
+		<class>ec.com.model.dao.entity.UsrLugarTrabajo</class>
+		<class>ec.com.model.dao.entity.UsrParroquia</class>
+		<class>ec.com.model.dao.entity.UsrProvincia</class>
+		<class>ec.com.model.dao.entity.UsrSocio</class>
+		<class>ec.com.model.dao.entity.UsrTipoCuenta</class>
+		<class>ec.com.model.dao.entity.UsrTipoInstruccion</class>
+		<class>ec.com.model.dao.entity.UsrTipoLicencia</class>
+		<class>ec.com.model.dao.entity.UsrTipoVivienda</class>
+		<class>ec.com.model.dao.entity.VAutMenuRol</class>
 	</persistence-unit>
 </persistence>

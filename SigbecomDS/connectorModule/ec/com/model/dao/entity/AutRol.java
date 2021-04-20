@@ -17,9 +17,10 @@ public class AutRol implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@Id
-	@SequenceGenerator(name="AUT_ROL_ID_GENERATOR", sequenceName="SEQ_AUT_ROL")
-	@GeneratedValue(strategy=GenerationType.SEQUENCE, generator="AUT_ROL_ID_GENERATOR")
-	private long id;
+	@SequenceGenerator(name="AUT_ROL_IDROL_GENERATOR", sequenceName="SEQ_AUT_ROL")
+	@GeneratedValue(strategy=GenerationType.SEQUENCE, generator="AUT_ROL_IDROL_GENERATOR")
+	@Column(name="id_rol")
+	private long idRol;
 
 	private String descripcion;
 
@@ -39,19 +40,19 @@ public class AutRol implements Serializable {
 	@OneToMany(mappedBy="autRol")
 	private List<AutRolPerfil> autRolPerfils;
 
-	//bi-directional many-to-one association to AutUsuario
+	//bi-directional many-to-one association to UsrSocio
 	@OneToMany(mappedBy="autRol")
-	private List<AutUsuario> autUsuarios;
+	private List<UsrSocio> usrSocios;
 
 	public AutRol() {
 	}
 
-	public long getId() {
-		return this.id;
+	public long getIdRol() {
+		return this.idRol;
 	}
 
-	public void setId(long id) {
-		this.id = id;
+	public void setIdRol(long idRol) {
+		this.idRol = idRol;
 	}
 
 	public String getDescripcion() {
@@ -116,26 +117,26 @@ public class AutRol implements Serializable {
 		return autRolPerfil;
 	}
 
-	public List<AutUsuario> getAutUsuarios() {
-		return this.autUsuarios;
+	public List<UsrSocio> getUsrSocios() {
+		return this.usrSocios;
 	}
 
-	public void setAutUsuarios(List<AutUsuario> autUsuarios) {
-		this.autUsuarios = autUsuarios;
+	public void setUsrSocios(List<UsrSocio> usrSocios) {
+		this.usrSocios = usrSocios;
 	}
 
-	public AutUsuario addAutUsuario(AutUsuario autUsuario) {
-		getAutUsuarios().add(autUsuario);
-		autUsuario.setAutRol(this);
+	public UsrSocio addUsrSocio(UsrSocio usrSocio) {
+		getUsrSocios().add(usrSocio);
+		usrSocio.setAutRol(this);
 
-		return autUsuario;
+		return usrSocio;
 	}
 
-	public AutUsuario removeAutUsuario(AutUsuario autUsuario) {
-		getAutUsuarios().remove(autUsuario);
-		autUsuario.setAutRol(null);
+	public UsrSocio removeUsrSocio(UsrSocio usrSocio) {
+		getUsrSocios().remove(usrSocio);
+		usrSocio.setAutRol(null);
 
-		return autUsuario;
+		return usrSocio;
 	}
 
 }

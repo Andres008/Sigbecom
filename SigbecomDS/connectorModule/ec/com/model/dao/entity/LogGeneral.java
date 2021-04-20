@@ -31,15 +31,15 @@ public class LogGeneral implements Serializable {
 
 	private String metodo;
 
-	//bi-directional many-to-one association to AutUsuario
-	@ManyToOne
-	@JoinColumn(name="usuario")
-	private AutUsuario autUsuario;
-
 	//bi-directional many-to-one association to LogCategoriaEvento
 	@ManyToOne
 	@JoinColumn(name="id_categoria")
 	private LogCategoriaEvento logCategoriaEvento;
+
+	//bi-directional many-to-one association to UsrSocio
+	@ManyToOne
+	@JoinColumn(name="id_socio")
+	private UsrSocio usrSocio;
 
 	public LogGeneral() {
 	}
@@ -84,20 +84,20 @@ public class LogGeneral implements Serializable {
 		this.metodo = metodo;
 	}
 
-	public AutUsuario getAutUsuario() {
-		return this.autUsuario;
-	}
-
-	public void setAutUsuario(AutUsuario autUsuario) {
-		this.autUsuario = autUsuario;
-	}
-
 	public LogCategoriaEvento getLogCategoriaEvento() {
 		return this.logCategoriaEvento;
 	}
 
 	public void setLogCategoriaEvento(LogCategoriaEvento logCategoriaEvento) {
 		this.logCategoriaEvento = logCategoriaEvento;
+	}
+
+	public UsrSocio getUsrSocio() {
+		return this.usrSocio;
+	}
+
+	public void setUsrSocio(UsrSocio usrSocio) {
+		this.usrSocio = usrSocio;
 	}
 
 }
