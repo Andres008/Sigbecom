@@ -17,7 +17,7 @@ public class AutRol implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@Id
-	@SequenceGenerator(name="AUT_ROL_IDROL_GENERATOR", sequenceName="SEQ_AUT_ROL")
+	@SequenceGenerator(name="AUT_ROL_IDROL_GENERATOR", sequenceName="SEQ_AUT_ROL", allocationSize = 1)
 	@GeneratedValue(strategy=GenerationType.SEQUENCE, generator="AUT_ROL_IDROL_GENERATOR")
 	@Column(name="id_rol")
 	private long idRol;

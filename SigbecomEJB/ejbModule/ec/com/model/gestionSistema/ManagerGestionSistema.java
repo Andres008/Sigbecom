@@ -5,6 +5,9 @@ import java.util.List;
 import javax.ejb.EJB;
 import javax.ejb.LocalBean;
 import javax.ejb.Stateless;
+
+import ec.com.model.dao.entity.AutMenu;
+import ec.com.model.dao.entity.AutPerfile;
 import ec.com.model.dao.entity.AutRol;
 import ec.com.model.dao.entity.AutRolPerfil;
 import ec.com.model.dao.entity.UsrSocio;
@@ -87,6 +90,60 @@ public class ManagerGestionSistema {
 		} catch (Exception e) {
 			throw new Exception("Error al obtener el listado de Roles. "+e.getMessage());
 		}
+	}
+
+	public void actualizarObjeto(Object object) throws Exception {
+		try {
+			managerDAOSegbecom.actualizar(object);
+		} catch (Exception e) {
+			throw new Exception("Error al actualizar "+object.getClass());
+		}
+		
+	}
+
+	@SuppressWarnings("unchecked")
+	public List<AutMenu> buscarTodosAutMenu() throws Exception {
+		try {
+			List<AutMenu> lstAutMenu =managerDAOSegbecom.findAll(AutMenu.class, "o.orden ASC");
+			lstAutMenu.forEach(autMenu->{
+				autMenu.getAutPerfiles().forEach(perfil->{
+					perfil.getId();
+					perfil.getAutRolPerfils().forEach(rol->{
+						rol.getAutRol().getNombre();
+					});
+				});
+			});
+			return lstAutMenu;
+		} catch (Exception e) {
+			throw new Exception("Error al buscar listado de menu");
+		}
+		
+	}
+
+	public void insertarAutMenu(AutMenu objAutMenu) throws Exception {
+		try {
+			managerDAOSegbecom.insertar(objAutMenu);
+		} catch (Exception e) {
+			throw new Exception("Error al ingresar Menu. "+e.getMessage());
+		}
+	}
+
+	public void ingresarAutPerfil(AutPerfile objPerfil) throws Exception {
+		try {
+			managerDAOSegbecom.insertar(objPerfil);
+		} catch (Exception e) {
+			throw new Exception("Error al ingresar Perfil. "+e.getMessage());
+		}
+		
+	}
+
+	public void ingresarAutRolPerfil(AutRolPerfil objAutRolPerfil) throws Exception {
+		try {
+			managerDAOSegbecom.insertar(objAutRolPerfil);
+		} catch (Exception e) {
+			throw new Exception("Error al ingresar Rol Perfil. "+e.getMessage());
+		}
+		
 	}
 
 }

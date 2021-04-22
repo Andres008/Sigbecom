@@ -17,7 +17,7 @@ public class AutMenu implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@Id
-	@SequenceGenerator(name="AUT_MENU_ID_GENERATOR", sequenceName="SEQ_AUT_MENU")
+	@SequenceGenerator(name="AUT_MENU_ID_GENERATOR", sequenceName="SEQ_AUT_MENU", allocationSize = 1)
 	@GeneratedValue(strategy=GenerationType.SEQUENCE, generator="AUT_MENU_ID_GENERATOR")
 	private long id;
 

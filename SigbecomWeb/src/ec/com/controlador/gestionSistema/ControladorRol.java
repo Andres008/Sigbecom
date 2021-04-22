@@ -9,8 +9,11 @@ import javax.enterprise.context.SessionScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 
+import org.primefaces.event.RowEditEvent;
+
 import ec.com.controlador.sesion.BeanLogin;
 import ec.com.model.auditoria.ManagerLog;
+import ec.com.model.dao.entity.AutPerfile;
 import ec.com.model.dao.entity.AutRol;
 import ec.com.model.gestionSistema.ManagerGestionSistema;
 import ec.com.model.modulos.util.JSFUtil;
@@ -35,6 +38,8 @@ public class ControladorRol implements Serializable {
 	ManagerLog managerLog;
 
 	private AutRol objAutRol;
+	
+	private AutPerfile objAutPerfile;
 
 	private List<AutRol> lstAutRols;
 
@@ -55,6 +60,56 @@ public class ControladorRol implements Serializable {
 			e.printStackTrace();
 		}
 	}
+	
+	/**
+	 * Metodo que inicializa las variables a utilizar en la pantalla de
+	 * administración de roles
+	 */
+	public void inicializarAutPerfile() {
+		try {
+			objAutRol = new AutRol();
+			lstAutRols = managerGestionSistema.buscarTodosAutRol();
+			inicializarAutRol();
+		} catch (Exception e) {
+			JSFUtil.crearMensajeERROR(e.getMessage());
+			e.printStackTrace();
+		}
+	}
+	
+	
+	public void inactivarRol(AutRol auxAutRol) {
+		auxAutRol.setEstado("I");
+		auxAutRol.setFechaFinal(new Date());
+		try {
+			managerGestionSistema.actualizarObjeto(auxAutRol);
+			JSFUtil.crearMensajeINFO("Inactivación Correcta");
+		} catch (Exception e) {
+			JSFUtil.crearMensajeERROR(e.getMessage());
+			e.printStackTrace();
+		}
+	}
+	
+	/***
+	 * Metodo para modificar desde pantalla.
+	 * @param event
+	 */
+	public void onRowEdit(RowEditEvent<Object> event) {
+        try {
+			managerGestionSistema.actualizarObjeto(event.getObject());
+			JSFUtil.crearMensajeINFO("Se actualizó correctamente.");
+		} catch (Exception e) {
+			JSFUtil.crearMensajeERROR(e.getMessage());
+			e.printStackTrace();
+		}
+    }
+	
+	/***
+	 * 
+	 * @param event
+	 */
+	public void onRowCancel(RowEditEvent<Object> event) {
+        JSFUtil.crearMensajeINFO("Se canceló actualización.");
+    }
 
 	/**
 	 * Metodo que ingresa y/0 autualiza un rol con los datos de pantalla
@@ -70,8 +125,8 @@ public class ControladorRol implements Serializable {
 			objAutRol.setNombre(ModelUtil.cambiarMayusculas(objAutRol.getNombre()));
 			objAutRol.setDescripcion(ModelUtil.cambiarMayusculas(objAutRol.getDescripcion()));
 			managerGestionSistema.ingresarAutRol(objAutRol);
-			managerLog.generarLogGeneral(beanLogin.getCredencial(), this.getClass(), "ingresarRolPeril",
-					"Ingreso coreccto Rol Menu. " + objAutRol.getIdRol());
+			//managerLog.generarLogGeneral(beanLogin.getCredencial(), this.getClass(), "ingresarRolPeril",
+			//		"Ingreso coreccto Rol Menu. " + objAutRol.getIdRol());
 			inicializarAutRol();
 			JSFUtil.crearMensajeINFO("Rol ingresado correctamente.");
 		} catch (Exception e) {
@@ -113,6 +168,14 @@ public class ControladorRol implements Serializable {
 
 	public void setLstAutRols(List<AutRol> lstAutRols) {
 		this.lstAutRols = lstAutRols;
+	}
+
+	public AutPerfile getObjAutPerfile() {
+		return objAutPerfile;
+	}
+
+	public void setObjAutPerfile(AutPerfile objAutPerfile) {
+		this.objAutPerfile = objAutPerfile;
 	}
 
 }

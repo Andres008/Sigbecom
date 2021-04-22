@@ -17,7 +17,7 @@ public class AutPerfile implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@Id
-	@SequenceGenerator(name="AUT_PERFILES_ID_GENERATOR", sequenceName="SEQ_AUT_PERFILES")
+	@SequenceGenerator(name="AUT_PERFILES_ID_GENERATOR", sequenceName="SEQ_AUT_PERFILES", allocationSize = 1)
 	@GeneratedValue(strategy=GenerationType.SEQUENCE, generator="AUT_PERFILES_ID_GENERATOR")
 	private long id;
 

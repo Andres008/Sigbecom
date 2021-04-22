@@ -143,7 +143,7 @@ public class ControladorAcceso implements Serializable {
 			Credencial credencial = managerGestionSistema.obtenerAcceso(idUsuario, /*ModelUtil.md5(clave)*/clave);
 			objUsrSocio = managerGestionSistema.findByIdAutUsuario(idUsuario);
 			// se configura la direccion IP del cliente:
-			menuByRol(managerGestionSistema.findByIdAutUsuario(idUsuario).getAutRol());
+			menuByRol(objUsrSocio.getAutRol());
 			HttpServletRequest request;
 			request = (HttpServletRequest) FacesContext.getCurrentInstance().getExternalContext().getRequest();
 			String remoteAddr = request.getRemoteAddr() + " " + request.getHeader("user-agent");

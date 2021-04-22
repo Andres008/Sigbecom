@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:pc="http://primefaces.org/california">
+
+<h:head>
+	<f:facet name="first">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+		<meta name="viewport"
+			content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" />
+		<meta name="apple-mobile-web-app-capable" content="yes" />
+	</f:facet>
+	<title><ui:insert name="title">SIGBECOM</ui:insert></title>
+	<h:outputScript name="js/nanoscroller.js" library="california-layout" />
+	<h:outputScript name="js/layout.js" library="california-layout" />
+	<ui:insert name="head" />
+</h:head>
+
+<h:body styleClass="main-body"
+	onload="#{controladorMenuPerfiles.inicializarMenuPerfil()}">
+
+	<div
+		class="layout-wrapper #{guestPreferences.menuLayout != 'static' ? guestPreferences.menuLayout : null}">
+		<ui:include src="/affordances/megamenu.xhtml" />
+		<ui:include src="/affordances/topbar.xhtml" />
+		<ui:include src="/affordances/sidebar.xhtml" />
+		<ui:include src="/affordances/right-sidebar.xhtml" />
+
+		<div class="layout-main">
+			<div class="route-bar">
+				<div class="route-bar-breadcrumb">
+					<i class="fa fa-home"></i> <span>/Registro Usuarios</span>
+					<ui:insert name="viewname" />
+				</div>
+				<ui:include src="/affordances/route-bar-menu.xhtml" />
+			</div>
+			<div class="layout-main-content" align="center">
+				<H1>ADMINISTRACION PERFILES Y MENU</H1>
+				<h:form>
+					<p:growl id="growl" showDetail="true" sticky="true" />
+					<p:panel header="Ingresar Menu" toggleable="true" collapsed="true">
+						<p:panelGrid columns="2" styleClass="ui-noborder">
+							<p:outputLabel value="Nombre" />
+							<p:inputText value="#{controladorMenuPerfiles.objAutMenu.nombre}"
+								placeholder="Nombre Menu" style="text-transform: uppercase" />
+							<p:outputLabel value="Descripción" />
+							<p:inputTextarea
+								value="#{controladorMenuPerfiles.objAutMenu.observacion}"
+								placeholder="Descripción Menu" style="text-transform: uppercase" />
+							<p:outputLabel value="Orden" />
+							<p:inputNumber
+								value="#{controladorMenuPerfiles.objAutMenu.orden}" />
+						</p:panelGrid>
+						<p:commandButton value="Ingresar"
+							actionListener="#{controladorMenuPerfiles.ingresarMenuPerfil()}"
+							update="@form">
+							<p:confirm header="Confirmación"
+								message="Esta seguro de ingresar la información?"
+								icon="pi pi-exclamation-triangle" />
+						</p:commandButton>
+						<p:confirmDialog global="true" showEffect="fade" hideEffect="fade"
+							responsive="true" width="350">
+							<p:commandButton value="Si" type="button"
+								styleClass="ui-confirmdialog-yes" />
+							<p:commandButton value="No" type="button"
+								styleClass="ui-confirmdialog-no ui-button-flat" />
+						</p:confirmDialog>
+					</p:panel>
+					<p:separator></p:separator>
+					<p:panel header="Menu Ingresados">
+						<p:dataTable value="#{controladorMenuPerfiles.lstAutMenu}"
+							id="tblMenu" editable="true" var="menu" paginator="true"
+							rows="10">
+							<f:facet name="header">
+							Expanda la fila para ver los perfiles
+							</f:facet>
+							<p:column headerText="Perfiles" style="width:4rem">
+								<p:rowToggler />
+							</p:column>
+							<p:ajax event="rowEdit" listener="#{controladorRol.onRowEdit}"
+								update="@form:growl" />
+							<p:ajax event="rowEditCancel"
+								listener="#{controladorRol.onRowCancel}" update="@form:growl" />
+							<p:column headerText="Nombre Menu">
+								<p:cellEditor>
+									<f:facet name="output">
+										<p:outputLabel value="#{menu.nombre}" />
+									</f:facet>
+									<f:facet name="input">
+										<p:inputText id="nombreInput" value="#{menu.nombre}"
+											style="width:100%" />
+									</f:facet>
+								</p:cellEditor>
+
+							</p:column>
+							<p:column headerText="Descripción">
+								<p:cellEditor>
+									<f:facet name="output">
+										<p:outputLabel value="#{menu.observacion}" />
+									</f:facet>
+									<f:facet name="input">
+										<p:inputTextarea id="descripcionInput"
+											value="#{menu.observacion}" style="width:100%" />
+									</f:facet>
+								</p:cellEditor>
+
+							</p:column>
+							<p:column headerText="Orden">
+								<p:cellEditor>
+									<f:facet name="output">
+										<p:outputLabel value="#{menu.orden}" />
+									</f:facet>
+									<f:facet name="input">
+										<p:spinner id="ordenInput" value="#{menu.orden}"
+											style="width:100%" min="0" />
+									</f:facet>
+								</p:cellEditor>
+
+							</p:column>
+							<p:column headerText="Estado">
+								<p:outputLabel
+									value="#{controladorRol.nombreEstado(menu.estado)}" />
+							</p:column>
+							<p:column headerText="Editar">
+								<p:rowEditor editTitle="Edit Row" cancelTitle="Cancel Edit"
+									saveTitle="Save Row" />
+							</p:column>
+							<p:column headerText="Inactivar">
+								<p:commandButton icon="ui-icon-close"
+									rendered="#{menu.estado eq 'A'?true:false}"
+									actionListener="#{controladorRol.inactivarRol(menu)}"
+									update="@form">
+									<p:confirm header="Confirmación"
+										message="Esta seguro de inactivar este Rol?"
+										icon="pi pi-exclamation-triangle" />
+								</p:commandButton>
+							</p:column>
+							<p:rowExpansion>
+								<p:panel header="Perfiles de Menu #{menu.nombre}">
+									<p:commandButton
+										actionListener="#{controladorMenuPerfiles.cargarMenuPerfil(menu)}"
+										value="Nuevo Perfil" oncomplete="PF('infPerfil').show()"
+										update="@form:infPerfil" />
+									<p:dataTable id="inscriPer"
+										emptyMessage="No existen perfiles registrados"
+										value="#{menu.autPerfiles}" var="perfil">
+										<p:column headerText="Nombre Perfil">
+											<p:outputLabel value="#{perfil.nombre}" />
+										</p:column>
+										<p:column headerText="url">
+											<p:outputLabel value="#{perfil.url}" />
+										</p:column>
+										<p:column headerText="Icono">
+											<p:outputLabel value="#{perfil.icon}" />
+										</p:column>
+										<p:column headerText="Orden">
+											<p:outputLabel value="#{perfil.orden}" />
+										</p:column>
+										<p:column headerText="Estado">
+											<p:outputLabel
+												value="#{controladorRol.nombreEstado(perfil.estado)}" />
+										</p:column>
+										<p:column headerText="Roles">
+											<p:commandButton value="Agregar Rol"
+												actionListener="#{controladorMenuPerfiles.cargarPerfil(perfil)}"
+												oncomplete="PF('infRol').show()" update="@form:infRol"/>
+											<p:dataTable value="#{perfil.autRolPerfils}" var="rol"
+												emptyMessage="No existe roles asignados">
+												<p:column headerText="Rol">
+													<p:outputLabel value="#{rol.autRol.nombre}" />
+												</p:column>
+											</p:dataTable>
+										</p:column>
+
+									</p:dataTable>
+								</p:panel>
+							</p:rowExpansion>
+						</p:dataTable>
+					</p:panel>
+
+					<p:dialog
+						header="AGREGAR ROL A PERFIL #{controladorMenuPerfiles.objAutRolPerfil.autPerfile.nombre}"
+						widgetVar="infRol" id="infRol" modal="true" position="top"
+						showEffect="fade" hideEffect="fade" resizable="false" width="90%">
+						<p:panel header="Ingresar Menu">
+							<p:panelGrid columns="2" styleClass="ui-noborder">
+								<p:outputLabel value="Seleccione Rol" />
+								<p:selectOneMenu value="#{controladorMenuPerfiles.objAutRolPerfil.autRol.idRol}" >
+									<f:selectItem itemLabel="Seleccione Rol"
+										noSelectionOption="true" />
+										<f:selectItems value="#{controladorMenuPerfiles.siAutRol()}" />
+								</p:selectOneMenu>
+							</p:panelGrid>
+							<p:commandButton value="Ingresar"
+								actionListener="#{controladorMenuPerfiles.ingresarAutRolPerfil()}"
+								oncomplete="PF('infRol').hide()" onerror="PF('infRol').show()"
+								update="@form:tblMenu @form:growl" />
+						</p:panel>
+					</p:dialog>
+
+					<p:dialog
+						header="NUEVO PERFIL EN MENÚ #{controladorMenuPerfiles.objPerfil.autMenu.nombre}"
+						widgetVar="infPerfil" id="infPerfil" modal="true" position="top"
+						showEffect="fade" hideEffect="fade" resizable="false" width="90%">
+						<p:panel header="Ingresar Menu">
+							<p:panelGrid columns="2" styleClass="ui-noborder">
+								<p:outputLabel value="Nombre" />
+								<p:inputText value="#{controladorMenuPerfiles.objPerfil.nombre}"
+									placeholder="Nombre Perfil" style="text-transform: uppercase" />
+								<p:outputLabel value="Url" />
+								<p:inputText value="#{controladorMenuPerfiles.objPerfil.url}"
+									placeholder="URL" />
+								<p:outputLabel value="Icono" />
+								<p:inputText value="#{controladorMenuPerfiles.objPerfil.icon}"
+									placeholder="ICONO" style="text-transform: uppercase" />
+								<p:outputLabel value="Orden" />
+								<p:inputNumber
+									value="#{controladorMenuPerfiles.objPerfil.orden}"
+									placeholder="ORDEN" style="text-transform: uppercase" />
+							</p:panelGrid>
+							<p:commandButton value="Ingresar"
+								actionListener="#{controladorMenuPerfiles.ingresarAutPerfil()}"
+								oncomplete="PF('infPerfil').hide()"
+								update="@form:tblMenu @form:growl" />
+						</p:panel>
+					</p:dialog>
+				</h:form>
+			</div>
+			<ui:include src="/affordances/footer.xhtml" />
+		</div>
+	</div>
+
+	<p:ajaxStatus
+		style="width:32px;height:32px;position:fixed;right:7px;bottom:7px">
+		<f:facet name="start">
+			<i class="fa fa-circle-o-notch fa-spin ajax-loader"
+				aria-hidden="true"></i>
+		</f:facet>
+
+		<f:facet name="complete">
+			<h:outputText value="" />
+		</f:facet>
+	</p:ajaxStatus>
+
+	<h:outputStylesheet name="css/nanoscroller.css"
+		library="california-layout" />
+	<h:outputStylesheet name="css/layout-#{guestPreferences.theme}.css"
+		library="california-layout" />
+</h:body>
+</html>

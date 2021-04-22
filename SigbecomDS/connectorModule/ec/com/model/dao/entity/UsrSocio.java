@@ -76,7 +76,7 @@ public class UsrSocio implements Serializable {
 
 	//bi-directional many-to-one association to GesPersona
 	@ManyToOne
-	@JoinColumn(name="cedula_socio")
+	@JoinColumn(name="cedula_socio", insertable = false, updatable = false )
 	private GesPersona gesPersona;
 
 	//bi-directional many-to-one association to UsrAgencia

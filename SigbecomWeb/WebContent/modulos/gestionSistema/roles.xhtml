@@ -39,20 +39,20 @@
 				<ui:include src="/affordances/route-bar-menu.xhtml" />
 			</div>
 			<div class="layout-main-content" align="center">
-			<H1>ADMINISTRACION ROLES DE USUARIO</H1>
+				<H1>ADMINISTRACION ROLES DE USUARIO</H1>
 				<h:form>
 					<p:growl id="growl" showDetail="true" sticky="true" />
 					<p:panel header="Ingresar Roles" toggleable="true" collapsed="true">
 						<p:panelGrid columns="2" styleClass="ui-noborder">
 							<p:outputLabel value="Nombre" />
-							<p:inputText value="#{controladorRol.objAutRol.nombre}" placeholder="Nombre Rol"
-								style="text-transform: uppercase" />
+							<p:inputText value="#{controladorRol.objAutRol.nombre}"
+								placeholder="Nombre Rol" style="text-transform: uppercase" />
 							<p:outputLabel value="Descripción" />
-							<p:inputTextarea value="#{controladorRol.objAutRol.descripcion}" placeholder="Descripción Rol"
-								style="text-transform: uppercase" />
+							<p:inputTextarea value="#{controladorRol.objAutRol.descripcion}"
+								placeholder="Descripción Rol" style="text-transform: uppercase" />
 						</p:panelGrid>
 						<p:commandButton value="Ingresar"
-							action="#{controladorRol.ingresarAutRol()}" update="@form" >
+							action="#{controladorRol.ingresarAutRol()}" update="@form">
 							<p:confirm header="Confirmación"
 								message="Esta seguro de ingresar la información?"
 								icon="pi pi-exclamation-triangle" />
@@ -68,12 +68,33 @@
 					<p:separator></p:separator>
 					<p:panel header="Roles Ingresados">
 						<p:dataTable value="#{controladorRol.lstAutRols}" var="rol"
-							paginator="true" rows="10">
+							editable="true" paginator="true" rows="10">
+							<p:ajax event="rowEdit" listener="#{controladorRol.onRowEdit}"
+								update="@form:growl" />
+							<p:ajax event="rowEditCancel"
+								listener="#{controladorRol.onRowCancel}" update="@form:growl" />
 							<p:column headerText="Rol">
-								<p:outputLabel value="#{rol.nombre}" />
+								<p:cellEditor>
+									<f:facet name="output">
+										<p:outputLabel value="#{rol.nombre}" />
+									</f:facet>
+									<f:facet name="input">
+										<p:inputText id="nombreInput" value="#{rol.nombre}"
+											style="width:100%" />
+									</f:facet>
+								</p:cellEditor>
 							</p:column>
 							<p:column headerText="Descripción">
-								<p:outputLabel value="#{rol.descripcion}" />
+								<p:cellEditor>
+									<f:facet name="output">
+										<p:outputLabel value="#{rol.descripcion}" />
+									</f:facet>
+									<f:facet name="input">
+										<p:inputTextarea id="descripcionInput"
+											value="#{rol.descripcion}" style="width:100%" />
+									</f:facet>
+								</p:cellEditor>
+
 							</p:column>
 							<p:column headerText="Fecha Inicial">
 								<p:outputLabel value="#{rol.fechaInicial}" />
@@ -86,10 +107,17 @@
 									value="#{controladorRol.nombreEstado(rol.estado)}" />
 							</p:column>
 							<p:column headerText="Editar">
-								<p:commandButton icon="ui-icon-pencil" />
+								<p:rowEditor editTitle="Edit Row" cancelTitle="Cancel Edit"
+									saveTitle="Save Row" />
 							</p:column>
-							<p:column headerText="Eliminar">
-								<p:commandButton icon="ui-icon-close" />
+							<p:column headerText="Inactivar">
+								<p:commandButton icon="ui-icon-close" rendered="#{rol.estado eq 'A'?true:false}"
+									actionListener="#{controladorRol.inactivarRol(rol)}"
+									update="@form">
+									<p:confirm header="Confirmación"
+										message="Esta seguro de inactivar este Rol?"
+										icon="pi pi-exclamation-triangle" />
+								</p:commandButton>
 							</p:column>
 						</p:dataTable>
 					</p:panel>
