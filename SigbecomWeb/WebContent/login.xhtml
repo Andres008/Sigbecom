@@ -14,24 +14,49 @@
 		<meta name="apple-mobile-web-app-capable" content="yes" />
 	</f:facet>
 	<title>Iniciar Sesión</title>
+	<style >
+		#header {
+    		position: fixed; 
+			top: -50%; 
+			left: -50%; 
+			width: 200%; 
+			height: 200%;
+			z-index: -110;
+			
+    	}
+    	#header img {
+			position: absolute; 
+			top: 0; 
+			left: 0; 
+			right: 0; 
+			bottom: 0; 
+			margin: auto; 
+			min-width: 50%;
+			min-height: 50%;
+			
+		}
+	</style>
 </h:head>
 
 
 
 <h:body styleClass="login-body" onload="#{controladorAcceso.inicializarAcceso()}">
 	
-	
-	<div class="login-panel ui-fluid">
+	<div id="header" >
+		<p:graphicImage id="img"  styleClass="login-icon" width="2100" height="925"
+						name="images/login-background.jpg" library="california-layout" />
+	</div>
+	<div class="login-panel ui-fluid" >
 			<div class="ui-g" style="margin-top: 50px;">
 				<div class="ui-g-12 ui-md-8 ui-lg-4"></div>
-       			<div class="ui-g-12 ui-md-8 ui-lg-4 stretch">
+       			<div class="ui-g-12 ui-md-8 ui-lg-4" >
        			</div>
         		<div class="ui-g-12 ui-md-8 ui-lg-4"></div>
         	</div>
-		<h:form>
-			<div class="ui-g">
+		<h:form >
+			<div class="ui-g" style="margin-top: 60px;" >
 				<div class="ui-g-12 ui-md-8 ui-lg-4"></div>
-       			<div class="ui-g-12 ui-md-8 ui-lg-4">
+       			<div class="ui-g-12 ui-md-8 ui-lg-4" style="background-color: #dcd7d7;border: 1px groove navy;">
        				<div class="ui-g-12">
 						<p:graphicImage styleClass="login-icon"
 						name="images/login-baner-comite.png" library="california-layout" />
@@ -69,13 +94,7 @@
 				
 			</div>
 		</h:form>
-		<div class="ui-g">
-				<div class="ui-g-12 ui-md-8 ui-lg-4"></div>
-       			<div class="ui-g-12 ui-md-8 ui-lg-4">
-       				<p:graphicImage styleClass="login-image" name="images/bannerLogin2.png" library="california-layout" />
-       			</div>
-        		<div class="ui-g-12 ui-md-8 ui-lg-4"></div>
-        	</div>
+		
 	</div>
 
 	<h:outputStylesheet name="css/layout-#{guestPreferences.theme}.scss"
