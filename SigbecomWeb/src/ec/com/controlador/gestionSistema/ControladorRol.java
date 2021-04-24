@@ -16,6 +16,7 @@ import ec.com.model.auditoria.ManagerLog;
 import ec.com.model.dao.entity.AutPerfile;
 import ec.com.model.dao.entity.AutRol;
 import ec.com.model.gestionSistema.ManagerGestionSistema;
+import ec.com.model.modulos.util.CorreoUtil;
 import ec.com.model.modulos.util.JSFUtil;
 import ec.com.model.modulos.util.ModelUtil;
 
@@ -36,6 +37,9 @@ public class ControladorRol implements Serializable {
 
 	@EJB
 	ManagerLog managerLog;
+	
+	@EJB
+	CorreoUtil correoUtil;
 
 	private AutRol objAutRol;
 	
@@ -137,6 +141,7 @@ public class ControladorRol implements Serializable {
 		}
 
 	}
+	
 
 	public String nombreEstado(String estado) {
 		return ModelUtil.nombreEstadoByInicial(estado);

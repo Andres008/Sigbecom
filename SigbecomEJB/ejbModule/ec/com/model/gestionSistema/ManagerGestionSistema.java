@@ -7,6 +7,7 @@ import javax.ejb.LocalBean;
 import javax.ejb.Stateless;
 
 import ec.com.model.dao.entity.AutMenu;
+import ec.com.model.dao.entity.AutParametrosGenerale;
 import ec.com.model.dao.entity.AutPerfile;
 import ec.com.model.dao.entity.AutRol;
 import ec.com.model.dao.entity.AutRolPerfil;
@@ -34,8 +35,8 @@ public class ManagerGestionSistema {
 
 		if (usuario == null)
 			throw new Exception("Usuario no existe, verifique su código.");
-		if (usuario.getEstado().equalsIgnoreCase("N"))
-			throw new Exception("El usuario no está activo.");
+		/*if (usuario.getEstado().equalsIgnoreCase("N"))
+			throw new Exception("El usuario no está activo.");*/
 		if (!pClave.equals(usuario.getClave()))
 			throw new Exception("Verifique su contraseña.");
 
@@ -108,6 +109,7 @@ public class ManagerGestionSistema {
 			lstAutMenu.forEach(autMenu->{
 				autMenu.getAutPerfiles().forEach(perfil->{
 					perfil.getId();
+					System.out.println(perfil.getNombre());
 					perfil.getAutRolPerfils().forEach(rol->{
 						rol.getAutRol().getNombre();
 					});
@@ -144,6 +146,21 @@ public class ManagerGestionSistema {
 			throw new Exception("Error al ingresar Rol Perfil. "+e.getMessage());
 		}
 		
+	}
+
+	public String buscarValorParametroNombre(String nombre) throws Exception {
+		try {
+			@SuppressWarnings("unchecked")
+			List<AutParametrosGenerale> lstParametro= managerDAOSegbecom.findWhere(AutParametrosGenerale.class, "o.nombre='"+nombre.toUpperCase()+"'", null);
+			if (lstParametro.isEmpty())
+				throw new Exception("Parametro no encontrado.");
+			if (lstParametro.size()>1)
+				throw new Exception("Más de un parametro encontrado.");
+			return lstParametro.get(0).getValor();
+		} catch (Exception e) {
+			throw new Exception("Error al buscar parametro. "+e.getMessage());
+			
+		}
 	}
 
 }

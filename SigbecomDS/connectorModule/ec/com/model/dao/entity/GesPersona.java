@@ -17,8 +17,6 @@ public class GesPersona implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@Id
-	@SequenceGenerator(name="GES_PERSONA_CEDULA_GENERATOR", sequenceName="SEQ_GES_PERSONA")
-	@GeneratedValue(strategy=GenerationType.SEQUENCE, generator="GES_PERSONA_CEDULA_GENERATOR")
 	private String cedula;
 
 	private String apellidos;

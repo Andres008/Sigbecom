@@ -307,83 +307,125 @@ public class ModelUtil {
 	 * 
 	 * @param clave
 	 * @return
-	 * @throws Exception 
+	 * @throws Exception
 	 * @throws NoSuchAlgorithmException
 	 */
 	public static String md5(String clave) throws Exception {
-		
-			try {
-				MessageDigest md = MessageDigest.getInstance("MD5");
-				md.update(clave.getBytes("UTF-8"), 0, clave.length());
-				byte[] bt = md.digest();
-				BigInteger bi = new BigInteger(1, bt);
-				String md5 = bi.toString(16);
-				return md5.toUpperCase();
-			} catch (Exception e) {
-				throw new Exception("Error al codificar Clave.");
-			}
+
+		try {
+			MessageDigest md = MessageDigest.getInstance("MD5");
+			md.update(clave.getBytes("UTF-8"), 0, clave.length());
+			byte[] bt = md.digest();
+			BigInteger bi = new BigInteger(1, bt);
+			String md5 = bi.toString(16);
+			return md5.toUpperCase();
+		} catch (Exception e) {
+			throw new Exception("Error al codificar Clave.");
+		}
 	}
 
 	public static String cambiarMayusculas(String cadena) {
 		return cadena.toUpperCase();
 	}
-	
+
 	public static String cambiarMinusculas(String cadena) {
 		return cadena.toLowerCase();
 	}
 
 	public static String nombreEstadoByInicial(String estado) {
-		return  (estado.equals("A"))?"ACTIVO":"INACTIVO" ;
+		return (estado.equals("A")) ? "ACTIVO" : "INACTIVO";
 	}
-	
+
 	// Función principal que hace uso de las anteriores funciones
-    public static boolean verificarCedulaEcuador(String idCard) throws Exception {
-            if (stringLength(idCard, 10)) {
-                String[] data = idCard.split("");
-                byte verifier = Byte.parseByte(data[0] + data[1]);
-                byte[] digits = new byte[9];
-                for (byte i = 0; i < 9; i++)
-                    digits[i] = Byte.parseByte(data[i]);        
-                if (verifier >= 1 && verifier <= 24) {
-                    verifier = digits[2];
-                    if (verifier <= 6) {
-                        if (sumDigits(digits) == Byte.parseByte(data[9]))
-                            return true;
-                    }
-                }
-            }
-            else
-            	throw new Exception("Número digitos cédula invalido.");
-        return false;
-    }
-    
- // Esta función servirá para validar la longitud de la cadena de texto
-    private static boolean stringLength(String string, int length) {
-        if (string.length() == length)
-            return true;
-        return false;
-    }
-    
- // Esta función sumará y multiplicará los primeros 9 dígitos de la cédula
-    // Aquí se multiplica los dígitos impares por 2 y los pares por 1
-    // Se usa el siguiente patrón 2.1.2.1.2.1.2.1.2
-    // Se retorna la resta de la decena superior de la suma menos la suma
-    // Es decir si sale la suma de todos los dígitos 36 entonces la decena superior es 40
-    // Por lo tanto debemos hacer lo siguiente (40-36)
-    private static byte sumDigits(byte[] digits) {
-        byte verifier;
-        byte sum = 0;
-        for (byte i = 0; i < digits.length; i = (byte) (i + 2)) {
-            verifier = (byte) (digits[i] * 2);
-            if (verifier > 9)
-                verifier = (byte) (verifier - 9);
-            sum = (byte) (sum + verifier);
-        }
-        for (byte i = 1; i < digits.length; i = (byte) (i + 2)) {
-            verifier = (byte) (digits[i] * 1);
-            sum = (byte) (sum + verifier);
-        }
-        return (byte) ((sum - (sum % 10) + 10) - sum);
-    }
+	/*
+	 * public static boolean verificarCedulaEcuador(String idCard) throws Exception
+	 * { if (stringLength(idCard, 10)) { String[] data = idCard.split(""); byte
+	 * verifier = Byte.parseByte(data[0] + data[1]); byte[] digits = new byte[9];
+	 * for (byte i = 0; i < 9; i++) digits[i] = Byte.parseByte(data[i]); if
+	 * (verifier >= 1 && verifier <= 24) { verifier = digits[2]; if (verifier <= 6)
+	 * { if (sumDigits(digits) == Byte.parseByte(data[9])) return true; } } } else
+	 * throw new Exception("Número digitos cédula invalido."); throw new
+	 * Exception("Cédula invalidad"); }
+	 */
+
+	public static boolean verificarCedulaEcuador(String idCard) throws Exception {
+		int suma = 0;
+		if (idCard.length() != 10) {
+			throw new Exception("Dígitos de la cedula incorrecto.");
+
+		} else {
+			int a[] = new int[idCard.length() / 2];
+			int b[] = new int[(idCard.length() / 2)];
+			int c = 0;
+			int d = 1;
+			for (int i = 0; i < idCard.length() / 2; i++) {
+				a[i] = Integer.parseInt(String.valueOf(idCard.charAt(c)));
+				c = c + 2;
+				if (i < (idCard.length() / 2) - 1) {
+					b[i] = Integer.parseInt(String.valueOf(idCard.charAt(d)));
+					d = d + 2;
+				}
+			}
+
+			for (int i = 0; i < a.length; i++) {
+				a[i] = a[i] * 2;
+				if (a[i] > 9) {
+					a[i] = a[i] - 9;
+				}
+				suma = suma + a[i] + b[i];
+			}
+			int aux = suma / 10;
+			int dec = (aux + 1) * 10;
+			if ((dec - suma) == Integer.parseInt(String.valueOf(idCard.charAt(idCard.length() - 1))))
+				return true;
+			else if (suma % 10 == 0 && idCard.charAt(idCard.length() - 1) == '0') {
+				return true;
+			} else {
+				throw new Exception("Cédula Incorrecta.");
+			}
+
+		}
+	}
+
+	public static String randomAlphaNumeric() {
+		int count =10;
+		String ALPHA_NUMERIC_STRING = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+		StringBuilder builder = new StringBuilder();
+		while (count-- != 0) {
+			int character = (int) (Math.random() * ALPHA_NUMERIC_STRING.length());
+			builder.append(ALPHA_NUMERIC_STRING.charAt(character));
+		}
+		return builder.toString();
+	}
+
+	// Esta función servirá para validar la longitud de la cadena de texto
+	private static boolean stringLength(String string, int length) {
+		if (string.length() == length)
+			return true;
+		return false;
+	}
+
+	// Esta función sumará y multiplicará los primeros 9 dígitos de la cédula
+	// Aquí se multiplica los dígitos impares por 2 y los pares por 1
+	// Se usa el siguiente patrón 2.1.2.1.2.1.2.1.2
+	// Se retorna la resta de la decena superior de la suma menos la suma
+	// Es decir si sale la suma de todos los dígitos 36 entonces la decena superior
+	// es 40
+	// Por lo tanto debemos hacer lo siguiente (40-36)
+	private static byte sumDigits(byte[] digits) {
+		byte verifier;
+		byte sum = 0;
+		for (byte i = 0; i < digits.length; i = (byte) (i + 2)) {
+			verifier = (byte) (digits[i] * 2);
+			if (verifier > 9)
+				verifier = (byte) (verifier - 9);
+			sum = (byte) (sum + verifier);
+		}
+		for (byte i = 1; i < digits.length; i = (byte) (i + 2)) {
+			verifier = (byte) (digits[i] * 1);
+			sum = (byte) (sum + verifier);
+		}
+		return (byte) ((sum - (sum % 10) + 10) - sum);
+	}
 
 }

@@ -6,107 +6,109 @@ import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
 
-
 /**
  * The persistent class for the usr_socio database table.
  * 
  */
 @Entity
-@Table(name="usr_socio")
-@NamedQuery(name="UsrSocio.findAll", query="SELECT u FROM UsrSocio u")
+@Table(name = "usr_socio")
+@NamedQuery(name = "UsrSocio.findAll", query = "SELECT u FROM UsrSocio u")
 public class UsrSocio implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@Id
-	@Column(name="cedula_socio")
+	@Column(name = "cedula_socio")
 	private String cedulaSocio;
 
 	private String clave;
 
 	private String direccion;
 
-	private String estado;
-
 	@Temporal(TemporalType.DATE)
-	@Column(name="fecha_alta")
+	@Column(name = "fecha_alta")
 	private Date fechaAlta;
 
 	@Temporal(TemporalType.DATE)
-	@Column(name="fecha_baja")
+	@Column(name = "fecha_baja")
 	private Date fechaBaja;
 
-	@Column(name="id_socio")
+	@Column(name = "id_socio")
 	private BigDecimal idSocio;
 
-	@Column(name="ingresos_mensuales")
+	@Column(name = "ingresos_mensuales")
 	private BigDecimal ingresosMensuales;
 
-	@Column(name="otros_ingresos")
+	@Column(name = "otros_ingresos")
 	private BigDecimal otrosIngresos;
 
-	@Column(name="primer_inicio")
+	@Column(name = "primer_inicio")
 	private String primerInicio;
 
 	private String vehiculo;
 
-	//bi-directional many-to-one association to GesPariente
-	@OneToMany(mappedBy="usrSocio")
+	// bi-directional many-to-one association to GesPariente
+	@OneToMany(mappedBy = "usrSocio")
 	private List<GesPariente> gesParientes;
 
-	//bi-directional many-to-one association to LogGeneral
-	@OneToMany(mappedBy="usrSocio")
+	// bi-directional many-to-one association to LogGeneral
+	@OneToMany(mappedBy = "usrSocio")
 	private List<LogGeneral> logGenerals;
 
-	//bi-directional many-to-one association to UsrCuentaSocio
-	@OneToMany(mappedBy="usrSocio")
+	// bi-directional many-to-one association to UsrCuentaSocio
+	@OneToMany(mappedBy = "usrSocio")
 	private List<UsrCuentaSocio> usrCuentaSocios;
 
-	//bi-directional many-to-one association to UsrInstruccion
-	@OneToMany(mappedBy="usrSocio")
+	// bi-directional many-to-one association to UsrInstruccion
+	@OneToMany(mappedBy = "usrSocio")
 	private List<UsrInstruccion> usrInstruccions;
 
-	//bi-directional many-to-one association to UsrLicenciaSocio
-	@OneToMany(mappedBy="usrSocio")
+	// bi-directional many-to-one association to UsrLicenciaSocio
+	@OneToMany(mappedBy = "usrSocio")
 	private List<UsrLicenciaSocio> usrLicenciaSocios;
 
-	//bi-directional many-to-one association to AutRol
+	// bi-directional many-to-one association to AutRol
 	@ManyToOne
-	@JoinColumn(name="id_rol")
+	@JoinColumn(name = "id_rol")
 	private AutRol autRol;
 
-	//bi-directional many-to-one association to GesPersona
+	// bi-directional many-to-one association to GesPersona
 	@ManyToOne
-	@JoinColumn(name="cedula_socio", insertable = false, updatable = false )
+	@JoinColumn(name = "cedula_socio", insertable = false, updatable = false)
 	private GesPersona gesPersona;
 
-	//bi-directional many-to-one association to UsrAgencia
+	// bi-directional many-to-one association to UsrAgencia
 	@ManyToOne
-	@JoinColumn(name="id_agencia")
+	@JoinColumn(name = "id_agencia")
 	private UsrAgencia usrAgencia;
 
-	//bi-directional many-to-one association to UsrArea
+	// bi-directional many-to-one association to UsrEstadoSocio
 	@ManyToOne
-	@JoinColumn(name="id_area")
+	@JoinColumn(name = "id_estado")
+	private UsrEstadoSocio usrEstadoSocio;
+
+	// bi-directional many-to-one association to UsrArea
+	@ManyToOne
+	@JoinColumn(name = "id_area")
 	private UsrArea usrArea;
 
-	//bi-directional many-to-one association to UsrCargo
+	// bi-directional many-to-one association to UsrCargo
 	@ManyToOne
-	@JoinColumn(name="id_cargo")
+	@JoinColumn(name = "id_cargo")
 	private UsrCargo usrCargo;
 
-	//bi-directional many-to-one association to UsrLugarTrabajo
+	// bi-directional many-to-one association to UsrLugarTrabajo
 	@ManyToOne
-	@JoinColumn(name="id_lugar_trabajo")
+	@JoinColumn(name = "id_lugar_trabajo")
 	private UsrLugarTrabajo usrLugarTrabajo;
 
-	//bi-directional many-to-one association to UsrParroquia
+	// bi-directional many-to-one association to UsrParroquia
 	@ManyToOne
-	@JoinColumn(name="id_parroquia")
+	@JoinColumn(name = "id_parroquia")
 	private UsrParroquia usrParroquia;
 
-	//bi-directional many-to-one association to UsrTipoVivienda
+	// bi-directional many-to-one association to UsrTipoVivienda
 	@ManyToOne
-	@JoinColumn(name="id_tipo_vivienda")
+	@JoinColumn(name = "id_tipo_vivienda")
 	private UsrTipoVivienda usrTipoVivienda;
 
 	public UsrSocio() {
@@ -134,14 +136,6 @@ public class UsrSocio implements Serializable {
 
 	public void setDireccion(String direccion) {
 		this.direccion = direccion;
-	}
-
-	public String getEstado() {
-		return this.estado;
-	}
-
-	public void setEstado(String estado) {
-		this.estado = estado;
 	}
 
 	public Date getFechaAlta() {
@@ -372,6 +366,14 @@ public class UsrSocio implements Serializable {
 
 	public void setUsrTipoVivienda(UsrTipoVivienda usrTipoVivienda) {
 		this.usrTipoVivienda = usrTipoVivienda;
+	}
+
+	public UsrEstadoSocio getUsrEstadoSocio() {
+		return usrEstadoSocio;
+	}
+
+	public void setUsrEstadoSocio(UsrEstadoSocio usrEstadoSocio) {
+		this.usrEstadoSocio = usrEstadoSocio;
 	}
 
 }

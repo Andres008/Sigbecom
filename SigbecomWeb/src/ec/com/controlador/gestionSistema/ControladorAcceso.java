@@ -109,11 +109,12 @@ public class ControladorAcceso implements Serializable {
 		List<VAutMenuRol> lstVAutMenuRol = managerGestionSistema.findVAutMenuRol(objAutRol);
 		//List<AutRolPerfil> lstAutRolMenu = managerGestionSistema.findRolMenuByRol(objAutRol);
 		model = new DefaultMenuModel();
+		model.getElements().add( DefaultMenuItem.builder().value("Menu Principal").icon("ui-icon-home")
+				.command("#{controladorAcceso.acceso('" +"/modulos/menuPrincipal.xhtml" + "')}").update("messages").build());
 		for (VAutMenuRol vAutMenuRol : lstVAutMenuRol) {
 			// First submenu
 			DefaultSubMenu submenu = DefaultSubMenu.builder().label(vAutMenuRol.getNombre()).build();
-			model.getElements().add( DefaultMenuItem.builder().value("Menu Principal").icon("ui-icon-home")
-					.command("#{controladorAcceso.acceso('" +"/modulos/menuPrincipal.xhtml" + "')}").update("messages").build());
+			
 			for (AutRolPerfil autRolPerfil : managerGestionSistema.findRolPerfilbyRol(objAutRol, vAutMenuRol)) {
 				DefaultMenuItem item = DefaultMenuItem.builder().value(autRolPerfil.getAutPerfile().getNombre()).icon(autRolPerfil.getAutPerfile().getIcon())
 						.command("#{controladorAcceso.acceso('" + autRolPerfil.getAutPerfile().getUrl() + "')}").update("messages").build();
