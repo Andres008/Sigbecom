@@ -10,5 +10,6 @@
 	<classpathentry kind="lib" path="C:/Users/SUPERTRONICA/Documents/PROYECTOS JAVA/SIGBECOM/Servidor aplicaciones/wildfly-20.0.1.Final/modules/system/layers/base/javax/faces/api/main/jboss-jsf-api_2.3_spec-3.0.0.SP04.jar"/>
 	<classpathentry kind="lib" path="C:/Users/SUPERTRONICA/Documents/PROYECTOS JAVA/SIGBECOM/Servidor aplicaciones/wildfly-20.0.1.Final/modules/system/layers/base/javax/ejb/api/main/jboss-ejb-api_3.2_spec-2.0.0.Final.jar"/>
 	<classpathentry kind="src" path="/SigbecomDS"/>
+	<classpathentry kind="lib" path="C:/Users/SUPERTRONICA/Documents/PROYECTOS JAVA/SIGBECOM/Servidor aplicaciones/wildfly-20.0.1.Final/modules/system/layers/base/javax/mail/api/main/jakarta.mail-1.6.5.jar"/>
 	<classpathentry kind="output" path="build/classes"/>
 </classpath>
