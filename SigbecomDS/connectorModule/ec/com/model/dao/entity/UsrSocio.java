@@ -111,6 +111,10 @@ public class UsrSocio implements Serializable {
 	@JoinColumn(name = "id_tipo_vivienda")
 	private UsrTipoVivienda usrTipoVivienda;
 
+	// bi-directional many-to-one association to SesvasSolicitud
+	@OneToMany(mappedBy = "usrSocio")
+	private List<SesvasSolicitud> sesvasSolicituds;
+
 	public UsrSocio() {
 	}
 
@@ -374,6 +378,14 @@ public class UsrSocio implements Serializable {
 
 	public void setUsrEstadoSocio(UsrEstadoSocio usrEstadoSocio) {
 		this.usrEstadoSocio = usrEstadoSocio;
+	}
+
+	public List<SesvasSolicitud> getSesvasSolicituds() {
+		return sesvasSolicituds;
+	}
+
+	public void setSesvasSolicituds(List<SesvasSolicitud> sesvasSolicituds) {
+		this.sesvasSolicituds = sesvasSolicituds;
 	}
 
 }

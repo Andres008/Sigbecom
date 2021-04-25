@@ -42,7 +42,7 @@ public class BeanLogin implements Serializable {
 		if(credencial!=null)
 			managerLog.generarLogAuditoria(credencial, this.getClass(), "actionSalirSistema", "Cierre de sesion");
 		FacesContext.getCurrentInstance().getExternalContext().invalidateSession();
-		return "/index.xhtml?faces-redirect=true"; 
+		return "/login.xhtml?faces-redirect=true"; 
 	}
 	
 	public void verificarCredencial() throws IOException {
