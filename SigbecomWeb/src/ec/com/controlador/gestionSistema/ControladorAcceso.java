@@ -28,6 +28,7 @@ import ec.com.model.dao.entity.VAutMenuRol;
 import ec.com.model.gestionSistema.Credencial;
 import ec.com.model.gestionSistema.ManagerGestionSistema;
 import ec.com.model.modulos.util.JSFUtil;
+import ec.com.model.modulos.util.ModelUtil;
 
 @Named("controladorAcceso")
 @SessionScoped
@@ -38,14 +39,13 @@ public class ControladorAcceso implements Serializable {
 	 */
 	private static final long serialVersionUID = 1L;
 
-
 	public ControladorAcceso() {
 		// TODO Auto-generated constructor stub
 	}
 
 	private UsrSocio objUsrSocio;
 	private String idUsuario;
-	private String clave; 
+	private String clave;
 	private MenuModel model;
 	private Boolean panelCambioContr;
 	private StreamedContent file;
@@ -59,65 +59,65 @@ public class ControladorAcceso implements Serializable {
 	@Inject
 	private BeanLogin beanLogin;
 
-	
 	public void inicializarAcceso() {
 	}
-	
-	public void mensageCambioContrasenia() {
-		 FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_INFO, "Mensaje", "Si requiere el cambios de su contraseña, favor comuniquese con el Departamente de Seguimiento y Evaluación. Mode 35095.");
 
-	        PrimeFaces.current().dialog().showMessageDynamic(message);
+	public void mensageCambioContrasenia() {
+		FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_INFO, "Mensaje",
+				"Si requiere el cambios de su contraseña, favor comuniquese con el Departamente de Seguimiento y Evaluación. Mode 35095.");
+
+		PrimeFaces.current().dialog().showMessageDynamic(message);
 	}
 
-	/*public void cambiarContraseniaPrimerAcceso() {
-		try {
-			if (!objAutUsuario.getCedula().equals(objAutUsuario.getClave()))
-			{
-				objAutUsuario.setClave(ModelUtil.md5(objAutUsuario.getClave()));
-				objAutUsuario.setPrimerInicio("NO");
-				managerUsuario.actualizarUsuario(objAutUsuario);
-				managerLog.generarLogUsabilidad(beanLogin.getCredencial(), this.getClass(), "cambiarContrase�aPrimerAcceso",
-						"Se cambio la contrasenia por primer uso de usuario: " + objAutUsuario.getCedula());
-				JSFUtil.crearMensajeINFO("Atenci�n", "Contrase�a Actualizada.");
-				inicializarCredenciales();
-			}else
-			{
-				JSFUtil.crearMensajeWARN("Advertencia", "La clave no puede ser igual al usuario (N�mero de c�dula).");
-			}
-			
-		} catch (Exception e) {
-			JSFUtil.crearMensajeERROR("Error", e.getMessage());
-			managerLog.generarLogErrorGeneral(beanLogin.getCredencial(), this.getClass(),
-					"cambiarContrase�aPrimerAcceso",
-					"Error al cambiar contrase�a primer uso: " + objAutUsuario.getCedula());
-			e.printStackTrace();
-		}
-	}*/
+	/*
+	 * public void cambiarContraseniaPrimerAcceso() { try { if
+	 * (!objAutUsuario.getCedula().equals(objAutUsuario.getClave())) {
+	 * objAutUsuario.setClave(ModelUtil.md5(objAutUsuario.getClave()));
+	 * objAutUsuario.setPrimerInicio("NO");
+	 * managerUsuario.actualizarUsuario(objAutUsuario);
+	 * managerLog.generarLogUsabilidad(beanLogin.getCredencial(), this.getClass(),
+	 * "cambiarContrase�aPrimerAcceso",
+	 * "Se cambio la contrasenia por primer uso de usuario: " +
+	 * objAutUsuario.getCedula()); JSFUtil.crearMensajeINFO("Atenci�n",
+	 * "Contrase�a Actualizada."); inicializarCredenciales(); }else {
+	 * JSFUtil.crearMensajeWARN("Advertencia",
+	 * "La clave no puede ser igual al usuario (N�mero de c�dula)."); }
+	 * 
+	 * } catch (Exception e) { JSFUtil.crearMensajeERROR("Error", e.getMessage());
+	 * managerLog.generarLogErrorGeneral(beanLogin.getCredencial(), this.getClass(),
+	 * "cambiarContrase�aPrimerAcceso", "Error al cambiar contrase�a primer uso: " +
+	 * objAutUsuario.getCedula()); e.printStackTrace(); } }
+	 */
 
 	public void inicializarCredenciales() {
 		panelCambioContr = false;
 		objUsrSocio = new UsrSocio();
 	}
 
-	
 	/***
 	 * Metodo para crear el Model menu.
+	 * 
 	 * @param objAutRol
 	 * @throws Exception
 	 */
 	public void menuByRol(AutRol objAutRol) throws Exception {
 		List<VAutMenuRol> lstVAutMenuRol = managerGestionSistema.findVAutMenuRol(objAutRol);
-		//List<AutRolPerfil> lstAutRolMenu = managerGestionSistema.findRolMenuByRol(objAutRol);
+		// List<AutRolPerfil> lstAutRolMenu =
+		// managerGestionSistema.findRolMenuByRol(objAutRol);
 		model = new DefaultMenuModel();
-		model.getElements().add( DefaultMenuItem.builder().value("Menu Principal").icon("ui-icon-home")
-				.command("#{controladorAcceso.acceso('" +"/modulos/menuPrincipal.xhtml" + "')}").update("messages").build());
+		model.getElements()
+				.add(DefaultMenuItem.builder().value("Menu Principal").icon("ui-icon-home")
+						.command("#{controladorAcceso.acceso('" + "/modulos/menuPrincipal.xhtml" + "')}")
+						.update("messages").build());
 		for (VAutMenuRol vAutMenuRol : lstVAutMenuRol) {
 			// First submenu
 			DefaultSubMenu submenu = DefaultSubMenu.builder().label(vAutMenuRol.getNombre()).build();
-			
+
 			for (AutRolPerfil autRolPerfil : managerGestionSistema.findRolPerfilbyRol(objAutRol, vAutMenuRol)) {
-				DefaultMenuItem item = DefaultMenuItem.builder().value(autRolPerfil.getAutPerfile().getNombre()).icon(autRolPerfil.getAutPerfile().getIcon())
-						.command("#{controladorAcceso.acceso('" + autRolPerfil.getAutPerfile().getUrl() + "')}").update("messages").build();
+				DefaultMenuItem item = DefaultMenuItem.builder().value(autRolPerfil.getAutPerfile().getNombre())
+						.icon(autRolPerfil.getAutPerfile().getIcon())
+						.command("#{controladorAcceso.acceso('" + autRolPerfil.getAutPerfile().getUrl() + "')}")
+						.update("messages").build();
 				submenu.getElements().add(item);
 			}
 			model.getElements().add(submenu);
@@ -141,10 +141,9 @@ public class ControladorAcceso implements Serializable {
 	 */
 	public String actionObtenerAcceso() {
 		try {
-			Credencial credencial = managerGestionSistema.obtenerAcceso(idUsuario, /*ModelUtil.md5(clave)*/clave);
+			Credencial credencial = managerGestionSistema.obtenerAcceso(idUsuario, ModelUtil.md5(clave));
 			objUsrSocio = managerGestionSistema.findByIdAutUsuario(idUsuario);
 			// se configura la direccion IP del cliente:
-			menuByRol(objUsrSocio.getAutRol());
 			HttpServletRequest request;
 			request = (HttpServletRequest) FacesContext.getCurrentInstance().getExternalContext().getRequest();
 			String remoteAddr = request.getRemoteAddr() + " " + request.getHeader("user-agent");
@@ -161,11 +160,12 @@ public class ControladorAcceso implements Serializable {
 			// IP:
 			credencial.setDireccionIP(request.getRemoteAddr());
 			FacesContext.getCurrentInstance().getExternalContext().getSessionMap().put("credencial", credencial);
-			if (credencial.getPrimerInicio().equals("SI")) {
-				objUsrSocio.setClave("");
-				panelCambioContr = true;
-				return "";
+			if (objUsrSocio.getUsrEstadoSocio().getIdEstado() == 1) {
+				managerLog.generarLogUsabilidad(beanLogin.getCredencial(), this.getClass(), "actionObtenerAcceso",
+						"Se ingresa al sistema, actualización de Datos.");
+				return "/modulos/usuarios/actualizacionDatos?faces-redirect=true";
 			}
+			menuByRol(objUsrSocio.getAutRol());
 			managerLog.generarLogUsabilidad(beanLogin.getCredencial(), this.getClass(), "actionObtenerAcceso",
 					"Se ingresa al sistema");
 			return "/modulos/menuPrincipal?faces-redirect=true";
@@ -177,14 +177,13 @@ public class ControladorAcceso implements Serializable {
 		}
 
 	}
-	
-    public StreamedContent getFile() {
-    	return DefaultStreamedContent.builder()
-                .name("GuiaUsuario.pdf")
-                .contentType("application/pdf")
-                .stream(() -> FacesContext.getCurrentInstance().getExternalContext().getResourceAsStream("/resources/archivos/GuiaUsuario.pdf"))
-                .build();
-    }
+
+	public StreamedContent getFile() {
+		return DefaultStreamedContent.builder().name("GuiaUsuario.pdf").contentType("application/pdf")
+				.stream(() -> FacesContext.getCurrentInstance().getExternalContext()
+						.getResourceAsStream("/resources/archivos/GuiaUsuario.pdf"))
+				.build();
+	}
 
 	public String getClave() {
 		return clave;
@@ -235,4 +234,3 @@ public class ControladorAcceso implements Serializable {
 	}
 
 }
-

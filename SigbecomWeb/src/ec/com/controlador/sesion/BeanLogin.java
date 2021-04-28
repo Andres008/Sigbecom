@@ -2,6 +2,9 @@ package ec.com.controlador.sesion;
 
 import java.io.IOException;
 import java.io.Serializable;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 import javax.ejb.EJB;
 import javax.enterprise.context.SessionScoped;
@@ -11,6 +14,7 @@ import javax.inject.Named;
 
 import ec.com.model.auditoria.ManagerLog;
 import ec.com.model.gestionSistema.Credencial;
+import ec.com.model.modulos.util.JSFUtil;
 import ec.com.model.modulos.util.ModelUtil;
 
 @Named("beanLogin")
@@ -98,7 +102,20 @@ public class BeanLogin implements Serializable {
 		return "";
 	}
 	
+	public Date fechaActual() {
+		return new Date();
+	}
 	
+	public Date fechaMinimaCalendario() {
+		SimpleDateFormat formato = new SimpleDateFormat("dd/MM/yyyy");
+		try {
+			return formato.parse("01/01/1900");
+		} catch (ParseException e) {
+			JSFUtil.crearMensajeERROR(e.getMessage());
+			e.printStackTrace();
+		}
+	return null;
+	}
 	
 	
 	/*******************************************************************

@@ -45,9 +45,12 @@ public class UsrSocio implements Serializable {
 	private String primerInicio;
 
 	private String vehiculo;
+	
+	@Column(name="url_foto")
+	private String urlFoto;
 
 	// bi-directional many-to-one association to GesPariente
-	@OneToMany(mappedBy = "usrSocio")
+	@OneToMany(mappedBy = "usrSocio", cascade = CascadeType.ALL)
 	private List<GesPariente> gesParientes;
 
 	// bi-directional many-to-one association to LogGeneral
@@ -386,6 +389,14 @@ public class UsrSocio implements Serializable {
 
 	public void setSesvasSolicituds(List<SesvasSolicitud> sesvasSolicituds) {
 		this.sesvasSolicituds = sesvasSolicituds;
+	}
+
+	public String getUrlFoto() {
+		return urlFoto;
+	}
+
+	public void setUrlFoto(String urlFoto) {
+		this.urlFoto = urlFoto;
 	}
 
 }

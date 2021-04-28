@@ -35,8 +35,6 @@ public class GesPersona implements Serializable {
 
 	private String telefono;
 
-	@Column(name="url_foto")
-	private String urlFoto;
 
 	//bi-directional many-to-one association to GesDiscapacidadPersona
 	@OneToMany(mappedBy="gesPersona")
@@ -86,7 +84,7 @@ public class GesPersona implements Serializable {
 	}
 
 	public void setApellidos(String apellidos) {
-		this.apellidos = apellidos;
+		this.apellidos = apellidos.toUpperCase();
 	}
 
 	public String getEmail() {
@@ -94,7 +92,7 @@ public class GesPersona implements Serializable {
 	}
 
 	public void setEmail(String email) {
-		this.email = email;
+		this.email = email.toLowerCase();
 	}
 
 	public Date getFechaDef() {
@@ -118,7 +116,7 @@ public class GesPersona implements Serializable {
 	}
 
 	public void setNombres(String nombres) {
-		this.nombres = nombres;
+		this.nombres = nombres.toUpperCase();
 	}
 
 	public String getTelefono() {
@@ -129,13 +127,6 @@ public class GesPersona implements Serializable {
 		this.telefono = telefono;
 	}
 
-	public String getUrlFoto() {
-		return this.urlFoto;
-	}
-
-	public void setUrlFoto(String urlFoto) {
-		this.urlFoto = urlFoto;
-	}
 
 	public List<GesDiscapacidadPersona> getGesDiscapacidadPersonas() {
 		return this.gesDiscapacidadPersonas;

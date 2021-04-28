@@ -38,6 +38,13 @@ public class CorreoUtil {
 	    	String contenidoNota;
 	    	String contenidoFinal;
 	    	SimpleDateFormat anio = new SimpleDateFormat("yyyy");
+	    	String link = "";
+			try {
+				link = managerGestionSistema.buscarValorParametroNombre("LINK_SISTEMA");
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 	    	contenidoInicial=""
 	    			+ "<body style=\"font-family:Verdana, Arial, Helvetica, sans-serif;\">"
 					+ "   <table style=\"border-collapse:collapse; border:10px solid #008da9; height:auto; margin:0 auto; width:790px;\">"
@@ -50,13 +57,13 @@ public class CorreoUtil {
 	    			+ "               </h4>"
 	    			+ "            </td>"
 	    			+ "         </tr>";
-	    	contenidoPrincipal = ""
-	    			+ "         <tr>"
-	    			+ "            <td style=\"background:#fff; color:#333; font-size:12px; height:50px; line-height:1.6; padding:10px 20px 10px;\">"
-	    			+ contenido
-	    			+ "            </td>"
-	    			+ "         </tr>";
-	    	contenidoNota = ""
+	    	contenidoPrincipal = "" + "         <tr>"
+					+ "            <td style=\"background:#fff; color:#333; font-size:12px; height:50px; line-height:1.6; padding:10px 20px 10px;\">"
+					+ contenido + "            </td>" + "         </tr>" + "         <tr>"
+					+ "            <td style=\"background:#fff; color:#333; font-size:12px; height:50px; line-height:1.6; padding:10px 20px 10px;\">"
+					+ "<a href=\""+ link +"\">Link del sistema: "+link+"</a>"
+					+ "            </td>" + "         </tr>";
+			contenidoNota = ""
 	    			+ "         <tr>"
 	    			+ "            <td style=\"background: none repeat scroll 0 0 #FFFFFF; color: #333333; font-size: 12px; mheight: 50px; line-height: 1.6; padding: 10px 20px;\">"
 	    			+ "              <p>===================================<br>"
