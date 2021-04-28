@@ -11,6 +11,6 @@
     </web>
   </module>
   <module>
-    <connector>SigbecomDS.jar</connector>
+    <ejb>SigbecomDS.jar</ejb>
   </module>
 </application>

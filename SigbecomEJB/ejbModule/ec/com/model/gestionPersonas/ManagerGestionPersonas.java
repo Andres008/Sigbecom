@@ -5,7 +5,6 @@ import java.util.List;
 import javax.ejb.EJB;
 import javax.ejb.LocalBean;
 import javax.ejb.Stateless;
-import javax.faces.model.SelectItem;
 
 import ec.com.model.dao.entity.GesEstadoCivil;
 import ec.com.model.dao.entity.GesEtnia;
