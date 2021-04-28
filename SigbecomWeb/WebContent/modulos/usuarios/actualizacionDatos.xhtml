@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:pc="http://primefaces.org/california">
+
+<h:head>
+	<f:facet name="first">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+		<meta name="viewport"
+			content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" />
+		<meta name="apple-mobile-web-app-capable" content="yes" />
+	</f:facet>
+	<title><ui:insert name="title">SIGBECOM</ui:insert></title>
+	<h:outputScript name="js/nanoscroller.js" library="california-layout" />
+	<h:outputScript name="js/layout.js" library="california-layout" />
+	<ui:insert name="head" />
+	<script type="text/javascript">
+    PrimeFaces.locales['es'] = {
+        closeText: 'Cerrar',
+        prevText: 'Anterior',
+        nextText: 'Siguiente',
+        monthNames: ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'],
+        monthNamesShort: ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic'],
+        dayNames: ['Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado'],
+        dayNamesShort: ['Dom', 'Lun', 'Mar', 'Mie', 'Jue', 'Vie', 'Sab'],
+        dayNamesMin: ['D', 'L', 'M', 'X', 'J', 'V', 'S'],
+        weekHeader: 'Semana',
+        firstDay: 1,
+        isRTL: false,
+        showMonthAfterYear: false,
+        yearSuffix: '',
+        timeOnlyTitle: 'Sólo hora',
+        timeText: 'Tiempo',
+        hourText: 'Hora',
+        minuteText: 'Minuto',
+        secondText: 'Segundo',
+        currentText: 'Fecha actual',
+        ampm: false,
+        month: 'Mes',
+        week: 'Semana',
+        day: 'Día',
+        allDayText: 'Todo el día',
+        today: 'Hoy',
+        clear: 'Claro'
+    };
+</script>
+	<script type="text/javascript">
+    //<![CDATA[
+    function dateTemplateFunc(date) {
+        return '<span style="background-color:' + ((date.day < 21 && date.day > 10) ? '#81C784' : 'inherit') + ';border-radius:50%;width: 2.5rem;height: 2.5rem;line-height: 2.5rem;display: flex;align-items: center;justify-content: center;">' + date.day + '</span>';
+    }
+
+    //]]>
+</script>
+</h:head>
+
+
+<h:body styleClass="main-body"
+	onload="#{controladorGestionSocios.inicializarActualizacionSocio()}">
+
+	<div
+		class="layout-wrapper #{guestPreferences.menuLayout != 'static' ? guestPreferences.menuLayout : null}">
+		<ui:include src="/affordances/megamenu.xhtml" />
+		<ui:include src="/affordances/topbar.xhtml" />
+		<ui:include src="/affordances/sidebar.xhtml" />
+		<ui:include src="/affordances/right-sidebar.xhtml" />
+
+		<div class="layout-main">
+			<div class="route-bar">
+				<div class="route-bar-breadcrumb">
+					<i class="fa fa-home"></i> <span>/Registro Usuarios</span>
+					<ui:insert name="viewname" />
+				</div>
+				<ui:include src="/affordances/route-bar-menu.xhtml" />
+			</div>
+			<div class="layout-main-content" align="center">
+				<H1>ACTUALIZACIÓN DATOS</H1>
+				<h:form>
+					<p:growl id="growl" showDetail="true" sticky="true" />
+					<p:panel header="Actualización de Datos">
+						<p:wizard flowListener="#{controladorGestionSocios.onFlowProcess}"
+							backLabel="Regresar" nextLabel="Siguiente">
+							<p:tab id="cambioContrasenia" title="CONTRASEÑA"
+								rendered="#{controladorGestionSocios.objUsrSocio.primerInicio eq 'S'?'true':'false' }">
+								<p:commandButton value="Guardar" icon="ui-icon-disk"
+									update="@form"
+									action="#{controladorGestionSocios.actualizarContraseniaActualizacionDatos()}">
+								</p:commandButton>
+								<p:panelGrid columns="2" styleClass="ui-noborder">
+									<p:outputLabel for="pwd1" styleClass="p-col-fixed"
+										style="width:100px" value="Contraseña" />
+									<p:password id="pwd1"
+										value="#{controladorGestionSocios.objUsrSocio.clave}"
+										placeholder="Contraseña" match="pwd2" label="Password 1"
+										required="true" />
+									<p:outputLabel for="pwd2" styleClass="p-col-fixed"
+										style="width:100px" value="Repita Contraseña" />
+									<p:password id="pwd2"
+										value="#{controladorGestionSocios.objUsrSocio.clave}"
+										placeholder="Repita Contraseña" label="Password 2"
+										required="true" />
+
+								</p:panelGrid>
+							</p:tab>
+							<p:tab id="datosPersonales" title="Datos Personales">
+								<p:commandButton value="Guardar" icon="ui-icon-disk"
+									update="@form"
+									action="#{controladorGestionSocios.actualizarPersonaSocio()}">
+								</p:commandButton>
+								<p:panelGrid columns="1" styleClass="ui-noborder">
+									<p:graphicImage name="images/avatar.png"
+										library="california-layout" />
+									<p:fileUpload listener="#{fileUploadView.handleFileUpload}"
+										cancelLabel="Cancelar" uploadLabel="Cargar"
+										label="Buscar Fotografía" mode="advanced"
+										dragDropSupport="false" update="@form:growl"
+										sizeLimit="100000" allowTypes="/(\.|\/)(gif|jpe?g|png)$/"
+										validateContentType="true" accept=".gif,.jpg,.jpeg,.png"
+										onupload="Desea Cargar la imagen seleccionada?" />
+								</p:panelGrid>
+								<p:panelGrid columns="6" styleClass="ui-noborder">
+									<p:outputLabel value="Cédula" />
+									<p:outputLabel
+										value="#{controladorGestionSocios.objUsrSocio.cedulaSocio}" />
+									<p:outputLabel value="Apellidos" />
+									<p:inputText
+										value="#{controladorGestionSocios.objUsrSocio.gesPersona.apellidos}"
+										placeholder="Cédula" required="true"
+										style="text-transform: uppercase">
+										<p:keyFilter regEx="/[QWERTYUIOPÑLKJHGFDSAZXCVBNMÁÉÍÓÚ ]/i" />
+									</p:inputText>
+									<p:outputLabel value="Nombres" />
+									<p:inputText
+										value="#{controladorGestionSocios.objUsrSocio.gesPersona.nombres}"
+										placeholder="Cédula" required="true"
+										style="text-transform: uppercase">
+										<p:keyFilter regEx="/[QWERTYUIOPÑLKJHGFDSAZXCVBNMÁÉÍÓÚ ]/i" />
+									</p:inputText>
+									<p:outputLabel value="Estado Civil" />
+									<p:selectOneMenu
+										value="#{controladorGestionSocios.objUsrSocio.gesPersona.gesEstadoCivil.idEstadoCivil}"
+										required="true">
+										<f:selectItem itemLabel="Estado Civil"
+											noSelectionOption="true" />
+										<f:selectItems
+											value="#{controladorGestionUsuario.lstSiEstadoCivil()}" />
+									</p:selectOneMenu>
+									<p:outputLabel value="Género" />
+									<p:selectOneMenu
+										value="#{controladorGestionSocios.objUsrSocio.gesPersona.gesGenero.idGenero}"
+										required="true">
+										<f:selectItem itemLabel="Género" noSelectionOption="true" />
+										<f:selectItems
+											value="#{controladorGestionUsuario.lstSiGenero()}" />
+									</p:selectOneMenu>
+									<p:outputLabel value="Tipo de Sangre" />
+									<p:selectOneMenu
+										value="#{controladorGestionSocios.objUsrSocio.gesPersona.gesTipoSangre.idTipoSangre}"
+										required="true">
+										<f:selectItem itemLabel="Tipo de Sangre"
+											noSelectionOption="true" />
+										<f:selectItems
+											value="#{controladorGestionUsuario.lstSiTipoSangre()}" />
+									</p:selectOneMenu>
+									<p:outputLabel value="Etnia" />
+									<p:selectOneMenu
+										value="#{controladorGestionSocios.objUsrSocio.gesPersona.gesEtnia.idEtnia}"
+										required="true">
+										<f:selectItem itemLabel="Etnia" noSelectionOption="true" />
+										<f:selectItems
+											value="#{controladorGestionUsuario.lstSiEtnia()}" />
+									</p:selectOneMenu>
+									<p:outputLabel value="Fecha Nacimiento" />
+									<p:calendar required="true" id="restricted"
+										value="#{controladorGestionSocios.objUsrSocio.gesPersona.fechaNac}"
+										navigator="true" locale="es" mindate="1/1/1900"
+										maxdate="today" mask="99/99/9999" pattern="dd/MM/yyyy" />
+									<p:outputLabel value="Telefono" />
+									<p:inputText
+										value="#{controladorGestionSocios.objUsrSocio.gesPersona.telefono}"
+										placeholder="Cédula" required="true"
+										style="text-transform: uppercase">
+										<p:keyFilter regEx="/[0123456789]/i" />
+									</p:inputText>
+									<p:outputLabel value="Correo Electronico" />
+									<p:inputText
+										value="#{controladorGestionSocios.objUsrSocio.gesPersona.email}"
+										placeholder="Cédula" required="true"
+										style="text-transform: lowercase">
+
+									</p:inputText>
+								</p:panelGrid>
+
+							</p:tab>
+							<p:tab id="datosFamiliares" title="Datos Familiares">
+								<p:commandButton value="Guardar"
+									actionListener="#{controladorGestionSocios.actualizarSocio()}"
+									update="@form::growl" />
+								<p:commandButton value="Nuevo Familiar"
+									actionListener="#{controladorGestionSocios.inicializarGesPariente()}"
+									oncomplete="PF('infFamiliar').show()" />
+								<p:dataTable id="tblFamilia"
+									value="#{controladorGestionSocios.objUsrSocio.gesParientes}"
+									var="familia" emptyMessage="No tiene familiares registrados.">
+									<p:column headerText="Cédula">
+										<p:outputLabel value="#{familia.gesPersona.cedula}" />
+									</p:column>
+									<p:column headerText="Apellidos">
+										<p:outputLabel value="#{familia.gesPersona.apellidos}" />
+									</p:column>
+									<p:column headerText="Nombres">
+										<p:outputLabel value="#{familia.gesPersona.nombres}" />
+									</p:column>
+									<p:column headerText="Fecha Nacimiento">
+										<p:outputLabel value="#{familia.gesPersona.fechaNac}">
+											<f:convertDateTime pattern="dd/MM/yyyy" />
+										</p:outputLabel>
+									</p:column>
+									<p:column headerText="Relación">
+										<p:outputLabel
+											value="#{familia.usrConsanguinidad.consanguinidad}" />
+									</p:column>
+									<p:column headerText="Telefono">
+										<p:outputLabel value="#{familia.gesPersona.telefono}" />
+									</p:column>
+									<p:column headerText="Comunicarse en Caso de Emergencia">
+										<p:outputLabel value="#{familia.contactoEmergencia}" />
+									</p:column>
+								</p:dataTable>
+								<p:dialog header="Nuevo Familiar" widgetVar="infFamiliar"
+									id="infFamiliar" modal="false" position="top" showEffect="fade"
+									hideEffect="fade" resizable="false" width="90%">
+									<p:messages id="messages" showDetail="true" closable="true">
+										<p:autoUpdate />
+									</p:messages>
+									<p:panel id="pnlFamilia" header="Ingresar Familiar">
+										<p:panelGrid columns="4" styleClass="ui-noborder">
+											<p:outputLabel value="Cédula" />
+											<p:inputText
+												value="#{controladorGestionSocios.objGesPariente.gesPersona.cedula}"
+												placeholder="Cédula" requiredMessage="Cédula Requerida" />
+											<p:outputLabel value="Consaguinidad" />
+											<p:selectOneMenu
+												value="#{controladorGestionSocios.objGesPariente.usrConsanguinidad.idConsanguinidad}"
+												requiredMessage="Consanguinidad Requerida">
+												<f:selectItem itemLabel="Seleccione"
+													noSelectionOption="true" />
+												<f:selectItems
+													value="#{controladorGestionUsuario.lstSiConsanguinidad()}" />
+											</p:selectOneMenu>
+											<p:outputLabel value="Apellidos" />
+											<p:inputText style="text-transform: uppercase"
+												value="#{controladorGestionSocios.objGesPariente.gesPersona.apellidos}"
+												placeholder="Apellidos"
+												requiredMessage="Apellidos Requeridos" />
+											<p:outputLabel value="Nombres" />
+											<p:inputText style="text-transform: uppercase"
+												value="#{controladorGestionSocios.objGesPariente.gesPersona.nombres}"
+												placeholder="Nombres" requiredMessage="Nombres Requeridos" />
+											<p:outputLabel value="Estado Civil" />
+											<p:selectOneMenu
+												value="#{controladorGestionSocios.objGesPariente.gesPersona.gesEstadoCivil.idEstadoCivil}">
+												<f:selectItem itemLabel="Estado Civil"
+													noSelectionOption="true" />
+												<f:selectItems
+													value="#{controladorGestionUsuario.lstSiEstadoCivil()}" />
+											</p:selectOneMenu>
+											<p:outputLabel value="Género" />
+											<p:selectOneMenu
+												value="#{controladorGestionSocios.objGesPariente.gesPersona.gesGenero.idGenero}"
+												requiredMessage="Género Requerido">
+												<f:selectItem itemLabel="Género" noSelectionOption="true" />
+												<f:selectItems
+													value="#{controladorGestionUsuario.lstSiGenero()}" />
+											</p:selectOneMenu>
+											<p:outputLabel value="Tipo de Sangre" />
+											<p:selectOneMenu
+												value="#{controladorGestionSocios.objGesPariente.gesPersona.gesTipoSangre.idTipoSangre}"
+												requiredMessage="Tipo Sangre Requerido">
+												<f:selectItem itemLabel="Tipo de Sangre"
+													noSelectionOption="true" />
+												<f:selectItems
+													value="#{controladorGestionUsuario.lstSiTipoSangre()}" />
+											</p:selectOneMenu>
+											<p:outputLabel value="Etnia" />
+											<p:selectOneMenu
+												value="#{controladorGestionSocios.objGesPariente.gesPersona.gesEtnia.idEtnia}">
+												<f:selectItem itemLabel="Etnia" noSelectionOption="true" />
+												<f:selectItems
+													value="#{controladorGestionUsuario.lstSiEtnia()}" />
+											</p:selectOneMenu>
+											<p:outputLabel value="Fecha Nacimiento" />
+											<p:calendar id="fechNac"
+												value="#{controladorGestionSocios.objGesPariente.gesPersona.fechaNac}"
+												navigator="true" locale="es" mindate="1/1/1900"
+												requiredMessage="Fecha Nacimiento Requerido" maxdate="today"
+												mask="99/99/9999" pattern="dd/MM/yyyy" />
+											<p:outputLabel value="Telefono" />
+											<p:inputText
+												value="#{controladorGestionSocios.objGesPariente.gesPersona.telefono}"
+												placeholder="Telefono" style="text-transform: uppercase">
+												<p:keyFilter regEx="/[0123456789]/i" />
+											</p:inputText>
+											<p:outputLabel value="Correo Electronico" />
+											<p:inputText
+												value="#{controladorGestionSocios.objGesPariente.gesPersona.email}"
+												placeholder="Email" style="text-transform: lowercase">
+											</p:inputText>
+											<p:outputLabel value="Contactar En Caso de Emergencia" />
+											<p:selectOneMenu
+												value="#{controladorGestionSocios.objGesPariente.contactoEmergencia}">
+												<f:selectItem itemLabel="SI" itemValue="S" />
+												<f:selectItem itemLabel="NO" itemValue="N" />
+											</p:selectOneMenu>
+										</p:panelGrid>
+										<p:commandButton value="Ingresar Información"
+											actionListener="#{controladorGestionSocios.ingresarFamiliar()}"
+											update="@form:datosFamiliares:tblFamilia @form:pnlFamilia"
+											onerror="PF('infFamiliar').show()"
+											onsuccess="PF('infFamiliar').show()" />
+										<p:commandButton value="Cerrar"
+											update="@form:growl @form:datosFamiliares:tblFamilia"
+											oncomplete="PF('infFamiliar').hide()" />
+									</p:panel>
+								</p:dialog>
+							</p:tab>
+
+							<p:confirmDialog global="true" showEffect="fade"
+								hideEffect="fade" responsive="true" width="350">
+								<p:commandButton value="Si" type="button"
+									styleClass="ui-confirmdialog-yes" />
+								<p:commandButton value="No" type="button"
+									styleClass="ui-confirmdialog-no ui-button-flat" />
+							</p:confirmDialog>
+						</p:wizard>
+
+					</p:panel>
+				</h:form>
+
+			</div>
+			<ui:include src="/affordances/footer.xhtml" />
+		</div>
+	</div>
+
+	<p:ajaxStatus
+		style="width:32px;height:32px;position:fixed;right:7px;bottom:7px">
+		<f:facet name="start">
+			<i class="fa fa-circle-o-notch fa-spin ajax-loader"
+				aria-hidden="true"></i>
+		</f:facet>
+
+		<f:facet name="complete">
+			<h:outputText value="" />
+		</f:facet>
+	</p:ajaxStatus>
+
+	<h:outputStylesheet name="css/nanoscroller.css"
+		library="california-layout" />
+	<h:outputStylesheet name="css/layout-#{guestPreferences.theme}.css"
+		library="california-layout" />
+</h:body>
+</html>
