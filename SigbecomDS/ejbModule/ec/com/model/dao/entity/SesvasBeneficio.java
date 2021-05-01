@@ -16,7 +16,7 @@ public class SesvasBeneficio implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@Id
-	@SequenceGenerator(name="SESVAS_BENEFICIOS_IDSESVASBENEFICIOS_GENERATOR", sequenceName="SEQ_SESVAS_BENEFICIOS")
+	@SequenceGenerator(name="SESVAS_BENEFICIOS_IDSESVASBENEFICIOS_GENERATOR", sequenceName="SEQ_SESVAS_BENEFICIOS", allocationSize = 1)
 	@GeneratedValue(strategy=GenerationType.SEQUENCE, generator="SESVAS_BENEFICIOS_IDSESVASBENEFICIOS_GENERATOR")
 	@Column(name="id_sesvas_beneficios")
 	private long idSesvasBeneficios;

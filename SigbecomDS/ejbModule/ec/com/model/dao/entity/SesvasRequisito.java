@@ -15,7 +15,7 @@ public class SesvasRequisito implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@Id
-	@SequenceGenerator(name="SESVAS_REQUISITOS_IDSESVASREQUISITOS_GENERATOR", sequenceName="SEQ_SESVAS_REQUISITOS")
+	@SequenceGenerator(name="SESVAS_REQUISITOS_IDSESVASREQUISITOS_GENERATOR", sequenceName="SEQ_SESVAS_REQUISITOS", allocationSize = 1)
 	@GeneratedValue(strategy=GenerationType.SEQUENCE, generator="SESVAS_REQUISITOS_IDSESVASREQUISITOS_GENERATOR")
 	@Column(name="id_sesvas_requisitos")
 	private long idSesvasRequisitos;

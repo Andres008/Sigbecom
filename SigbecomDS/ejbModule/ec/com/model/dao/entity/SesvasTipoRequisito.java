@@ -16,7 +16,7 @@ public class SesvasTipoRequisito implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@Id
-	@SequenceGenerator(name="SESVAS_TIPO_REQUISITO_IDSESVASTIPOREQUISITO_GENERATOR", sequenceName="SEQ_SESVAS_TIPO_REQUISITO")
+	@SequenceGenerator(name="SESVAS_TIPO_REQUISITO_IDSESVASTIPOREQUISITO_GENERATOR", sequenceName="SEQ_SESVAS_TIPO_REQUISITO", allocationSize = 1)
 	@GeneratedValue(strategy=GenerationType.SEQUENCE, generator="SESVAS_TIPO_REQUISITO_IDSESVASTIPOREQUISITO_GENERATOR")
 	@Column(name="id_sesvas_tipo_requisito")
 	private long idSesvasTipoRequisito;
