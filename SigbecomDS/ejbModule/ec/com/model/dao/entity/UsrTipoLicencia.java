@@ -27,7 +27,7 @@ public class UsrTipoLicencia implements Serializable {
 	private String tipoLicencia;
 
 	//bi-directional many-to-one association to UsrLicenciaSocio
-	@OneToMany(mappedBy="usrTipoLicencia")
+	@OneToMany(mappedBy="usrTipoLicencia", cascade = CascadeType.ALL)
 	private List<UsrLicenciaSocio> usrLicenciaSocios;
 
 	public UsrTipoLicencia() {

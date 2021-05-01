@@ -11,6 +11,7 @@ import javax.inject.Inject;
 import javax.inject.Named;
 
 import ec.com.controlador.sesion.BeanLogin;
+import ec.com.model.dao.entity.GesDiscapacidad;
 import ec.com.model.dao.entity.GesEstadoCivil;
 import ec.com.model.dao.entity.GesEtnia;
 import ec.com.model.dao.entity.GesGenero;
@@ -61,6 +62,23 @@ public class ControladorGestionUsuario implements Serializable {
 				SelectItem siCivil = new SelectItem();
 				siCivil.setLabel(autGenero.getGenero());
 				siCivil.setValue(autGenero.getIdGenero());
+				lstSiGenero.add(siCivil);
+			}
+			return lstSiGenero;
+		} catch (Exception e) {
+			JSFUtil.crearMensajeERROR(e.getMessage());
+			e.printStackTrace();
+			return null;
+		}
+	}
+	
+	public List<SelectItem> lstSiDiscapacidad(){
+		List<SelectItem> lstSiGenero= new ArrayList<SelectItem>();
+		try {
+			for (GesDiscapacidad gesDiscapacidad : managerGestionPersonas.buscarDiscapacidad()) {
+				SelectItem siCivil = new SelectItem();
+				siCivil.setLabel(gesDiscapacidad.getDiscapacidad());
+				siCivil.setValue(gesDiscapacidad.getIdDiscapacidad());
 				lstSiGenero.add(siCivil);
 			}
 			return lstSiGenero;

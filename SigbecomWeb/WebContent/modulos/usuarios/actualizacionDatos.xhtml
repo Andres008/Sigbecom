@@ -79,37 +79,15 @@
 			</div>
 			<div class="layout-main-content" align="center">
 				<H1>ACTUALIZACIÓN DATOS</H1>
-				<h:form>
+				<h:form id="principal">
 					<p:growl id="growl" showDetail="true" sticky="true" />
 					<p:panel header="Actualización de Datos">
 						<p:wizard flowListener="#{controladorGestionSocios.onFlowProcess}"
 							backLabel="Regresar" nextLabel="Siguiente">
-							<p:tab id="cambioContrasenia" title="CONTRASEÑA"
-								rendered="#{controladorGestionSocios.objUsrSocio.primerInicio eq 'S'?'true':'false' }">
-								<p:commandButton value="Guardar" icon="ui-icon-disk"
-									update="@form"
-									action="#{controladorGestionSocios.actualizarContraseniaActualizacionDatos()}">
-								</p:commandButton>
-								<p:panelGrid columns="2" styleClass="ui-noborder">
-									<p:outputLabel for="pwd1" styleClass="p-col-fixed"
-										style="width:100px" value="Contraseña" />
-									<p:password id="pwd1"
-										value="#{controladorGestionSocios.objUsrSocio.clave}"
-										placeholder="Contraseña" match="pwd2" label="Password 1"
-										required="true" />
-									<p:outputLabel for="pwd2" styleClass="p-col-fixed"
-										style="width:100px" value="Repita Contraseña" />
-									<p:password id="pwd2"
-										value="#{controladorGestionSocios.objUsrSocio.clave}"
-										placeholder="Repita Contraseña" label="Password 2"
-										required="true" />
-
-								</p:panelGrid>
-							</p:tab>
 							<p:tab id="datosPersonales" title="Datos Personales">
 								<p:commandButton value="Guardar" icon="ui-icon-disk"
-									update="@form"
-									action="#{controladorGestionSocios.actualizarPersonaSocio()}">
+									update="@form" process="@this"
+									actionListener="#{controladorGestionSocios.actualizarPersonaSocio()}">
 								</p:commandButton>
 								<p:panelGrid columns="1" styleClass="ui-noborder">
 									<p:graphicImage name="images/avatar.png"
@@ -194,12 +172,87 @@
 
 									</p:inputText>
 								</p:panelGrid>
-
+							</p:tab>
+							<p:tab id="datosDiscapacidad" title="Datos Discapacidad">
+								<p:confirmDialog global="true" showEffect="fade"
+									hideEffect="fade" responsive="true" width="350">
+									<p:commandButton value="SI" type="button"
+										styleClass="ui-confirmdialog-yes" />
+									<p:commandButton value="NO" type="button"
+										styleClass="ui-confirmdialog-no ui-button-flat" />
+								</p:confirmDialog>
+								<p:commandButton value="Registrar Discapacidad"
+									actionListener="#{controladorGestionSocios.inicializarGesDiscapacidad()}"
+									update=":principal" process="@this"
+									oncomplete="PF('infDiscapacidad').show()" />
+								<p:dataTable id="tblDiscapacidad"
+									value="#{controladorGestionSocios.objUsrSocio.gesPersona.gesDiscapacidadPersonas}"
+									var="discapacidad"
+									emptyMessage="No tiene discapacidades registradas.">
+									<p:column headerText="Tipo Capacidad">
+										<p:outputLabel
+											value="#{discapacidad.gesDiscapacidad.discapacidad}" />
+									</p:column>
+									<p:column headerText="Porcentaje">
+										<p:outputLabel value="#{discapacidad.porcentaje}" />
+									</p:column>
+									<p:column headerText="Fecha Valoración">
+										<p:outputLabel value="#{discapacidad.fechaValor}">
+											<f:convertDateTime pattern="dd/MM/yyyy" />
+										</p:outputLabel>
+									</p:column>
+									<p:column headerText="Nro Registro">
+										<p:outputLabel value="#{discapacidad.nroRegistro}" />
+									</p:column>
+									<p:column headerText="Estado">
+										<p:outputLabel value="#{discapacidad.estado}" />
+									</p:column>
+								</p:dataTable>
+								<p:dialog header="Registrar Discapacidad"
+									widgetVar="infDiscapacidad" id="infDiscapacidad" modal="false"
+									position="top" showEffect="fade" hideEffect="fade"
+									resizable="false" width="90%">
+									<p:messages id="messageDiscapacidad" showDetail="true"
+										closable="true">
+										<p:autoUpdate />
+									</p:messages>
+									<p:panel id="pnlDiscapacidad" header="Ingresar Discapacidad">
+										<p:panelGrid columns="4" styleClass="ui-noborder">
+											<p:outputLabel value="Tipo Discapacidad" />
+											<p:selectOneMenu
+												value="#{controladorGestionSocios.objGesDiscapacidad.gesDiscapacidad.idDiscapacidad}">
+												<f:selectItem itemLabel="Seleccione Discapacidad"
+													noSelectionOption="true" />
+												<f:selectItems
+													value="#{controladorGestionUsuario.lstSiDiscapacidad()}" />
+											</p:selectOneMenu>
+											<p:outputLabel value="Porcentaje" />
+											<p:inputNumber
+												value="#{controladorGestionSocios.objGesDiscapacidad.porcentaje}" />
+											<p:outputLabel value="Fecha Registro" />
+											<p:calendar
+												value="#{controladorGestionSocios.objGesDiscapacidad.fechaValor}"
+												pattern="dd/MM/yyyy" />
+											<p:outputLabel value="Nro Registro" />
+											<p:inputText
+												value="#{controladorGestionSocios.objGesDiscapacidad.nroRegistro}" />
+										</p:panelGrid>
+										<p:commandButton value="Ingresar Información"
+											actionListener="#{controladorGestionSocios.ingresarDiscapacidad()}"
+											update="@form:datosDiscapacidad:tblDiscapacidad @form:pnlDiscapacidad"
+											onerror="PF('infDiscapacidad').show()"
+											onsuccess="PF('infDiscapacidad').show()">
+											<p:confirm header="Confirmación"
+												message="Desea guardar la información?"
+												icon="pi pi-exclamation-triangle" />
+										</p:commandButton>
+										<p:commandButton value="Cerrar"
+											update="@form:growl @form:datosDiscapacidad:tblDiscapacidad"
+											oncomplete="PF('infDiscapacidad').hide()" />
+									</p:panel>
+								</p:dialog>
 							</p:tab>
 							<p:tab id="datosFamiliares" title="Datos Familiares">
-								<p:commandButton value="Guardar"
-									actionListener="#{controladorGestionSocios.actualizarSocio()}"
-									update="@form::growl" />
 								<p:commandButton value="Nuevo Familiar"
 									actionListener="#{controladorGestionSocios.inicializarGesPariente()}"
 									oncomplete="PF('infFamiliar').show()" />
@@ -328,6 +381,62 @@
 									</p:panel>
 								</p:dialog>
 							</p:tab>
+
+							<p:tab id="datosLicencia" title="Datos Licencias">
+								<p:confirmDialog global="true" showEffect="fade"
+									hideEffect="fade" responsive="true" width="350">
+									<p:commandButton value="SI" type="button"
+										styleClass="ui-confirmdialog-yes" />
+									<p:commandButton value="NO" type="button"
+										styleClass="ui-confirmdialog-no ui-button-flat" />
+								</p:confirmDialog>
+								<p:panel header="Registrar Nueva Licencia" toggleable="true"
+									collapsed="true">
+									<p:panelGrid columns="3" styleClass="ui-noborder">
+										<p:outputLabel value="Tipo Licencia" />
+										<p:selectOneMenu
+											value="#{controladorGestionSocios.objUsrLicenciaSocio.usrTipoLicencia.idTipoLicencia}">
+											<f:selectItem itemLabel="Tipo Licencia"
+												noSelectionOption="true" />
+											<f:selectItems
+												value="#{controladorGestionSocios.lstSiTipoLicencia()}" />
+												<p:ajax process="@this"  />
+										</p:selectOneMenu>
+										<p:commandButton value="Agregar" update="@form:tblLicencias"
+											process="@this"
+											actionListener="#{controladorGestionSocios.agregarLicencia()}">
+											<p:confirm header="Confirmacion"
+												message="Desea agregar la licencia?"
+												icon="pi pi-exclamation-triangle" />
+										</p:commandButton>
+									</p:panelGrid>
+
+								</p:panel>
+
+								<p:dataTable id="tblLicencias"
+									value="#{controladorGestionSocios.objUsrSocio.usrLicenciaSocios}"
+									var="licencia" emptyMessage="No tiene licencias registradas.">
+									<p:column headerText="Tipo Licencia">
+										<p:outputLabel
+											value="#{licencia.usrTipoLicencia.tipoLicencia}" />
+									</p:column>
+									<p:column headerText="Descripción">
+										<p:outputLabel
+											value="#{licencia.usrTipoLicencia.descripcion}" />
+									</p:column>
+								</p:dataTable>
+
+							</p:tab>
+
+
+
+
+
+
+
+
+
+
 
 							<p:confirmDialog global="true" showEffect="fade"
 								hideEffect="fade" responsive="true" width="350">

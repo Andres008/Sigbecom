@@ -1,11 +1,15 @@
 package ec.com.model.gestionSocios;
 
+import java.util.List;
+
 import javax.ejb.EJB;
 import javax.ejb.LocalBean;
 import javax.ejb.Stateless;
 
+import ec.com.model.dao.entity.GesTipoSangre;
 import ec.com.model.dao.entity.UsrConsanguinidad;
 import ec.com.model.dao.entity.UsrSocio;
+import ec.com.model.dao.entity.UsrTipoLicencia;
 import ec.com.model.dao.manager.ManagerDAOSegbecom;
 
 /**
@@ -58,6 +62,12 @@ public class ManagerGestionSocios {
 		objSocio.getGesParientes().forEach(familiar->{
 			familiar.getGesPersona().getApellidos();
 		});;
+		objSocio.getGesPersona().getGesDiscapacidadPersonas().forEach(discapacidad->{
+			discapacidad.getGesDiscapacidad().getIdDiscapacidad();
+		});
+		objSocio.getUsrLicenciaSocios().forEach(licencia->{
+			licencia.getUsrTipoLicencia().getDescripcion();
+		});
 		return objSocio;
 	}
 
@@ -68,6 +78,25 @@ public class ManagerGestionSocios {
 			return (UsrConsanguinidad) managerDAOSegbecom.findById(UsrConsanguinidad.class, idConsanguinidad);
 		} catch (Exception e) {
 			throw new Exception("Error al buscar Consanguinidad. "+e.getMessage());
+		}
+	}
+
+
+
+	@SuppressWarnings("unchecked")
+	public List<UsrTipoLicencia> buscarTipoLicencia() throws Exception {
+		try {
+			return managerDAOSegbecom.findAll(UsrTipoLicencia.class, "o.tipoLicencia ASC");
+		} catch (Exception e) {
+			throw new Exception("Error al buscar listado tipo licencia. "+e.getMessage()); 
+		}
+	}
+
+	public UsrTipoLicencia buscarTipoLicenciaById(long idTipoLicencia) throws Exception {
+		try {
+			return (UsrTipoLicencia) managerDAOSegbecom.findById(UsrTipoLicencia.class, idTipoLicencia);
+		} catch (Exception e) {
+			throw new Exception("Error al buscar tipo de licencia.");
 		}
 	}
 

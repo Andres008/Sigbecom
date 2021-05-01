@@ -3,11 +3,13 @@ package ec.com.controlador.gestionSocios;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 import javax.ejb.EJB;
 import javax.enterprise.context.SessionScoped;
 import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
+import javax.faces.model.SelectItem;
 import javax.inject.Inject;
 import javax.inject.Named;
 
@@ -19,6 +21,7 @@ import org.primefaces.model.file.UploadedFile;
 import ec.com.controlador.sesion.BeanLogin;
 import ec.com.model.auditoria.ManagerLog;
 import ec.com.model.dao.entity.AutRol;
+import ec.com.model.dao.entity.GesDiscapacidad;
 import ec.com.model.dao.entity.GesDiscapacidadPersona;
 import ec.com.model.dao.entity.GesEstadoCivil;
 import ec.com.model.dao.entity.GesEtnia;
@@ -28,7 +31,9 @@ import ec.com.model.dao.entity.GesPersona;
 import ec.com.model.dao.entity.GesTipoSangre;
 import ec.com.model.dao.entity.UsrConsanguinidad;
 import ec.com.model.dao.entity.UsrEstadoSocio;
+import ec.com.model.dao.entity.UsrLicenciaSocio;
 import ec.com.model.dao.entity.UsrSocio;
+import ec.com.model.dao.entity.UsrTipoLicencia;
 import ec.com.model.gestionPersonas.ManagerGestionPersonas;
 import ec.com.model.gestionSocios.ManagerGestionSocios;
 import ec.com.model.modulos.util.CorreoUtil;
@@ -66,6 +71,10 @@ public class ControladorGestionSocios implements Serializable {
 	private UploadedFile file;
 
 	private GesPariente objGesPariente;
+	
+	private GesDiscapacidadPersona objGesDiscapacidad;
+	
+	private UsrLicenciaSocio objUsrLicenciaSocio;
 
 	public ControladorGestionSocios() {
 		// TODO Auto-generated constructor stub
@@ -84,7 +93,6 @@ public class ControladorGestionSocios implements Serializable {
 	public void inicializarActualizacionSocio() {
 
 		try {
-			inicializarGesPariente();
 			objUsrSocio = managerGestionSocios
 					.buscarSocioById(beanLogin.getCredencial().getObjUsrSocio().getCedulaSocio());
 			if (objUsrSocio.getPrimerInicio().equals("S"))
@@ -101,6 +109,9 @@ public class ControladorGestionSocios implements Serializable {
 				objUsrSocio.getGesPersona().setGesParientes(new ArrayList<GesPariente>());
 			if (objUsrSocio.getGesPersona().getGesTipoSangre() == null)
 				objUsrSocio.getGesPersona().setGesTipoSangre(new GesTipoSangre());
+			inicializarGesPariente();
+			inicializarGesDiscapacidad();
+			inicializarLicenciaSocio();
 		} catch (Exception e) {
 			JSFUtil.crearMensajeERROR(e.getMessage());
 			managerLog.generarLogErrorGeneral(beanLogin.getCredencial(), this.getClass(),
@@ -108,6 +119,12 @@ public class ControladorGestionSocios implements Serializable {
 			e.printStackTrace();
 		}
 
+	}
+	
+	public void inicializarLicenciaSocio() {
+		objUsrLicenciaSocio= new UsrLicenciaSocio();
+		objUsrLicenciaSocio.setUsrSocio(objUsrSocio);
+		objUsrLicenciaSocio.setUsrTipoLicencia(new UsrTipoLicencia());
 	}
 
 	/****
@@ -130,32 +147,13 @@ public class ControladorGestionSocios implements Serializable {
 		}
 	}
 
-	/***
-	 * 
-	 */
-	public void actualizarContraseniaActualizacionDatos() {
-		try {
-			objUsrSocio.setClave(ModelUtil.md5(objUsrSocio.getClave()));
-			objUsrSocio.setPrimerInicio("N");
-			managerGestionSocios.actualizarUsrSocio(objUsrSocio);
-			managerLog.generarLogUsabilidad(beanLogin.getCredencial(), this.getClass(),
-					"actualizarContraseniaActualizacionDatos",
-					"Actualizo contraseña usuario " + objUsrSocio.getGesPersona().getCedula());
-			JSFUtil.crearMensajeINFO("Contraseña cambiada correctamente.");
-		} catch (Exception e) {
-			JSFUtil.crearMensajeERROR(e.getMessage());
-			e.printStackTrace();
-		}
-	}
+	
 
 	/***
 	 * 
 	 */
 	public void actualizarPersonaSocio() {
 		try {
-			objUsrSocio.getGesPersona().setNombres(objUsrSocio.getGesPersona().getNombres().toUpperCase());
-			objUsrSocio.getGesPersona().setApellidos(objUsrSocio.getGesPersona().getApellidos().toUpperCase());
-			objUsrSocio.getGesPersona().setEmail(objUsrSocio.getGesPersona().getEmail().toLowerCase());
 			managerGestionPersonas.actualizarGesPersona(objUsrSocio.getGesPersona());
 			managerLog.generarLogUsabilidad(beanLogin.getCredencial(), this.getClass(), "actualizarPersonaSocio",
 					"Actualización a persona: " + objUsrSocio.getGesPersona().getCedula());
@@ -170,10 +168,6 @@ public class ControladorGestionSocios implements Serializable {
 
 	public void actualizarSocio() {
 		try {
-			for (GesPariente pariente : objUsrSocio.getGesParientes()) {
-				if (managerGestionPersonas.buscarPersonaByCedula(pariente.getGesPersona().getCedula()) == null)
-					managerGestionPersonas.insertarPersona(pariente.getGesPersona());
-			}
 			managerGestionSocios.actualizarUsrSocio(objUsrSocio);
 			managerLog.generarLogUsabilidad(beanLogin.getCredencial(), this.getClass(), "actualizarSocio",
 					"Actualización a socio: " + objUsrSocio.getGesPersona().getCedula());
@@ -182,6 +176,39 @@ public class ControladorGestionSocios implements Serializable {
 			JSFUtil.crearMensajeERROR(e.getMessage());
 			e.printStackTrace();
 			managerLog.generarLogErrorGeneral(beanLogin.getCredencial(), this.getClass(), "actualizarSocio",
+					e.getMessage());
+		}
+	}
+	
+	public void actualizarSocioDiscapacidad() {
+		try {
+			managerGestionPersonas.actualizarGesPersona(objUsrSocio.getGesPersona());
+			managerLog.generarLogUsabilidad(beanLogin.getCredencial(), this.getClass(), "actualizarSocio",
+					"Actualización a socio: " + objUsrSocio.getGesPersona().getCedula());
+			JSFUtil.crearMensajeINFO("Datos actualizados Correctamente.");
+		} catch (Exception e) {
+			JSFUtil.crearMensajeERROR(e.getMessage());
+			e.printStackTrace();
+			managerLog.generarLogErrorGeneral(beanLogin.getCredencial(), this.getClass(), "actualizarSocio",
+					e.getMessage());
+		}
+	}
+	
+	
+	public void actualizarSocioFamiliares() {
+		try {
+			for (GesPariente pariente : objUsrSocio.getGesParientes()) {
+				if (managerGestionPersonas.buscarPersonaByCedula(pariente.getGesPersona().getCedula()) == null)
+					managerGestionPersonas.insertarPersona(pariente.getGesPersona());
+			}
+			managerGestionSocios.actualizarUsrSocio(objUsrSocio);
+			managerLog.generarLogUsabilidad(beanLogin.getCredencial(), this.getClass(), "actualizarSocioFamiliares",
+					"Actualización a socio: " + objUsrSocio.getGesPersona().getCedula());
+			JSFUtil.crearMensajeINFO("Datos actualizados Correctamente.");
+		} catch (Exception e) {
+			JSFUtil.crearMensajeERROR(e.getMessage());
+			e.printStackTrace();
+			managerLog.generarLogErrorGeneral(beanLogin.getCredencial(), this.getClass(), "actualizarSocioFamiliares",
 					e.getMessage());
 		}
 	}
@@ -209,8 +236,29 @@ public class ControladorGestionSocios implements Serializable {
 					.buscarConsanguinidadById(objGesPariente.getUsrConsanguinidad().getIdConsanguinidad()));
 			objGesPariente.setUsrSocio(objUsrSocio);
 			objUsrSocio.getGesParientes().add(objGesPariente);
-			JSFUtil.crearMensajeINFO("Agregado correctamente.");
 			inicializarGesPariente();
+			actualizarSocioFamiliares();
+		} catch (Exception e) {
+			FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_INFO, "Atención", e.getMessage());
+			PrimeFaces.current().dialog().showMessageDynamic(message);
+			throw new Exception("Error...");
+		}
+
+	}
+	
+	
+	
+	/***
+	 * 
+	 * @throws Exception
+	 */
+	public void ingresarDiscapacidad() throws Exception {
+		try {
+			objGesDiscapacidad.setGesDiscapacidad(managerGestionPersonas.buscarDiscapacidadById(objGesDiscapacidad.getGesDiscapacidad().getIdDiscapacidad()));
+			objGesDiscapacidad.setEstado("A");
+			objUsrSocio.getGesPersona().getGesDiscapacidadPersonas().add(objGesDiscapacidad);
+			actualizarSocioDiscapacidad();
+			inicializarGesDiscapacidad();
 		} catch (Exception e) {
 			FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_INFO, "Atención", e.getMessage());
 			PrimeFaces.current().dialog().showMessageDynamic(message);
@@ -241,7 +289,7 @@ public class ControladorGestionSocios implements Serializable {
 					"Crea usuario " + objUsrSocio.getGesPersona().getCedula());
 			correoUtil.enviarCorreoElectronico(objUsrSocio.getGesPersona().getEmail(),
 					"Creación Usuarios Socio Comite de Empresa",
-					"Se ha creado su usuario para utilizar SIGBECOM (), facor acceder al sistema con las siguentes credenciales, Usuario:"
+					"Se ha creado su usuario para utilizar SIGBECOM (), favor acceder al sistema con las siguentes credenciales, Usuario:"
 							+ objUsrSocio.getCedulaSocio() + " , Contraseña:" + clave);
 			JSFUtil.crearMensajeINFO("Usuario creado correctamente.");
 			inicializarIngresoSocio();
@@ -264,6 +312,43 @@ public class ControladorGestionSocios implements Serializable {
 		objGesPariente.getGesPersona().setGesGenero(new GesGenero());
 		objGesPariente.getGesPersona().setGesParientes(new ArrayList<GesPariente>());
 		objGesPariente.getGesPersona().setGesTipoSangre(new GesTipoSangre());
+	}
+	
+	public void inicializarGesDiscapacidad() {
+		objGesDiscapacidad = new GesDiscapacidadPersona();
+		objGesDiscapacidad.setGesDiscapacidad(new GesDiscapacidad());
+		objGesDiscapacidad.setGesPersona(objUsrSocio.getGesPersona());
+	}
+	
+	public List<SelectItem> lstSiTipoLicencia(){
+		List<SelectItem> lstSiEtnia= new ArrayList<SelectItem>();
+		try {
+			for (UsrTipoLicencia usrTipoLicencia : managerGestionSocios.buscarTipoLicencia()) {
+				SelectItem siCivil = new SelectItem();
+				siCivil.setLabel(usrTipoLicencia.getTipoLicencia());
+				siCivil.setValue(usrTipoLicencia.getIdTipoLicencia());
+				lstSiEtnia.add(siCivil);
+			}
+			return lstSiEtnia;
+		} catch (Exception e) {
+			JSFUtil.crearMensajeERROR(e.getMessage());
+			e.printStackTrace();
+			return null;
+		}
+	}
+	
+	public void agregarLicencia() {
+		try {
+			objUsrLicenciaSocio.setUsrTipoLicencia(managerGestionSocios.buscarTipoLicenciaById(objUsrLicenciaSocio.getUsrTipoLicencia().getIdTipoLicencia()));
+			objUsrLicenciaSocio.setUsrSocio(objUsrSocio);
+			objUsrSocio.getUsrLicenciaSocios().add(objUsrLicenciaSocio);
+			actualizarSocio();
+			inicializarLicenciaSocio();
+			JSFUtil.crearMensajeINFO("Licencia agregada corrctamente.");
+		} catch (Exception e) {
+			JSFUtil.crearMensajeERROR(e.getMessage());
+			e.printStackTrace();
+		}
 	}
 
 	/******
@@ -311,5 +396,23 @@ public class ControladorGestionSocios implements Serializable {
 	public void setObjGesPariente(GesPariente objGesPariente) {
 		this.objGesPariente = objGesPariente;
 	}
+
+	public GesDiscapacidadPersona getObjGesDiscapacidad() {
+		return objGesDiscapacidad;
+	}
+
+	public void setObjGesDiscapacidad(GesDiscapacidadPersona objGesDiscapacidad) {
+		this.objGesDiscapacidad = objGesDiscapacidad;
+	}
+
+	public UsrLicenciaSocio getObjUsrLicenciaSocio() {
+		return objUsrLicenciaSocio;
+	}
+
+	public void setObjUsrLicenciaSocio(UsrLicenciaSocio objUsrLicenciaSocio) {
+		this.objUsrLicenciaSocio = objUsrLicenciaSocio;
+	}
+
+
 
 }

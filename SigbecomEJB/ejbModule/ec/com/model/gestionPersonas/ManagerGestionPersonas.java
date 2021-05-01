@@ -6,6 +6,7 @@ import javax.ejb.EJB;
 import javax.ejb.LocalBean;
 import javax.ejb.Stateless;
 
+import ec.com.model.dao.entity.GesDiscapacidad;
 import ec.com.model.dao.entity.GesEstadoCivil;
 import ec.com.model.dao.entity.GesEtnia;
 import ec.com.model.dao.entity.GesGenero;
@@ -100,6 +101,23 @@ public class ManagerGestionPersonas {
 			return managerDAOSegbecom.findAll(UsrConsanguinidad.class,"o.idConsanguinidad");
 		} catch (Exception e) {
 			throw new Exception("Error al listar Consanguinidad. "+e.getMessage());
+		}
+	}
+
+	@SuppressWarnings("unchecked")
+	public List<GesDiscapacidad> buscarDiscapacidad() throws Exception {
+		try {
+			return managerDAOSegbecom.findAll(GesDiscapacidad.class,"o.discapacidad");
+		} catch (Exception e) {
+			throw new Exception("Error al listar Discapacidades. "+e.getMessage());
+		}
+	}
+
+	public GesDiscapacidad buscarDiscapacidadById(long idDiscapacidad) throws Exception {
+		try {
+			return (GesDiscapacidad) managerDAOSegbecom.findById(GesDiscapacidad.class, idDiscapacidad);
+		} catch (Exception e) {
+			throw new Exception("Error al buscar Discapacidad.");
 		}
 	}
 

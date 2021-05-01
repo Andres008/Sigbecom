@@ -15,7 +15,7 @@ public class UsrLicenciaSocio implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@Id
-	@SequenceGenerator(name="USR_LICENCIA_SOCIO_ID_GENERATOR", sequenceName="SEQ_USR_LICENCIA_SOCIO")
+	@SequenceGenerator(name="USR_LICENCIA_SOCIO_ID_GENERATOR", sequenceName="SEQ_USR_LICENCIA_SOCIO",allocationSize = 1)
 	@GeneratedValue(strategy=GenerationType.SEQUENCE, generator="USR_LICENCIA_SOCIO_ID_GENERATOR")
 	private long id;
 

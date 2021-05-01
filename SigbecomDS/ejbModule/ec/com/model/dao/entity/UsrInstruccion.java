@@ -22,10 +22,8 @@ public class UsrInstruccion implements Serializable {
 
 	private String titulo;
 
-	//bi-directional many-to-one association to UsrInstitucionEducativa
-	@ManyToOne
-	@JoinColumn(name="id_institucion")
-	private UsrInstitucionEducativa usrInstitucionEducativa;
+	@Column(name="id_institucion")
+	private String id_institucion;
 
 	//bi-directional many-to-one association to UsrSocio
 	@ManyToOne
@@ -53,15 +51,7 @@ public class UsrInstruccion implements Serializable {
 	}
 
 	public void setTitulo(String titulo) {
-		this.titulo = titulo;
-	}
-
-	public UsrInstitucionEducativa getUsrInstitucionEducativa() {
-		return this.usrInstitucionEducativa;
-	}
-
-	public void setUsrInstitucionEducativa(UsrInstitucionEducativa usrInstitucionEducativa) {
-		this.usrInstitucionEducativa = usrInstitucionEducativa;
+		this.titulo = titulo.toUpperCase();
 	}
 
 	public UsrSocio getUsrSocio() {
@@ -78,6 +68,14 @@ public class UsrInstruccion implements Serializable {
 
 	public void setUsrTipoInstruccion(UsrTipoInstruccion usrTipoInstruccion) {
 		this.usrTipoInstruccion = usrTipoInstruccion;
+	}
+
+	public String getId_institucion() {
+		return id_institucion;
+	}
+
+	public void setId_institucion(String id_institucion) {
+		this.id_institucion = id_institucion.toUpperCase();
 	}
 
 }

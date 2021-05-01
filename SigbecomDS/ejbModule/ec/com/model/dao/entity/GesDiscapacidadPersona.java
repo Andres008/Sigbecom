@@ -3,6 +3,7 @@ package ec.com.model.dao.entity;
 import java.io.Serializable;
 import javax.persistence.*;
 import java.math.BigDecimal;
+import java.util.Date;
 
 
 /**
@@ -16,14 +17,14 @@ public class GesDiscapacidadPersona implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@Id
-	@SequenceGenerator(name="GES_DISCAPACIDAD_PERSONA_ID_GENERATOR", sequenceName="SEQ_GES_DISCAPACIDAD_PERSONA")
+	@SequenceGenerator(name="GES_DISCAPACIDAD_PERSONA_ID_GENERATOR", sequenceName="SEQ_GES_DISCAPACIDAD_PERSONA", allocationSize = 1)
 	@GeneratedValue(strategy=GenerationType.SEQUENCE, generator="GES_DISCAPACIDAD_PERSONA_ID_GENERATOR")
 	private long id;
 
 	private String estado;
 
 	@Column(name="fecha_valor")
-	private String fechaValor;
+	private Date fechaValor;
 
 	@Column(name="nro_registro")
 	private String nroRegistro;
@@ -59,11 +60,11 @@ public class GesDiscapacidadPersona implements Serializable {
 		this.estado = estado;
 	}
 
-	public String getFechaValor() {
+	public Date getFechaValor() {
 		return this.fechaValor;
 	}
 
-	public void setFechaValor(String fechaValor) {
+	public void setFechaValor(Date fechaValor) {
 		this.fechaValor = fechaValor;
 	}
 
