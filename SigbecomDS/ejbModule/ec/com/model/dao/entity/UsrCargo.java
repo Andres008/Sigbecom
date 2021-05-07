@@ -16,8 +16,6 @@ public class UsrCargo implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@Id
-	@SequenceGenerator(name="USR_CARGO_IDCARGO_GENERATOR", sequenceName="SEQ_USR_CARGO")
-	@GeneratedValue(strategy=GenerationType.SEQUENCE, generator="USR_CARGO_IDCARGO_GENERATOR")
 	@Column(name="id_cargo")
 	private long idCargo;
 

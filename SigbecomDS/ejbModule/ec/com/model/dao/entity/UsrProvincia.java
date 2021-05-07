@@ -16,8 +16,6 @@ public class UsrProvincia implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@Id
-	@SequenceGenerator(name="USR_PROVINCIA_IDPROVINCIA_GENERATOR", sequenceName="SEQ_USR_PROVINCIA")
-	@GeneratedValue(strategy=GenerationType.SEQUENCE, generator="USR_PROVINCIA_IDPROVINCIA_GENERATOR")
 	@Column(name="id_provincia")
 	private String idProvincia;
 

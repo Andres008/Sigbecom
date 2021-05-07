@@ -16,8 +16,6 @@ public class UsrTipoVivienda implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@Id
-	@SequenceGenerator(name="USR_TIPO_VIVIENDA_IDTIPOVIVIENDA_GENERATOR", sequenceName="SEQ_USR_TIPO_VIVIENDA")
-	@GeneratedValue(strategy=GenerationType.SEQUENCE, generator="USR_TIPO_VIVIENDA_IDTIPOVIVIENDA_GENERATOR")
 	@Column(name="id_tipo_vivienda")
 	private long idTipoVivienda;
 

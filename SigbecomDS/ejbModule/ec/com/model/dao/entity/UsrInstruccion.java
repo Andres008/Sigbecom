@@ -15,7 +15,7 @@ public class UsrInstruccion implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@Id
-	@SequenceGenerator(name="USR_INSTRUCCION_IDINSTRUCCION_GENERATOR", sequenceName="SEQ_USR_INSTRUCCION")
+	@SequenceGenerator(name="USR_INSTRUCCION_IDINSTRUCCION_GENERATOR", sequenceName="SEQ_USR_INSTRUCCION", allocationSize = 1)
 	@GeneratedValue(strategy=GenerationType.SEQUENCE, generator="USR_INSTRUCCION_IDINSTRUCCION_GENERATOR")
 	@Column(name="id_instruccion")
 	private long idInstruccion;

@@ -16,7 +16,7 @@ public class UsrCuentaSocio implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@Id
-	@SequenceGenerator(name="USR_CUENTA_SOCIO_IDCUENTA_GENERATOR", sequenceName="SEQ_USR_CUENTA_SOCIO")
+	@SequenceGenerator(name="USR_CUENTA_SOCIO_IDCUENTA_GENERATOR", sequenceName="SEQ_USR_CUENTA_SOCIO", allocationSize = 1)
 	@GeneratedValue(strategy=GenerationType.SEQUENCE, generator="USR_CUENTA_SOCIO_IDCUENTA_GENERATOR")
 	@Column(name="id_cuenta")
 	private long idCuenta;

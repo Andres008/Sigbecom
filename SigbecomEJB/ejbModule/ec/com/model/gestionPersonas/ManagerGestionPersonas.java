@@ -80,7 +80,7 @@ public class ManagerGestionPersonas {
 	@SuppressWarnings("unchecked")
 	public List<GesEtnia> buscarEtnia() throws Exception {
 		try {
-			return managerDAOSegbecom.findAll(GesEtnia.class, "o.etnia ASC");
+			return managerDAOSegbecom.findWhere(GesEtnia.class, "idEtnia<>0", "o.etnia ASC");
 		} catch (Exception e) {
 			throw new Exception("Error al buscar listado etnia. "+e.getMessage()); 
 		}

@@ -148,7 +148,7 @@ public class ControladorAcceso implements Serializable {
 	 */
 	public String actionObtenerAcceso() {
 		try {
-			Credencial credencial = managerGestionSistema.obtenerAcceso(idUsuario, ModelUtil.md5(clave));
+			Credencial credencial = managerGestionSistema.obtenerAcceso(idUsuario, ModelUtil.md5(clave.trim()));
 			objUsrSocio = managerGestionSistema.findByIdAutUsuario(idUsuario);
 			// se configura la direccion IP del cliente:
 			HttpServletRequest request;

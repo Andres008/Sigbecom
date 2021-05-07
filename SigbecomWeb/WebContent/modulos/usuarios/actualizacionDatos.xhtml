@@ -85,31 +85,49 @@
 						<p:wizard flowListener="#{controladorGestionSocios.onFlowProcess}"
 							backLabel="Regresar" nextLabel="Siguiente">
 							<p:tab id="datosPersonales" title="Datos Personales">
+								<p:confirmDialog global="true" showEffect="fade"
+									hideEffect="fade" responsive="true" width="350">
+									<p:commandButton value="Si" type="button"
+										styleClass="ui-confirmdialog-yes" />
+									<p:commandButton value="No" type="button"
+										styleClass="ui-confirmdialog-no ui-button-flat" />
+								</p:confirmDialog>
 								<p:commandButton value="Guardar" icon="ui-icon-disk"
 									update="@form" process="@this"
 									actionListener="#{controladorGestionSocios.actualizarPersonaSocio()}">
+									<p:confirm header="Confirmación"
+										message="Desea finalizar la actualización de datos personales?"
+										icon="pi pi-exclamation-triangle" />
 								</p:commandButton>
 								<p:panelGrid columns="1" styleClass="ui-noborder">
-									<p:graphicImage name="images/avatar.png"
+									<p:graphicImage id="imgFoto"
+										value="#{beanLogin.cargarFotografia()}"
 										library="california-layout" />
-									<p:fileUpload listener="#{fileUploadView.handleFileUpload}"
-										cancelLabel="Cancelar" uploadLabel="Cargar"
-										label="Buscar Fotografía" mode="advanced"
-										dragDropSupport="false" update="@form:growl"
-										sizeLimit="100000" allowTypes="/(\.|\/)(gif|jpe?g|png)$/"
-										validateContentType="true" accept=".gif,.jpg,.jpeg,.png"
-										onupload="Desea Cargar la imagen seleccionada?" />
+									<p:fileUpload mode="advanced" label="Cambiar Fotografia"
+										invalidFileMessage="Error en el formato de la imagen."
+										auto="true" process="@this" update="@form @form:imgFoto"
+										allowTypes="/(\.|\/)(jpe?g|png)$/"
+										listener="#{controladorGestionSocios.handleFileUpload}">
+									</p:fileUpload>
 								</p:panelGrid>
 								<p:panelGrid columns="6" styleClass="ui-noborder">
 									<p:outputLabel value="Cédula" />
 									<p:outputLabel
 										value="#{controladorGestionSocios.objUsrSocio.cedulaSocio}" />
+									<p:outputLabel value="Código Rol" />
+									<p:inputText
+										value="#{controladorGestionSocios.objUsrSocio.idSocio}"
+										required="true">
+										<p:keyFilter regEx="/[1234567890]/i" />
+										<p:ajax update="@form" process="@this" />
+									</p:inputText>
 									<p:outputLabel value="Apellidos" />
 									<p:inputText
 										value="#{controladorGestionSocios.objUsrSocio.gesPersona.apellidos}"
 										placeholder="Cédula" required="true"
 										style="text-transform: uppercase">
 										<p:keyFilter regEx="/[QWERTYUIOPÑLKJHGFDSAZXCVBNMÁÉÍÓÚ ]/i" />
+										<p:ajax update="@form" process="@this" />
 									</p:inputText>
 									<p:outputLabel value="Nombres" />
 									<p:inputText
@@ -117,6 +135,7 @@
 										placeholder="Cédula" required="true"
 										style="text-transform: uppercase">
 										<p:keyFilter regEx="/[QWERTYUIOPÑLKJHGFDSAZXCVBNMÁÉÍÓÚ ]/i" />
+										<p:ajax update="@form" process="@this" />
 									</p:inputText>
 									<p:outputLabel value="Estado Civil" />
 									<p:selectOneMenu
@@ -126,6 +145,7 @@
 											noSelectionOption="true" />
 										<f:selectItems
 											value="#{controladorGestionUsuario.lstSiEstadoCivil()}" />
+										<p:ajax update="@form" process="@this" />
 									</p:selectOneMenu>
 									<p:outputLabel value="Género" />
 									<p:selectOneMenu
@@ -134,6 +154,7 @@
 										<f:selectItem itemLabel="Género" noSelectionOption="true" />
 										<f:selectItems
 											value="#{controladorGestionUsuario.lstSiGenero()}" />
+										<p:ajax update="@form" process="@this" />
 									</p:selectOneMenu>
 									<p:outputLabel value="Tipo de Sangre" />
 									<p:selectOneMenu
@@ -143,6 +164,7 @@
 											noSelectionOption="true" />
 										<f:selectItems
 											value="#{controladorGestionUsuario.lstSiTipoSangre()}" />
+										<p:ajax update="@form" process="@this" />
 									</p:selectOneMenu>
 									<p:outputLabel value="Etnia" />
 									<p:selectOneMenu
@@ -151,27 +173,32 @@
 										<f:selectItem itemLabel="Etnia" noSelectionOption="true" />
 										<f:selectItems
 											value="#{controladorGestionUsuario.lstSiEtnia()}" />
+										<p:ajax update="@form" process="@this" />
 									</p:selectOneMenu>
 									<p:outputLabel value="Fecha Nacimiento" />
 									<p:calendar required="true" id="restricted"
 										value="#{controladorGestionSocios.objUsrSocio.gesPersona.fechaNac}"
 										navigator="true" locale="es" mindate="1/1/1900"
-										maxdate="today" mask="99/99/9999" pattern="dd/MM/yyyy" />
+										maxdate="today" mask="99/99/9999" pattern="dd/MM/yyyy">
+										<p:ajax update="@form" process="@this" />
+									</p:calendar>
 									<p:outputLabel value="Telefono" />
 									<p:inputText
 										value="#{controladorGestionSocios.objUsrSocio.gesPersona.telefono}"
 										placeholder="Cédula" required="true"
 										style="text-transform: uppercase">
 										<p:keyFilter regEx="/[0123456789]/i" />
+										<p:ajax update="@form" process="@this" />
 									</p:inputText>
 									<p:outputLabel value="Correo Electronico" />
 									<p:inputText
 										value="#{controladorGestionSocios.objUsrSocio.gesPersona.email}"
-										placeholder="Cédula" required="true"
+										placeholder="Correo Electrónico" required="true"
 										style="text-transform: lowercase">
-
+										<p:ajax update="@form" process="@this" />
 									</p:inputText>
 								</p:panelGrid>
+
 							</p:tab>
 							<p:tab id="datosDiscapacidad" title="Datos Discapacidad">
 								<p:confirmDialog global="true" showEffect="fade"
@@ -186,7 +213,7 @@
 									update=":principal" process="@this"
 									oncomplete="PF('infDiscapacidad').show()" />
 								<p:dataTable id="tblDiscapacidad"
-									value="#{controladorGestionSocios.objUsrSocio.gesPersona.gesDiscapacidadPersonas}"
+									value="#{controladorGestionSocios.getGesDiscapacidadPersonasActivas(controladorGestionSocios.objUsrSocio.gesPersona.gesDiscapacidadPersonas)}"
 									var="discapacidad"
 									emptyMessage="No tiene discapacidades registradas.">
 									<p:column headerText="Tipo Capacidad">
@@ -206,6 +233,15 @@
 									</p:column>
 									<p:column headerText="Estado">
 										<p:outputLabel value="#{discapacidad.estado}" />
+									</p:column>
+									<p:column headerText="Eliminar">
+										<p:commandButton icon="ui-icon-closethick" update="@form"
+											process="@this"
+											actionListener="#{controladorGestionSocios.inactivarDiscapacidad(discapacidad)}">
+											<p:confirm header="Confirmación"
+												message="Desea eliminar la discapacidad?"
+												icon="pi pi-exclamation-triangle" />
+										</p:commandButton>
 									</p:column>
 								</p:dataTable>
 								<p:dialog header="Registrar Discapacidad"
@@ -227,14 +263,16 @@
 													value="#{controladorGestionUsuario.lstSiDiscapacidad()}" />
 											</p:selectOneMenu>
 											<p:outputLabel value="Porcentaje" />
-											<p:inputNumber
-												value="#{controladorGestionSocios.objGesDiscapacidad.porcentaje}" />
+											<p:inputNumber placeholder="%"
+												value="#{controladorGestionSocios.objGesDiscapacidad.porcentaje}"
+												minValue="0" maxValue="100" />
 											<p:outputLabel value="Fecha Registro" />
-											<p:calendar
+											<p:calendar placeholder="dd/MM/yyyy"
 												value="#{controladorGestionSocios.objGesDiscapacidad.fechaValor}"
-												pattern="dd/MM/yyyy" />
+												pattern="dd/MM/yyyy" maxdate="today" mask="99/99/9999"
+												locale="es" />
 											<p:outputLabel value="Nro Registro" />
-											<p:inputText
+											<p:inputText placeholder="Nro. Registro"
 												value="#{controladorGestionSocios.objGesDiscapacidad.nroRegistro}" />
 										</p:panelGrid>
 										<p:commandButton value="Ingresar Información"
@@ -256,32 +294,104 @@
 								<p:commandButton value="Nuevo Familiar"
 									actionListener="#{controladorGestionSocios.inicializarGesPariente()}"
 									oncomplete="PF('infFamiliar').show()" />
-								<p:dataTable id="tblFamilia"
+								<p:dataTable id="tblFamilia" editable="true"
 									value="#{controladorGestionSocios.objUsrSocio.gesParientes}"
 									var="familia" emptyMessage="No tiene familiares registrados.">
+									<p:ajax event="rowEdit" listener="#{controladorRol.onRowEdit}"
+										update="@form:growl" process="@this" />
+									<p:ajax event="rowEditCancel"
+										listener="#{controladorRol.onRowCancel}" update="@form:growl" />
 									<p:column headerText="Cédula">
 										<p:outputLabel value="#{familia.gesPersona.cedula}" />
 									</p:column>
 									<p:column headerText="Apellidos">
-										<p:outputLabel value="#{familia.gesPersona.apellidos}" />
+										<p:cellEditor>
+											<f:facet name="output">
+												<p:outputLabel value="#{familia.gesPersona.apellidos}" />
+											</f:facet>
+											<f:facet name="input">
+												<p:inputText id="apellidoInput"
+													value="#{familia.gesPersona.apellidos}" style="width:100%" />
+											</f:facet>
+										</p:cellEditor>
 									</p:column>
 									<p:column headerText="Nombres">
-										<p:outputLabel value="#{familia.gesPersona.nombres}" />
+										<p:cellEditor>
+											<f:facet name="output">
+												<p:outputLabel value="#{familia.gesPersona.nombres}" />
+											</f:facet>
+											<f:facet name="input">
+												<p:inputText id="nombreInput"
+													value="#{familia.gesPersona.nombres}" style="width:100%" />
+											</f:facet>
+										</p:cellEditor>
 									</p:column>
 									<p:column headerText="Fecha Nacimiento">
-										<p:outputLabel value="#{familia.gesPersona.fechaNac}">
-											<f:convertDateTime pattern="dd/MM/yyyy" />
-										</p:outputLabel>
+										<p:cellEditor>
+											<f:facet name="output">
+												<p:outputLabel value="#{familia.gesPersona.fechaNac}">
+													<f:convertDateTime pattern="dd/MM/yyyy" />
+												</p:outputLabel>
+											</f:facet>
+											<f:facet name="input">
+												<p:calendar id="fechNac" placeholder="dd/MM/aaaa"
+													value="#{familia.gesPersona.fechaNac}" navigator="true"
+													locale="es" mindate="1/1/1900"
+													requiredMessage="Fecha Nacimiento Requerido"
+													maxdate="today" mask="99/99/9999" pattern="dd/MM/yyyy" />
+											</f:facet>
+										</p:cellEditor>
 									</p:column>
 									<p:column headerText="Relación">
-										<p:outputLabel
-											value="#{familia.usrConsanguinidad.consanguinidad}" />
+										<p:cellEditor>
+											<f:facet name="output">
+												<p:outputLabel
+													value="#{familia.usrConsanguinidad.consanguinidad}" />
+											</f:facet>
+											<f:facet name="input">
+												<p:selectOneMenu
+													value="#{familia.usrConsanguinidad.idConsanguinidad}"
+													requiredMessage="Consanguinidad Requerida">
+													<f:selectItem itemLabel="Seleccione"
+														noSelectionOption="true" />
+													<f:selectItems
+														value="#{controladorGestionUsuario.lstSiConsanguinidad()}" />
+												</p:selectOneMenu>
+											</f:facet>
+										</p:cellEditor>
 									</p:column>
 									<p:column headerText="Telefono">
-										<p:outputLabel value="#{familia.gesPersona.telefono}" />
+										<p:cellEditor>
+											<f:facet name="output">
+												<p:outputLabel value="#{familia.gesPersona.telefono}" />
+											</f:facet>
+											<f:facet name="input">
+												<p:inputText id="telefonoInput"
+													value="#{familia.gesPersona.telefono}" style="width:100%" />
+											</f:facet>
+										</p:cellEditor>
 									</p:column>
 									<p:column headerText="Comunicarse en Caso de Emergencia">
 										<p:outputLabel value="#{familia.contactoEmergencia}" />
+									</p:column>
+									<p:column headerText="Editar" rendered="false">
+										<p:rowEditor editTitle="Edit Row" cancelTitle="Cancel Edit"
+											saveTitle="Save Row" />
+									</p:column>
+									<p:column headerText="Eliminar">
+										<p:commandButton icon="ui-icon-close" update="@form"
+											actionListener="#{controladorGestionSocios.eliminarPariente(familia)}">
+											<p:confirm header="Confirmación"
+												message="Esta seguro de eliminar la información?"
+												icon="pi pi-exclamation-triangle" />
+										</p:commandButton>
+										<p:confirmDialog global="true" showEffect="fade"
+											hideEffect="fade" responsive="true" width="350">
+											<p:commandButton value="Yes" type="button"
+												styleClass="ui-confirmdialog-yes" />
+											<p:commandButton value="No" type="button"
+												styleClass="ui-confirmdialog-no ui-button-flat" />
+										</p:confirmDialog>
 									</p:column>
 								</p:dataTable>
 								<p:dialog header="Nuevo Familiar" widgetVar="infFamiliar"
@@ -347,7 +457,7 @@
 													value="#{controladorGestionUsuario.lstSiEtnia()}" />
 											</p:selectOneMenu>
 											<p:outputLabel value="Fecha Nacimiento" />
-											<p:calendar id="fechNac"
+											<p:calendar id="fechNac" placeholder="dd/MM/aaaa"
 												value="#{controladorGestionSocios.objGesPariente.gesPersona.fechaNac}"
 												navigator="true" locale="es" mindate="1/1/1900"
 												requiredMessage="Fecha Nacimiento Requerido" maxdate="today"
@@ -381,7 +491,6 @@
 									</p:panel>
 								</p:dialog>
 							</p:tab>
-
 							<p:tab id="datosLicencia" title="Datos Licencias">
 								<p:confirmDialog global="true" showEffect="fade"
 									hideEffect="fade" responsive="true" width="350">
@@ -400,7 +509,7 @@
 												noSelectionOption="true" />
 											<f:selectItems
 												value="#{controladorGestionSocios.lstSiTipoLicencia()}" />
-												<p:ajax process="@this"  />
+											<p:ajax process="@this" />
 										</p:selectOneMenu>
 										<p:commandButton value="Agregar" update="@form:tblLicencias"
 											process="@this"
@@ -410,9 +519,7 @@
 												icon="pi pi-exclamation-triangle" />
 										</p:commandButton>
 									</p:panelGrid>
-
 								</p:panel>
-
 								<p:dataTable id="tblLicencias"
 									value="#{controladorGestionSocios.objUsrSocio.usrLicenciaSocios}"
 									var="licencia" emptyMessage="No tiene licencias registradas.">
@@ -421,35 +528,309 @@
 											value="#{licencia.usrTipoLicencia.tipoLicencia}" />
 									</p:column>
 									<p:column headerText="Descripción">
-										<p:outputLabel
-											value="#{licencia.usrTipoLicencia.descripcion}" />
+										<p:outputLabel value="#{licencia.usrTipoLicencia.descripcion}" />
+									</p:column>
+									<p:column headerText="Eliminar">
+										<p:commandButton icon="ui-icon-close" update="@form"
+											actionListener="#{controladorGestionSocios.eliminarLicencia(licencia)}">
+											<p:confirm header="Confirmación"
+												message="Esta seguro de eliminar la información?"
+												icon="pi pi-exclamation-triangle" />
+										</p:commandButton>
+										<p:confirmDialog global="true" showEffect="fade"
+											hideEffect="fade" responsive="true" width="350">
+											<p:commandButton value="Yes" type="button"
+												styleClass="ui-confirmdialog-yes" />
+											<p:commandButton value="No" type="button"
+												styleClass="ui-confirmdialog-no ui-button-flat" />
+										</p:confirmDialog>
 									</p:column>
 								</p:dataTable>
 
 							</p:tab>
+							<p:tab id="datosFormacion" title="Datos Formación Académica">
+								<p:confirmDialog global="true" showEffect="fade"
+									hideEffect="fade" responsive="true" width="350">
+									<p:commandButton value="SI" type="button"
+										styleClass="ui-confirmdialog-yes" />
+									<p:commandButton value="NO" type="button"
+										styleClass="ui-confirmdialog-no ui-button-flat" />
+								</p:confirmDialog>
+								<p:commandButton value="Registrar Formación"
+									actionListener="#{controladorGestionSocios.inicializarFormacion()}"
+									update=":principal" process="@this"
+									oncomplete="PF('infFormacion').show()" />
+								<p:dataTable id="tblFormacion"
+									value="#{controladorGestionSocios.objUsrSocio.usrInstruccions}"
+									var="formacion"
+									emptyMessage="No tiene formación académica registrada.">
+									<p:column headerText="Tipo Formación">
+										<p:outputLabel
+											value="#{formacion.usrTipoInstruccion.tipoInstruccion}" />
+									</p:column>
+									<p:column headerText="Institución">
+										<p:outputLabel value="#{formacion.id_institucion}" />
+									</p:column>
+									<p:column headerText="Título">
+										<p:outputLabel value="#{formacion.titulo}" />
+									</p:column>
+									<p:column headerText="Eliminar">
+										<p:commandButton icon="ui-icon-close" update="@form"
+											actionListener="#{controladorGestionSocios.eliminarTitulo(formacion)}">
+											<p:confirm header="Confirmación"
+												message="Esta seguro de eliminar la información?"
+												icon="pi pi-exclamation-triangle" />
+										</p:commandButton>
+										<p:confirmDialog global="true" showEffect="fade"
+											hideEffect="fade" responsive="true" width="350">
+											<p:commandButton value="Yes" type="button"
+												styleClass="ui-confirmdialog-yes" />
+											<p:commandButton value="No" type="button"
+												styleClass="ui-confirmdialog-no ui-button-flat" />
+										</p:confirmDialog>
+									</p:column>
+								</p:dataTable>
+								<p:dialog header="Registrar Formación Académica"
+									widgetVar="infFormacion" id="infFormacion" modal="false"
+									position="top" showEffect="fade" hideEffect="fade"
+									resizable="false" width="90%">
+									<p:messages id="messageFormacion" showDetail="true"
+										closable="true">
+										<p:autoUpdate />
+									</p:messages>
+									<p:panel id="pnlFormacion"
+										header="Ingresar Formación Académica">
+										<p:panelGrid columns="4" styleClass="ui-noborder">
+											<p:outputLabel value="Tipo Formación" />
+											<p:selectOneMenu
+												value="#{controladorGestionSocios.objUsrInstruccion.usrTipoInstruccion.idTipoInstruccion}">
+												<f:selectItem itemLabel="Formación Académica"
+													noSelectionOption="true" />
+												<f:selectItems
+													value="#{controladorGestionSocios.lstSiTipoInstruccion()}" />
+											</p:selectOneMenu>
+											<p:outputLabel value="Institución Académica" />
+											<p:inputText style="text-transform: uppercase" size="30"
+												value="#{controladorGestionSocios.objUsrInstruccion.id_institucion}" />
+											<p:outputLabel value="Titulo" />
+											<p:inputText style="text-transform: uppercase" size="30"
+												value="#{controladorGestionSocios.objUsrInstruccion.titulo}" />
+										</p:panelGrid>
+										<p:commandButton value="Ingresar Información"
+											actionListener="#{controladorGestionSocios.agregarFormacion()}"
+											update="@form:datosFormacion:tblFormacion "
+											onerror="PF('infFormacion').show()"
+											onsuccess="PF('infFormacion').show()">
+											<p:confirm header="Confirmación"
+												message="Desea guardar la información?"
+												icon="pi pi-exclamation-triangle" />
+										</p:commandButton>
+										<p:commandButton value="Cerrar"
+											update="@form:growl @form:datosFormacion:tblFormacion"
+											oncomplete="PF('infFormacion').hide()" />
+									</p:panel>
+								</p:dialog>
+							</p:tab>
+							<p:tab id="datosBanco" title="Datos Cuentas Bancarias">
+								<p:confirmDialog global="true" showEffect="fade"
+									hideEffect="fade" responsive="true" width="350">
+									<p:commandButton value="SI" type="button"
+										styleClass="ui-confirmdialog-yes" />
+									<p:commandButton value="NO" type="button"
+										styleClass="ui-confirmdialog-no ui-button-flat" />
+								</p:confirmDialog>
+								<p:commandButton value="Registrar Cuenta"
+									actionListener="#{controladorGestionSocios.inicializarCuenta()}"
+									update=":principal" process="@this"
+									oncomplete="PF('infBanco').show()" />
+								<p:dataTable id="tblBanco"
+									value="#{controladorGestionSocios.getUsrCuentaSociosActivas(controladorGestionSocios.objUsrSocio.usrCuentaSocios)}"
+									var="cuenta"
+									emptyMessage="No tiene cuentas bancarias registradas.">
+									<p:column headerText="Institución Financiera">
+										<p:outputLabel
+											value="#{cuenta.usrInstitucionBancaria.institucionBancaria}" />
+									</p:column>
+									<p:column headerText="Tipo Cuenta">
+										<p:outputLabel value="#{cuenta.usrTipoCuenta.tipoCuenta}" />
+									</p:column>
+									<p:column headerText="Nro Cuenta">
+										<p:outputLabel value="#{cuenta.nroCuenta}" />
+									</p:column>
+								</p:dataTable>
+								<p:dialog header="Registrar Cuenta Bancaria"
+									widgetVar="infBanco" id="infBanco" modal="false" position="top"
+									showEffect="fade" hideEffect="fade" resizable="false"
+									width="90%">
+									<p:messages id="messageBanco" showDetail="true" closable="true">
+										<p:autoUpdate />
+									</p:messages>
+									<p:panel id="pnlBanco" header="Ingresar Cuenta Bancaria">
+										<p:panelGrid columns="4" styleClass="ui-noborder">
+											<p:outputLabel value="Tipo de Cuenta" />
+											<p:selectOneMenu
+												value="#{controladorGestionSocios.objUsrCuentaSocio.usrTipoCuenta.idTipoCuenta}">
+												<f:selectItem itemLabel="Tipo de Cuenta" />
+												<f:selectItems
+													value="#{controladorGestionSocios.lstSiTipoCuenta()}" />
+											</p:selectOneMenu>
+											<p:outputLabel value="Institución Financiera" />
+											<p:selectOneMenu
+												value="#{controladorGestionSocios.objUsrCuentaSocio.usrInstitucionBancaria.idInstitucionBancaria}"
+												filter="true" filterMatchMode="contains">
+												<f:selectItem itemLabel="Institucion Financiera" />
+												<f:selectItems
+													value="#{controladorGestionSocios.lstSiInstitucionesFinancieras()}" />
+											</p:selectOneMenu>
+											<p:outputLabel value="Nro Cuenta" />
+											<p:inputText
+												value="#{controladorGestionSocios.objUsrCuentaSocio.nroCuenta}">
+												<p:keyFilter regEx="/[0123456789]/i" />
+											</p:inputText>
+										</p:panelGrid>
+										<p:commandButton value="Ingresar Información"
+											actionListener="#{controladorGestionSocios.agregarCuenta()}"
+											update="@form:datosBanco:tblBanco"
+											onerror="PF('infBanco').show()"
+											onsuccess="PF('infBanco').show()">
+											<p:confirm header="Confirmación"
+												message="Desea guardar la información?"
+												icon="pi pi-exclamation-triangle" />
+										</p:commandButton>
+										<p:commandButton value="Cerrar"
+											update="@form:growl @form:datosFormacion:tblBanco"
+											oncomplete="PF('infBanco').hide()" />
+									</p:panel>
+								</p:dialog>
+							</p:tab>
+							<p:tab id="datosVivienda" title="Datos Vivienda">
+								<p:commandButton value="Guardar" icon="ui-icon-disk"
+									update="@form" process="@this"
+									actionListener="#{controladorGestionSocios.actualizarSocio()}">
+								</p:commandButton>
+								<p:panelGrid id="panelVivienda" columns="5"
+									styleClass="ui-noborder">
+									<p:outputLabel value="Tipo Vivienda" />
+									<p:selectOneMenu
+										value="#{controladorGestionSocios.objUsrSocio.usrTipoVivienda.idTipoVivienda}">
+										<f:selectItem itemLabel="Tipo Vivienda" />
+										<f:selectItems
+											value="#{controladorGestionSocios.lstSiTipoVivienda()}" />
+										<p:ajax update="@form" process="@this" />
+									</p:selectOneMenu>
+									<p:outputLabel value="Zona Geografica" />
+									<p:outputLabel
+										value="#{controladorGestionSocios.objUsrSocio.usrParroquia.usrCanton.usrProvincia.provincia} - #{controladorGestionSocios.objUsrSocio.usrParroquia.usrCanton.canton} - #{controladorGestionSocios.objUsrSocio.usrParroquia.parroquia}" />
+									<p:commandButton value="Buscar" update=":principal"
+										process="@this" oncomplete="PF('infVivienda').show()" />
+								</p:panelGrid>
+								<p:dialog header="Registrar Cuenta Bancaria"
+									widgetVar="infVivienda" id="infVivienda" modal="false"
+									position="top" showEffect="fade" hideEffect="fade"
+									resizable="false" width="90%">
+									<p:messages id="messageVivienda" showDetail="true"
+										closable="true">
+										<p:autoUpdate />
+									</p:messages>
+									<p:panel id="pnlVivienda" header="Ingresar Zona Geografica">
+										<p:panelGrid columns="6" styleClass="ui-noborder">
+											<p:outputLabel value="Provincia" />
+											<p:selectOneMenu id="selProvincia"
+												value="#{controladorGestionSocios.objUsrSocio.usrParroquia.usrCanton.usrProvincia.idProvincia}"
+												filter="true" filterMatchMode="contains">
+												<f:selectItem itemLabel="Provincia" />
+												<f:selectItems
+													value="#{controladorGestionSocios.lstSiProvincia()}" />
+												<p:ajax update="@form:selCanton"
+													listener="#{controladorGestionSocios.cargarProvinciaSeleccionada()}" />
+											</p:selectOneMenu>
+											<p:outputLabel value="Cantón" />
+											<p:selectOneMenu id="selCanton"
+												value="#{controladorGestionSocios.objUsrSocio.usrParroquia.usrCanton.idCanton}"
+												filter="true" filterMatchMode="contains">
+												<f:selectItem itemLabel="Cantón" />
+												<f:selectItems
+													value="#{controladorGestionSocios.lstSiCanton()}" />
+												<p:ajax update="@form:seleParroquia"
+													listener="#{controladorGestionSocios.cargarCantonSeleccionado()}" />
+											</p:selectOneMenu>
+											<p:outputLabel value="Parroquia" />
+											<p:selectOneMenu id="seleParroquia"
+												value="#{controladorGestionSocios.objUsrSocio.usrParroquia.idParroquia}"
+												filter="true" filterMatchMode="contains">
+												<f:selectItem itemLabel="Parroquia" />
+												<f:selectItems
+													value="#{controladorGestionSocios.lstSiParroquia()}" />
+												<p:ajax update="@form:seleParroquia" process="@this"
+													listener="#{controladorGestionSocios.cargarParroquiaSeleccionada()}" />
+											</p:selectOneMenu>
+										</p:panelGrid>
+										<p:commandButton value="Aceptar" update="@form"
+											process="@this" oncomplete="PF('infVivienda').hide()" />
+									</p:panel>
+								</p:dialog>
+							</p:tab>
+							<p:tab id="datosLaborales" title="Datos Laborales">
+								<p:commandButton value="Guardar" icon="ui-icon-disk"
+									update="@form" process="@this"
+									actionListener="#{controladorGestionSocios.actualizarSocio()}">
+								</p:commandButton>
+								<p:panelGrid id="panelTrabajo" columns="6"
+									styleClass="ui-noborder">
+									<p:outputLabel value="Lugar Trabajo" />
+									<p:selectOneMenu
+										value="#{controladorGestionSocios.objUsrSocio.usrAgencia.idAgencia}">
+										<f:selectItem itemLabel="Lugar" />
+										<f:selectItems
+											value="#{controladorGestionSocios.lstSiAgencia()}" />
+										<p:ajax update="@form" process="@this" />
+									</p:selectOneMenu>
+									<p:outputLabel value="Área" />
+									<p:selectOneMenu
+										value="#{controladorGestionSocios.objUsrSocio.usrArea.idArea}">
+										<f:selectItem itemLabel="Area" />
+										<f:selectItems
+											value="#{controladorGestionSocios.lstSiAreas()}" />
+										<p:ajax update="@form" process="@this" />
+									</p:selectOneMenu>
+									<p:outputLabel value="Cargo" />
+									<p:selectOneMenu
+										value="#{controladorGestionSocios.objUsrSocio.usrCargo.idCargo}"
+										filter="true" filterMatchMode="contains">
+										<f:selectItem itemLabel="Cargo" />
+										<f:selectItems
+											value="#{controladorGestionSocios.lstSiCargos()}" />
+										<p:ajax update="@form" process="@this" />
+									</p:selectOneMenu>
+								</p:panelGrid>
+							</p:tab>
+							<p:tab id="datosFinalizar" title="Finalizar">
+								<p:outputLabel
+									value="Acepto que he actualizado la información, correcta y fidedignamente." />
+								<p:panelGrid id="panelFinalizar" columns="6"
+									styleClass="ui-noborder">
+									<p:commandButton value="Guardar" icon="ui-icon-disk"
+										update="@form" process="@this"
+										action="#{controladorGestionSocios.finalizarActualizacionDatos()}">
+										<p:confirm header="Confirmación"
+											message="Desea finalizar la actualización de datos personales?"
+											icon="pi pi-exclamation-triangle" />
+									</p:commandButton>
+									<br />
+									<br />
+									<p:confirmDialog global="true" showEffect="fade"
+										hideEffect="fade" responsive="true" width="350">
+										<p:commandButton value="Si" type="button"
+											styleClass="ui-confirmdialog-yes" />
+										<p:commandButton value="No" type="button"
+											styleClass="ui-confirmdialog-no ui-button-flat" />
+									</p:confirmDialog>
+								</p:panelGrid>
 
-
-
-
-
-
-
-
-
-
-
-							<p:confirmDialog global="true" showEffect="fade"
-								hideEffect="fade" responsive="true" width="350">
-								<p:commandButton value="Si" type="button"
-									styleClass="ui-confirmdialog-yes" />
-								<p:commandButton value="No" type="button"
-									styleClass="ui-confirmdialog-no ui-button-flat" />
-							</p:confirmDialog>
+							</p:tab>
 						</p:wizard>
-
 					</p:panel>
 				</h:form>
-
 			</div>
 			<ui:include src="/affordances/footer.xhtml" />
 		</div>
