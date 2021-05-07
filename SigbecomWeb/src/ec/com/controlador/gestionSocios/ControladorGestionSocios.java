@@ -594,7 +594,7 @@ public class ControladorGestionSocios implements Serializable {
 			objUsrSocio.getUsrInstruccions().add(objUsrInstruccion);
 			actualizarSocio();
 			inicializarActualizacionSocio();
-			inicializarLicenciaSocio();
+			inicializarFormacion();
 		} catch (Exception e) {
 			JSFUtil.crearMensajeERROR(e.getMessage());
 			e.printStackTrace();
