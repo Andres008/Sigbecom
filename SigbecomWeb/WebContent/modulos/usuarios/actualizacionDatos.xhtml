@@ -618,7 +618,7 @@
 										</p:panelGrid>
 										<p:commandButton value="Ingresar Información"
 											actionListener="#{controladorGestionSocios.agregarFormacion()}"
-											update="@form:datosFormacion:tblFormacion "
+											update="@form:datosFormacion:tblFormacion @form:pnlFormacion"
 											onerror="PF('infFormacion').show()"
 											onsuccess="PF('infFormacion').show()">
 											<p:confirm header="Confirmación"

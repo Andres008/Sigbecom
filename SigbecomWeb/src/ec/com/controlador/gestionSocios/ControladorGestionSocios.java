@@ -331,7 +331,7 @@ public class ControladorGestionSocios implements Serializable {
 	 */
 	public void inscribirSocio() {
 		try {
-			if (managerGestionSocios.buscarSocioById(objUsrSocio.getCedulaSocio()) != null)
+			if (managerGestionSocios.buscarSocioExisteById(objUsrSocio.getGesPersona().getCedula()))
 				throw new Exception("Usuario ya se encuentra registrado.");
 			String clave = ModelUtil.randomAlphaNumeric();
 			ModelUtil.verificarCedulaEcuador(objUsrSocio.getGesPersona().getCedula());

@@ -90,6 +90,13 @@ public class ManagerGestionSocios {
 		});
 		return objSocio;
 	}
+	
+	public Boolean buscarSocioExisteById(String cedulaSocio) throws Exception {
+		UsrSocio objSocio = (UsrSocio) managerDAOSegbecom.findById(UsrSocio.class, cedulaSocio);
+		if ( objSocio== null )
+			return false;
+		return true;
+	}
 
 
 
