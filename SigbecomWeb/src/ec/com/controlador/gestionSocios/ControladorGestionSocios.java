@@ -84,7 +84,7 @@ public class ControladorGestionSocios implements Serializable {
 
 	@EJB
 	ManagerGestionPersonas managerGestionPersonas;
-	
+
 	@EJB
 	ManagerGestionSistema managerGestionSistema;
 
@@ -107,6 +107,8 @@ public class ControladorGestionSocios implements Serializable {
 
 	private UsrCuentaSocio objUsrCuentaSocio;
 
+	private List<UsrSocio> lstUsrSocio;
+
 	public ControladorGestionSocios() {
 		// TODO Auto-generated constructor stub
 	}
@@ -116,6 +118,14 @@ public class ControladorGestionSocios implements Serializable {
 		objUsrSocio.setGesPersona(new GesPersona());
 		objUsrSocio.setAutRol(new AutRol());
 		objUsrSocio.setUsrEstadoSocio(new UsrEstadoSocio());
+	}
+
+	public void inicializarConsultaSocio() {
+		try {
+			lstUsrSocio = managerGestionSocios.buscarTodosSocios();
+		} catch (Exception e) {
+			JSFUtil.crearMensajeERROR(e.getMessage());
+		}
 	}
 
 	/***
@@ -198,6 +208,14 @@ public class ControladorGestionSocios implements Serializable {
 		if (file != null) {
 			FacesMessage message = new FacesMessage("Successful", file.getFileName() + " is uploaded.");
 			FacesContext.getCurrentInstance().addMessage(null, message);
+		}
+	}
+
+	public void cargarUsrSocio(UsrSocio objUsrSocioAux) {
+		try {
+			objUsrSocio = managerGestionSocios.buscarSocioById(objUsrSocioAux.getCedulaSocio());
+		} catch (Exception e) {
+			JSFUtil.crearMensajeERROR(e.getMessage());
 		}
 	}
 
@@ -641,7 +659,12 @@ public class ControladorGestionSocios implements Serializable {
 	}
 
 	public List<UsrCuentaSocio> getUsrCuentaSociosActivas(List<UsrCuentaSocio> lstCuentas) {
-		return lstCuentas.stream().filter(cuentas -> cuentas.getEstado().equals("A")).collect(Collectors.toList());
+		try {
+			return lstCuentas.stream().filter(cuentas -> cuentas.getEstado().equals("A")).collect(Collectors.toList());
+		} catch (Exception e) {
+			return null;
+		}
+
 	}
 
 	public void cargarProvinciaSeleccionada() {
@@ -699,8 +722,8 @@ public class ControladorGestionSocios implements Serializable {
 			this.file = event.getFile();
 			verificarTamanioFotografia(event);
 			objUsrSocio.setUrlFoto(ModelUtil.guardarArchivo(event.getFile().getInputStream(),
-					beanLogin.getCredencial().getObjUsrSocio().getCedulaSocio(),managerGestionSistema.buscarValorParametroNombre("PATH_FOTOS"),
-					".jpg"));
+					beanLogin.getCredencial().getObjUsrSocio().getCedulaSocio(),
+					managerGestionSistema.buscarValorParametroNombre("PATH_FOTOS"), ".jpg"));
 			managerGestionSocios.actualizarUsrSocio(objUsrSocio);
 			JSFUtil.crearMensajeINFO(
 					"Fotografía cargada correctamente, se actualizará en el proximo ingreso al sistema.");
@@ -713,15 +736,27 @@ public class ControladorGestionSocios implements Serializable {
 
 	@SuppressWarnings("deprecation")
 	public DefaultStreamedContent cargarFotografia() {
-		File fotografia;
-		if (!ModelUtil.isEmpty(objUsrSocio.getUrlFoto())) {
-			fotografia = new File(objUsrSocio.getUrlFoto());
-			try {
-				return new DefaultStreamedContent(new FileInputStream(fotografia),
-						new MimetypesFileTypeMap().getContentType(fotografia));
-			} catch (FileNotFoundException e) {
-				JSFUtil.crearMensajeERROR("Error al cargar imagen.");
-				e.printStackTrace();
+		if (objUsrSocio != null) {
+			File fotografia;
+			if (!ModelUtil.isEmpty(objUsrSocio.getUrlFoto())) {
+				fotografia = new File(objUsrSocio.getUrlFoto());
+				try {
+					return new DefaultStreamedContent(new FileInputStream(fotografia),
+							new MimetypesFileTypeMap().getContentType(fotografia));
+				} catch (FileNotFoundException e) {
+					JSFUtil.crearMensajeERROR("Error al cargar imagen.");
+					e.printStackTrace();
+				}
+			} else {
+				try {
+					fotografia = new File(managerGestionSistema.buscarValorParametroNombre("PATH_FOTO_DEFAULT"));
+					return new DefaultStreamedContent(new FileInputStream(fotografia),
+							new MimetypesFileTypeMap().getContentType(fotografia));
+				} catch (Exception e) {
+					JSFUtil.crearMensajeERROR("Error al cargar imagen.");
+					e.printStackTrace();
+				}
+
 			}
 		}
 		return null;
@@ -755,7 +790,7 @@ public class ControladorGestionSocios implements Serializable {
 		}
 
 	}
-	
+
 	public void eliminarLicencia(UsrLicenciaSocio objLicenciaAux) {
 		try {
 			for (UsrLicenciaSocio licencia : objUsrSocio.getUsrLicenciaSocios()) {
@@ -771,6 +806,7 @@ public class ControladorGestionSocios implements Serializable {
 		}
 
 	}
+
 	public void eliminarTitulo(UsrInstruccion objInstruccionAux) {
 		try {
 			for (UsrInstruccion instruccion : objUsrSocio.getUsrInstruccions()) {
@@ -789,8 +825,12 @@ public class ControladorGestionSocios implements Serializable {
 
 	public List<GesDiscapacidadPersona> getGesDiscapacidadPersonasActivas(
 			List<GesDiscapacidadPersona> lstDiscapacidadPersona) {
-		return lstDiscapacidadPersona.stream().filter(discapacidad -> discapacidad.getEstado().equals("A"))
-				.collect(Collectors.toList());
+		try {
+			return lstDiscapacidadPersona.stream().filter(discapacidad -> discapacidad.getEstado().equals("A"))
+					.collect(Collectors.toList());
+		} catch (Exception e) {
+			return null;
+		}
 	}
 
 	/******
@@ -869,6 +909,14 @@ public class ControladorGestionSocios implements Serializable {
 
 	public void setObjUsrCuentaSocio(UsrCuentaSocio objUsrCuentaSocio) {
 		this.objUsrCuentaSocio = objUsrCuentaSocio;
+	}
+
+	public List<UsrSocio> getLstUsrSocio() {
+		return lstUsrSocio;
+	}
+
+	public void setLstUsrSocio(List<UsrSocio> lstUsrSocio) {
+		this.lstUsrSocio = lstUsrSocio;
 	}
 
 }
