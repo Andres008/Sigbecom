@@ -108,6 +108,8 @@ public class ControladorGestionSocios implements Serializable {
 	private UsrCuentaSocio objUsrCuentaSocio;
 
 	private List<UsrSocio> lstUsrSocio;
+	
+	private List<GesPariente> lstFamilia;
 
 	public ControladorGestionSocios() {
 		// TODO Auto-generated constructor stub
@@ -123,6 +125,14 @@ public class ControladorGestionSocios implements Serializable {
 	public void inicializarConsultaSocio() {
 		try {
 			lstUsrSocio = managerGestionSocios.buscarTodosSocios();
+		} catch (Exception e) {
+			JSFUtil.crearMensajeERROR(e.getMessage());
+		}
+	}
+	
+	public void inicializarConsultaFamiliares() {
+		try {
+			lstFamilia = managerGestionSocios.buscarFamiliares();
 		} catch (Exception e) {
 			JSFUtil.crearMensajeERROR(e.getMessage());
 		}
@@ -209,6 +219,12 @@ public class ControladorGestionSocios implements Serializable {
 			FacesMessage message = new FacesMessage("Successful", file.getFileName() + " is uploaded.");
 			FacesContext.getCurrentInstance().addMessage(null, message);
 		}
+	}
+	
+	public String calcularEdad(Date fechaNac) {
+		if (fechaNac!= null)
+			return ModelUtil.calcularEdad(fechaNac).toString();
+		return "Sin fecha Nacimiento";
 	}
 
 	public void cargarUsrSocio(UsrSocio objUsrSocioAux) {
@@ -917,6 +933,14 @@ public class ControladorGestionSocios implements Serializable {
 
 	public void setLstUsrSocio(List<UsrSocio> lstUsrSocio) {
 		this.lstUsrSocio = lstUsrSocio;
+	}
+
+	public List<GesPariente> getLstFamilia() {
+		return lstFamilia;
+	}
+
+	public void setLstFamilia(List<GesPariente> lstFamilia) {
+		this.lstFamilia = lstFamilia;
 	}
 
 }

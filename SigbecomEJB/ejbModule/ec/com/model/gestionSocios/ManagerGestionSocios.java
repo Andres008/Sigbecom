@@ -344,4 +344,16 @@ public class ManagerGestionSocios {
 			}
 		}
 
+
+
+		@SuppressWarnings("unchecked")
+		public List<GesPariente> buscarFamiliares() throws Exception {
+			try {
+				return managerDAOSegbecom.findAll(GesPariente.class, "o.usrSocio.gesPersona.apellidos ASC");
+			} catch (Exception e) {
+				throw new Exception("Error al buscar listado de familiares");
+			}
+			
+		}
+
 }
