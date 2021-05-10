@@ -15,7 +15,7 @@ public class GesPariente implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@Id
-	@SequenceGenerator(name="GES_PARIENTE_IDPARIENTE_GENERATOR", sequenceName="SEQ_GES_PARIENTE")
+	@SequenceGenerator(name="GES_PARIENTE_IDPARIENTE_GENERATOR", sequenceName="SEQ_GES_PARIENTE", allocationSize = 1)
 	@GeneratedValue(strategy=GenerationType.SEQUENCE, generator="GES_PARIENTE_IDPARIENTE_GENERATOR")
 	@Column(name="id_pariente")
 	private long idPariente;

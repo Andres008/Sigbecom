@@ -70,7 +70,7 @@
 						<p:dataTable value="#{controladorRol.lstAutRols}" var="rol"
 							editable="true" paginator="true" rows="10">
 							<p:ajax event="rowEdit" listener="#{controladorRol.onRowEdit}"
-								update="@form:growl" />
+								update="@form:growl" process="@this" />
 							<p:ajax event="rowEditCancel"
 								listener="#{controladorRol.onRowCancel}" update="@form:growl" />
 							<p:column headerText="Rol">

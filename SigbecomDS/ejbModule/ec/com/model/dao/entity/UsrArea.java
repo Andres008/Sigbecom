@@ -16,8 +16,6 @@ public class UsrArea implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@Id
-	@SequenceGenerator(name="USR_AREA_IDAREA_GENERATOR", sequenceName="SEQ_USR_AREA")
-	@GeneratedValue(strategy=GenerationType.SEQUENCE, generator="USR_AREA_IDAREA_GENERATOR")
 	@Column(name="id_area")
 	private long idArea;
 

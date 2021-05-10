@@ -16,8 +16,6 @@ public class UsrParroquia implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@Id
-	@SequenceGenerator(name="USR_PARROQUIA_IDPARROQUIA_GENERATOR", sequenceName="SEQ_USR_PARROQUIA")
-	@GeneratedValue(strategy=GenerationType.SEQUENCE, generator="USR_PARROQUIA_IDPARROQUIA_GENERATOR")
 	@Column(name="id_parroquia")
 	private String idParroquia;
 

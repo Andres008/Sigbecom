@@ -58,15 +58,15 @@ public class UsrSocio implements Serializable {
 	private List<LogGeneral> logGenerals;
 
 	// bi-directional many-to-one association to UsrCuentaSocio
-	@OneToMany(mappedBy = "usrSocio")
+	@OneToMany(mappedBy = "usrSocio", cascade = CascadeType.ALL)
 	private List<UsrCuentaSocio> usrCuentaSocios;
 
 	// bi-directional many-to-one association to UsrInstruccion
-	@OneToMany(mappedBy = "usrSocio")
+	@OneToMany(mappedBy = "usrSocio", cascade = CascadeType.ALL)
 	private List<UsrInstruccion> usrInstruccions;
 
 	// bi-directional many-to-one association to UsrLicenciaSocio
-	@OneToMany(mappedBy = "usrSocio")
+	@OneToMany(mappedBy = "usrSocio", cascade = CascadeType.ALL)
 	private List<UsrLicenciaSocio> usrLicenciaSocios;
 
 	// bi-directional many-to-one association to AutRol

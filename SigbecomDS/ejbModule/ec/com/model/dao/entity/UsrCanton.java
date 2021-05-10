@@ -16,8 +16,6 @@ public class UsrCanton implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@Id
-	@SequenceGenerator(name="USR_CANTON_IDCANTON_GENERATOR", sequenceName="SEQ_USR_CANTON")
-	@GeneratedValue(strategy=GenerationType.SEQUENCE, generator="USR_CANTON_IDCANTON_GENERATOR")
 	@Column(name="id_canton")
 	private String idCanton;
 

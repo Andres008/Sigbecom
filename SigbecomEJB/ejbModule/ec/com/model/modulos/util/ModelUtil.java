@@ -12,6 +12,8 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class ModelUtil {
 	/**
@@ -25,6 +27,29 @@ public class ModelUtil {
 			return true;
 		return false;
 	}
+	
+	//Este es el método calcularEdad que se manda a llamar en el main 
+	   public static Integer calcularEdad(Date fechaNac){
+	       try {
+	       } catch (Exception ex) {
+	           System.out.println("Error:"+ex);
+	       }
+	       Calendar fechaNacimiento = Calendar.getInstance();
+	       //Se crea un objeto con la fecha actual
+	       Calendar fechaActual = Calendar.getInstance();
+	       //Se asigna la fecha recibida a la fecha de nacimiento.
+	       fechaNacimiento.setTime(fechaNac);
+	       //Se restan la fecha actual y la fecha de nacimiento
+	       int año = fechaActual.get(Calendar.YEAR)- fechaNacimiento.get(Calendar.YEAR);
+	       int mes =fechaActual.get(Calendar.MONTH)- fechaNacimiento.get(Calendar.MONTH);
+	       int dia = fechaActual.get(Calendar.DATE)- fechaNacimiento.get(Calendar.DATE);
+	       //Se ajusta el año dependiendo el mes y el día
+	       if(mes<0 || (mes==0 && dia<0)){
+	           año--;
+	       }
+	       //Regresa la edad en base a la fecha de nacimiento
+	       return año;
+	   }
 
 	/**
 	 * Devuelve el valor del anio actual.
@@ -109,6 +134,23 @@ public class ModelUtil {
 		int mesActual = Integer.parseInt(formato.format(fechaActual));
 		return mesActual;
 	}
+	
+	/**
+     * Valida si es correcta la dirección de correo electrónica dada.
+     *@param email
+     *@return true si es correcta o false si no lo es.
+	 * @throws Exception 
+     */
+    public static void esEmailCorrecto(String email) throws Exception {
+       
+        boolean valido = false;
+       
+        Pattern patronEmail = Pattern.compile("^[_A-Za-z0-9-\\+]+(\\.[_A-Za-z0-9-]+)@[A-Za-z0-9-]+(\\.[A-Za-z0-9]+)(\\.[A-Za-z]{2,})$");
+   
+        Matcher mEmail = patronEmail.matcher(email.toLowerCase());
+        if (!mEmail.matches())
+        	throw new Exception("Error formato email.");
+    }
 
 	/**
 	 * Suma o resta dias a una fecha.

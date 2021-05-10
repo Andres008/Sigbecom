@@ -27,6 +27,7 @@ import ec.com.model.dao.entity.UsrSocio;
 import ec.com.model.dao.entity.VAutMenuRol;
 import ec.com.model.gestionSistema.Credencial;
 import ec.com.model.gestionSistema.ManagerGestionSistema;
+import ec.com.model.gestionSocios.ManagerGestionSocios;
 import ec.com.model.modulos.util.JSFUtil;
 import ec.com.model.modulos.util.ModelUtil;
 
@@ -49,17 +50,23 @@ public class ControladorAcceso implements Serializable {
 	private MenuModel model;
 	private Boolean panelCambioContr;
 	private StreamedContent file;
+	private boolean cambiosContrasenia;
 
 	@EJB
 	ManagerGestionSistema managerGestionSistema;
 
 	@EJB
 	ManagerLog managerLog;
+	
+	@EJB
+	ManagerGestionSocios managerGestionSocios;
 
 	@Inject
 	private BeanLogin beanLogin;
 
 	public void inicializarAcceso() {
+		cambiosContrasenia = false;
+		objUsrSocio= new UsrSocio();
 	}
 
 	public void mensageCambioContrasenia() {
@@ -141,7 +148,7 @@ public class ControladorAcceso implements Serializable {
 	 */
 	public String actionObtenerAcceso() {
 		try {
-			Credencial credencial = managerGestionSistema.obtenerAcceso(idUsuario, ModelUtil.md5(clave));
+			Credencial credencial = managerGestionSistema.obtenerAcceso(idUsuario, ModelUtil.md5(clave.trim()));
 			objUsrSocio = managerGestionSistema.findByIdAutUsuario(idUsuario);
 			// se configura la direccion IP del cliente:
 			HttpServletRequest request;
@@ -160,6 +167,14 @@ public class ControladorAcceso implements Serializable {
 			// IP:
 			credencial.setDireccionIP(request.getRemoteAddr());
 			FacesContext.getCurrentInstance().getExternalContext().getSessionMap().put("credencial", credencial);
+			if (objUsrSocio.getPrimerInicio().equals("S")) {
+				managerLog.generarLogUsabilidad(beanLogin.getCredencial(), this.getClass(), "actionObtenerAcceso",
+						"Cambio de contraseña.");
+				objUsrSocio.setClave("");
+				cambiosContrasenia=true;
+				JSFUtil.crearMensajeINFO("Por su seguridad, se requiere cambio de contraseña.");
+				return "";
+			}
 			if (objUsrSocio.getUsrEstadoSocio().getIdEstado() == 1) {
 				managerLog.generarLogUsabilidad(beanLogin.getCredencial(), this.getClass(), "actionObtenerAcceso",
 						"Se ingresa al sistema, actualización de Datos.");
@@ -176,6 +191,25 @@ public class ControladorAcceso implements Serializable {
 			return "";
 		}
 
+	}
+	
+	/***
+	 * 
+	 */
+	public void actualizarContrasenia() {
+		try {
+			objUsrSocio.setClave(ModelUtil.md5(objUsrSocio.getClave()));
+			objUsrSocio.setPrimerInicio("N");
+			managerGestionSocios.actualizarUsrSocio(objUsrSocio);
+			managerLog.generarLogUsabilidad(beanLogin.getCredencial(), this.getClass(),
+					"actualizarContrasenia",
+					"Actualizo contraseña usuario " + objUsrSocio.getGesPersona().getCedula());
+			JSFUtil.crearMensajeINFO("Contraseña cambiada correctamente.");
+			inicializarAcceso();
+		} catch (Exception e) {
+			JSFUtil.crearMensajeERROR(e.getMessage());
+			e.printStackTrace();
+		}
 	}
 
 	public StreamedContent getFile() {
@@ -201,12 +235,13 @@ public class ControladorAcceso implements Serializable {
 		this.beanLogin = beanLogin;
 	}
 
-	public UsrSocio getObjAutUsuario() {
+
+	public UsrSocio getObjUsrSocio() {
 		return objUsrSocio;
 	}
 
-	public void setObjAutUsuario(UsrSocio objAutUsuario) {
-		this.objUsrSocio = objAutUsuario;
+	public void setObjUsrSocio(UsrSocio objUsrSocio) {
+		this.objUsrSocio = objUsrSocio;
 	}
 
 	public String getIdUsuario() {
@@ -231,6 +266,14 @@ public class ControladorAcceso implements Serializable {
 
 	public void setPanelCambioContr(Boolean panelCambioContr) {
 		this.panelCambioContr = panelCambioContr;
+	}
+
+	public boolean isCambiosContrasenia() {
+		return cambiosContrasenia;
+	}
+
+	public void setCambiosContrasenia(boolean cambiosContrasenia) {
+		this.cambiosContrasenia = cambiosContrasenia;
 	}
 
 }

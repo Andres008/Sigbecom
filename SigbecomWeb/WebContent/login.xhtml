@@ -66,30 +66,61 @@
 
 					<div class="ui-g-12 ui-lg-12 ui-md-12 logo-container">
 						<div class="login-detail">
-							<span>Bienvenido, por favor utilice el formulario para
-								ingresar al sistema.</span>
+							<p:outputLabel rendered="#{!controladorAcceso.cambiosContrasenia}"
+								value="Bienvenido, por favor utilice el formulario para
+								ingresar al sistema."></p:outputLabel>
+								<p:outputLabel rendered="#{controladorAcceso.cambiosContrasenia}"
+								value="Por su seguridad se requiere que actualice su contraseña."></p:outputLabel>
 						</div>
 					</div>
 					<div class="ui-g-12 ui-lg-12 ui-md-12">
-						<h:outputText value="Ingrese su Usuario" />
+						<p:outputLabel for="pwd1" styleClass="p-col-fixed"
+							rendered="#{controladorAcceso.cambiosContrasenia}"
+							style="width:100px" value="Contraseña" />
+						<p:password id="pwd1"
+							rendered="#{controladorAcceso.cambiosContrasenia}"
+							value="#{controladorAcceso.objUsrSocio.clave}"
+							placeholder="Contraseña" match="pwd2" label="Password 1"
+							required="true" />
+
+						<h:outputText value="Ingrese su Usuario"
+							rendered="#{!controladorAcceso.cambiosContrasenia}" />
 						<p:inputText placeholder="Usuario"
-							value="#{controladorAcceso.idUsuario}" />
+							value="#{controladorAcceso.idUsuario}"
+							rendered="#{!controladorAcceso.cambiosContrasenia}" />
 					</div>
 					<div class="ui-g-12 ui-lg-12 ui-md-12">
-						<h:outputText value="Contraseña" />
+						<h:outputText value="Contraseña"
+							rendered="#{!controladorAcceso.cambiosContrasenia}" />
 						<p:password placeholder="Password" feedback="false"
+							rendered="#{!controladorAcceso.cambiosContrasenia}"
 							value="#{controladorAcceso.clave}" />
+						<p:outputLabel for="pwd2" styleClass="p-col-fixed"
+							rendered="#{controladorAcceso.cambiosContrasenia}"
+							style="width:100px" value="Repita Contraseña" />
+						<p:password id="pwd2"
+							rendered="#{controladorAcceso.cambiosContrasenia}"
+							value="#{controladorAcceso.objUsrSocio.clave}"
+							placeholder="Repita Contraseña" label="Password 2"
+							required="true" />
 					</div>
 					<div class="ui-g-12 ui-lg-12 ui-md-12 chkbox-container">
-						<p:selectBooleanCheckbox id="remember-me" />
-						<p:outputLabel for="remember-me" value="Recordar Contraseña" />
+						<p:selectBooleanCheckbox id="remember-me"
+							rendered="#{!controladorAcceso.cambiosContrasenia}" />
+						<p:outputLabel for="remember-me" value="Recordar Contraseña"
+							rendered="#{!controladorAcceso.cambiosContrasenia}" />
 					</div>
 					<div class="ui-g-12 ui-lg-12 ui-md-12">
 						<a href="#">Olvide mi clave de ingreso</a>
 					</div>
 					<div class="ui-g-12 ui-lg-12 ui-md-12 button-container">
-						<p:commandButton value="Ingresar" styleClass="turquoise-btn" update="@form:growl"
+						<p:commandButton value="Ingresar" styleClass="turquoise-btn"
+							rendered="#{!controladorAcceso.cambiosContrasenia}"
+							update="@form:growl @form"
 							action="#{controladorAcceso.actionObtenerAcceso}" />
+						<p:commandButton value="Cambiar Contraseña" icon="ui-icon-disk"
+							rendered="#{controladorAcceso.cambiosContrasenia}" update="@form"
+							action="#{controladorAcceso.actualizarContrasenia()}" />
 					</div>
 				</div>
 				<div class="ui-g-12 ui-md-8 ui-lg-4"></div>

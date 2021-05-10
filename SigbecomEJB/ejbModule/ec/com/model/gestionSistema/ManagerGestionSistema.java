@@ -14,6 +14,7 @@ import ec.com.model.dao.entity.AutRolPerfil;
 import ec.com.model.dao.entity.UsrSocio;
 import ec.com.model.dao.entity.VAutMenuRol;
 import ec.com.model.dao.manager.ManagerDAOSegbecom;
+import ec.com.model.modulos.util.ModelUtil;
 
 /**
  * Session Bean implementation class ManagerAutorizacion
@@ -25,6 +26,9 @@ public class ManagerGestionSistema {
 	@EJB
 	ManagerDAOSegbecom managerDAOSegbecom;
 
+	@EJB
+	ManagerGestionSistema managerGestionSistema;
+
 	public ManagerGestionSistema() {
 		// TODO Auto-generated constructor stub
 	}
@@ -35,8 +39,10 @@ public class ManagerGestionSistema {
 
 		if (usuario == null)
 			throw new Exception("Usuario no existe, verifique su código.");
-		/*if (usuario.getEstado().equalsIgnoreCase("N"))
-			throw new Exception("El usuario no está activo.");*/
+		/*
+		 * if (usuario.getEstado().equalsIgnoreCase("N")) throw new
+		 * Exception("El usuario no está activo.");
+		 */
 		if (!pClave.equals(usuario.getClave()))
 			throw new Exception("Verifique su contraseña.");
 
@@ -46,6 +52,10 @@ public class ManagerGestionSistema {
 		credencial.setObjUsrSocio(usuario);
 		// credencial.setCorreo(usuario.getGesPersona().getCorreo());
 		credencial.setPrimerInicio(usuario.getPrimerInicio());
+		if (ModelUtil.isEmpty(usuario.getUrlFoto()))
+			credencial.setUsrFotografia(managerGestionSistema.buscarValorParametroNombre("PATH_FOTO_DEFAULT"));
+		else
+			credencial.setUsrFotografia(usuario.getUrlFoto());
 		return credencial;
 	}
 
@@ -80,8 +90,8 @@ public class ManagerGestionSistema {
 		try {
 			managerDAOSegbecom.insertar(objAutRol);
 		} catch (Exception e) {
-			throw new Exception("Error al ingresar Rol. "+e.getMessage());
-		}		
+			throw new Exception("Error al ingresar Rol. " + e.getMessage());
+		}
 	}
 
 	@SuppressWarnings("unchecked")
@@ -89,7 +99,7 @@ public class ManagerGestionSistema {
 		try {
 			return managerDAOSegbecom.findAll(AutRol.class, "o.estado ASC, o.nombre ASC");
 		} catch (Exception e) {
-			throw new Exception("Error al obtener el listado de Roles. "+e.getMessage());
+			throw new Exception("Error al obtener el listado de Roles. " + e.getMessage());
 		}
 	}
 
@@ -97,20 +107,19 @@ public class ManagerGestionSistema {
 		try {
 			managerDAOSegbecom.actualizar(object);
 		} catch (Exception e) {
-			throw new Exception("Error al actualizar "+object.getClass());
+			throw new Exception("Error al actualizar " + object.getClass());
 		}
-		
+
 	}
 
 	@SuppressWarnings("unchecked")
 	public List<AutMenu> buscarTodosAutMenu() throws Exception {
 		try {
-			List<AutMenu> lstAutMenu =managerDAOSegbecom.findAll(AutMenu.class, "o.orden ASC");
-			lstAutMenu.forEach(autMenu->{
-				autMenu.getAutPerfiles().forEach(perfil->{
+			List<AutMenu> lstAutMenu = managerDAOSegbecom.findAll(AutMenu.class, "o.orden ASC");
+			lstAutMenu.forEach(autMenu -> {
+				autMenu.getAutPerfiles().forEach(perfil -> {
 					perfil.getId();
-					System.out.println(perfil.getNombre());
-					perfil.getAutRolPerfils().forEach(rol->{
+					perfil.getAutRolPerfils().forEach(rol -> {
 						rol.getAutRol().getNombre();
 					});
 				});
@@ -119,14 +128,14 @@ public class ManagerGestionSistema {
 		} catch (Exception e) {
 			throw new Exception("Error al buscar listado de menu");
 		}
-		
+
 	}
 
 	public void insertarAutMenu(AutMenu objAutMenu) throws Exception {
 		try {
 			managerDAOSegbecom.insertar(objAutMenu);
 		} catch (Exception e) {
-			throw new Exception("Error al ingresar Menu. "+e.getMessage());
+			throw new Exception("Error al ingresar Menu. " + e.getMessage());
 		}
 	}
 
@@ -134,32 +143,33 @@ public class ManagerGestionSistema {
 		try {
 			managerDAOSegbecom.insertar(objPerfil);
 		} catch (Exception e) {
-			throw new Exception("Error al ingresar Perfil. "+e.getMessage());
+			throw new Exception("Error al ingresar Perfil. " + e.getMessage());
 		}
-		
+
 	}
 
 	public void ingresarAutRolPerfil(AutRolPerfil objAutRolPerfil) throws Exception {
 		try {
 			managerDAOSegbecom.insertar(objAutRolPerfil);
 		} catch (Exception e) {
-			throw new Exception("Error al ingresar Rol Perfil. "+e.getMessage());
+			throw new Exception("Error al ingresar Rol Perfil. " + e.getMessage());
 		}
-		
+
 	}
 
 	public String buscarValorParametroNombre(String nombre) throws Exception {
 		try {
 			@SuppressWarnings("unchecked")
-			List<AutParametrosGenerale> lstParametro= managerDAOSegbecom.findWhere(AutParametrosGenerale.class, "o.nombre='"+nombre.toUpperCase()+"'", null);
+			List<AutParametrosGenerale> lstParametro = managerDAOSegbecom.findWhere(AutParametrosGenerale.class,
+					"o.nombre='" + nombre.toUpperCase() + "'", null);
 			if (lstParametro.isEmpty())
 				throw new Exception("Parametro no encontrado.");
-			if (lstParametro.size()>1)
+			if (lstParametro.size() > 1)
 				throw new Exception("Más de un parametro encontrado.");
 			return lstParametro.get(0).getValor();
 		} catch (Exception e) {
-			throw new Exception("Error al buscar parametro. "+e.getMessage());
-			
+			throw new Exception("Error al buscar parametro. " + e.getMessage());
+
 		}
 	}
 

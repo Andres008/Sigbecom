@@ -16,8 +16,6 @@ public class UsrAgencia implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@Id
-	@SequenceGenerator(name="USR_AGENCIA_IDAGENCIA_GENERATOR", sequenceName="SEQ_USR_AGENCIA")
-	@GeneratedValue(strategy=GenerationType.SEQUENCE, generator="USR_AGENCIA_IDAGENCIA_GENERATOR")
 	@Column(name="id_agencia")
 	private long idAgencia;
 

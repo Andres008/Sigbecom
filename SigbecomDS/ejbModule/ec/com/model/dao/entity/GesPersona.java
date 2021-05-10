@@ -37,7 +37,7 @@ public class GesPersona implements Serializable {
 
 
 	//bi-directional many-to-one association to GesDiscapacidadPersona
-	@OneToMany(mappedBy="gesPersona")
+	@OneToMany(mappedBy="gesPersona", cascade = CascadeType.ALL)
 	private List<GesDiscapacidadPersona> gesDiscapacidadPersonas;
 
 	//bi-directional many-to-one association to GesPariente

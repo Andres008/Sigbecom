@@ -17,23 +17,18 @@ public class Credencial {
 	private String direccionIP;
 	private String correo;
 	private String primerInicio;
+	private String usrFotografia;
 
 	public Credencial() {
 	}
-
-	
 
 	public UsrSocio getObjUsrSocio() {
 		return objUsrSocio;
 	}
 
-
-
 	public void setObjUsrSocio(UsrSocio objUsrSocio) {
 		this.objUsrSocio = objUsrSocio;
 	}
-
-
 
 	public String getDireccionIP() {
 		return direccionIP;
@@ -57,6 +52,14 @@ public class Credencial {
 
 	public void setPrimerInicio(String primerInicio) {
 		this.primerInicio = primerInicio;
+	}
+
+	public String getUsrFotografia() {
+		return usrFotografia;
+	}
+
+	public void setUsrFotografia(String usrFotografia) {
+		this.usrFotografia = usrFotografia;
 	}
 
 }

@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:pc="http://primefaces.org/california">
+
+<h:head>
+	<f:facet name="first">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+		<meta name="viewport"
+			content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" />
+		<meta name="apple-mobile-web-app-capable" content="yes" />
+	</f:facet>
+	<title><ui:insert name="title">SIGBECOM</ui:insert></title>
+	<h:outputScript name="js/nanoscroller.js" library="california-layout" />
+	<h:outputScript name="js/layout.js" library="california-layout" />
+	<ui:insert name="head" />
+</h:head>
+
+<h:body styleClass="main-body"
+	onload="#{controladorGestionSocios.inicializarConsultaSocio()}">
+
+	<div
+		class="layout-wrapper #{guestPreferences.menuLayout != 'static' ? guestPreferences.menuLayout : null}">
+		<ui:include src="/affordances/megamenu.xhtml" />
+		<ui:include src="/affordances/topbar.xhtml" />
+		<ui:include src="/affordances/sidebar.xhtml" />
+		<ui:include src="/affordances/right-sidebar.xhtml" />
+
+		<div class="layout-main">
+			<div class="route-bar">
+				<div class="route-bar-breadcrumb">
+					<i class="fa fa-home"></i> <span>/Registro Usuarios</span>
+					<ui:insert name="viewname" />
+				</div>
+				<ui:include src="/affordances/route-bar-menu.xhtml" />
+			</div>
+			<div class="layout-main-content" align="center">
+				<H1>USUARIOS SIGBECOM</H1>
+				<h:form>
+					<p:growl id="growl" showDetail="true" sticky="true" />
+					<p:panel header="Usuarios">
+						<p:dataTable value="#{controladorGestionSocios.lstUsrSocio}"
+							var="socio">
+							<p:column headerText="Cédula">
+								<p:outputLabel value="#{socio.gesPersona.cedula}" />
+							</p:column>
+							<p:column headerText="Código Rol">
+								<p:outputLabel value="#{socio.idSocio}" />
+							</p:column>
+							<p:column headerText="Nombres">
+								<p:outputLabel
+									value="#{socio.gesPersona.apellidos} #{socio.gesPersona.nombres}" />
+							</p:column>
+							<p:column headerText="Rol">
+								<p:outputLabel value="#{socio.autRol.nombre}" />
+							</p:column>
+							<p:column headerText="Estado">
+								<p:outputLabel value="#{socio.usrEstadoSocio.estado}" />
+							</p:column>
+							<p:column headerText="Ver Datos Personales">
+								<p:commandButton icon="ui-icon-search"
+									actionListener="#{controladorGestionSocios.cargarUsrSocio(socio)}"
+									oncomplete="PF('infPersonal').show()"
+									update="@form:infPersonal" />
+							</p:column>
+						</p:dataTable>
+					</p:panel>
+					<p:dialog header="Datos Personales" widgetVar="infPersonal"
+						id="infPersonal" modal="false" position="top" showEffect="fade"
+						hideEffect="fade" resizable="false" width="90%">
+						<p:messages id="messageVivienda" showDetail="true" closable="true">
+							<p:autoUpdate />
+							<p:tabView>
+								<p:tab title="Datos Personales">
+									<p:panelGrid columns="1" styleClass="ui-noborder">
+										<p:graphicImage id="imgFoto" cache="false"
+											value="#{controladorGestionSocios.cargarFotografia()}"
+											library="california-layout" />
+									</p:panelGrid>
+									<p:panelGrid columns="6" styleClass="ui-noborder">
+										<p:outputLabel value="Cédula" style="font-weight:bold"/>
+										<p:outputLabel
+											value="#{controladorGestionSocios.objUsrSocio.cedulaSocio}" />
+										<p:outputLabel value="Código Rol" style="font-weight:bold"/>
+										<p:outputLabel
+											value="#{controladorGestionSocios.objUsrSocio.idSocio}" />
+										<p:outputLabel value="Apellidos" style="font-weight:bold"/>
+										<p:outputLabel
+											value="#{controladorGestionSocios.objUsrSocio.gesPersona.apellidos}" />
+										<p:outputLabel value="Nombres" style="font-weight:bold"/>
+										<p:outputLabel
+											value="#{controladorGestionSocios.objUsrSocio.gesPersona.nombres}" />
+										<p:outputLabel value="Estado Civil" style="font-weight:bold"/>
+										<p:outputLabel
+											value="#{controladorGestionSocios.objUsrSocio.gesPersona.gesEstadoCivil.estadoCivil}" />
+										<p:outputLabel value="Género" style="font-weight:bold"/>
+										<p:outputLabel
+											value="#{controladorGestionSocios.objUsrSocio.gesPersona.gesGenero.genero}" />
+										<p:outputLabel value="Tipo de Sangre" style="font-weight:bold"/>
+										<p:outputLabel
+											value="#{controladorGestionSocios.objUsrSocio.gesPersona.gesTipoSangre.tipoSangre}" />
+										<p:outputLabel value="Etnia" style="font-weight:bold"/>
+										<p:outputLabel
+											value="#{controladorGestionSocios.objUsrSocio.gesPersona.gesEtnia.etnia}" />
+										<p:outputLabel value="Fecha Nacimiento" style="font-weight:bold"/>
+										<p:outputLabel
+											value="#{controladorGestionSocios.objUsrSocio.gesPersona.fechaNac}">
+											<f:convertDateTime pattern="dd/MM/yyyy" />
+										</p:outputLabel>
+										<p:outputLabel value="Telefono" style="font-weight:bold"/>
+										<p:outputLabel
+											value="#{controladorGestionSocios.objUsrSocio.gesPersona.telefono}" />
+										<p:outputLabel value="Correo Electronico" style="font-weight:bold"/>
+										<p:outputLabel
+											value="#{controladorGestionSocios.objUsrSocio.gesPersona.email}" />
+									</p:panelGrid>
+								</p:tab>
+								<p:tab title="Discapacidad">
+									<p:dataTable id="tblDiscapacidad"
+										value="#{controladorGestionSocios.getGesDiscapacidadPersonasActivas(controladorGestionSocios.objUsrSocio.gesPersona.gesDiscapacidadPersonas)}"
+										var="discapacidad"
+										emptyMessage="No tiene discapacidades registradas.">
+										<p:column headerText="Tipo Capacidad">
+											<p:outputLabel
+												value="#{discapacidad.gesDiscapacidad.discapacidad}" />
+										</p:column>
+										<p:column headerText="Porcentaje">
+											<p:outputLabel value="#{discapacidad.porcentaje}" />
+										</p:column>
+										<p:column headerText="Fecha Valoración">
+											<p:outputLabel value="#{discapacidad.fechaValor}">
+												<f:convertDateTime pattern="dd/MM/yyyy" />
+											</p:outputLabel>
+										</p:column>
+										<p:column headerText="Nro Registro">
+											<p:outputLabel value="#{discapacidad.nroRegistro}" />
+										</p:column>
+										<p:column headerText="Estado">
+											<p:outputLabel value="#{discapacidad.estado}" />
+										</p:column>
+										<p:column headerText="Eliminar">
+											<p:commandButton icon="ui-icon-closethick" update="@form"
+												process="@this"
+												actionListener="#{controladorGestionSocios.inactivarDiscapacidad(discapacidad)}">
+												<p:confirm header="Confirmación"
+													message="Desea eliminar la discapacidad?"
+													icon="pi pi-exclamation-triangle" />
+											</p:commandButton>
+										</p:column>
+									</p:dataTable>
+								</p:tab>
+								<p:tab title="Familiares">
+									<p:dataTable id="tblFamilia" editable="true"
+										value="#{controladorGestionSocios.objUsrSocio.gesParientes}"
+										var="familia" emptyMessage="No tiene familiares registrados.">
+										<p:ajax event="rowEdit" listener="#{controladorRol.onRowEdit}"
+											update="@form:growl" process="@this" />
+										<p:ajax event="rowEditCancel"
+											listener="#{controladorRol.onRowCancel}" update="@form:growl" />
+										<p:column headerText="Cédula">
+											<p:outputLabel value="#{familia.gesPersona.cedula}" />
+										</p:column>
+										<p:column headerText="Apellidos">
+											<p:cellEditor>
+												<f:facet name="output">
+													<p:outputLabel value="#{familia.gesPersona.apellidos}" />
+												</f:facet>
+												<f:facet name="input">
+													<p:inputText id="apellidoInput"
+														value="#{familia.gesPersona.apellidos}" style="width:100%" />
+												</f:facet>
+											</p:cellEditor>
+										</p:column>
+										<p:column headerText="Nombres">
+											<p:cellEditor>
+												<f:facet name="output">
+													<p:outputLabel value="#{familia.gesPersona.nombres}" />
+												</f:facet>
+												<f:facet name="input">
+													<p:inputText id="nombreInput"
+														value="#{familia.gesPersona.nombres}" style="width:100%" />
+												</f:facet>
+											</p:cellEditor>
+										</p:column>
+										<p:column headerText="Fecha Nacimiento">
+											<p:cellEditor>
+												<f:facet name="output">
+													<p:outputLabel value="#{familia.gesPersona.fechaNac}">
+														<f:convertDateTime pattern="dd/MM/yyyy" />
+													</p:outputLabel>
+												</f:facet>
+												<f:facet name="input">
+													<p:calendar id="fechNac" placeholder="dd/MM/aaaa"
+														value="#{familia.gesPersona.fechaNac}" navigator="true"
+														locale="es" mindate="1/1/1900"
+														requiredMessage="Fecha Nacimiento Requerido"
+														maxdate="today" mask="99/99/9999" pattern="dd/MM/yyyy" />
+												</f:facet>
+											</p:cellEditor>
+										</p:column>
+										<p:column headerText="Relación">
+											<p:cellEditor>
+												<f:facet name="output">
+													<p:outputLabel
+														value="#{familia.usrConsanguinidad.consanguinidad}" />
+												</f:facet>
+												<f:facet name="input">
+													<p:selectOneMenu
+														value="#{familia.usrConsanguinidad.idConsanguinidad}"
+														requiredMessage="Consanguinidad Requerida">
+														<f:selectItem itemLabel="Seleccione"
+															noSelectionOption="true" />
+														<f:selectItems
+															value="#{controladorGestionUsuario.lstSiConsanguinidad()}" />
+													</p:selectOneMenu>
+												</f:facet>
+											</p:cellEditor>
+										</p:column>
+										<p:column headerText="Telefono">
+											<p:cellEditor>
+												<f:facet name="output">
+													<p:outputLabel value="#{familia.gesPersona.telefono}" />
+												</f:facet>
+												<f:facet name="input">
+													<p:inputText id="telefonoInput"
+														value="#{familia.gesPersona.telefono}" style="width:100%" />
+												</f:facet>
+											</p:cellEditor>
+										</p:column>
+										<p:column headerText="Comunicarse en Caso de Emergencia">
+											<p:outputLabel value="#{familia.contactoEmergencia}" />
+										</p:column>
+
+									</p:dataTable>
+								</p:tab>
+								<p:tab title="Licencia">
+									<p:dataTable id="tblLicencias"
+										value="#{controladorGestionSocios.objUsrSocio.usrLicenciaSocios}"
+										var="licencia" emptyMessage="No tiene licencias registradas.">
+										<p:column headerText="Tipo Licencia">
+											<p:outputLabel
+												value="#{licencia.usrTipoLicencia.tipoLicencia}" />
+										</p:column>
+										<p:column headerText="Descripción">
+											<p:outputLabel
+												value="#{licencia.usrTipoLicencia.descripcion}" />
+										</p:column>
+									</p:dataTable>
+								</p:tab>
+								<p:tab title="Formación Académica">
+									<p:dataTable id="tblFormacion"
+										value="#{controladorGestionSocios.objUsrSocio.usrInstruccions}"
+										var="formacion"
+										emptyMessage="No tiene formación académica registrada.">
+										<p:column headerText="Tipo Formación">
+											<p:outputLabel
+												value="#{formacion.usrTipoInstruccion.tipoInstruccion}" />
+										</p:column>
+										<p:column headerText="Institución">
+											<p:outputLabel value="#{formacion.id_institucion}" />
+										</p:column>
+										<p:column headerText="Título">
+											<p:outputLabel value="#{formacion.titulo}" />
+										</p:column>
+									</p:dataTable>
+								</p:tab>
+								<p:tab title="Cuenta Bancaria">
+									<p:dataTable id="tblBanco"
+										value="#{controladorGestionSocios.getUsrCuentaSociosActivas(controladorGestionSocios.objUsrSocio.usrCuentaSocios)}"
+										var="cuenta"
+										emptyMessage="No tiene cuentas bancarias registradas.">
+										<p:column headerText="Institución Financiera">
+											<p:outputLabel
+												value="#{cuenta.usrInstitucionBancaria.institucionBancaria}" />
+										</p:column>
+										<p:column headerText="Tipo Cuenta">
+											<p:outputLabel value="#{cuenta.usrTipoCuenta.tipoCuenta}" />
+										</p:column>
+										<p:column headerText="Nro Cuenta">
+											<p:outputLabel value="#{cuenta.nroCuenta}" />
+										</p:column>
+									</p:dataTable>
+								</p:tab>
+								<p:tab title="Datos Vivienda">
+									<p:panelGrid id="panelVivienda" columns="5"
+										styleClass="ui-noborder">
+										<p:outputLabel value="Tipo Vivienda" style="font-weight:bold"/>
+										<p:outputLabel
+											value="#{controladorGestionSocios.objUsrSocio.usrTipoVivienda.tipoVivienda}" />
+										<p:outputLabel value="Zona Geografica" style="font-weight:bold"/>
+										<p:outputLabel
+											value="#{controladorGestionSocios.objUsrSocio.usrParroquia.usrCanton.usrProvincia.provincia} - #{controladorGestionSocios.objUsrSocio.usrParroquia.usrCanton.canton} - #{controladorGestionSocios.objUsrSocio.usrParroquia.parroquia}" />
+									</p:panelGrid>
+								</p:tab>
+								<p:tab title="Datos Laborales">
+									<p:panelGrid id="panelTrabajo" columns="6"
+										styleClass="ui-noborder">
+										<p:outputLabel  value="Lugar Trabajo" style="font-weight:bold"/>
+										<p:outputLabel
+											value="#{controladorGestionSocios.objUsrSocio.usrAgencia.agencia}" />
+										<p:outputLabel value="Área" style="font-weight:bold"/>
+										<p:outputLabel
+											value="#{controladorGestionSocios.objUsrSocio.usrArea.area}" />
+										<p:outputLabel value="Cargo" style="font-weight:bold"/>
+										<p:outputLabel
+											value="#{controladorGestionSocios.objUsrSocio.usrCargo.cargo}" />
+									</p:panelGrid>
+								</p:tab>
+							</p:tabView>
+						</p:messages>
+					</p:dialog>
+				</h:form>
+
+			</div>
+			<ui:include src="/affordances/footer.xhtml" />
+		</div>
+	</div>
+
+	<p:ajaxStatus
+		style="width:32px;height:32px;position:fixed;right:7px;bottom:7px">
+		<f:facet name="start">
+			<i class="fa fa-circle-o-notch fa-spin ajax-loader"
+				aria-hidden="true"></i>
+		</f:facet>
+
+		<f:facet name="complete">
+			<h:outputText value="" />
+		</f:facet>
+	</p:ajaxStatus>
+
+	<h:outputStylesheet name="css/nanoscroller.css"
+		library="california-layout" />
+	<h:outputStylesheet name="css/layout-#{guestPreferences.theme}.css"
+		library="california-layout" />
+</h:body>
+</html>

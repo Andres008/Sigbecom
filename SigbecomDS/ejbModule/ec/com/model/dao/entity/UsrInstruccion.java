@@ -15,17 +15,15 @@ public class UsrInstruccion implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@Id
-	@SequenceGenerator(name="USR_INSTRUCCION_IDINSTRUCCION_GENERATOR", sequenceName="SEQ_USR_INSTRUCCION")
+	@SequenceGenerator(name="USR_INSTRUCCION_IDINSTRUCCION_GENERATOR", sequenceName="SEQ_USR_INSTRUCCION", allocationSize = 1)
 	@GeneratedValue(strategy=GenerationType.SEQUENCE, generator="USR_INSTRUCCION_IDINSTRUCCION_GENERATOR")
 	@Column(name="id_instruccion")
 	private long idInstruccion;
 
 	private String titulo;
 
-	//bi-directional many-to-one association to UsrInstitucionEducativa
-	@ManyToOne
-	@JoinColumn(name="id_institucion")
-	private UsrInstitucionEducativa usrInstitucionEducativa;
+	@Column(name="id_institucion")
+	private String id_institucion;
 
 	//bi-directional many-to-one association to UsrSocio
 	@ManyToOne
@@ -53,15 +51,7 @@ public class UsrInstruccion implements Serializable {
 	}
 
 	public void setTitulo(String titulo) {
-		this.titulo = titulo;
-	}
-
-	public UsrInstitucionEducativa getUsrInstitucionEducativa() {
-		return this.usrInstitucionEducativa;
-	}
-
-	public void setUsrInstitucionEducativa(UsrInstitucionEducativa usrInstitucionEducativa) {
-		this.usrInstitucionEducativa = usrInstitucionEducativa;
+		this.titulo = titulo.toUpperCase();
 	}
 
 	public UsrSocio getUsrSocio() {
@@ -78,6 +68,14 @@ public class UsrInstruccion implements Serializable {
 
 	public void setUsrTipoInstruccion(UsrTipoInstruccion usrTipoInstruccion) {
 		this.usrTipoInstruccion = usrTipoInstruccion;
+	}
+
+	public String getId_institucion() {
+		return id_institucion;
+	}
+
+	public void setId_institucion(String id_institucion) {
+		this.id_institucion = id_institucion.toUpperCase();
 	}
 
 }
