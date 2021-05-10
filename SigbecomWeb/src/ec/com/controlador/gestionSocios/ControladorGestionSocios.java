@@ -736,7 +736,7 @@ public class ControladorGestionSocios implements Serializable {
 	public void handleFileUpload(FileUploadEvent event) {
 		try {
 			this.file = event.getFile();
-			verificarTamanioFotografia(event);
+			//verificarTamanioFotografia(event);
 			objUsrSocio.setUrlFoto(ModelUtil.guardarArchivo(event.getFile().getInputStream(),
 					beanLogin.getCredencial().getObjUsrSocio().getCedulaSocio(),
 					managerGestionSistema.buscarValorParametroNombre("PATH_FOTOS"), ".jpg"));

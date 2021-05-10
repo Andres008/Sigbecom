@@ -12,7 +12,7 @@
                 <ui:fragment rendered="#{guestPreferences.profileMode == 'inline' ? true : false}">
                     <div class="user-profile">
                         <a id="sidebar-profile-button" href="#">
-                            <p:graphicImage value="#{beanLogin.cargarFotografia()}" library="california-layout" cache="false" />
+                            <p:graphicImage height="184" width="148" value="#{beanLogin.cargarFotografia()}" library="california-layout" cache="false" />
                             <span class="sidebar-profile-name">#{beanLogin.credencial.objUsrSocio.gesPersona.apellidos} #{beanLogin.credencial.objUsrSocio.gesPersona.nombres}</span>
                             <span class="sidebar-profile-role">#{beanLogin.credencial.objUsrSocio.autRol.nombre}</span>
                         </a>

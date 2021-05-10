@@ -100,7 +100,7 @@
 										icon="pi pi-exclamation-triangle" />
 								</p:commandButton>
 								<p:panelGrid columns="1" styleClass="ui-noborder">
-									<p:graphicImage id="imgFoto" cache="false"
+									<p:graphicImage id="imgFoto" cache="false" height="184" width="148"
 										value="#{beanLogin.cargarFotografia()}"
 										library="california-layout" />
 									<p:fileUpload mode="advanced" label="Cambiar Fotografia"
@@ -115,12 +115,11 @@
 									<p:outputLabel
 										value="#{controladorGestionSocios.objUsrSocio.cedulaSocio}" />
 									<p:outputLabel value="Código Rol" />
-									<p:inputText
+									<p:inputNumber minValue="1" maxValue="3000"
 										value="#{controladorGestionSocios.objUsrSocio.idSocio}"
 										required="true">
-										<p:keyFilter regEx="/[1234567890]/i" />
 										<p:ajax update="@form" process="@this" />
-									</p:inputText>
+									</p:inputNumber>
 									<p:outputLabel value="Apellidos" />
 									<p:inputText
 										value="#{controladorGestionSocios.objUsrSocio.gesPersona.apellidos}"
@@ -247,7 +246,7 @@
 								<p:dialog header="Registrar Discapacidad"
 									widgetVar="infDiscapacidad" id="infDiscapacidad" modal="false"
 									position="top" showEffect="fade" hideEffect="fade"
-									resizable="false" width="90%">
+									resizable="false" width="90%" height="90%" >
 									<p:messages id="messageDiscapacidad" showDetail="true"
 										closable="true">
 										<p:autoUpdate />
@@ -396,7 +395,7 @@
 								</p:dataTable>
 								<p:dialog header="Nuevo Familiar" widgetVar="infFamiliar"
 									id="infFamiliar" modal="false" position="top" showEffect="fade"
-									hideEffect="fade" resizable="false" width="90%">
+									hideEffect="fade" resizable="false" width="90%" height="90%">
 									<p:messages id="messages" showDetail="true" closable="true">
 										<p:autoUpdate />
 									</p:messages>
@@ -406,7 +405,7 @@
 											<p:inputText
 												value="#{controladorGestionSocios.objGesPariente.gesPersona.cedula}"
 												placeholder="Cédula" requiredMessage="Cédula Requerida" />
-											<p:outputLabel value="Consaguinidad" />
+											<p:outputLabel value="Consaguinidad/Afinidad" />
 											<p:selectOneMenu
 												value="#{controladorGestionSocios.objGesPariente.usrConsanguinidad.idConsanguinidad}"
 												requiredMessage="Consanguinidad Requerida">
@@ -593,7 +592,7 @@
 								<p:dialog header="Registrar Formación Académica"
 									widgetVar="infFormacion" id="infFormacion" modal="false"
 									position="top" showEffect="fade" hideEffect="fade"
-									resizable="false" width="90%">
+									resizable="false" width="90%" height="90%">
 									<p:messages id="messageFormacion" showDetail="true"
 										closable="true">
 										<p:autoUpdate />
@@ -727,7 +726,7 @@
 								<p:dialog header="Registrar Cuenta Bancaria"
 									widgetVar="infVivienda" id="infVivienda" modal="false"
 									position="top" showEffect="fade" hideEffect="fade"
-									resizable="false" width="90%">
+									resizable="false" width="90%" height="90%">
 									<p:messages id="messageVivienda" showDetail="true"
 										closable="true">
 										<p:autoUpdate />
