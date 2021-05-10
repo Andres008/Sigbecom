@@ -10,8 +10,13 @@ import javax.enterprise.context.SessionScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 
+import org.primefaces.PrimeFaces;
+import org.primefaces.event.RowEditEvent;
+
 import ec.com.controlador.sesion.BeanLogin;
 import ec.com.model.dao.entity.SesvasBeneficio;
+import ec.com.model.dao.entity.SesvasRequisito;
+import ec.com.model.dao.entity.SesvasTipoRequisito;
 import ec.com.model.modulos.util.JSFUtil;
 import ec.com.model.sesvas.ManagerSesvas;
 
@@ -23,18 +28,34 @@ public class FrmGestionBeneficios implements Serializable{
 	
 	@EJB
 	private ManagerSesvas managerSesvas;
+	
 	private SesvasBeneficio sesvasBeneficio;
+	//private SesvasTipoRequisito sesvasTipoRequisito;
+	private boolean pnlRenderNuevoReq;
+	private SesvasTipoRequisito tiposDocumento;
+	private Long idSesvasTipoRequisito;
 	
 	@Inject
 	private BeanLogin beanLogin;
 	
 	private List<SesvasBeneficio> lstSesvasBeneficio;
+	private List<SesvasTipoRequisito> lstTiposdocumentos;
+	
+	
 	
 	@PostConstruct
 	public void init() {
 		sesvasBeneficio=new SesvasBeneficio();
 		lstSesvasBeneficio = new ArrayList<SesvasBeneficio>();
+		lstTiposdocumentos = new ArrayList<SesvasTipoRequisito>();
+		//sesvasTipoRequisito = new SesvasTipoRequisito();
+		
+		pnlRenderNuevoReq = false;
+		tiposDocumento = new SesvasTipoRequisito();
+		idSesvasTipoRequisito = new Long(0);
+		
 		cargarListaBeneficios();
+		cargarTipoDocumentos();
 	}
 
 	public FrmGestionBeneficios() {
@@ -51,7 +72,7 @@ public class FrmGestionBeneficios implements Serializable{
 			} catch (Exception e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
-				JSFUtil.crearMensajeERROR("No se realiz� el registro correctamente");
+				JSFUtil.crearMensajeERROR("No se realizo el registro correctamente");
 			}
 		}
 		else {
@@ -61,6 +82,7 @@ public class FrmGestionBeneficios implements Serializable{
 	
 	public void cargarListaBeneficios() {
 		try {
+			System.out.println("Aqui");
 			lstSesvasBeneficio = managerSesvas.findAllSesvasBeneficio();
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
@@ -68,6 +90,87 @@ public class FrmGestionBeneficios implements Serializable{
 			e.printStackTrace();
 		}
 	}
+	
+	public void onRowEdit(RowEditEvent<Object> event) {
+		 try {
+				managerSesvas.actualizarObjeto(event.getObject());
+				JSFUtil.crearMensajeINFO("Se actualizó correctamente.");
+			} catch (Exception e) {
+				JSFUtil.crearMensajeERROR(e.getMessage());
+				e.printStackTrace();
+			}
+	}
+	public void onRowCancel(RowEditEvent<Object> event) {
+        JSFUtil.crearMensajeINFO("Se canceló actualización.");
+    }
+	
+	public void cargarTipoDocumentos() {
+		try {
+			lstTiposdocumentos = managerSesvas.findAllTipoDocumentos();
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			JSFUtil.crearMensajeERROR("No se realizo la peticion solicitada lista tipos docmuentos Sesvas");
+			e.printStackTrace();
+		}
+	}
+	
+	public void mostrarPanelNuevosRequisitos() {
+		if(pnlRenderNuevoReq==true) {
+			pnlRenderNuevoReq = false;
+		}
+		else {
+			pnlRenderNuevoReq = true;
+		}
+		
+	}
+	
+	public void registrarTipoDocumento() {
+		//System.out.println("Documento:"+tiposDocumento.getTipoRequisito());
+		if(tiposDocumento !=null && !tiposDocumento.getTipoRequisito().isEmpty()) {
+			try {
+				tiposDocumento.setTipoRequisito(tiposDocumento.getTipoRequisito().toUpperCase());
+				managerSesvas.registrarSesvasTipoDocumento(tiposDocumento);
+				JSFUtil.crearMensajeINFO("Se realizó el registro correctamente.");
+				PrimeFaces prime=PrimeFaces.current();
+				prime.executeScript("PF('dlgDoc').hide();");
+				prime.ajax().update("form2:tblBen:0:pnlNuevoReq");
+				init();
+			} catch (Exception e) {
+				JSFUtil.crearMensajeERROR("No se realizo la peticion solicitada registro nuevo tipo documento");
+				e.printStackTrace();
+			}
+		}
+		else {
+			JSFUtil.crearMensajeERROR("Nombre tipo Documento Requeirdo");
+			PrimeFaces prime=PrimeFaces.current();
+			prime.ajax().update("frmReq");
+		}
+	}
+
+	public void agregarRequisitos(SesvasBeneficio sesvasBeneficio) {
+		System.out.println("Beneficio: "+ sesvasBeneficio.getBeneficios());
+		System.out.println("idSesvasTipoRequisito: "+ idSesvasTipoRequisito);
+		if(idSesvasTipoRequisito!=0) {
+			SesvasTipoRequisito sesvasTipoRequisito;
+			SesvasRequisito sesRequisito = new SesvasRequisito();
+			sesRequisito.setSesvasBeneficio(sesvasBeneficio);
+			sesvasTipoRequisito = lstTiposdocumentos.stream().filter(p ->p.getIdSesvasTipoRequisito()==idSesvasTipoRequisito).findAny().orElse(null);
+			sesRequisito.setSesvasTipoRequisito(sesvasTipoRequisito);
+			try {
+				managerSesvas.registrarSesvasRequisito(sesRequisito);
+				JSFUtil.crearMensajeINFO("Registro realizado correctamente");
+				init();
+			} catch (Exception e) {
+				JSFUtil.crearMensajeERROR("No se realizo la peticion solicitada agregar Nuevo Requisito");
+				e.printStackTrace();
+			}
+		}
+		else {
+			System.out.println("nuloooo");
+			JSFUtil.crearMensajeERROR("Seleccione tipo Documento");
+		}
+	}
+	
 	//Getter and Setters
 	public BeanLogin getBeanLogin() {
 		return beanLogin;
@@ -92,5 +195,37 @@ public class FrmGestionBeneficios implements Serializable{
 	public void setLstSesvasBeneficio(List<SesvasBeneficio> lstSesvasBeneficio) {
 		this.lstSesvasBeneficio = lstSesvasBeneficio;
 	}
-	
+
+	public boolean isPnlRenderNuevoReq() {
+		return pnlRenderNuevoReq;
+	}
+
+	public void setPnlRenderNuevoReq(boolean pnlRenderNuevoReq) {
+		this.pnlRenderNuevoReq = pnlRenderNuevoReq;
+	}
+
+	public SesvasTipoRequisito getTiposDocumento() {
+		return tiposDocumento;
+	}
+
+	public void setTiposDocumento(SesvasTipoRequisito tiposDocumento) {
+		this.tiposDocumento = tiposDocumento;
+	}
+
+	public List<SesvasTipoRequisito> getLstTiposdocumentos() {
+		return lstTiposdocumentos;
+	}
+
+	public void setLstTiposdocumentos(List<SesvasTipoRequisito> lstTiposdocumentos) {
+		this.lstTiposdocumentos = lstTiposdocumentos;
+	}
+
+	public Long getIdSesvasTipoRequisito() {
+		return idSesvasTipoRequisito;
+	}
+
+	public void setIdSesvasTipoRequisito(Long idSesvasTipoRequisito) {
+		this.idSesvasTipoRequisito = idSesvasTipoRequisito;
+	}
+
 }

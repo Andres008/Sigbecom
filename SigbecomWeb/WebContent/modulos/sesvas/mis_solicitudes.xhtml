@@ -11,6 +11,7 @@
         <title><ui:insert name="title">Solicitudes</ui:insert></title>
         <h:outputScript name="js/nanoscroller.js" library="california-layout" />
         <h:outputScript name="js/layout.js" library="california-layout" />
+        <h:outputStylesheet library="css" name="estilos.css"/>
         <ui:insert name="head"/>
 </h:head>
 
@@ -30,36 +31,128 @@
                     </div>
 					<ui:include src="/affordances/route-bar-menu.xhtml" />
                 </div>
-				<div class="layout-main-content" align="center">
+				<div  align="center">
 					<H1>BENEFICIOS SESEVAS</H1>
-                    <p:panel header="SOLICITUD">
-                    	<h:panelGrid columns="3" cellpadding="10">
+				<h:form >
+					<p:growl id="growl" showDetail="true" sticky="true" />
+                    <p:panel header="SOLICITUD DE BENEFICIOS">
+                    	<h:panelGrid columns="3" cellpadding="5">
                     		<p:outputLabel value="Selecciona el beneficio al que deseas acceder: " style="font-weight:bold;"/>
-                    		<p:selectOneMenu id="option" >
-			                    <f:selectItem itemLabel="Select One" itemValue=""/>
-			                    <f:selectItem itemLabel="Option1" itemValue="Option1"/>
-			                    <f:selectItem itemLabel="Option2" itemValue="Option2"/>
-			                    <f:selectItem itemLabel="Option3" itemValue="Option3"/>
-			                    <f:facet name="footer">
-			                        <p:separator/>
-			                        <h:outputText value="3 options" style="font-weight:bold;"/>
-			                    </f:facet>
+                    		<p:selectOneMenu id="sltBen" value="#{frmMisSolicitudes.idBeneficioSelected}">
+			                    <f:selectItem itemLabel="Seleccione Beneficio"
+										noSelectionOption="true" />
+			                    <f:selectItems value="#{frmMisSolicitudes.listBeneficios}" var="dat"
+			                    			itemLabel="#{dat.beneficios} #{dat.detalle}" itemValue="#{dat.idSesvasBeneficios}"/>
+			                    
 			                </p:selectOneMenu>
-                    		<p:commandButton icon="fa fa-handshake-o" value=" Acceder"
-                    			/>
+							<p:commandButton icon="fa fa-handshake-o"  value="Acceder" update="@form" style="width:150px;"
+                    			action="#{frmMisSolicitudes.cargarListaRequisitos()}"/>
                     	</h:panelGrid>
+                    	<!--style="width:150px;height:40px " -->
                     	<p:separator/>
-                    	<div class="container" style="display: none;">
-                    		<p:dataTable>
-                    		</p:dataTable>
-                    	</div>
-                    </p:panel>
-                    <p:separator/>
-                    <p:panel header="MIS SOLICITUDES">
-                    	<p:dataTable>
+                    	
+                    	<p:dataTable id="tblReq" rendered="#{frmMisSolicitudes.mostrarReq}"
+                    				value="#{frmMisSolicitudes.lstAdjuntos}" var="dato">
+                    			<f:facet name="header">
+						            <p:outputLabel value="SESVAS - REQUISITOS OBLIGATORIOS"/>
+						        </f:facet>
+						        <p:column headerText="Beneficio">
+						        	<p:outputLabel value="#{dato.sesvasRequisito.sesvasBeneficio.beneficios}"/>
+						        </p:column>
+						        <p:column headerText="Requisito">
+						        	<p:outputLabel value="#{dato.sesvasRequisito.sesvasTipoRequisito.tipoRequisito}"/>
+						        </p:column>
+						        <p:column headerText="Documento Cargado">
+						        	<p:outputLabel value="#{dato.nombreArchivo}"/>
+						        </p:column>
+						        <p:column headerText="Archivos">
+						        	<!-- <p:remoteCommand  name="pr" update="@form:tblReq" process="@this"  action="#{frmMisSolicitudes.precargarArchivo(dato)}" /> -->
+						        	<p:fileUpload styleClass="ui-fileupload-buttonbar"  
+						        				  label="Seleccionar Archivo"
+						        				  listener="#{frmMisSolicitudes.handleFileUpload}"
+						        				  multiple="false"
+						        				  mode="advanced"
+						        				  auto="true"
+						        				  allowTypes="/(\.|\/)(pdf|png|jpg)$/"
+						        				  immediate="#{frmMisSolicitudes.precargarArchivo(dato)}"
+						        				  update="@form:tblReq" 
+				                      			  process="@this" 
+				                      			  skinSimple="true"
+				                    />
+				         		</p:column>
                     	</p:dataTable>
+                    	<br/>
+                    	<h:panelGrid id="grid"  columns="2" cellpadding="5"
+                    				rendered="#{frmMisSolicitudes.mostrarReq}">
+	                    	<p:commandButton value="Cancelar" style="width:150px;height:40px" 
+	                    					action="#{frmMisSolicitudes.init()}" update="@form"/>
+	                    	<p:commandButton value="Enviar" style="width:150px;height:40px " 
+	                    					action="#{frmMisSolicitudes.enviarDocumentos()}"  update="@form"/>
+                    	</h:panelGrid>
                     </p:panel>
                     
+                    <p:separator/>
+                    <p:panel header="MIS SOLICITUDES">
+                    	<p:dataTable
+                    	 value="#{frmMisSolicitudes.lstSesvasSolictud}" var="sol">
+                    		<p:column headerText="" style="width:2rem">
+								<p:rowToggler />
+							</p:column>
+                    		<p:column headerText="Solicitud">
+						        	<p:outputLabel value="#{sol.sesvasBeneficio.beneficios}"/>
+						    </p:column>
+						    <p:column headerText="Detalle">
+						        	<p:outputLabel value="#{sol.sesvasBeneficio.detalle}"/>
+						    </p:column>
+						    <p:column headerText="Detalle">
+						        	<p:outputLabel value="#{sol.fecha}"/>
+						    </p:column>
+						    <p:column headerText="ESTADO">
+						        	<p:outputLabel value="#{sol.estado}"/>
+						    </p:column>
+						    <p:rowExpansion>
+						    	
+						    	<p:dataTable value="#{sol.sesvasAdjuntos}" var="ad">
+						    		<f:facet name="header">
+						                Documentos Adjuntos
+						            </f:facet>
+						    		<p:column headerText="Requisito">
+						    			<p:outputLabel value="#{ad.sesvasRequisito.sesvasTipoRequisito.tipoRequisito}" />
+						    		</p:column>
+						    		<p:column headerText="Documento">
+						    			<p:outputLabel value="#{ad.nombreArchivo}" />
+						    		</p:column>
+						    		<p:column >
+						    			<p:commandButton icon="fa fa-search" value="ver" update=":frmPDF :frmIMAGE"
+						    					action="#{frmMisSolicitudes.cargarDocumento(ad.nombreArchivo)}"/>
+						    		</p:column>
+						    	</p:dataTable>
+						    </p:rowExpansion>
+                    	</p:dataTable>
+                    </p:panel>
+	                </h:form>
+	                 <p:dialog
+							header="DOCUMENTO" resizable="false" position="top" width="90%"
+							widgetVar="dlgPDF" id="dlgPDF" modal="true"
+							hideEffect="fade">
+							<h:form id="frmPDF">
+								<p:media value="#{frmMisSolicitudes.pdf}" width="70%" height="600px" player="pdf"/>
+							</h:form>
+						</p:dialog>
+						<p:dialog
+							header="DOCUMENTO" resizable="false" position="center"
+							widgetVar="dlgImage" id="dlgImage" modal="true"
+							hideEffect="fade" >
+							<h:form id="frmIMAGE">
+								<p:panelGrid columns="2">
+									<p:outputLabel value="Click en el boton para descargar Imagen"/>
+									<p:commandButton value="Descargar" icon="pi pi-arrow-down" ajax="false" styleClass="ui-button-outlined"
+													 onclick="PF('dlgImage').hide()">
+										<p:fileDownload value="#{frmMisSolicitudes.download}"/>
+									</p:commandButton>
+								</p:panelGrid>
+							</h:form>
+						</p:dialog>
                 </div>
 				<ui:include src="/affordances/footer.xhtml" />
             </div>

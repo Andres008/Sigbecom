@@ -25,13 +25,149 @@
             <div class="layout-main">
                 <div class="route-bar">
                     <div class="route-bar-breadcrumb">
-                        <i class="fa fa-home"></i> <span>/SESVAS/Solicitudes</span>
+                        <i class="fa fa-home"></i> <span>/SESVAS/Gestion de Solicitudes</span>
                         <ui:insert name="viewname" />
                     </div>
 					<ui:include src="/affordances/route-bar-menu.xhtml" />
                 </div>
 				<div class="layout-main-content">
-                    
+                <H1>GESTION DE SOLICITUDES</H1>
+				<h:form >
+					<p:growl id="growl" showDetail="true" sticky="true" />
+                    <p:panel id="pnl" header="TRAMITE DE SOLICITUDES">
+                    	<div class="card" align="right">
+						    <h:commandLink >
+						    	<p:graphicImage name="images/logo_excel.png" library="california-layout" />
+						    	<p:dataExporter type="xls" target="lstSolicituds" fileName="ListadoSolicitudes"></p:dataExporter>
+						    </h:commandLink>
+					    </div>	
+                    	<p:dataTable id="lstSolicituds"
+                    	 value="#{frmGestionSolicitud.lstSesvasSolicituds}" var="sol">
+                    		<p:column headerText="" style="width:2rem">
+								<p:rowToggler />
+							</p:column>
+							<p:column headerText="Cedula" style="width:4rem">
+						        	<p:outputLabel value="#{sol.usrSocio.cedulaSocio}"/>
+						    </p:column>
+						    <p:column headerText="Nombres Socio">
+						        	<p:outputLabel value="#{sol.usrSocio.gesPersona.apellidos} #{sol.usrSocio.gesPersona.nombres}"/>
+						    </p:column>
+						    <p:column headerText="Solicitud">
+						        	<p:outputLabel value="#{sol.sesvasBeneficio.beneficios} #{sol.sesvasBeneficio.detalle}"/>
+						    </p:column>
+						    <p:column headerText="Fecha Solicitud" filterBy="#{sol.fecha}" style="width:4rem">
+						        	<p:outputLabel value="#{sol.fecha}"/>
+						    </p:column>
+						    <p:column headerText="Estado Tramite" filterBy="#{sol.estado}" style="width:4rem">
+						        	<p:outputLabel value="#{sol.estado}"/>
+						    </p:column>
+						    <p:column headerText="Fecha Resolucion" filterBy="#{sol.fechaAsignacion}" style="width:4rem">
+						        	<p:outputLabel value="#{sol.fechaAsignacion}"/>
+						    </p:column>
+						    <p:column headerText="Monto" style="width:3rem">
+						        	<p:outputLabel value="#{sol.valor}"/>
+						    </p:column>
+						    <p:column style="width:4rem">
+						        	<p:commandButton  value="Tramitar" onclick="PF('dlgTramite').show();" update="frmTramite"
+						        					disabled="#{frmGestionSolicitud.habilitarTramite(sol.estado)}"
+						        					action="#{frmGestionSolicitud.cargarSolicitud(sol.idSesvasSolicitud)}"/>
+						    </p:column>
+						    <p:rowExpansion>
+						    	<p:panelGrid columns="2">
+						    		<p:outputLabel value="Beneficio:"/>
+						    		<p:outputLabel value="#{sol.sesvasBeneficio.beneficios} #{sol.sesvasBeneficio.detalle}"/>
+						    		<p:outputLabel value="Fecha de Solicitud:"/>
+						    		<p:outputLabel value="#{sol.fecha}"/>
+						    		<p:outputLabel value="Resolución:"/>
+						    		<p:outputLabel value="#{sol.resolucion}"/>
+						    		<p:outputLabel value="Fecha de Resolución:"/>
+						    		<p:outputLabel value="#{sol.fechaAsignacion}"/>
+						    		<p:outputLabel value="Estado:"/>
+						    		<p:outputLabel value="#{sol.estado}"/>
+						    		<p:outputLabel value="Valor:"/>
+						    		<p:outputLabel value="#{sol.valor}"/>
+						    	</p:panelGrid>
+						    	<p:separator/>
+						    	<p:dataTable value="#{sol.sesvasAdjuntos}" var="ad">
+						    		<f:facet name="header">
+						                Documentos Adjuntos
+						            </f:facet>
+						    		<p:column headerText="Requisito">
+						    			<p:outputLabel value="#{ad.sesvasRequisito.sesvasTipoRequisito.tipoRequisito}" />
+						    		</p:column>
+						    		<p:column headerText="Documento">
+						    			<p:outputLabel value="#{ad.nombreArchivo}" />
+						    		</p:column>
+						    		<p:column >
+						    			<p:commandButton icon="fa fa-search" value="ver" update=":frmPDFT :frmIMAGET"
+						    					action="#{frmGestionSolicitud.cargarDocumento(ad.nombreArchivo)}"/>
+						    		</p:column>
+						    	</p:dataTable>
+						    	<br/>
+						    	<br/>
+						    </p:rowExpansion>
+                    	</p:dataTable>
+                    </p:panel>
+                </h:form>
+						<p:dialog
+							header="DOCUMENTO" resizable="false" position="top" width="90%"
+							widgetVar="dlgPDFT" id="dlgPDF" modal="true"
+							hideEffect="fade">
+							<h:form id="frmPDFT">
+								<p:media value="#{frmGestionSolicitud.pdf}" width="70%" height="600px" player="pdf"/>
+							</h:form>
+						</p:dialog>
+						<p:dialog
+							header="DOCUMENTO" resizable="false" position="center"
+							widgetVar="dlgImageT" id="dlgImage" modal="true"
+							hideEffect="fade" >
+							<h:form id="frmIMAGET">
+								<p:panelGrid columns="2">
+									<p:outputLabel value="Click en el boton para descargar Imagen"/>
+									<p:commandButton value="Descargar" icon="pi pi-arrow-down" ajax="false" styleClass="ui-button-outlined"
+													 onclick="PF('dlgImageT').hide()">
+										<p:fileDownload value="#{frmGestionSolicitud.download}"/>
+									</p:commandButton>
+								</p:panelGrid>
+							</h:form>
+						</p:dialog>
+						<p:dialog
+							header="TRAMITE DE SOLICITUD" resizable="false" position="center" 
+							widgetVar="dlgTramite" id="dlgTramite" modal="true" closable="false"
+							hideEffect="fade" >
+							<h:form id="frmTramite">
+								<p:messages id="msg" showDetail="true" closable="true"/>
+								<p:panelGrid columns="2">
+									<p:outputLabel value="Cedula de Identidad:"/>
+									<p:outputLabel value="#{frmGestionSolicitud.sesvasSolicitud.usrSocio.cedulaSocio}"/>
+									<p:outputLabel value="Solicitante:"/>
+									<p:outputLabel value="#{frmGestionSolicitud.sesvasSolicitud.usrSocio.gesPersona.apellidos} #{frmGestionSolicitud.sesvasSolicitud.usrSocio.gesPersona.nombres}"/>
+									<p:outputLabel value="Fecha que solicita:"/>
+									<p:outputLabel value="#{frmGestionSolicitud.sesvasSolicitud.fecha}"/>
+									<p:outputLabel value="Ingrese Resolución"/>
+									<p:inputTextarea rows="4" cols="33" value="#{frmGestionSolicitud.resolucion}"/>
+									<p:outputLabel value="Seleccione Opcion:"/>
+									<p:selectOneRadio id="console" value="#{frmGestionSolicitud.estado}">
+							            <f:selectItem itemLabel="APROBADO" itemValue="APROBADO"/>
+							            <f:selectItem itemLabel="NO APROBADO" itemValue="NO APROBADO"/>
+							            <p:ajax event="click" listener="#{frmGestionSolicitud.renderValor()}" update="frmTramite:val"/>
+							        </p:selectOneRadio>
+							        <p:outputLabel for="val" value="Ingrese Valor Asignado:"/>
+							        <p:inputNumber id="val" disabled="#{frmGestionSolicitud.inputVal}" value="#{frmGestionSolicitud.valor}" symbol=" $"
+                               						symbolPosition="s" decimalSeparator="." thousandSeparator="," />
+							    </p:panelGrid>
+							    <p:panel style="text-align:center">
+							    	<h:panelGrid columns="2" cellpadding="10">
+							    		<p:commandButton value="CANCELAR" onclick="PF('dlgTramite').hide()"
+							    						action="#{frmGestionSolicitud.inicializar()}" />
+							    		<p:commandButton value="ACEPTAR"
+							    				action="#{frmGestionSolicitud.tramitarSolicitud()}" />
+							    	</h:panelGrid>
+							    </p:panel>
+							     
+							</h:form>
+						</p:dialog>
+						
                 
                 </div>
 				<ui:include src="/affordances/footer.xhtml" />

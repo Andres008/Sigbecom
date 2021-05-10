@@ -1,6 +1,8 @@
 package ec.com.model.dao.entity;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
+
 import javax.persistence.*;
 import java.sql.Timestamp;
 import java.util.List;
@@ -37,7 +39,19 @@ public class SesvasSolicitud implements Serializable {
 	@ManyToOne
 	@JoinColumn(name="cedula_socio")
 	private UsrSocio usrSocio;
-
+	
+	@Column(name="estado")
+	private String estado;
+	
+	@Column(name="valor")
+	private BigDecimal valor;
+	
+	@Column(name="fecha_asignacion")
+	private Timestamp fechaAsignacion;
+	
+	@Column(name="resolucion")
+	private String resolucion;
+	
 	public SesvasSolicitud() {
 	}
 
@@ -95,4 +109,36 @@ public class SesvasSolicitud implements Serializable {
 		this.usrSocio = usrSocio;
 	}
 
+	public String getEstado() {
+		return estado;
+	}
+
+	public void setEstado(String estado) {
+		this.estado = estado;
+	}
+
+	public BigDecimal getValor() {
+		return valor;
+	}
+
+	public void setValor(BigDecimal valor) {
+		this.valor = valor;
+	}
+
+	public Timestamp getFechaAsignacion() {
+		return fechaAsignacion;
+	}
+
+	public void setFechaAsignacion(Timestamp fechaAsignacion) {
+		this.fechaAsignacion = fechaAsignacion;
+	}
+
+	public String getResolucion() {
+		return resolucion;
+	}
+
+	public void setResolucion(String resolucion) {
+		this.resolucion = resolucion;
+	}
+	
 }

@@ -59,47 +59,131 @@
 	                    </p:panel>
 	                    <p:separator/>
 	                </h:form>
-	                <h:form>
+	                <h:form id="form2">
 	                	<p:growl id="growl" showDetail="true" sticky="true" />
-	                	<p:panel header="Beneficios SESVAS">
+	                	<p:panel id="pnl"  header="Beneficios SESVAS">
 						<p:dataTable value="#{frmGestionBeneficios.lstSesvasBeneficio}"
 							id="tblBen" editable="true" var="dato" paginator="true"
 							rows="10">
+							<p:ajax event="rowEdit" listener="#{frmGestionBeneficios.onRowEdit}" update="form2:growl"/>
+            				<p:ajax event="rowEditCancel" listener="#{frmGestionBeneficios.onRowCancel}" update="form2:growl"/>
 							<f:facet name="header">
 								Expanda la fila para ver los detalles de los beneficios
 							</f:facet>
-							<p:column headerText="" style="width:4rem">
+							<p:column headerText="" style="width:2rem">
 								<p:rowToggler />
 							</p:column>
-							
-							<p:column headerText="Nombre Beneficio">
+							<p:column headerText="BENEFICIO">
 								<p:cellEditor>
-									<f:facet name="output">
-										<p:outputLabel value="#{dato.beneficios}" />
-									</f:facet>
-								</p:cellEditor>
-
+				                    <f:facet name="output">
+				                        <h:outputText value="#{dato.beneficios}"/>
+				                    </f:facet>
+				                    <f:facet name="input">
+				                        <p:inputText value="#{dato.beneficios}" style="width:100%"/>
+				                    </f:facet>
+				                </p:cellEditor>
 							</p:column>
-							<p:column headerText="Descripción">
+							<p:column headerText="DETALLE">
 								<p:cellEditor>
-									<f:facet name="output">
-										<p:outputLabel value="#{dato.detalle}" />
-									</f:facet>
-								</p:cellEditor>
+				                    <f:facet name="output">
+				                        <h:outputText value="#{dato.detalle}"/>
+				                    </f:facet>
+				                    <f:facet name="input">
+				                        <p:inputText  value="#{dato.detalle}" style="width:100%"/>
+				                    </f:facet>
+				                </p:cellEditor>
 							</p:column>
+							<p:column style="width:2rem">
+				                <p:rowEditor editTitle="Editar" cancelTitle="Cancelar" saveTitle="Guardar"/>
+				            </p:column>
 							<p:rowExpansion>
-								<p:panel header="Requerimientos">
+								<p:panel id="pnlNuevoReq">
+									<p:commandButton id="nReq" value="Nuevo Requisito" icon="fa fa-plus"
+													action="#{frmGestionBeneficios.mostrarPanelNuevosRequisitos()}" update="form2:tblBen:0:pnlNuevoReq"/>
+									<p:separator/>
+									<p:panel id="pnlNuReq" header="Agregar Nuevos Requisitos" style="background-color: #D1E4FF;"
+									         rendered="#{frmGestionBeneficios.pnlRenderNuevoReq}">
+										<div class="ui-g" >
+											<div class="ui-g-12 ui-md-8 ui-lg-3">
+												<p:outputLabel value="Seleccione tipo de documentos:"/>
+											</div>
+											<div class="ui-g-12 ui-md-6 ui-lg-6" >
+												<p:panelGrid columns="2" styleClass="ui-noborder">	
+													<p:selectOneMenu id="option" 
+															value="#{frmGestionBeneficios.idSesvasTipoRequisito}">
+											           <f:selectItem itemLabel="Seleccione Documento" noSelectionOption="true" />
+											           <f:selectItems value="#{frmGestionBeneficios.lstTiposdocumentos}" var="tip"
+											                    	itemLabel="#{tip.tipoRequisito}" itemValue="#{tip.idSesvasTipoRequisito}"/>
+											           <p:ajax event="change" delay="1000" process="form2:tblBen:0:option" update="form2:tblBen:0:option"/>
+											        </p:selectOneMenu>
+											        <p:commandButton icon="fa fa-file-o" value="Nuevo" onclick="PF('dlgDoc').show();"/>
+											        
+												</p:panelGrid>
+											</div>
+										</div>
+										<p:separator/>
+										<p:panel style="text-align:right; border-style: none;background-color: #D1E4FF;" >
+											<p:commandButton value="Agregar" update="@form" process="@this"
+													actionListener="#{frmGestionBeneficios.agregarRequisitos(dato)}"/>
+										</p:panel>
+									</p:panel>
+									<br/>
 									
+								</p:panel>
+								<p:panel>
+									<p:dataTable value="#{dato.sesvasRequisitos}"
+													id="tblReq" editable="true" var="req" paginator="true"
+													rows="10">
+										<f:facet name="header">
+								            Lista de Requisitos
+										</f:facet>
+										<p:column headerText="Code">
+								            <h:outputText value="#{req.sesvasBeneficio.beneficios}"/>
+								        </p:column>
+										
+									
+									</p:dataTable>
 								</p:panel>
 							</p:rowExpansion>
 						</p:dataTable>
 					</p:panel>
 	                </h:form>
+	                <!-- Inicio de Dialogs -->
+	                <h:form id="frmReq">
+	                	<p:dialog
+						header="Registro tipos de Documentos"  resizable="false"
+						widgetVar="dlgDoc" id="dlgDoc" modal="true" position="center"
+						hideEffect="fade" >
+							
+							<p:messages id="msg"/>
+							<p:panelGrid columns="2">
+								<p:outputLabel for="req" value="Nombre tipo Documento"/>
+								<p:inputText id="req" required="true"
+									placeholder="Nombre Documento" style="text-transform: uppercase"
+								 value="#{frmGestionBeneficios.tiposDocumento.tipoRequisito}" />
+							</p:panelGrid>
+							
+							<p:panelGrid columns="2">
+							<p:commandButton id="btnCan" value="Cancelar" update="form2:tblBen:0:pnlNuevoReq" 
+							action="#{frmGestionBeneficios.init()}" onclick="PF('dlgDoc').hide();"/>
+							<p:commandButton id="btnGuar" value="Guardar" update="dlgDoc"
+							actionListener="#{frmGestionBeneficios.registrarTipoDocumento()}"/>
+							</p:panelGrid>
+						</p:dialog>
+						</h:form>
+						<p:dialog
+						header="Agregar Nuevo requisito"  resizable="false"
+						widgetVar="dlgDoc" id="dlgDoc" modal="true" position="center"
+						hideEffect="fade" >
+							<p:messages id="msg"/>
+							
+						</p:dialog>
+	                <!-- Fin de Dialogs -->
                 </div>
 				<ui:include src="/affordances/footer.xhtml" />
             </div>
         </div>
-
+		
         <p:ajaxStatus style="width:32px;height:32px;position:fixed;right:7px;bottom:7px">
            <f:facet name="start">
                <i class="fa fa-circle-o-notch fa-spin ajax-loader" aria-hidden="true"></i>

@@ -1,6 +1,8 @@
 package ec.com.model.dao.entity;
 
 import java.io.Serializable;
+import java.util.List;
+
 import javax.persistence.*;
 
 
@@ -29,6 +31,10 @@ public class SesvasRequisito implements Serializable {
 	@ManyToOne
 	@JoinColumn(name="id_sesvas_tipo_requisito")
 	private SesvasTipoRequisito sesvasTipoRequisito;
+	
+	//bi-directional many-to-one association to SesvasAdjunto
+	@OneToMany(mappedBy="sesvasRequisito")
+	private List<SesvasAdjunto> sesvasAdjuntos;
 
 	public SesvasRequisito() {
 	}
@@ -56,5 +62,25 @@ public class SesvasRequisito implements Serializable {
 	public void setSesvasTipoRequisito(SesvasTipoRequisito sesvasTipoRequisito) {
 		this.sesvasTipoRequisito = sesvasTipoRequisito;
 	}
+	public List<SesvasAdjunto> getSesvasAdjuntos() {
+		return this.sesvasAdjuntos;
+	}
 
+	public void setSesvasAdjuntos(List<SesvasAdjunto> sesvasAdjuntos) {
+		this.sesvasAdjuntos = sesvasAdjuntos;
+	}
+
+	public SesvasAdjunto addSesvasAdjunto(SesvasAdjunto sesvasAdjunto) {
+		getSesvasAdjuntos().add(sesvasAdjunto);
+		sesvasAdjunto.setSesvasRequisito(this);
+
+		return sesvasAdjunto;
+	}
+
+	public SesvasAdjunto removeSesvasAdjunto(SesvasAdjunto sesvasAdjunto) {
+		getSesvasAdjuntos().remove(sesvasAdjunto);
+		sesvasAdjunto.setSesvasRequisito(null);
+
+		return sesvasAdjunto;
+	}
 }

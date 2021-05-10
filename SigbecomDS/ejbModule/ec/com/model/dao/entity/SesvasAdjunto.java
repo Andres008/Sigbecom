@@ -27,6 +27,11 @@ public class SesvasAdjunto implements Serializable {
 	@ManyToOne
 	@JoinColumn(name="id_sesvas_solicitud")
 	private SesvasSolicitud sesvasSolicitud;
+	
+	@ManyToOne
+	@JoinColumn(name="id_sesvas_requisitos")
+	private SesvasRequisito sesvasRequisito;
+	
 
 	public SesvasAdjunto() {
 	}
@@ -55,4 +60,13 @@ public class SesvasAdjunto implements Serializable {
 		this.sesvasSolicitud = sesvasSolicitud;
 	}
 
+	public SesvasRequisito getSesvasRequisito() {
+		return sesvasRequisito;
+	}
+
+	public void setSesvasRequisito(SesvasRequisito sesvasRequisito) {
+		this.sesvasRequisito = sesvasRequisito;
+	}
+
+	
 }
