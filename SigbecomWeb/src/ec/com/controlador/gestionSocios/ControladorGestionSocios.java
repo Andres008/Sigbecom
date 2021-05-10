@@ -240,8 +240,8 @@ public class ControladorGestionSocios implements Serializable {
 	 */
 	public void actualizarPersonaSocio() {
 		try {
+			ModelUtil.esEmailCorrecto(objUsrSocio.getGesPersona().getEmail());
 			managerGestionPersonas.actualizarGesPersona(objUsrSocio.getGesPersona());
-			System.out.println(objUsrSocio.getUsrAgencia().getIdAgencia());
 			managerGestionSocios.actualizarUsrSocio(objUsrSocio);
 			inicializarActualizacionSocio();
 			managerLog.generarLogUsabilidad(beanLogin.getCredencial(), this.getClass(), "actualizarPersonaSocio",

@@ -12,6 +12,8 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class ModelUtil {
 	/**
@@ -132,6 +134,23 @@ public class ModelUtil {
 		int mesActual = Integer.parseInt(formato.format(fechaActual));
 		return mesActual;
 	}
+	
+	/**
+     * Valida si es correcta la dirección de correo electrónica dada.
+     *@param email
+     *@return true si es correcta o false si no lo es.
+	 * @throws Exception 
+     */
+    public static void esEmailCorrecto(String email) throws Exception {
+       
+        boolean valido = false;
+       
+        Pattern patronEmail = Pattern.compile("^[_A-Za-z0-9-\\+]+(\\.[_A-Za-z0-9-]+)@[A-Za-z0-9-]+(\\.[A-Za-z0-9]+)(\\.[A-Za-z]{2,})$");
+   
+        Matcher mEmail = patronEmail.matcher(email.toLowerCase());
+        if (!mEmail.matches())
+        	throw new Exception("Error formato email.");
+    }
 
 	/**
 	 * Suma o resta dias a una fecha.
