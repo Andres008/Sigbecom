@@ -131,9 +131,10 @@ public class FrmGestionSolicitud implements Serializable{
 		return "";
 	}
 	
-	public void cargarDocumento(String nombreArchivo) {
-		String cedula=beanLogin.getCredencial().getObjUsrSocio().getCedulaSocio();
-		String url = "C:/Archivos/"+cedula+"/"+nombreArchivo;
+	public void cargarDocumento(String nombreArchivo, String cedula) {
+		//String cedula=beanLogin.getCredencial().getObjUsrSocio().getCedulaSocio();
+		String homeUsuario = System.getProperty("user.home");
+		String url = homeUsuario+"/reportes_sesvas/"+cedula+"/"+nombreArchivo;
 		File file = new File(url);
 		nombreArchivoTmp = nombreArchivo;
 		String ext = nombreArchivoTmp.substring(nombreArchivoTmp.lastIndexOf('.'), nombreArchivoTmp.length());
@@ -141,7 +142,7 @@ public class FrmGestionSolicitud implements Serializable{
 		if (ext.equalsIgnoreCase(".pdf")) {
 			try {
 				fis = new FileInputStream(file);
-				System.out.println("Url 1 : "+url);
+				//System.out.println("Url 1 : "+url);
 			} catch (FileNotFoundException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();

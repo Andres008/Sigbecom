@@ -146,7 +146,10 @@ public class FrmMisSolicitudes implements Serializable{
         	try {
 				managerSesvas.registrarSolicitud(sesvasSolicitud);
 				//String url = "C:\\Users\\SUPERTRONICA\\Documents\\"+beanLogin.getCredencial().getObjUsrSocio().getCedulaSocio()+"\\";
-				String url = "C:\\Archivos\\"+"1001962156"+"\\";
+				String homeUsuario = System.getProperty("user.home");
+				String cedula=beanLogin.getCredencial().getObjUsrSocio().getCedulaSocio();
+				String url = homeUsuario+"/reportes_sesvas/"+cedula+"/";
+				//String url = "C:\\Archivos\\"+"1001962156"+"\\";
 				for (DtoSesvasAdjunto dtoSesvasAdjunto : lstAdjuntos) {
 					SesvasAdjunto sesvasAdjunto = new SesvasAdjunto();
 					sesvasAdjunto.setNombreArchivo(dtoSesvasAdjunto.getNombreArchivo());
@@ -191,9 +194,11 @@ public class FrmMisSolicitudes implements Serializable{
 		}
 	}
 	
-	public void cargarDocumento(String nombreArchivo) {
-		String cedula=beanLogin.getCredencial().getObjUsrSocio().getCedulaSocio();
-		String url = "C:/Archivos/"+cedula+"/"+nombreArchivo;
+	public void cargarDocumento(String nombreArchivo,String cedula) {
+		//String cedula=beanLogin.getCredencial().getObjUsrSocio().getCedulaSocio();
+		//String url = "C:/Archivos/"+cedula+"/"+nombreArchivo;
+		String homeUsuario = System.getProperty("user.home");
+		String url = homeUsuario+"/reportes_sesvas/"+cedula+"/"+nombreArchivo;
 		File file = new File(url);
 		nombreArchivoTmp = nombreArchivo;
 		String ext = nombreArchivoTmp.substring(nombreArchivoTmp.lastIndexOf('.'), nombreArchivoTmp.length());
@@ -255,16 +260,24 @@ public class FrmMisSolicitudes implements Serializable{
 	@SuppressWarnings("static-access")
 	public StreamedContent getImage() {
 		if (fis != null) {
-			String tipo="image/"+extension;
-			System.out.println("contentType: "+tipo);
-			StreamedContent imagen = new DefaultStreamedContent().builder().contentType(tipo).name(nombreArchivoTmp).stream(()-> fis).build();
-			PrimeFaces prime=PrimeFaces.current();
-			prime.ajax().update("frmIMAGE");
-			return imagen;
+			 try {
+				String tipo="image/"+extension;
+				System.out.println("contentType: "+tipo);
+				StreamedContent imagen = new DefaultStreamedContent().builder().contentType(tipo).name(nombreArchivoTmp).stream(()-> fis).build();
+				if(imagen!=null) {
+					PrimeFaces prime=PrimeFaces.current();
+					prime.ajax().update("frmIMAGE");
+					return imagen;
+				}
+			 }catch (Exception e) {
+                    e.printStackTrace();
+                    return null;
+             }
 		}
 		else {
 			return null;
 		}
+		return null;
 	}
 	
 	//GETTERS AND SETTERS

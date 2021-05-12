@@ -31,7 +31,7 @@ public class FrmGestionBeneficios implements Serializable{
 	
 	private SesvasBeneficio sesvasBeneficio;
 	//private SesvasTipoRequisito sesvasTipoRequisito;
-	private boolean pnlRenderNuevoReq;
+	
 	private SesvasTipoRequisito tiposDocumento;
 	private Long idSesvasTipoRequisito;
 	
@@ -50,7 +50,7 @@ public class FrmGestionBeneficios implements Serializable{
 		lstTiposdocumentos = new ArrayList<SesvasTipoRequisito>();
 		//sesvasTipoRequisito = new SesvasTipoRequisito();
 		
-		pnlRenderNuevoReq = false;
+		
 		tiposDocumento = new SesvasTipoRequisito();
 		idSesvasTipoRequisito = new Long(0);
 		
@@ -114,16 +114,6 @@ public class FrmGestionBeneficios implements Serializable{
 		}
 	}
 	
-	public void mostrarPanelNuevosRequisitos() {
-		if(pnlRenderNuevoReq==true) {
-			pnlRenderNuevoReq = false;
-		}
-		else {
-			pnlRenderNuevoReq = true;
-		}
-		
-	}
-	
 	public void registrarTipoDocumento() {
 		//System.out.println("Documento:"+tiposDocumento.getTipoRequisito());
 		if(tiposDocumento !=null && !tiposDocumento.getTipoRequisito().isEmpty()) {
@@ -132,8 +122,8 @@ public class FrmGestionBeneficios implements Serializable{
 				managerSesvas.registrarSesvasTipoDocumento(tiposDocumento);
 				JSFUtil.crearMensajeINFO("Se realizó el registro correctamente.");
 				PrimeFaces prime=PrimeFaces.current();
+				prime.ajax().update("frmRe");
 				prime.executeScript("PF('dlgDoc').hide();");
-				prime.ajax().update("form2:tblBen:0:pnlNuevoReq");
 				init();
 			} catch (Exception e) {
 				JSFUtil.crearMensajeERROR("No se realizo la peticion solicitada registro nuevo tipo documento");
@@ -147,9 +137,9 @@ public class FrmGestionBeneficios implements Serializable{
 		}
 	}
 
-	public void agregarRequisitos(SesvasBeneficio sesvasBeneficio) {
-		System.out.println("Beneficio: "+ sesvasBeneficio.getBeneficios());
-		System.out.println("idSesvasTipoRequisito: "+ idSesvasTipoRequisito);
+	public void agregarRequisitos() {
+		//System.out.println("Beneficio: "+ sesvasBeneficio.getBeneficios());
+		//System.out.println("idSesvasTipoRequisito: "+ idSesvasTipoRequisito);
 		if(idSesvasTipoRequisito!=0) {
 			SesvasTipoRequisito sesvasTipoRequisito;
 			SesvasRequisito sesRequisito = new SesvasRequisito();
@@ -159,6 +149,9 @@ public class FrmGestionBeneficios implements Serializable{
 			try {
 				managerSesvas.registrarSesvasRequisito(sesRequisito);
 				JSFUtil.crearMensajeINFO("Registro realizado correctamente");
+				PrimeFaces prime=PrimeFaces.current();
+				prime.ajax().update("form2");
+				prime.executeScript("PF('dlgReq').hide();");
 				init();
 			} catch (Exception e) {
 				JSFUtil.crearMensajeERROR("No se realizo la peticion solicitada agregar Nuevo Requisito");
@@ -169,6 +162,10 @@ public class FrmGestionBeneficios implements Serializable{
 			System.out.println("nuloooo");
 			JSFUtil.crearMensajeERROR("Seleccione tipo Documento");
 		}
+	}
+	
+	public void cargarBeneficio(long idBeneficio) {
+		sesvasBeneficio = lstSesvasBeneficio.stream().filter(p->p.getIdSesvasBeneficios()==idBeneficio).findAny().orElse(null);
 	}
 	
 	//Getter and Setters
@@ -194,14 +191,6 @@ public class FrmGestionBeneficios implements Serializable{
 
 	public void setLstSesvasBeneficio(List<SesvasBeneficio> lstSesvasBeneficio) {
 		this.lstSesvasBeneficio = lstSesvasBeneficio;
-	}
-
-	public boolean isPnlRenderNuevoReq() {
-		return pnlRenderNuevoReq;
-	}
-
-	public void setPnlRenderNuevoReq(boolean pnlRenderNuevoReq) {
-		this.pnlRenderNuevoReq = pnlRenderNuevoReq;
 	}
 
 	public SesvasTipoRequisito getTiposDocumento() {

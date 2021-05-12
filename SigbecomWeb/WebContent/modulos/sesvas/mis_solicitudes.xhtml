@@ -124,7 +124,7 @@
 						    		</p:column>
 						    		<p:column >
 						    			<p:commandButton icon="fa fa-search" value="ver" update=":frmPDF :frmIMAGE"
-						    					action="#{frmMisSolicitudes.cargarDocumento(ad.nombreArchivo)}"/>
+						    					action="#{frmMisSolicitudes.cargarDocumento(ad.nombreArchivo,sol.usrSocio.cedulaSocio)}"/>
 						    		</p:column>
 						    	</p:dataTable>
 						    </p:rowExpansion>
@@ -151,6 +151,8 @@
 										<p:fileDownload value="#{frmMisSolicitudes.download}"/>
 									</p:commandButton>
 								</p:panelGrid>
+								
+								
 							</h:form>
 						</p:dialog>
                 </div>
