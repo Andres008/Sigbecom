@@ -6,6 +6,7 @@ import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.math.RoundingMode;
 import java.security.MessageDigest;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -427,6 +428,16 @@ public class ModelUtil {
 			}
 
 		}
+	}
+	
+	
+	public static BigDecimal calcularCuotaMensual(Double valorPrestamo, Double interes, Double nCuotas) {
+		interes = interes / 1200; // Calcular el tipo mensual
+
+        double numerador = interes * Math.pow(1 + interes, nCuotas);
+        double denominador = Math.pow(1 + interes, nCuotas) - 1;
+        Double cuota = valorPrestamo * (numerador / denominador);
+        return new BigDecimal(cuota).setScale(2, RoundingMode.HALF_UP);
 	}
 
 	public static String randomAlphaNumeric() {
