@@ -43,8 +43,12 @@
 				<h:form>
 					<p:growl id="growl" showDetail="true" sticky="true" />
 					<p:panel header="Usuarios">
-						<p:dataTable value="#{controladorGestionSocios.lstUsrSocio}"
-							var="socio">
+						<p:dataTable id="tblSocios" value="#{controladorGestionSocios.lstUsrSocio}"
+							editable="true" var="socio" paginator="true" rows="10">
+							<p:ajax event="rowEdit" listener="#{controladorRol.onRowEdit}"
+								update="@form:growl @form:tblSocios" process="@this" oncomplete="#{controladorGestionSocios.inicializarConsultaSocio()}" />
+							<p:ajax event="rowEditCancel"
+								listener="#{controladorRol.onRowCancel}" update="@form:growl" />
 							<p:column headerText="Cédula">
 								<p:outputLabel value="#{socio.gesPersona.cedula}" />
 							</p:column>
@@ -56,10 +60,37 @@
 									value="#{socio.gesPersona.apellidos} #{socio.gesPersona.nombres}" />
 							</p:column>
 							<p:column headerText="Rol">
-								<p:outputLabel value="#{socio.autRol.nombre}" />
+								<p:cellEditor>
+									<f:facet name="output">
+										<p:outputLabel value="#{socio.autRol.nombre}" />
+									</f:facet>
+									<f:facet name="input">
+										<p:selectOneMenu value="#{socio.autRol.idRol}" required="true" style="color : black">
+											<f:selectItem itemLabel="Seleccione Rol"
+												noSelectionOption="true" />
+											<f:selectItems value="#{controladorMenuPerfiles.siAutRol()}" />
+										</p:selectOneMenu>
+									</f:facet>
+								</p:cellEditor>
 							</p:column>
 							<p:column headerText="Estado">
-								<p:outputLabel value="#{socio.usrEstadoSocio.estado}" />
+							<p:cellEditor>
+									<f:facet name="output">
+										<p:outputLabel value="#{socio.usrEstadoSocio.estado}" />
+									</f:facet>
+									<f:facet name="input">
+										<p:selectOneMenu value="#{socio.usrEstadoSocio.idEstado}" required="true" style="color : black">
+											<f:selectItem itemLabel="Seleccione Rol"
+												noSelectionOption="true" />
+											<f:selectItems value="#{controladorMenuPerfiles.siAutEstado()}" />
+										</p:selectOneMenu>
+									</f:facet>
+								</p:cellEditor>
+								
+							</p:column>
+							<p:column headerText="Editar">
+								<p:rowEditor editTitle="Edit Row" cancelTitle="Cancel Edit"
+									saveTitle="Save Row" />
 							</p:column>
 							<p:column headerText="Ver Datos Personales">
 								<p:commandButton icon="ui-icon-search"
@@ -82,39 +113,41 @@
 											library="california-layout" />
 									</p:panelGrid>
 									<p:panelGrid columns="6" styleClass="ui-noborder">
-										<p:outputLabel value="Cédula" style="font-weight:bold"/>
+										<p:outputLabel value="Cédula" style="font-weight:bold" />
 										<p:outputLabel
 											value="#{controladorGestionSocios.objUsrSocio.cedulaSocio}" />
-										<p:outputLabel value="Código Rol" style="font-weight:bold"/>
+										<p:outputLabel value="Código Rol" style="font-weight:bold" />
 										<p:outputLabel
 											value="#{controladorGestionSocios.objUsrSocio.idSocio}" />
-										<p:outputLabel value="Apellidos" style="font-weight:bold"/>
+										<p:outputLabel value="Apellidos" style="font-weight:bold" />
 										<p:outputLabel
 											value="#{controladorGestionSocios.objUsrSocio.gesPersona.apellidos}" />
-										<p:outputLabel value="Nombres" style="font-weight:bold"/>
+										<p:outputLabel value="Nombres" style="font-weight:bold" />
 										<p:outputLabel
 											value="#{controladorGestionSocios.objUsrSocio.gesPersona.nombres}" />
-										<p:outputLabel value="Estado Civil" style="font-weight:bold"/>
+										<p:outputLabel value="Estado Civil" style="font-weight:bold" />
 										<p:outputLabel
 											value="#{controladorGestionSocios.objUsrSocio.gesPersona.gesEstadoCivil.estadoCivil}" />
-										<p:outputLabel value="Género" style="font-weight:bold"/>
+										<p:outputLabel value="Género" style="font-weight:bold" />
 										<p:outputLabel
 											value="#{controladorGestionSocios.objUsrSocio.gesPersona.gesGenero.genero}" />
-										<p:outputLabel value="Tipo de Sangre" style="font-weight:bold"/>
+										<p:outputLabel value="Tipo de Sangre" style="font-weight:bold" />
 										<p:outputLabel
 											value="#{controladorGestionSocios.objUsrSocio.gesPersona.gesTipoSangre.tipoSangre}" />
-										<p:outputLabel value="Etnia" style="font-weight:bold"/>
+										<p:outputLabel value="Etnia" style="font-weight:bold" />
 										<p:outputLabel
 											value="#{controladorGestionSocios.objUsrSocio.gesPersona.gesEtnia.etnia}" />
-										<p:outputLabel value="Fecha Nacimiento" style="font-weight:bold"/>
+										<p:outputLabel value="Fecha Nacimiento"
+											style="font-weight:bold" />
 										<p:outputLabel
 											value="#{controladorGestionSocios.objUsrSocio.gesPersona.fechaNac}">
 											<f:convertDateTime pattern="dd/MM/yyyy" />
 										</p:outputLabel>
-										<p:outputLabel value="Telefono" style="font-weight:bold"/>
+										<p:outputLabel value="Telefono" style="font-weight:bold" />
 										<p:outputLabel
 											value="#{controladorGestionSocios.objUsrSocio.gesPersona.telefono}" />
-										<p:outputLabel value="Correo Electronico" style="font-weight:bold"/>
+										<p:outputLabel value="Correo Electronico"
+											style="font-weight:bold" />
 										<p:outputLabel
 											value="#{controladorGestionSocios.objUsrSocio.gesPersona.email}" />
 									</p:panelGrid>
@@ -288,10 +321,11 @@
 								<p:tab title="Datos Vivienda">
 									<p:panelGrid id="panelVivienda" columns="5"
 										styleClass="ui-noborder">
-										<p:outputLabel value="Tipo Vivienda" style="font-weight:bold"/>
+										<p:outputLabel value="Tipo Vivienda" style="font-weight:bold" />
 										<p:outputLabel
 											value="#{controladorGestionSocios.objUsrSocio.usrTipoVivienda.tipoVivienda}" />
-										<p:outputLabel value="Zona Geografica" style="font-weight:bold"/>
+										<p:outputLabel value="Zona Geografica"
+											style="font-weight:bold" />
 										<p:outputLabel
 											value="#{controladorGestionSocios.objUsrSocio.usrParroquia.usrCanton.usrProvincia.provincia} - #{controladorGestionSocios.objUsrSocio.usrParroquia.usrCanton.canton} - #{controladorGestionSocios.objUsrSocio.usrParroquia.parroquia}" />
 									</p:panelGrid>
@@ -299,13 +333,13 @@
 								<p:tab title="Datos Laborales">
 									<p:panelGrid id="panelTrabajo" columns="6"
 										styleClass="ui-noborder">
-										<p:outputLabel  value="Lugar Trabajo" style="font-weight:bold"/>
+										<p:outputLabel value="Lugar Trabajo" style="font-weight:bold" />
 										<p:outputLabel
 											value="#{controladorGestionSocios.objUsrSocio.usrAgencia.agencia}" />
-										<p:outputLabel value="Área" style="font-weight:bold"/>
+										<p:outputLabel value="Área" style="font-weight:bold" />
 										<p:outputLabel
 											value="#{controladorGestionSocios.objUsrSocio.usrArea.area}" />
-										<p:outputLabel value="Cargo" style="font-weight:bold"/>
+										<p:outputLabel value="Cargo" style="font-weight:bold" />
 										<p:outputLabel
 											value="#{controladorGestionSocios.objUsrSocio.usrCargo.cargo}" />
 									</p:panelGrid>

@@ -146,32 +146,85 @@
 										value="Nuevo Perfil" oncomplete="PF('infPerfil').show()"
 										update="@form:infPerfil" />
 									<p:dataTable id="inscriPer"
-										emptyMessage="No existen perfiles registrados"
+										emptyMessage="No existen perfiles registrados" editable="true"
 										value="#{menu.autPerfiles}" var="perfil">
+										<p:ajax event="rowEdit" listener="#{controladorRol.onRowEdit}"
+											update="@form:growl" process="@this" />
+										<p:ajax event="rowEditCancel"
+											listener="#{controladorRol.onRowCancel}" update="@form:growl" />
 										<p:column headerText="Nombre Perfil">
-											<p:outputLabel value="#{perfil.nombre}" />
+											<p:cellEditor>
+												<f:facet name="output">
+													<p:outputLabel value="#{perfil.nombre}" />
+												</f:facet>
+												<f:facet name="input">
+													<p:inputText value="#{perfil.nombre}" />
+												</f:facet>
+											</p:cellEditor>
+
 										</p:column>
 										<p:column headerText="url">
-											<p:outputLabel value="#{perfil.url}" />
+											<p:cellEditor>
+												<f:facet name="output">
+													<p:outputLabel value="#{perfil.url}" />
+												</f:facet>
+												<f:facet name="input">
+													<p:inputText value="#{perfil.url}" />
+												</f:facet>
+											</p:cellEditor>
 										</p:column>
 										<p:column headerText="Icono">
-											<p:outputLabel value="#{perfil.icon}" />
+											<p:cellEditor>
+												<f:facet name="output">
+													<p:outputLabel value="#{perfil.icon}" />
+												</f:facet>
+												<f:facet name="input">
+													<p:inputText value="#{perfil.icon}" />
+												</f:facet>
+											</p:cellEditor>
 										</p:column>
-										<p:column headerText="Orden">
-											<p:outputLabel value="#{perfil.orden}" />
+										<p:column headerText="Orden" width="40">
+											<p:cellEditor>
+												<f:facet name="output">
+													<p:outputLabel value="#{perfil.orden}" />
+												</f:facet>
+												<f:facet name="input">
+													<p:spinner value="#{perfil.orden}" min="0" />
+												</f:facet>
+											</p:cellEditor>
+
 										</p:column>
-										<p:column headerText="Estado">
-											<p:outputLabel
-												value="#{controladorRol.nombreEstado(perfil.estado)}" />
+										<p:column headerText="Estado" width="50">
+											<p:cellEditor>
+												<f:facet name="output">
+													<p:outputLabel
+														value="#{controladorRol.nombreEstado(perfil.estado)}" />
+												</f:facet>
+												<f:facet name="input">
+													<p:selectOneMenu value="#{perfil.estado}" required="true"
+														style="color : black">
+														<f:selectItem itemLabel="Activo" itemValue="A" />
+														<f:selectItem itemLabel="Inactivo" itemValue="I" />
+													</p:selectOneMenu>
+												</f:facet>
+											</p:cellEditor>
+
 										</p:column>
-										<p:column headerText="Roles">
+										<p:column headerText="Editar" width="30">
+											<p:rowEditor editTitle="Edit Row" cancelTitle="Cancel Edit"
+												saveTitle="Save Row" />
+										</p:column>
+										<p:column headerText="Roles" width="200">
 											<p:commandButton value="Agregar Rol"
 												actionListener="#{controladorMenuPerfiles.cargarPerfil(perfil)}"
-												oncomplete="PF('infRol').show()" update="@form:infRol"/>
+												oncomplete="PF('infRol').show()" update="@form:infRol" />
 											<p:dataTable value="#{perfil.autRolPerfils}" var="rol"
 												emptyMessage="No existe roles asignados">
 												<p:column headerText="Rol">
 													<p:outputLabel value="#{rol.autRol.nombre}" />
+												</p:column>
+												<p:column width="25">
+													<p:commandButton update="@form" actionListener="#{controladorMenuPerfiles.eliminarRolPerfil(rol)}"  icon="fa fa-times-circle" />
 												</p:column>
 											</p:dataTable>
 										</p:column>
@@ -189,10 +242,11 @@
 						<p:panel header="Ingresar Menu">
 							<p:panelGrid columns="2" styleClass="ui-noborder">
 								<p:outputLabel value="Seleccione Rol" />
-								<p:selectOneMenu value="#{controladorMenuPerfiles.objAutRolPerfil.autRol.idRol}" >
+								<p:selectOneMenu
+									value="#{controladorMenuPerfiles.objAutRolPerfil.autRol.idRol}">
 									<f:selectItem itemLabel="Seleccione Rol"
 										noSelectionOption="true" />
-										<f:selectItems value="#{controladorMenuPerfiles.siAutRol()}" />
+									<f:selectItems value="#{controladorMenuPerfiles.siAutRol()}" />
 								</p:selectOneMenu>
 							</p:panelGrid>
 							<p:commandButton value="Ingresar"

@@ -17,6 +17,7 @@ import ec.com.model.dao.entity.AutMenu;
 import ec.com.model.dao.entity.AutPerfile;
 import ec.com.model.dao.entity.AutRol;
 import ec.com.model.dao.entity.AutRolPerfil;
+import ec.com.model.dao.entity.UsrEstadoSocio;
 import ec.com.model.gestionSistema.ManagerGestionSistema;
 import ec.com.model.modulos.util.JSFUtil;
 
@@ -105,6 +106,17 @@ public class ControladorMenuPerfiles implements Serializable {
 		objAutRolPerfil.setAutRol(new AutRol());
 		objAutRolPerfil.setAutPerfile(auxAutPerfile);
 	}
+	
+	public void eliminarRolPerfil(AutRolPerfil autRolPerfil) {
+		try {
+			managerGestionSistema.eliminarAutRolPerfil(autRolPerfil);
+			managerLog.generarLogErrorGeneral(beanLogin.getCredencial(), this.getClass(), "eliminarRolPerfil", "Se elimino Rol perfil.");
+			inicializarMenuPerfil();
+		} catch (Exception e) {
+			JSFUtil.crearMensajeERROR(e.getMessage());
+			e.printStackTrace();
+		}
+	}
 
 	/****
 	 * Metodo para ingresar nuevo AutPerfil
@@ -152,6 +164,30 @@ public class ControladorMenuPerfiles implements Serializable {
 				SelectItem siRol = new SelectItem();
 				siRol.setLabel(autRol.getNombre());
 				siRol.setValue(autRol.getIdRol());
+				lstSiAutRol.add(siRol);
+			}
+			return lstSiAutRol;
+		} catch (Exception e) {
+			JSFUtil.crearMensajeERROR(e.getMessage());
+			e.printStackTrace();
+			return null;
+		}
+
+	}
+	
+	/***
+	 * Metodo que retorna una lista SI de AutRol
+	 * 
+	 * @return
+	 */
+	public List<SelectItem> siAutEstado() {
+		List<SelectItem> lstSiAutRol = new ArrayList<SelectItem>();
+		try {
+
+			for (UsrEstadoSocio autRol : managerGestionSistema.buscarTodosEstadoSocio()) {
+				SelectItem siRol = new SelectItem();
+				siRol.setLabel(autRol.getEstado());
+				siRol.setValue(autRol.getIdEstado());
 				lstSiAutRol.add(siRol);
 			}
 			return lstSiAutRol;

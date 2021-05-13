@@ -11,6 +11,7 @@ import ec.com.model.dao.entity.AutParametrosGenerale;
 import ec.com.model.dao.entity.AutPerfile;
 import ec.com.model.dao.entity.AutRol;
 import ec.com.model.dao.entity.AutRolPerfil;
+import ec.com.model.dao.entity.UsrEstadoSocio;
 import ec.com.model.dao.entity.UsrSocio;
 import ec.com.model.dao.entity.VAutMenuRol;
 import ec.com.model.dao.manager.ManagerDAOSegbecom;
@@ -173,4 +174,21 @@ public class ManagerGestionSistema {
 		}
 	}
 
+	@SuppressWarnings("unchecked")
+	public List<UsrEstadoSocio> buscarTodosEstadoSocio() throws Exception {
+		try {
+			return managerDAOSegbecom.findAll(UsrEstadoSocio.class, "o.estado ASC");
+		} catch (Exception e) {
+			throw new Exception("Error al obtener el listado de Estados. " + e.getMessage());
+		}
+	}
+
+	public void eliminarAutRolPerfil(AutRolPerfil autRolPerfil) throws Exception {
+		try {
+			managerDAOSegbecom.eliminar(AutRolPerfil.class, autRolPerfil.getId());
+		} catch (Exception e) {
+			throw new Exception("Error al eliminar AutRolPerfil");
+		}
+		
+	}
 }
