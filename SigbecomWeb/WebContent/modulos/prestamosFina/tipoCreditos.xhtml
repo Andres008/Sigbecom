@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:pc="http://primefaces.org/california">
+
+<h:head>
+	<f:facet name="first">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+		<meta name="viewport"
+			content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" />
+		<meta name="apple-mobile-web-app-capable" content="yes" />
+	</f:facet>
+	<title><ui:insert name="title">SIGBECOM</ui:insert></title>
+	<h:outputScript name="js/nanoscroller.js" library="california-layout" />
+	<h:outputScript name="js/layout.js" library="california-layout" />
+	<ui:insert name="head" />
+</h:head>
+
+<h:body styleClass="main-body"
+	onload="#{controladorGestionCreditos.inicializarTipoPrestamo()}">
+
+	<div
+		class="layout-wrapper #{guestPreferences.menuLayout != 'static' ? guestPreferences.menuLayout : null}">
+		<ui:include src="/affordances/megamenu.xhtml" />
+		<ui:include src="/affordances/topbar.xhtml" />
+		<ui:include src="/affordances/sidebar.xhtml" />
+		<ui:include src="/affordances/right-sidebar.xhtml" />
+
+		<div class="layout-main">
+			<div class="route-bar">
+				<div class="route-bar-breadcrumb">
+					<i class="fa fa-home"></i> <span>/Registro Usuarios</span>
+					<ui:insert name="viewname" />
+				</div>
+				<ui:include src="/affordances/route-bar-menu.xhtml" />
+			</div>
+			<div class="layout-main-content" align="center">
+				<H1>ADMINISTRACION TIPO DE CREDITOS</H1>
+				<h:form id="ingreso">
+					<p:growl id="growl" showDetail="true" sticky="true" />
+					<p:panel header="Crear Tipo Credito" toggleable="true"
+						collapsed="true">
+						<p:commandButton value="Ingresar Tipo Credito"
+							action="#{controladorGestionCreditos.ingresarTipoCredito()}"
+							update="@form">
+							<p:confirm header="Confirmación"
+								message="Esta seguro de ingresar la información?"
+								icon="pi pi-exclamation-triangle" />
+							<p:confirmDialog global="true" showEffect="fade"
+								hideEffect="fade" responsive="true" width="350">
+								<p:commandButton value="Si" type="button"
+									styleClass="ui-confirmdialog-yes" />
+								<p:commandButton value="No" type="button"
+									styleClass="ui-confirmdialog-no ui-button-flat" />
+							</p:confirmDialog>
+						</p:commandButton>
+						<p:panelGrid columns="4" styleClass="ui-noborder">
+							<p:outputLabel value="Nombre" />
+							<p:inputText required="true"
+								requiredMessage="Es requerido el nombre."
+								value="#{controladorGestionCreditos.objFinTipoCredito.nombre}"
+								placeholder="Nombre Tipo Credito"
+								style="text-transform: uppercase" />
+							<p:outputLabel value="Tasa de Interes %" />
+							<p:spinner required="true"
+								requiredMessage="Es requerido la tasa de interes."
+								value="#{controladorGestionCreditos.objFinTipoCredito.tasaInteres}"
+								min="0" max="100" decimalPlaces="2" placeholder="% Tasa Interes"
+								thousandSeparator="," decimalSeparator="." />
+							<p:outputLabel value="Valor Maximo" />
+							<p:spinner required="true"
+								requiredMessage="Es requerido el valor maximo."
+								value="#{controladorGestionCreditos.objFinTipoCredito.valorMaximo}"
+								min="0" max="100000" placeholder="Valor Máximo $"
+								decimalPlaces="2" thousandSeparator="," decimalSeparator="." />
+							<p:outputLabel value="Valor Mínimo" />
+							<p:spinner required="true"
+								requiredMessage="Es requerido el valor mínimo"
+								value="#{controladorGestionCreditos.objFinTipoCredito.valorMinimo}"
+								min="0" max="100000" placeholder="Valor Máximo $"
+								decimalPlaces="2" thousandSeparator="," decimalSeparator="." />
+							<p:outputLabel value="Plazo Máximo" />
+							<p:spinner required="true"
+								requiredMessage="Es requerido el plazo Maximo."
+								value="#{controladorGestionCreditos.objFinTipoCredito.plazoMaximo}"
+								min="0" max="100000" decimalPlaces="0" placeholder="Meses" />
+							<p:outputLabel value="Día Mensual Pago" />
+							<p:spinner
+								value="#{controladorGestionCreditos.objFinTipoCredito.diaPagoMaximo}"
+								min="1" max="31" decimalPlaces="0" placeholder="Meses" />
+						</p:panelGrid>
+						<p:commandButton value="Agregar Requisito"
+							oncomplete="PF('infRequisito').show()" />
+						<p:panelGrid columns="1" styleClass="ui-noborder">
+							<p:dataTable emptyMessage="No Existe Requisitos Ingresados"
+								var="requisitos"
+								value="#{controladorGestionCreditos.objFinTipoCredito.finTipcrediRequisitos}">
+								<p:column headerText="Nombre">
+									<p:outputLabel value="#{requisitos.finRequisito.nombre}" />
+								</p:column>
+
+								<p:column headerText="Descripción">
+									<p:outputLabel value="#{requisitos.finRequisito.descripcion}" />
+								</p:column>
+							</p:dataTable>
+						</p:panelGrid>
+
+						<p:dialog header="AGREGAR REQUISITO" widgetVar="infRequisito"
+							id="infRequisito" modal="true" position="center"
+							showEffect="fade" hideEffect="fade" resizable="false" width="50%">
+							<p:commandButton value="Agregar Requisito"
+								actionListener="#{controladorGestionCreditos.cargarRequisitoTipoCredito()}"
+								update="@form" />
+							<br />
+							<br />
+							<p:panelGrid columns="2" styleClass="ui-noborder">
+								<p:selectOneMenu id="lstRequisitos"
+									value="#{controladorGestionCreditos.objFinRequisito.idRequisito}">
+									<f:selectItem itemLabel="Requisitos" noSelectionOption="true" />
+									<f:selectItems
+										value="#{controladorGestionCreditos.lstSiRequisitos()}" />
+								</p:selectOneMenu>
+								<p:commandButton value="Crear Nuevo Requisito"
+									icon="fa fa-plus-square" update="@form:infNuevoRequisito"
+									process="@this"
+									actionListener="#{controladorGestionCreditos.inicializarRequisito()}"
+									oncomplete="PF('infNuevoRequisito').show()" />
+							</p:panelGrid>
+						</p:dialog>
+
+						<p:dialog header="NUEVO REQUISITO" widgetVar="infNuevoRequisito"
+							id="infNuevoRequisito" modal="true" position="center"
+							showEffect="fade" hideEffect="fade" resizable="false" width="50%">
+							<p:panelGrid columns="2" styleClass="ui-noborder">
+								<p:outputLabel value="Nombre Requisito" />
+								<p:inputText
+									value="#{controladorGestionCreditos.objFinRequisito.nombre}"
+									placeholder="Nombre Requisito"
+									style="text-transform: uppercase" />
+								<p:outputLabel value="Descripción Requisito" />
+								<p:inputTextarea placeholder="Descripción Requisito"
+									style="text-transform: uppercase"
+									value="#{controladorGestionCreditos.objFinRequisito.descripcion}" />
+							</p:panelGrid>
+							<p:commandButton value="Ingresar"
+								actionListener="#{controladorGestionCreditos.ingresarRequisito()}"
+								update="@form:infNuevoRequisito @form:lstRequisitos @form:growl" />
+						</p:dialog>
+					</p:panel>
+					<p:separator></p:separator>
+					<p:panel id="pnlTipoCredito" header="Tipos de Créditos Ingresado">
+						<p:dataTable id="tblTipoCredito"
+							value="#{controladorGestionCreditos.lstFinTipoCredito}"
+							var="credito" editable="true" paginator="true" rows="10">
+							<p:ajax event="rowEdit" listener="#{controladorRol.onRowEdit}"
+								update="@form:growl" process="@this" />
+							<p:ajax event="rowEditCancel"
+								listener="#{controladorRol.onRowCancel}" update="@form:growl" />
+							<p:column headerText="Tipo Credito">
+								<p:outputLabel value="#{credito.nombre}" />
+							</p:column>
+							<p:column headerText="Tasa de Interes">
+								<p:outputLabel value="#{credito.tasaInteres} %" />
+							</p:column>
+
+							<p:column headerText="Valor Maximo">
+								<p:outputLabel value="$ #{credito.valorMaximo}" />
+							</p:column>
+							<p:column headerText="Plazo Maximo(Meses)">
+								<p:outputLabel value="#{credito.plazoMaximo}" />
+							</p:column>
+							<p:column headerText="Día Descuento">
+								<p:outputLabel value="#{credito.diaPagoMaximo}" />
+							</p:column>
+							<p:column headerText="Estado">
+								<p:outputLabel value="#{credito.estado}" />
+							</p:column>
+							<p:column headerText="Requisitos">
+								<p:dataTable value="#{credito.finTipcrediRequisitos}"
+									var="requerimiento" emptyMessage="Sin requisitos.">
+									<p:column headerText="Requisitos">
+										<p:outputLabel value="#{requerimiento.finRequisito.nombre}" />
+									</p:column>
+								</p:dataTable>
+							</p:column>
+							<p:column headerText="Inactivar">
+								<p:commandButton icon="fa fa-arrow-circle-o-down"
+									actionListener="#{controladorGestionCreditos.inactivarTipoCredito(credito)}"
+									update="@form:pnlTipoCredito @form:growl" process="@this">
+									<p:confirm header="Confirmación"
+										message="Esta seguro de Inactivar el Tipo de Credito?"
+										icon="pi pi-exclamation-triangle" />
+									<p:confirmDialog global="true" showEffect="fade"
+										hideEffect="fade" responsive="true" width="350">
+										<p:commandButton value="Si" type="button"
+											styleClass="ui-confirmdialog-yes" />
+										<p:commandButton value="No" type="button"
+											styleClass="ui-confirmdialog-no ui-button-flat" />
+									</p:confirmDialog>
+								</p:commandButton>
+							</p:column>
+						</p:dataTable>
+					</p:panel>
+				</h:form>
+			</div>
+			<ui:include src="/affordances/footer.xhtml" />
+		</div>
+	</div>
+
+	<p:ajaxStatus
+		style="width:32px;height:32px;position:fixed;right:7px;bottom:7px">
+		<f:facet name="start">
+			<i class="fa fa-circle-o-notch fa-spin ajax-loader"
+				aria-hidden="true"></i>
+		</f:facet>
+
+		<f:facet name="complete">
+			<h:outputText value="" />
+		</f:facet>
+	</p:ajaxStatus>
+
+	<h:outputStylesheet name="css/nanoscroller.css"
+		library="california-layout" />
+	<h:outputStylesheet name="css/layout-#{guestPreferences.theme}.css"
+		library="california-layout" />
+</h:body>
+</html>

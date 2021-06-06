@@ -20,6 +20,7 @@ import org.primefaces.model.DefaultStreamedContent;
 
 import ec.com.model.auditoria.ManagerLog;
 import ec.com.model.gestionSistema.Credencial;
+import ec.com.model.gestionSistema.ManagerGestionSistema;
 import ec.com.model.modulos.util.JSFUtil;
 import ec.com.model.modulos.util.ModelUtil;
 
@@ -38,10 +39,14 @@ public class BeanLogin implements Serializable {
 	@EJB
 	ManagerLog managerLog;
 
+	@EJB
+	ManagerGestionSistema managerGestionSistema;
+
 	private static final long serialVersionUID = 1L;
 
-	public BeanLogin() {
+	private String pathReporte;
 
+	public BeanLogin() {
 	}
 
 	/**
@@ -129,16 +134,6 @@ public class BeanLogin implements Serializable {
 	 * @return valor Path
 	 */
 
-	public String getPathReportes() {
-		String valorPath = "";
-		/*
-		 * try { valorPath = managerParametros.getValorParametro("PATH_REPORTE"); }
-		 * catch (Exception e) { // TODO Auto-generated catch block e.printStackTrace();
-		 * }
-		 */
-		return valorPath;
-	}
-
 	/*******************************************************************
 	 ********************* Manejo de Path de Imagenes*********************
 	 ********************************************************************
@@ -218,6 +213,22 @@ public class BeanLogin implements Serializable {
 
 	public void setCredencial(Credencial credencial) {
 		this.credencial = credencial;
+	}
+
+	public String getPathReporte() {
+		if (ModelUtil.isEmpty(pathReporte)) {
+			try {
+				pathReporte = managerGestionSistema.buscarValorParametroNombre("PATH REPORTES");
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		return pathReporte;
+	}
+
+	public void setPathReporte(String pathReporte) {
+		this.pathReporte = pathReporte;
 	}
 
 }

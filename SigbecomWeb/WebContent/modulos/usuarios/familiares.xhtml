@@ -67,6 +67,9 @@
 							<p:column headerText="Nombre Familiar" >
 								<p:outputLabel value="#{familia.gesPersona.apellidos} #{familia.gesPersona.nombres}" />
 							</p:column>
+							<p:column headerText="Tipo Sangre Familiar" >
+								<p:outputLabel value="#{familia.gesPersona.gesTipoSangre.tipoSangre}" />
+							</p:column>
 							<p:column headerText="Relación" filterBy="#{familia.usrConsanguinidad.idConsanguinidad}" filterMatchMode="exact" >
 							<f:facet name="filter">
 									<p:selectOneMenu onchange="PF('familiaTbl').filter()"

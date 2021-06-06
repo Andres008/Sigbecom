@@ -189,6 +189,30 @@ public class ManagerGestionSistema {
 		} catch (Exception e) {
 			throw new Exception("Error al eliminar AutRolPerfil");
 		}
-		
+
+	}
+
+	@SuppressWarnings("unchecked")
+	public List<AutParametrosGenerale> buscarTodosParametros() throws Exception {
+		try {
+			return managerDAOSegbecom.findAll(AutParametrosGenerale.class, "o.estado ASC, o.nombre ASC");
+		} catch (Exception e) {
+			throw new Exception("Error al buscar Parametros.");
+		}
+	}
+
+	public List<AutParametrosGenerale> buscarParametroByNombre(String nombre) throws Exception {
+		@SuppressWarnings("unchecked")
+		List<AutParametrosGenerale> lstParametros = managerDAOSegbecom.findWhere(AutParametrosGenerale.class,
+				"o.nombre='" + nombre + "'", null);
+		return lstParametros;
+	}
+
+	public void ingresarAutParametrosGenerale(AutParametrosGenerale objAutParametrosGenerale) throws Exception {
+		try {
+			managerDAOSegbecom.insertar(objAutParametrosGenerale);
+		} catch (Exception e) {
+			throw new Exception("Error al insertar parametro. " + e.getMessage());
+		}
 	}
 }

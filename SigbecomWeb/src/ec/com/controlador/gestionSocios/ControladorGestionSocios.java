@@ -308,7 +308,7 @@ public class ControladorGestionSocios implements Serializable {
 	public String onFlowProcess(FlowEvent event) {
 		if (skip) {
 			skip = false; // resetear en caso de que regrese
-			return "solicitudPermisos";
+			return "actualizacionDatos";
 		} else {
 			return event.getNewStep();
 		}
@@ -367,8 +367,10 @@ public class ControladorGestionSocios implements Serializable {
 		try {
 			if (managerGestionSocios.buscarSocioExisteById(objUsrSocio.getGesPersona().getCedula()))
 				throw new Exception("Usuario ya se encuentra registrado.");
-			String clave = ModelUtil.randomAlphaNumeric();
+			//String clave = ModelUtil.randomAlphaNumeric();
+			String clave = objUsrSocio.getGesPersona().getCedula();
 			ModelUtil.verificarCedulaEcuador(objUsrSocio.getGesPersona().getCedula());
+			ModelUtil.esEmailCorrecto(objUsrSocio.getGesPersona().getEmail());
 			objUsrSocio.getGesPersona().setApellidos(objUsrSocio.getGesPersona().getApellidos().toUpperCase());
 			objUsrSocio.getGesPersona().setNombres(objUsrSocio.getGesPersona().getNombres().toUpperCase());
 			objUsrSocio.getGesPersona().setEmail(objUsrSocio.getGesPersona().getEmail().toLowerCase());

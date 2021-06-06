@@ -45,8 +45,8 @@ public class UsrSocio implements Serializable {
 	private String primerInicio;
 
 	private String vehiculo;
-	
-	@Column(name="url_foto")
+
+	@Column(name = "url_foto")
 	private String urlFoto;
 
 	// bi-directional many-to-one association to GesPariente
@@ -68,6 +68,10 @@ public class UsrSocio implements Serializable {
 	// bi-directional many-to-one association to UsrLicenciaSocio
 	@OneToMany(mappedBy = "usrSocio", cascade = CascadeType.ALL)
 	private List<UsrLicenciaSocio> usrLicenciaSocios;
+
+	// bi-directional many-to-one association to FinPrestamoSocio
+	@OneToMany(mappedBy = "usrSocio")
+	private List<FinPrestamoSocio> finPrestamoSocios;
 
 	// bi-directional many-to-one association to AutRol
 	@ManyToOne
@@ -398,5 +402,26 @@ public class UsrSocio implements Serializable {
 	public void setUrlFoto(String urlFoto) {
 		this.urlFoto = urlFoto;
 	}
+	
+	public List<FinPrestamoSocio> getFinPrestamoSocios() {
+		return this.finPrestamoSocios;
+	}
 
+	public void setFinPrestamoSocios(List<FinPrestamoSocio> finPrestamoSocios) {
+		this.finPrestamoSocios = finPrestamoSocios;
+	}
+
+	public FinPrestamoSocio addFinPrestamoSocio(FinPrestamoSocio finPrestamoSocio) {
+		getFinPrestamoSocios().add(finPrestamoSocio);
+		finPrestamoSocio.setUsrSocio(this);
+
+		return finPrestamoSocio;
+	}
+
+	public FinPrestamoSocio removeFinPrestamoSocio(FinPrestamoSocio finPrestamoSocio) {
+		getFinPrestamoSocios().remove(finPrestamoSocio);
+		finPrestamoSocio.setUsrSocio(null);
+
+		return finPrestamoSocio;
+	}
 }

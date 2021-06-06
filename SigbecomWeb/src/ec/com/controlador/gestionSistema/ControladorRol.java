@@ -13,6 +13,7 @@ import org.primefaces.event.RowEditEvent;
 
 import ec.com.controlador.sesion.BeanLogin;
 import ec.com.model.auditoria.ManagerLog;
+import ec.com.model.dao.entity.AutParametrosGenerale;
 import ec.com.model.dao.entity.AutPerfile;
 import ec.com.model.dao.entity.AutRol;
 import ec.com.model.gestionSistema.ManagerGestionSistema;
@@ -37,12 +38,16 @@ public class ControladorRol implements Serializable {
 
 	@EJB
 	ManagerLog managerLog;
-	
+
 	@EJB
 	CorreoUtil correoUtil;
 
 	private AutRol objAutRol;
-	
+
+	private AutParametrosGenerale objAutParametrosGenerale;
+
+	private List<AutParametrosGenerale> lstAutParametrosGenerale;
+
 	private AutPerfile objAutPerfile;
 
 	private List<AutRol> lstAutRols;
@@ -64,7 +69,21 @@ public class ControladorRol implements Serializable {
 			e.printStackTrace();
 		}
 	}
-	
+
+	/**
+	 * Metodo que inicializa las variables a utilizar en la pantalla de
+	 * administración de parametros
+	 */
+	public void inicializarAutParametros() {
+		try {
+			objAutParametrosGenerale = new AutParametrosGenerale();
+			lstAutParametrosGenerale = managerGestionSistema.buscarTodosParametros();
+		} catch (Exception e) {
+			JSFUtil.crearMensajeERROR(e.getMessage());
+			e.printStackTrace();
+		}
+	}
+
 	/**
 	 * Metodo que inicializa las variables a utilizar en la pantalla de
 	 * administración de roles
@@ -79,8 +98,7 @@ public class ControladorRol implements Serializable {
 			e.printStackTrace();
 		}
 	}
-	
-	
+
 	public void inactivarRol(AutRol auxAutRol) {
 		auxAutRol.setEstado("I");
 		auxAutRol.setFechaFinal(new Date());
@@ -92,28 +110,46 @@ public class ControladorRol implements Serializable {
 			e.printStackTrace();
 		}
 	}
-	
+
+	public void incativarParametro(AutParametrosGenerale objParametro) {
+		try {
+			objParametro.setFechaFinal(new Date());
+			objParametro.setEstado("I");
+			managerGestionSistema.actualizarObjeto(objParametro);
+			managerLog.generarLogUsabilidad(beanLogin.getCredencial(), this.getClass(), "incativarParametro",
+					"Se inactivo parametro " + objParametro.getId());
+			JSFUtil.crearMensajeINFO("Parametro inactivado");
+			inicializarAutParametros();
+		} catch (Exception e) {
+			managerLog.generarLogErrorGeneral(beanLogin.getCredencial(), this.getClass(), "incativarParametro",
+					e.getMessage());
+			JSFUtil.crearMensajeERROR("Error al inactivar parametro. " + e.getMessage());
+			e.printStackTrace();
+		}
+	}
+
 	/***
 	 * Metodo para modificar desde pantalla.
+	 * 
 	 * @param event
 	 */
 	public void onRowEdit(RowEditEvent<Object> event) {
-        try {
+		try {
 			managerGestionSistema.actualizarObjeto(event.getObject());
 			JSFUtil.crearMensajeINFO("Se actualizó correctamente.");
 		} catch (Exception e) {
 			JSFUtil.crearMensajeERROR(e.getMessage());
 			e.printStackTrace();
 		}
-    }
-	
+	}
+
 	/***
 	 * 
 	 * @param event
 	 */
 	public void onRowCancel(RowEditEvent<Object> event) {
-        JSFUtil.crearMensajeINFO("Se canceló actualización.");
-    }
+		JSFUtil.crearMensajeINFO("Se canceló actualización.");
+	}
 
 	/**
 	 * Metodo que ingresa y/0 autualiza un rol con los datos de pantalla
@@ -129,8 +165,9 @@ public class ControladorRol implements Serializable {
 			objAutRol.setNombre(ModelUtil.cambiarMayusculas(objAutRol.getNombre()));
 			objAutRol.setDescripcion(ModelUtil.cambiarMayusculas(objAutRol.getDescripcion()));
 			managerGestionSistema.ingresarAutRol(objAutRol);
-			//managerLog.generarLogGeneral(beanLogin.getCredencial(), this.getClass(), "ingresarRolPeril",
-			//		"Ingreso coreccto Rol Menu. " + objAutRol.getIdRol());
+			// managerLog.generarLogGeneral(beanLogin.getCredencial(), this.getClass(),
+			// "ingresarRolPeril",
+			// "Ingreso coreccto Rol Menu. " + objAutRol.getIdRol());
 			inicializarAutRol();
 			JSFUtil.crearMensajeINFO("Rol ingresado correctamente.");
 		} catch (Exception e) {
@@ -141,7 +178,29 @@ public class ControladorRol implements Serializable {
 		}
 
 	}
-	
+
+	public void ingresarParametro() {
+		try {
+			List<AutParametrosGenerale> lstParametro = managerGestionSistema
+					.buscarParametroByNombre(objAutParametrosGenerale.getNombre());
+			for (AutParametrosGenerale parametro : lstParametro) {
+				parametro.setEstado("I");
+				parametro.setFechaFinal(new Date());
+				managerGestionSistema.actualizarObjeto(parametro);
+			}
+			objAutParametrosGenerale.setFechaInicial(new Date());
+			objAutParametrosGenerale.setEstado("A");
+			managerGestionSistema.ingresarAutParametrosGenerale(objAutParametrosGenerale);
+			JSFUtil.crearMensajeINFO("Parametro insertado correctamente.");
+			managerLog.generarLogUsabilidad(beanLogin.getCredencial(), this.getClass(), "ingresarParametro",
+					"Se inserto parametro: " + objAutParametrosGenerale.getId());
+			inicializarAutParametros();
+		} catch (Exception e) {
+			JSFUtil.crearMensajeERROR("Error al crear parametro. " + e.getMessage());
+			e.printStackTrace();
+		}
+
+	}
 
 	public String nombreEstado(String estado) {
 		return ModelUtil.nombreEstadoByInicial(estado);
@@ -181,6 +240,22 @@ public class ControladorRol implements Serializable {
 
 	public void setObjAutPerfile(AutPerfile objAutPerfile) {
 		this.objAutPerfile = objAutPerfile;
+	}
+
+	public AutParametrosGenerale getObjAutParametrosGenerale() {
+		return objAutParametrosGenerale;
+	}
+
+	public void setObjAutParametrosGenerale(AutParametrosGenerale objAutParametrosGenerale) {
+		this.objAutParametrosGenerale = objAutParametrosGenerale;
+	}
+
+	public List<AutParametrosGenerale> getLstAutParametrosGenerale() {
+		return lstAutParametrosGenerale;
+	}
+
+	public void setLstAutParametrosGenerale(List<AutParametrosGenerale> lstAutParametrosGenerale) {
+		this.lstAutParametrosGenerale = lstAutParametrosGenerale;
 	}
 
 }

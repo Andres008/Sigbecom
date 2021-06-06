@@ -16,7 +16,7 @@ public class AutParametrosGenerale implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@Id
-	@SequenceGenerator(name="AUT_PARAMETROS_GENERALES_ID_GENERATOR", sequenceName="SEQ_AUT_PARAMETROS_GENERALES")
+	@SequenceGenerator(name="AUT_PARAMETROS_GENERALES_ID_GENERATOR", sequenceName="SEQ_AUT_PARAMETROS_GENERALES", allocationSize = 1)
 	@GeneratedValue(strategy=GenerationType.SEQUENCE, generator="AUT_PARAMETROS_GENERALES_ID_GENERATOR")
 	private long id;
 
@@ -74,7 +74,7 @@ public class AutParametrosGenerale implements Serializable {
 	}
 
 	public void setNombre(String nombre) {
-		this.nombre = nombre;
+		this.nombre = nombre.toUpperCase();
 	}
 
 	public String getValor() {

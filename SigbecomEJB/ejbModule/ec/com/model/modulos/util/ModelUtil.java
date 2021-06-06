@@ -10,11 +10,17 @@ import java.math.RoundingMode;
 import java.security.MessageDigest;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import ec.com.model.dao.entity.FinEstadoCuota;
+import ec.com.model.dao.entity.FinPrestamoSocio;
+import ec.com.model.dao.entity.FinTablaAmortizacion;
 
 public class ModelUtil {
 	/**
@@ -28,29 +34,48 @@ public class ModelUtil {
 			return true;
 		return false;
 	}
-	
-	//Este es el método calcularEdad que se manda a llamar en el main 
-	   public static Integer calcularEdad(Date fechaNac){
-	       try {
-	       } catch (Exception ex) {
-	           System.out.println("Error:"+ex);
-	       }
-	       Calendar fechaNacimiento = Calendar.getInstance();
-	       //Se crea un objeto con la fecha actual
-	       Calendar fechaActual = Calendar.getInstance();
-	       //Se asigna la fecha recibida a la fecha de nacimiento.
-	       fechaNacimiento.setTime(fechaNac);
-	       //Se restan la fecha actual y la fecha de nacimiento
-	       int año = fechaActual.get(Calendar.YEAR)- fechaNacimiento.get(Calendar.YEAR);
-	       int mes =fechaActual.get(Calendar.MONTH)- fechaNacimiento.get(Calendar.MONTH);
-	       int dia = fechaActual.get(Calendar.DATE)- fechaNacimiento.get(Calendar.DATE);
-	       //Se ajusta el año dependiendo el mes y el día
-	       if(mes<0 || (mes==0 && dia<0)){
-	           año--;
-	       }
-	       //Regresa la edad en base a la fecha de nacimiento
-	       return año;
-	   }
+
+	/**
+	 * MÉTODO PARA OBTENER LA EXTENSION DE UN ARCHIVO
+	 * 
+	 * @param String nombreArchivo
+	 */
+	public static String obtenerExtensionArchivo(String nombre) {
+		String extension = "";
+		String arreglo[] = nombre.split("\\.");
+		extension = arreglo[arreglo.length - 1];
+		return "." + extension;
+	}
+
+	public static Date sumarRestarMes(Date fecha, int numeroMeses) {
+		Calendar calendar = Calendar.getInstance();
+		calendar.setTime(fecha);
+		calendar.add(Calendar.MONTH, numeroMeses);
+		return calendar.getTime();
+	}
+
+	// Este es el método calcularEdad que se manda a llamar en el main
+	public static Integer calcularEdad(Date fechaNac) {
+		try {
+		} catch (Exception ex) {
+			System.out.println("Error:" + ex);
+		}
+		Calendar fechaNacimiento = Calendar.getInstance();
+		// Se crea un objeto con la fecha actual
+		Calendar fechaActual = Calendar.getInstance();
+		// Se asigna la fecha recibida a la fecha de nacimiento.
+		fechaNacimiento.setTime(fechaNac);
+		// Se restan la fecha actual y la fecha de nacimiento
+		int año = fechaActual.get(Calendar.YEAR) - fechaNacimiento.get(Calendar.YEAR);
+		int mes = fechaActual.get(Calendar.MONTH) - fechaNacimiento.get(Calendar.MONTH);
+		int dia = fechaActual.get(Calendar.DATE) - fechaNacimiento.get(Calendar.DATE);
+		// Se ajusta el año dependiendo el mes y el día
+		if (mes < 0 || (mes == 0 && dia < 0)) {
+			año--;
+		}
+		// Regresa la edad en base a la fecha de nacimiento
+		return año;
+	}
 
 	/**
 	 * Devuelve el valor del anio actual.
@@ -135,23 +160,25 @@ public class ModelUtil {
 		int mesActual = Integer.parseInt(formato.format(fechaActual));
 		return mesActual;
 	}
-	
+
 	/**
-     * Valida si es correcta la dirección de correo electrónica dada.
-     *@param email
-     *@return true si es correcta o false si no lo es.
-	 * @throws Exception 
-     */
-    public static void esEmailCorrecto(String email) throws Exception {
-       
-        boolean valido = false;
-       
-        Pattern patronEmail = Pattern.compile("^[_A-Za-z0-9-\\+]+(\\.[_A-Za-z0-9-]+)@[A-Za-z0-9-]+(\\.[A-Za-z0-9]+)(\\.[A-Za-z]{2,})$");
-   
-        Matcher mEmail = patronEmail.matcher(email.toLowerCase());
-        if (!mEmail.matches())
-        	throw new Exception("Error formato email.");
-    }
+	 * Valida si es correcta la dirección de correo electrónica dada.
+	 * 
+	 * @param email
+	 * @return true si es correcta o false si no lo es.
+	 * @throws Exception
+	 */
+	public static void esEmailCorrecto(String email) throws Exception {
+
+		// Patrón para validar el email
+		Pattern pattern = Pattern.compile(
+				"^[_A-Za-z0-9-\\+]+(\\.[_A-Za-z0-9-]+)*@" + "[A-Za-z0-9-]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$");
+
+		Matcher mather = pattern.matcher(email);
+
+		if (!mather.find())
+			throw new Exception("Error en formato de email");
+	}
 
 	/**
 	 * Suma o resta dias a una fecha.
@@ -429,19 +456,66 @@ public class ModelUtil {
 
 		}
 	}
-	
-	
-	public static BigDecimal calcularCuotaMensual(Double valorPrestamo, Double interes, Double nCuotas) {
-		interes = interes / 1200; // Calcular el tipo mensual
 
-        double numerador = interes * Math.pow(1 + interes, nCuotas);
-        double denominador = Math.pow(1 + interes, nCuotas) - 1;
-        Double cuota = valorPrestamo * (numerador / denominador);
-        return new BigDecimal(cuota).setScale(2, RoundingMode.HALF_UP);
+	public static BigDecimal calcularCuotaMensual(Double valorPrestamo, Double interes, Double nCuotas) {
+		if (interes == 0)
+			return new BigDecimal(valorPrestamo / nCuotas);
+		interes = interes / 1200; // Calcular el tipo mensual
+		double numerador = interes * Math.pow(1 + interes, nCuotas);
+		double denominador = Math.pow(1 + interes, nCuotas) - 1;
+		Double cuota = valorPrestamo * (numerador / denominador);
+		return new BigDecimal(cuota).setScale(2, RoundingMode.HALF_UP);
+	}
+
+	@SuppressWarnings("deprecation")
+	public static List<FinTablaAmortizacion> calcularTablaAmortizacion(FinPrestamoSocio finPrestamoSocio) {
+		List<FinTablaAmortizacion> lstFinTablaAmortizacion = new ArrayList<FinTablaAmortizacion>();
+		double capitalTotal = 0;
+		boolean ultimaCuota = false;
+		BigDecimal cuotaMensual = finPrestamoSocio.getCuotaMensual();
+		Date fechaActual = new Date();
+		if (fechaActual.getDate() < finPrestamoSocio.getFinTipoCredito().getDiaPagoMaximo().intValue())
+			fechaActual = sumarRestarMes(fechaActual, -1);
+		fechaActual.setDate(finPrestamoSocio.getFinTipoCredito().getDiaPagoMaximo().intValue());
+		double capital = finPrestamoSocio.getValorPrestamo().doubleValue();
+		finPrestamoSocio.setFechaPrimeraCouta(fechaActual);
+		for (int i = 1; i <= finPrestamoSocio.getPlazoMeses().intValue(); i++) {
+			FinTablaAmortizacion finTablaAmortizacion = new FinTablaAmortizacion();
+			finTablaAmortizacion.setNumeroCuota(new BigDecimal(i));
+			finTablaAmortizacion.setFechaPago(sumarRestarMes(fechaActual, i));
+			finTablaAmortizacion.setInteres(new BigDecimal(
+					(capital * (finPrestamoSocio.getFinTipoCredito().getTasaInteres().doubleValue() / 100)) / 12)
+							.setScale(2, RoundingMode.HALF_UP));
+			if (!ultimaCuota)
+				finTablaAmortizacion.setCapital(
+						(cuotaMensual.subtract(finTablaAmortizacion.getInteres())).setScale(2, RoundingMode.HALF_UP));
+			else
+				finTablaAmortizacion.setCapital(new BigDecimal(capital).setScale(2, RoundingMode.HALF_UP));
+			finTablaAmortizacion
+					.setValorCuota(finTablaAmortizacion.getCapital().add(finTablaAmortizacion.getInteres()));
+			finTablaAmortizacion
+					.setSaldoCapital(new BigDecimal(capital - finTablaAmortizacion.getCapital().doubleValue())
+							.setScale(2, RoundingMode.HALF_UP));
+			if (i == 1)
+				finTablaAmortizacion.setFinEstadoCuota(new FinEstadoCuota(1));
+			else
+				finTablaAmortizacion.setFinEstadoCuota(new FinEstadoCuota(2));
+			finTablaAmortizacion.setFinPrestamoSocio(finPrestamoSocio);
+			lstFinTablaAmortizacion.add(finTablaAmortizacion);
+			capitalTotal = capitalTotal + finTablaAmortizacion.getCapital().doubleValue();
+			if (i == (finPrestamoSocio.getPlazoMeses().intValue() - 1)) {
+				capital = finPrestamoSocio.getValorPrestamo().doubleValue() - capitalTotal;
+				cuotaMensual = new BigDecimal(capital);
+				ultimaCuota = true;
+			} else
+				capital = capital - finTablaAmortizacion.getCapital().doubleValue();
+		}
+		finPrestamoSocio.setFechaUltimaCuota(sumarRestarMes(fechaActual, finPrestamoSocio.getPlazoMeses().intValue()));
+		return lstFinTablaAmortizacion;
 	}
 
 	public static String randomAlphaNumeric() {
-		int count =10;
+		int count = 10;
 		String ALPHA_NUMERIC_STRING = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
 		StringBuilder builder = new StringBuilder();
 		while (count-- != 0) {
