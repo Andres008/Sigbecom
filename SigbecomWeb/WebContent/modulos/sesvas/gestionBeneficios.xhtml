@@ -2,16 +2,16 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://java.sun.com/jsf/html" xmlns:f="http://java.sun.com/jsf/core" xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:p="http://primefaces.org/ui">
 
 <h:head>
-<f:facet name="first">
-            <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-            <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-            <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0"/>
-            <meta name="apple-mobile-web-app-capable" content="yes" />
-        </f:facet>
-        <title><ui:insert name="title">Solicitudes</ui:insert></title>
+	<f:facet name="first">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0"/>
+        <meta name="apple-mobile-web-app-capable" content="yes" />
+    </f:facet>
+        <title><ui:insert name="title">Beneficios</ui:insert></title>
         <h:outputScript name="js/nanoscroller.js" library="california-layout" />
         <h:outputScript name="js/layout.js" library="california-layout" />
-        <ui:insert name="head"/>
+        <h:outputStylesheet library="css" name="theme.css"/>
 </h:head>
 
 <h:body styleClass="main-body">
@@ -21,8 +21,7 @@
             <ui:include src="/affordances/topbar.xhtml" />
             <ui:include src="/affordances/sidebar.xhtml" />
             <ui:include src="/affordances/right-sidebar.xhtml" />
-
-            <div class="layout-main">
+			<div class="layout-main">
                 <div class="route-bar">
                     <div class="route-bar-breadcrumb">
                         <i class="fa fa-home"></i> <span>/SESVAS/Solicitudes</span>
@@ -32,7 +31,7 @@
                 </div>
 				<div class="layout-main-content" align="center">
                     <H1>GESTION DE BENEFICIOS</H1>
-                    <h:form>
+                    <h:form id="form1">
 	                    <p:growl id="growl" showDetail="true" sticky="true" />
 						<p:panel header="Registro de Beneficios" toggleable="true" collapsed="true">
 							<p:panelGrid columns="2" styleClass="ui-noborder">
@@ -42,6 +41,19 @@
 								<p:outputLabel for="det" value="Detalle: " />
 								<p:inputTextarea id="det" required="true" value="#{frmGestionBeneficios.sesvasBeneficio.detalle}"
 									placeholder="Descripción Beneficios" style="text-transform: uppercase"/>
+								<p:outputLabel for="res" value="Resolución: "/>
+								<p:inputTextarea id="res" required="true" value="#{frmGestionBeneficios.sesvasBeneficio.resolucion}"
+									placeholder="Detalle Resolución" style="text-transform: uppercase"/>
+								<p:outputLabel for="tipcob" value="Tipo Cobertura: " />
+								<p:selectOneMenu id="tipcob" value="#{frmGestionBeneficios.sesvasBeneficio.tipoCobertura}">
+				                    <f:selectItem itemLabel="Seleccione una opción" noSelectionOption="true"/>
+				                    <f:selectItem itemLabel="ANUAL" itemValue="ANUAL"/>
+				                    <f:selectItem itemLabel="UNICO" itemValue="UNICO"/>
+				                    <f:selectItem itemLabel="MORTUORIO" itemValue="MORTUORIO"/>
+				                </p:selectOneMenu>
+				                <p:outputLabel for="monto" value="Monto Maximo de Cobertura: " />
+				                <p:inputNumber id="monto" value="#{frmGestionBeneficios.sesvasBeneficio.montoMaximo}" symbol=" $"
+                                symbolPosition="s" decimalSeparator="," thousandSeparator="." decimalPlaces="2"/>
 							</p:panelGrid>
 							<p:commandButton value="Registrar"
 								action="#{frmGestionBeneficios.registrarBeneficio()}" update="@form">
@@ -93,15 +105,95 @@
 				                    </f:facet>
 				                </p:cellEditor>
 							</p:column>
-							<p:column style="width:2rem">
-				                <p:rowEditor editTitle="Editar" cancelTitle="Cancelar" saveTitle="Guardar"/>
+							<p:column headerText="RESOLUCION">
+								<p:cellEditor>
+				                    <f:facet name="output">
+				                        <h:outputText value="#{dato.resolucion}"/>
+				                    </f:facet>
+				                    <f:facet name="input">
+				                        <p:inputText  value="#{dato.resolucion}" style="width:100%"/>
+				                    </f:facet>
+				                </p:cellEditor>
+							</p:column>
+							<p:column headerText="TIPO COBERTURA">
+								<p:cellEditor>
+				                    <f:facet name="output">
+				                        <h:outputText value="#{dato.tipoCobertura}"/>
+				                    </f:facet>
+				                    <f:facet name="input">
+				                        <p:inputText  value="#{dato.tipoCobertura}" style="width:100%"/>
+				                    </f:facet>
+				                </p:cellEditor>
+							</p:column>
+							<p:column headerText="MONTO MAXIMO">
+								<p:cellEditor>
+				                    <f:facet name="output">
+				                        <h:outputText value="#{dato.montoMaximo}">
+											<f:convertNumber pattern="#0.00" />
+										</h:outputText>
+				                    </f:facet>
+				                    <f:facet name="input">
+				                         <p:inputNumber id="monto" value="#{dato.montoMaximo}" symbol=" $"
+                                symbolPosition="s" decimalSeparator="," thousandSeparator="." decimalPlaces="2"/>
+				                    </f:facet>
+				                </p:cellEditor>
+							</p:column>
+							<p:column headerText="ESTADO" width="50">
+								<h:outputText value="#{dato.estado}"/>
+							</p:column>
+							<p:column width="6">
+									<p:rowEditor editTitle="Edit Row" cancelTitle="Cancel Edit" saveTitle="Save Row" 
+										rendered="#{frmGestionBeneficios.activarBotonesEditar(dato.sesvasSolicituds.size())}" />
+				            </p:column>
+							<p:column width="6">
+								<p:commandButton icon="fa fa-trash" styleClass="rounded-button ui-button-flat"
+									disabled="#{frmGestionBeneficios.activarBotones(dato.sesvasSolicituds.size())}"
+									action="#{frmGestionBeneficios.eliminarBeneficio(dato.idSesvasBeneficios)}" update="@form">
+									<p:confirm header="Confirmación"
+									message="Esta seguro de eliminar el beneficio?"
+									icon="pi pi-exclamation-triangle" />
+								</p:commandButton>
+								<p:confirmDialog global="true" showEffect="fade" hideEffect="fade"
+									responsive="true" width="350">
+									<p:commandButton value="Si" type="button"
+										styleClass="ui-confirmdialog-yes" />
+									<p:commandButton value="No" type="button"
+										styleClass="ui-confirmdialog-no ui-button-flat" />
+								</p:confirmDialog>
+								
+							</p:column>
+							<p:column width="6">
+								<p:commandButton icon="fa fa-lock" styleClass="rounded-button ui-button-flat"
+									disabled="#{frmGestionBeneficios.activarBotonesBlock(dato.sesvasSolicituds.size(),dato.estado)}"
+									onclick="PF('dlgFin').show();"
+									action="#{frmGestionBeneficios.cargarObjBeneficio(dato)}" update="form2 frmDetBen">
+								</p:commandButton>
+							</p:column>
+							<p:column style="width:10rem">
+				            	<p:commandButton value="Agregar Requisitos" onclick="PF('dlgReq').show();" update="frmRe"
+				            		disabled="#{frmGestionBeneficios.activarBotonesRequisito(dato.sesvasSolicituds.size(),dato.estado)}"
+				            		action="#{frmGestionBeneficios.cargarBeneficio(dato.idSesvasBeneficios)}"/>
 				            </p:column>
 				            <p:column style="width:10rem">
-				            	<p:commandButton value="Agregar Requisitos" onclick="PF('dlgReq').show();" update="frmRe"
-				            		action="#{frmGestionBeneficios.cargarBeneficio(dato.idSesvasBeneficios)}"/>
+				            	<p:commandButton value="Agregar Beneficiarios" update="frmBen"
+				            		disabled="#{frmGestionBeneficios.activarBotones(dato.sesvasSolicituds.size())}"
+				            		action="#{frmGestionBeneficios.cargarObjBeneficioFilter(dato)}"/>
 				            </p:column>
 							<p:rowExpansion>
 								<p:panel>
+									<p:dataTable value="#{dato.sesvasBeneficiarios}"
+													id="tblBen" editable="true" var="ben">
+										<f:facet name="header">
+								            Lista de Beneficiarios
+										</f:facet>
+										<p:column >
+											<h:outputText value="#{ben.idBeneficiario}" />
+										</p:column>
+										<p:column >
+								           <h:outputText value="#{frmGestionBeneficios.retornarBeneficiario(ben.usrConsanguinidad.consanguinidad)}"/>
+								        </p:column>
+									</p:dataTable>
+									<p:separator/>
 									<p:dataTable value="#{dato.sesvasRequisitos}"
 													id="tblReq" editable="true" var="req">
 										<f:facet name="header">
@@ -117,28 +209,28 @@
 					</p:panel>
 	                </h:form>
 <!-- Inicio de Dialogs -->
-	                <h:form id="frmReq">
-	                	<p:dialog
-						header="Registro tipos de Documentos"  resizable="false"
-						widgetVar="dlgDoc" id="dlgDoc" modal="true" position="center"
-						hideEffect="fade" >
-							
-							<p:messages id="msg"/>
-							<p:panelGrid columns="2">
-								<p:outputLabel for="req" value="Nombre tipo Documento"/>
-								<p:inputText id="req" required="true"
-									placeholder="Nombre Documento" style="text-transform: uppercase"
-								 value="#{frmGestionBeneficios.tiposDocumento.tipoRequisito}" />
-							</p:panelGrid>
-							
-							<p:panelGrid columns="2">
-							<p:commandButton id="btnCan" value="Cancelar" update="form2" 
-							action="#{frmGestionBeneficios.init()}" onclick="PF('dlgDoc').hide();"/>
-							<p:commandButton id="btnGuar" value="Guardar" update="dlgDoc"
-							actionListener="#{frmGestionBeneficios.registrarTipoDocumento()}"/>
-							</p:panelGrid>
-						</p:dialog>
-						</h:form>
+
+	<p:dialog
+		header="Registro tipos de Documentos"  resizable="false"
+		widgetVar="dlgDoc" id="dlgDoc" modal="true" position="center"
+		hideEffect="fade" >
+		<h:form id="frmReq">
+			<p:messages id="msg"/>
+			<p:panelGrid columns="2">
+				<p:outputLabel for="req" value="Nombre tipo Documento"/>
+				<p:inputText id="req" required="true"
+				placeholder="Nombre Documento" style="text-transform: uppercase"
+				value="#{frmGestionBeneficios.tiposDocumento.tipoRequisito}" />
+			</p:panelGrid>
+			<p:panelGrid columns="2">
+				<p:commandButton id="btnCan" value="Cancelar" update="form2" 
+					action="#{frmGestionBeneficios.init()}" onclick="PF('dlgDoc').hide();"/>
+				<p:commandButton id="btnGuar" value="Guardar" update="@form"
+					actionListener="#{frmGestionBeneficios.registrarTipoDocumento()}"/>
+				</p:panelGrid>
+		</h:form>
+	</p:dialog>
+
 
 <p:dialog
 	header="Agregar nuevos requisitos"  resizable="false" closable="false"
@@ -174,8 +266,66 @@
 					actionListener="#{frmGestionBeneficios.agregarRequisitos()}"/>
 		</h:panelGrid>
 	</h:form>
-			</p:dialog>
-	                <!-- Fin de Dialogs -->
+</p:dialog>
+<p:dialog
+	header="Agregar Beneficiarios"  resizable="false" closable="false"
+	widgetVar="dlgBen" modal="true" position="center"
+	hideEffect="fade" >
+	<h:form id="frmBen">
+	<p:messages id="msg"/>
+	<p:separator/>
+		<p:panel id="pnlBen" style="background-color: #D1E4FF;">
+			<div class="ui-g" >
+				<div class="ui-g-12 ui-md-8 ui-lg-3">
+					<p:outputLabel value="Seleccione beneficiario:"/>
+				</div>
+				<div class="ui-g-12 ui-md-6 ui-lg-6" >
+					<p:panelGrid columns="2" styleClass="ui-noborder">	
+						<p:selectOneMenu id="selBen" 
+							value="#{frmGestionBeneficios.idConsanguinidad}">
+							<f:selectItem itemLabel="Seleccione Documento" noSelectionOption="true" />
+							<f:selectItems value="#{frmGestionBeneficios.lstUsrConsanguinidad}" var="usr"
+								itemLabel="#{usr.consanguinidad}" itemValue="#{usr.idConsanguinidad}"/>
+								<p:ajax event="change" delay="1000" process="@this" update="form2"/>
+						</p:selectOneMenu>
+					</p:panelGrid>
+				</div>
+			</div>
+		</p:panel>
+		<p:separator/>
+		<h:panelGrid columns="2">
+			<p:commandButton value="Cancelar" onclick="PF('dlgBen').hide();" update="form2"
+							action="#{frmGestionBeneficios.init()}"/>
+			<p:commandButton value="Agregar Beneficiario" update="form2" process="@this"
+					actionListener="#{frmGestionBeneficios.agregarBeneficiarios()}"/>
+		</h:panelGrid>
+	</h:form>
+</p:dialog>
+<p:dialog
+	header="Finalizar Beneficio"  resizable="false" closable="false"
+	widgetVar="dlgFin" modal="true" position="center"
+	hideEffect="fade" >
+	<h:form id="frmDetBen">
+		<p:messages id="msgDet" closable="true" showDetail="true"/>
+		<p:outputLabel value="Al finalizar este beneficio ningun usario podrá hacer uso del mismo, quedando guardado el registro como histórico"/>
+		<p:separator/>
+		<h:panelGrid id="dtBen" columns="2">
+			<p:outputLabel for="detBen" value="Beneficio a ser finalizado:"/>
+			<p:outputLabel for="detBen" value="#{frmGestionBeneficios.sesvasBeneficioTmp.beneficios}"/>
+			<p:outputLabel for="detBen" value="Ingrese el motivo de finalización del beneficio"/>
+			<p:inputTextarea id="detBen" cols="50"
+			  value="#{frmGestionBeneficios.sesvasBeneficioTmp.detalleFinalizacion}"/>
+		</h:panelGrid>
+		<h:panelGrid columns="2">
+			<p:commandButton value="Cancelar" onclick="PF('dlgFin').hide();" update="form2"
+							action="#{frmGestionBeneficios.init()}"/>
+			<p:commandButton value="Finalizar" update="frmDetBen"
+					action="#{frmGestionBeneficios.actualizarEstado()}"/>
+		</h:panelGrid>
+	</h:form>
+</p:dialog>
+
+<!-- Fin de Dialogs -->
                 </div>
 				<ui:include src="/affordances/footer.xhtml" />
             </div>

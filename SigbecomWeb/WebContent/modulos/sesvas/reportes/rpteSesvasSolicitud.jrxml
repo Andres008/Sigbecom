@@ -1,0 +1,167 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with Jaspersoft Studio version 6.6.0.final using JasperReports Library version 6.6.0  -->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="rpteSesvasSolicitud" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="6eb8ff8c-21b2-48f9-85d5-6537ca68e2d2">
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="One Empty Record"/>
+	<parameter name="logo" class="java.lang.String"/>
+	<parameter name="contenido" class="java.lang.String"/>
+	<parameter name="pariente" class="java.lang.String"/>
+	<parameter name="parienteNombres" class="java.lang.String"/>
+	<parameter name="parienteCedula" class="java.lang.String"/>
+	<parameter name="nombresSocio" class="java.lang.String"/>
+	<parameter name="cedulaSocio" class="java.lang.String"/>
+	<parameter name="telefonoSocio" class="java.lang.String"/>
+	<parameter name="idSocio" class="java.lang.String"/>
+	<parameter name="fechaDocumento" class="java.lang.String"/>
+	<queryString>
+		<![CDATA[]]>
+	</queryString>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="280" splitType="Stretch">
+			<image>
+				<reportElement x="72" y="0" width="80" height="79" uuid="be411d01-3eec-4612-ab48-a23a159e0ad7"/>
+				<imageExpression><![CDATA[$P{logo}]]></imageExpression>
+			</image>
+			<staticText>
+				<reportElement x="156" y="10" width="344" height="40" uuid="ca269a50-a9f4-4a19-a2c3-0951120986ac"/>
+				<textElement textAlignment="Center">
+					<font size="14"/>
+				</textElement>
+				<text><![CDATA[FORMULARIO DE SOLICITUD SEGURO DE SALUD, VIDA Y ASISTENCIA SOCIAL]]></text>
+			</staticText>
+			<staticText>
+				<reportElement positionType="FixRelativeToBottom" x="160" y="56" width="340" height="14" uuid="d265e1b6-c22b-4801-a957-67308a5e5d61"/>
+				<textElement textAlignment="Center">
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[COMITE DE EMPRESA EMELNORTE]]></text>
+			</staticText>
+			<line>
+				<reportElement x="118" y="79" width="380" height="1" uuid="ab95dd23-dd3e-434b-955d-be5ff3ea25b6"/>
+			</line>
+			<staticText>
+				<reportElement x="72" y="200" width="241" height="14" uuid="3c8f9fe2-b516-46a0-b1ba-3f6258388898"/>
+				<textElement verticalAlignment="Middle"/>
+				<text><![CDATA[Señor:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="72" y="214" width="340" height="14" uuid="488ff111-efb8-42e5-b3d3-799f59c01b24"/>
+				<textElement verticalAlignment="Middle"/>
+				<text><![CDATA[SECRETARIO GENERAL DEL COMITÉ DE EMPRESA EMELNORTE]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="72" y="228" width="340" height="14" uuid="ea24dcdd-b618-4ea2-aed0-80d4bd071946"/>
+				<textElement verticalAlignment="Middle"/>
+				<text><![CDATA[Presente.-]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="72" y="262" width="241" height="14" uuid="7d46ca07-0640-4983-a783-8cfb4d4312a2"/>
+				<textElement verticalAlignment="Middle"/>
+				<text><![CDATA[Señor Secretario General:]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="230" y="135" width="270" height="14" uuid="303f494d-4d51-49d6-9f77-d83aa6f2b3ba"/>
+				<textElement textAlignment="Right"/>
+				<textFieldExpression><![CDATA[$P{fechaDocumento}]]></textFieldExpression>
+			</textField>
+		</band>
+	</title>
+	<detail>
+		<band height="202" splitType="Stretch">
+			<textField>
+				<reportElement x="72" y="0" width="428" height="100" uuid="0a75dd5b-aae1-4245-99e8-37b09815a2c3"/>
+				<textElement textAlignment="Justified"/>
+				<textFieldExpression><![CDATA[$P{contenido}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="72" y="124" width="60" height="14" uuid="5af0563e-64b8-474a-9361-e359410d5043"/>
+				<textElement verticalAlignment="Middle"/>
+				<text><![CDATA[Nombres:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="72" y="138" width="60" height="14" uuid="e1978cbb-b954-4060-a687-8772467e62de"/>
+				<textElement verticalAlignment="Middle"/>
+				<text><![CDATA[Nro. Cédula:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="72" y="110" width="60" height="14" uuid="9f6b6eff-687f-439d-b84d-06ca17a3215a"/>
+				<textElement verticalAlignment="Middle"/>
+				<text><![CDATA[Pariente:]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="132" y="110" width="280" height="14" uuid="660e4099-f8dd-4bab-85ed-1c4c125cb32b"/>
+				<textElement verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$P{pariente}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="132" y="124" width="280" height="14" uuid="8e8457f4-65ac-49c4-9150-7c2e864247f5"/>
+				<textElement verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$P{parienteNombres}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="72" y="170" width="426" height="14" uuid="90ae360b-ed5e-4f95-b11b-b47461c88bf6"/>
+				<textElement verticalAlignment="Middle"/>
+				<text><![CDATA[Por la acogida que tenga mi solicitud, desde ya anticipo mi cumplido agradecimiento.]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="132" y="138" width="280" height="14" uuid="d25b293c-6aee-425d-9e8a-9f824cfdf4f0"/>
+				<textFieldExpression><![CDATA[$P{parienteCedula}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<pageFooter>
+		<band height="156" splitType="Stretch">
+			<line>
+				<reportElement x="0" y="136" width="555" height="1" uuid="0a63e750-582b-4b43-a2fd-868629eb46ee"/>
+			</line>
+			<staticText>
+				<reportElement x="0" y="137" width="241" height="14" uuid="9e2be17c-4d89-4d2c-86b9-8efde9d8110b"/>
+				<textElement verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
+				<text><![CDATA[Formulario emitido desde el sistema SIGBECOM]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="110" y="71" width="100" height="14" uuid="5d3a9448-47e3-4a75-ad11-c35e0107d219"/>
+				<textElement verticalAlignment="Middle"/>
+				<text><![CDATA[Nombre del Socio/a:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="110" y="85" width="100" height="14" uuid="b0b6d6f6-fd16-4d11-b0fb-484abcffcb37"/>
+				<textElement verticalAlignment="Middle"/>
+				<text><![CDATA[Nro. Cédula:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="110" y="99" width="100" height="14" uuid="ff511118-9ff7-4325-b451-25f80a54970f"/>
+				<textElement verticalAlignment="Middle"/>
+				<text><![CDATA[Codigo:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="110" y="113" width="100" height="14" uuid="3c3985e6-6a49-4b61-aca1-2c909eb70c04"/>
+				<textElement verticalAlignment="Middle"/>
+				<text><![CDATA[Nro Telefónico:]]></text>
+			</staticText>
+			<line>
+				<reportElement x="177" y="62" width="200" height="1" uuid="af0679ae-04f0-4f04-a92a-7e840edae3d2"/>
+			</line>
+			<textField>
+				<reportElement x="210" y="71" width="270" height="14" uuid="fcbc1ed6-aac5-416d-8477-f14fcd205607"/>
+				<textFieldExpression><![CDATA[$P{nombresSocio}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="210" y="85" width="270" height="14" uuid="2e38b063-0a78-4cfb-93ae-d584d89651b1"/>
+				<textFieldExpression><![CDATA[$P{cedulaSocio}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="210" y="99" width="270" height="14" uuid="725d1bce-1c19-438d-94bb-17210e5f8f33"/>
+				<textFieldExpression><![CDATA[$P{idSocio}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="210" y="113" width="270" height="14" uuid="fe43b035-44c7-4166-8a10-e53096bc4b7f"/>
+				<textFieldExpression><![CDATA[$P{telefonoSocio}]]></textFieldExpression>
+			</textField>
+		</band>
+	</pageFooter>
+</jasperReport>

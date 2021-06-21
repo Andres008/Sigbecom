@@ -26,6 +26,10 @@ public class UsrConsanguinidad implements Serializable {
 	//bi-directional many-to-one association to GesPariente
 	@OneToMany(mappedBy="usrConsanguinidad")
 	private List<GesPariente> gesParientes;
+	
+	//bi-directional many-to-one association to SesvasBeneficiario
+	@OneToMany(mappedBy="usrConsanguinidad")
+	private List<SesvasBeneficiario> sesvasBeneficiarios;
 
 	public UsrConsanguinidad() {
 	}
@@ -66,6 +70,27 @@ public class UsrConsanguinidad implements Serializable {
 		gesPariente.setUsrConsanguinidad(null);
 
 		return gesPariente;
+	}
+	public List<SesvasBeneficiario> getSesvasBeneficiarios() {
+		return this.sesvasBeneficiarios;
+	}
+
+	public void setSesvasBeneficiarios(List<SesvasBeneficiario> sesvasBeneficiarios) {
+		this.sesvasBeneficiarios = sesvasBeneficiarios;
+	}
+
+	public SesvasBeneficiario addSesvasBeneficiario(SesvasBeneficiario sesvasBeneficiario) {
+		getSesvasBeneficiarios().add(sesvasBeneficiario);
+		sesvasBeneficiario.setUsrConsanguinidad(this);
+
+		return sesvasBeneficiario;
+	}
+
+	public SesvasBeneficiario removeSesvasBeneficiario(SesvasBeneficiario sesvasBeneficiario) {
+		getSesvasBeneficiarios().remove(sesvasBeneficiario);
+		sesvasBeneficiario.setUsrConsanguinidad(null);
+
+		return sesvasBeneficiario;
 	}
 
 }

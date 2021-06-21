@@ -13,11 +13,15 @@ import javax.ejb.Stateless;
 
 import org.w3c.dom.ls.LSInput;
 
+import ec.com.model.dao.entity.GesPariente;
+import ec.com.model.dao.entity.GesPersona;
 import ec.com.model.dao.entity.SesvasAdjunto;
+import ec.com.model.dao.entity.SesvasBeneficiario;
 import ec.com.model.dao.entity.SesvasBeneficio;
 import ec.com.model.dao.entity.SesvasRequisito;
 import ec.com.model.dao.entity.SesvasSolicitud;
 import ec.com.model.dao.entity.SesvasTipoRequisito;
+import ec.com.model.dao.entity.UsrConsanguinidad;
 import ec.com.model.dao.manager.ManagerDAOSegbecom;
 
 /**
@@ -39,17 +43,23 @@ public class ManagerSesvas {
     public void insertarSesvasBeneficio(SesvasBeneficio sesvasBeneficio) throws Exception {
     	managerDAOSegbecom.insertar(sesvasBeneficio);
     }
+    
+    
     @SuppressWarnings("unchecked")
 	public List<SesvasBeneficio> findAllSesvasBeneficio() throws Exception{
     	List<SesvasBeneficio> lstBeneficios = managerDAOSegbecom.findAll(SesvasBeneficio.class);
     	if(lstBeneficios!=null && lstBeneficios.size()>0) {
 	    	for (SesvasBeneficio sesvasBeneficio : lstBeneficios) {
-				for (SesvasRequisito sesvasRequisito : sesvasBeneficio.getSesvasRequisitos()) {
+	    		for (SesvasBeneficiario sesvasBeneficiario : sesvasBeneficio.getSesvasBeneficiarios()) {
+					sesvasBeneficiario.getIdBeneficiario();
+				}
+	    		for (SesvasRequisito sesvasRequisito : sesvasBeneficio.getSesvasRequisitos()) {
 					sesvasRequisito.getIdSesvasRequisitos();
 				}
 				for (SesvasSolicitud sesvasSolicitud : sesvasBeneficio.getSesvasSolicituds()) {
 					sesvasSolicitud.getIdSesvasSolicitud();
 				}
+				
 			}
     	}
     	return lstBeneficios;
@@ -161,4 +171,67 @@ public class ManagerSesvas {
    			return null;
    		}
     }
+    
+    public void eliminarBeneficio(long idSesvasBeneficios) throws Exception {
+    	managerDAOSegbecom.eliminar(SesvasBeneficio.class, idSesvasBeneficios);
+    }
+    public SesvasBeneficio findByIdBeneficio(long idbeneficio) throws Exception {
+    	SesvasBeneficio sesvasBeneficio = (SesvasBeneficio) managerDAOSegbecom.findById(SesvasBeneficio.class, idbeneficio);
+    	for (SesvasBeneficiario sesBeneficiario : sesvasBeneficio.getSesvasBeneficiarios()) {
+			sesBeneficiario.getIdBeneficiario();
+		}
+    	return sesvasBeneficio;
+    }
+    @SuppressWarnings("unchecked")
+	public List<UsrConsanguinidad> findAllUsrConsanguinidad() throws Exception{
+    	return managerDAOSegbecom.findAll(UsrConsanguinidad.class);
+    }
+    
+    public void insertarSesvasBeneficiario(SesvasBeneficiario sesvasBeneficiario) throws Exception {
+    	managerDAOSegbecom.insertar(sesvasBeneficiario);
+    }
+    @SuppressWarnings("unchecked")
+	public List<SesvasBeneficiario> beneficiariosByIdBeneficios(long idSesvasBeneficio) throws Exception {
+    	return managerDAOSegbecom.findWhere(SesvasBeneficiario.class, "o.sesvasBeneficio.idSesvasBeneficios = '"+idSesvasBeneficio+"'", null);
+    }
+    @SuppressWarnings("unchecked")
+	public List<SesvasBeneficio> findSesvasBeneficioByEstado(String estado) throws Exception{ 
+    	 
+    	 List<SesvasBeneficio> lstBeneficios = managerDAOSegbecom.findWhere(SesvasBeneficio.class, "o.estado = '"+estado+"'", null);
+     	if(lstBeneficios!=null && lstBeneficios.size()>0) {
+ 	    	for (SesvasBeneficio sesvasBeneficio : lstBeneficios) {
+ 	    		for (SesvasBeneficiario sesvasBeneficiario : sesvasBeneficio.getSesvasBeneficiarios()) {
+ 					sesvasBeneficiario.getIdBeneficiario();
+ 				}
+ 	    		for (SesvasRequisito sesvasRequisito : sesvasBeneficio.getSesvasRequisitos()) {
+ 					sesvasRequisito.getIdSesvasRequisitos();
+ 				}
+ 				for (SesvasSolicitud sesvasSolicitud : sesvasBeneficio.getSesvasSolicituds()) {
+ 					sesvasSolicitud.getIdSesvasSolicitud();
+ 				}
+ 				
+ 			}
+ 	    	return lstBeneficios;
+     	}
+     	return null;
+    }
+    @SuppressWarnings("unchecked")
+	public List<SesvasSolicitud> findSolicitudesByIdBeneficios(Long idBeneficios,String estado, String cedulaSocio) throws Exception{
+    	return managerDAOSegbecom.findWhere(SesvasSolicitud.class, "o.sesvasBeneficio.idSesvasBeneficios = '"+idBeneficios+"' AND o.estado = '"+estado+"' AND o.usrSocio.cedulaSocio='"+cedulaSocio+"'", null);
+    	
+    }
+    @SuppressWarnings("unchecked")
+   	public List<SesvasSolicitud> findSolicitudesByIdBenEstadoCedPeriodo(Long idBeneficios,String estado, String cedulaSocio,String periodo) throws Exception{
+       	return managerDAOSegbecom.findWhere(SesvasSolicitud.class, "o.sesvasBeneficio.idSesvasBeneficios = '"+idBeneficios+"' AND o.estado = '"+estado+"' AND o.usrSocio.cedulaSocio='"+cedulaSocio+"' AND o.periodo='"+periodo+"'", null);
+    }
+    @SuppressWarnings("unchecked")
+	public List<GesPariente> findParientesByCed(String cedulaSocio) throws Exception {
+    	return managerDAOSegbecom.findWhere(GesPariente.class, "o.usrSocio.cedulaSocio='"+cedulaSocio+"'", null);
+    }
+    
+    public GesPariente findParienteByCedFamSocio(String cedulaFamiliar) throws Exception {
+    	return (GesPariente) managerDAOSegbecom.findWhere(GesPariente.class, "o.gesPersona.cedula='"+cedulaFamiliar+"'", null).get(0);
+    }
+    
+    
 }

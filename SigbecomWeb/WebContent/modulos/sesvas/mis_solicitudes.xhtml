@@ -12,7 +12,6 @@
         <h:outputScript name="js/nanoscroller.js" library="california-layout" />
         <h:outputScript name="js/layout.js" library="california-layout" />
         <h:outputStylesheet library="css" name="estilos.css"/>
-        <ui:insert name="head"/>
 </h:head>
 
 <h:body styleClass="main-body">
@@ -33,7 +32,7 @@
                 </div>
 				<div  align="center">
 					<H1>BENEFICIOS SESEVAS</H1>
-				<h:form >
+				<h:form id="form1" >
 					<p:growl id="growl" showDetail="true" sticky="true" />
                     <p:panel header="SOLICITUD DE BENEFICIOS">
                     	<h:panelGrid columns="3" cellpadding="5">
@@ -50,7 +49,20 @@
                     	</h:panelGrid>
                     	<!--style="width:150px;height:40px " -->
                     	<p:separator/>
-                    	
+                    	<h:panelGrid id="grid1"  columns="3" cellpadding="10"
+                    				rendered="#{frmMisSolicitudes.mostrarReq}">
+                    		<p:outputLabel value="Seleccione Persona Beneficiaria:"/>		
+                    		<p:selectOneMenu id="sltPer" value="#{frmMisSolicitudes.cedulaBeneficiario}">
+			                    <f:selectItem itemLabel="Seleccione Persona"
+										noSelectionOption="true" />
+			                    <f:selectItems value="#{frmMisSolicitudes.lstDtoparientes}" var="dat"
+			                    			itemLabel="#{dat.cedula} #{dat.nombres}" itemValue="#{dat.cedula}"/>
+			                    
+			                </p:selectOneMenu>
+                    		<p:commandButton value="Generar Solicitud" style="width:150px;height:40px"
+                    			 onclick="PF('dlgSol').show()" update="dlgPDF"
+                    			 action="#{frmMisSolicitudes.generarPdf()}"/>
+                    	</h:panelGrid>
                     	<p:dataTable id="tblReq" rendered="#{frmMisSolicitudes.mostrarReq}"
                     				value="#{frmMisSolicitudes.lstAdjuntos}" var="dato">
                     			<f:facet name="header">
@@ -107,8 +119,21 @@
 						    <p:column headerText="Detalle">
 						        	<p:outputLabel value="#{sol.fecha}"/>
 						    </p:column>
+						    <p:column headerText="Monto Maximo Anual">
+						        	<p:outputLabel value="#{sol.sesvasBeneficio.montoMaximo}">
+						        		<f:convertNumber pattern="#0.00" />
+						        	</p:outputLabel>
+						    </p:column>
+						    <p:column headerText="Valor Asignado">
+						        	<p:outputLabel value="#{sol.valor}">
+						        		<f:convertNumber pattern="#0.00" />
+						        	</p:outputLabel>
+						    </p:column>
 						    <p:column headerText="ESTADO">
 						        	<p:outputLabel value="#{sol.estado}"/>
+						    </p:column>
+						    <p:column headerText="PERIODO">
+						        	<p:outputLabel value="#{sol.periodo}"/>
 						    </p:column>
 						    <p:rowExpansion>
 						    	
@@ -153,6 +178,16 @@
 								</p:panelGrid>
 								
 								
+							</h:form>
+						</p:dialog>
+						<p:dialog
+							header="SOLICITUD - SESVAS" resizable="false" position="top" width="90%"
+							widgetVar="dlgSol" id="dlgSol" modal="true"
+							hideEffect="fade">
+							<h:form id="frmSol">
+								<h:panelGrid columns="2">
+								</h:panelGrid>
+								<p:media cache="false" value="#{frmMisSolicitudes.report}" width="70%" height="600px" player="pdf"/>
 							</h:form>
 						</p:dialog>
                 </div>

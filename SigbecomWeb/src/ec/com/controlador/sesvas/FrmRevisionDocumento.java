@@ -26,9 +26,9 @@ import ec.com.model.dao.entity.SesvasSolicitud;
 import ec.com.model.modulos.util.JSFUtil;
 import ec.com.model.sesvas.ManagerSesvas;
 
-@Named("frmGestionSolicitud")
+@Named("frmRevisionDocumento")
 @SessionScoped
-public class FrmGestionSolicitud implements Serializable{
+public class FrmRevisionDocumento implements Serializable{
 	private static final long serialVersionUID = 1L;
 	
 	@EJB
@@ -78,50 +78,40 @@ public class FrmGestionSolicitud implements Serializable{
 		sesvasSolicitud = lstSesvasSolicituds.stream().filter(p->p.getIdSesvasSolicitud()==idSesvasSolicitud).findAny().orElse(null);
 	}
 	public boolean habilitarTramite(String estado) {
-		if(estado.equalsIgnoreCase("REVISADO") ) {
-			return false;
-		}
-		else {
+		if(estado.equalsIgnoreCase("APROBADO") || estado.equalsIgnoreCase("NO APROBADO") || estado.equalsIgnoreCase("REVISADO")
+				|| estado.equalsIgnoreCase("NO CALIFICA")) {
 			return true;
 		}
-	}
-	public void renderValor() {
-		System.out.println("Dato:"+sesvasSolicitud.getEstado());
-		if(estado.equalsIgnoreCase("APROBADO")) {
-			inputVal = false;
-		}
 		else {
-			inputVal = true;
+			return false;
 		}
 	}
+
 	public String tramitarSolicitud() {
 		PrimeFaces prime=PrimeFaces.current();
 		if(resolucion.isEmpty()) {
-			JSFUtil.crearMensajeERROR("Se necesita que ingrese la Resolución");
+			JSFUtil.crearMensajeERROR("Se necesita que ingrese Observación");
 		}
 		else if(estado==null || estado.isEmpty()) {
 			JSFUtil.crearMensajeERROR("Se necesita que seleccione una Opcion");
 		}
-		else if(valor.compareTo(BigDecimal.ZERO) == 0 && estado.equalsIgnoreCase("APROBADO")) {
-			JSFUtil.crearMensajeERROR("Se necesita que ingrese un valor diferente de 0.00");
-		}
-		else if(!resolucion.isEmpty() && !estado.equalsIgnoreCase("SOLICITADO")) {
-			System.out.println("Pricesando");
+		else if(!resolucion.isEmpty()) {
+			System.out.println("Procesando");
 			Date date = new Date();  
             Timestamp fechaResol = new Timestamp(date.getTime());
 			
 			sesvasSolicitud.setEstado(estado);
-			sesvasSolicitud.setResolucion(resolucion);
-			sesvasSolicitud.setFechaAsignacion(fechaResol);
+			sesvasSolicitud.setObservacion(resolucion);
+			sesvasSolicitud.setFechaRevision(fechaResol);
 			sesvasSolicitud.setValor(valor.setScale(2, BigDecimal.ROUND_HALF_EVEN));
 			try {
 				managerSesvas.actualizarObjeto(sesvasSolicitud);
 				inicializar();
 				cargarListadoSolicitudes();
 				prime.executeScript("PF('dlgTramite').hide();");
-				prime.ajax().update("@form");
+				prime.ajax().update("form1");
 				JSFUtil.crearMensajeINFO("Tramite realizado correctamente");
-				return "gestionSolicitudes.xhtml";
+				return "revisionDocumentos.xhtml";
 			} catch (Exception e) {
 				JSFUtil.crearMensajeERROR("No se realizó la actualización correctamente");
 				e.printStackTrace();
