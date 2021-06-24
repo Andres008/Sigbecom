@@ -20,7 +20,7 @@
 	<ui:insert name="head" />
 </h:head>
 
-<h:body styleClass="main-body"
+<h:body styleClass="main-body" 
 	onload="#{controladorGestionCreditos.inicializarAcreditacionSolicitudes()}">
 
 	<div
@@ -48,7 +48,7 @@
 						<p:column headerText="Id Solicitud">
 							<p:outputLabel value="#{solicitud.idPrestamoSocio}" />
 						</p:column>
-						<p:column headerText="Solicitante">
+						<p:column headerText="Solicitante" width="80">
 							<p:outputLabel
 								value="#{solicitud.usrSocio.gesPersona.apellidos} #{solicitud.usrSocio.gesPersona.nombres}" />
 						</p:column>
@@ -65,12 +65,12 @@
 						<p:column headerText="Valor a Recibir">
 							<p:outputLabel value="#{solicitud.valorRecibido}" />
 						</p:column>
-						<p:column headerText="Amortización">
-							<p:commandButton value="Tabla" update="@form" process="@this"
+						<p:column headerText="Tabla Amorti.">
+							<p:commandButton value="Ver" update="@form" process="@this"
 								actionListener="#{controladorGestionCreditos.cargarFinPrestamoSocioAmortizacion(solicitud)}"
 								oncomplete="PF('infAmortizacion').show()" />
 						</p:column>
-						<p:column headerText="Requisitos">
+						<p:column headerText="Requisitos" width="200">
 							<p:dataTable value="#{solicitud.finPrestamoRequisitos}"
 								var="requisito" id="tblRequisito">
 								<p:column headerText="Requisito">
@@ -83,6 +83,19 @@
 										oncomplete="PF('infPDF').show()" />
 								</p:column>
 							</p:dataTable>
+						</p:column>
+						<p:column headerText="Imprimir" width="100" >
+							<p:panelGrid columns="1" styleClass="ui-noborder">
+								<p:commandButton value="Solicitud" update="@form" process="@this"
+									actionListener="#{controladorGestionCreditos.imprimirSolicitudCredito(solicitud)}"
+									oncomplete="PF('infPDF').show()" />
+									<p:commandButton value="Presidente" update="@form" process="@this"
+									actionListener="#{controladorGestionCreditos.imprimirSolicitudPresidente(solicitud)}"
+									oncomplete="PF('infPDF').show()" />
+									<p:commandButton value="Secretario" update="@form" process="@this"
+									actionListener="#{controladorGestionCreditos.imprimirSolicitudSecretario(solicitud)}"
+									oncomplete="PF('infPDF').show()" />
+							</p:panelGrid>
 						</p:column>
 						<p:column headerText="Revisión">
 							<p:commandButton value="Acreditar" update="@form" process="@this"

@@ -162,7 +162,7 @@ public class ManagerGestionSistema {
 		try {
 			@SuppressWarnings("unchecked")
 			List<AutParametrosGenerale> lstParametro = managerDAOSegbecom.findWhere(AutParametrosGenerale.class,
-					"o.nombre='" + nombre.toUpperCase() + "'", null);
+					"o.nombre='" + nombre.toUpperCase() + "' and o.estado='A'", null);
 			if (lstParametro.isEmpty())
 				throw new Exception("Parametro no encontrado.");
 			if (lstParametro.size() > 1)

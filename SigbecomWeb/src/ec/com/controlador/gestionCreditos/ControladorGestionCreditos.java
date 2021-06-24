@@ -1,13 +1,9 @@
 package ec.com.controlador.gestionCreditos;
 
-import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.OutputStream;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.nio.file.Files;
@@ -20,18 +16,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import javax.activation.MimetypesFileTypeMap;
 import javax.ejb.EJB;
 import javax.enterprise.context.SessionScoped;
-import javax.faces.application.FacesMessage;
-import javax.faces.context.FacesContext;
-import javax.faces.context.Flash;
 import javax.faces.model.SelectItem;
-import javax.imageio.ImageIO;
 import javax.inject.Inject;
 import javax.inject.Named;
 
-import org.primefaces.PrimeFaces;
 import org.primefaces.event.FileUploadEvent;
 import org.primefaces.event.FlowEvent;
 import org.primefaces.model.DefaultStreamedContent;
@@ -40,7 +30,6 @@ import org.primefaces.model.file.UploadedFile;
 
 import ec.com.controlador.sesion.BeanLogin;
 import ec.com.model.auditoria.ManagerLog;
-import ec.com.model.dao.entity.AutRol;
 import ec.com.model.dao.entity.FinCuotasDescontada;
 import ec.com.model.dao.entity.FinEstadoCredito;
 import ec.com.model.dao.entity.FinEstadoCuota;
@@ -53,35 +42,9 @@ import ec.com.model.dao.entity.FinTablaAmortizacion;
 import ec.com.model.dao.entity.FinTipcrediRequisito;
 import ec.com.model.dao.entity.FinTipoCredito;
 import ec.com.model.dao.entity.FinTipoSolicitud;
-import ec.com.model.dao.entity.GesDiscapacidad;
-import ec.com.model.dao.entity.GesDiscapacidadPersona;
-import ec.com.model.dao.entity.GesEstadoCivil;
-import ec.com.model.dao.entity.GesEtnia;
-import ec.com.model.dao.entity.GesGenero;
-import ec.com.model.dao.entity.GesPariente;
-import ec.com.model.dao.entity.GesPersona;
-import ec.com.model.dao.entity.GesTipoSangre;
-import ec.com.model.dao.entity.UsrAgencia;
-import ec.com.model.dao.entity.UsrArea;
-import ec.com.model.dao.entity.UsrCanton;
-import ec.com.model.dao.entity.UsrCargo;
-import ec.com.model.dao.entity.UsrConsanguinidad;
-import ec.com.model.dao.entity.UsrCuentaSocio;
-import ec.com.model.dao.entity.UsrEstadoSocio;
-import ec.com.model.dao.entity.UsrInstitucionBancaria;
-import ec.com.model.dao.entity.UsrInstruccion;
-import ec.com.model.dao.entity.UsrLicenciaSocio;
-import ec.com.model.dao.entity.UsrParroquia;
-import ec.com.model.dao.entity.UsrProvincia;
 import ec.com.model.dao.entity.UsrSocio;
-import ec.com.model.dao.entity.UsrTipoCuenta;
-import ec.com.model.dao.entity.UsrTipoInstruccion;
-import ec.com.model.dao.entity.UsrTipoLicencia;
-import ec.com.model.dao.entity.UsrTipoVivienda;
 import ec.com.model.gestionCreditos.ManagerGestionCredito;
-import ec.com.model.gestionPersonas.ManagerGestionPersonas;
 import ec.com.model.gestionSistema.ManagerGestionSistema;
-import ec.com.model.gestionSocios.ManagerGestionSocios;
 import ec.com.model.modulos.util.CorreoUtil;
 import ec.com.model.modulos.util.JSFUtil;
 import ec.com.model.modulos.util.ModelUtil;
@@ -140,7 +103,7 @@ public class ControladorGestionCreditos implements Serializable {
 	private UsrSocio objSocio;
 
 	public ControladorGestionCreditos() {
-		// TODO Auto-generated constructor stub
+
 	}
 
 	public void inicializarRevisionSolicitudes() {
@@ -167,16 +130,15 @@ public class ControladorGestionCreditos implements Serializable {
 
 	public void agregarEliminarPrestamo(FinPrestamoSocio prestamo) {
 		if (valorChecked) {
-			objFinPrestamoSocio.getFinPrestamoNovacions1().add(new FinPrestamoNovacion(objFinPrestamoSocio, prestamo));
+			objFinPrestamoSocio.getFinPrestamoNovacions2().add(new FinPrestamoNovacion(objFinPrestamoSocio, prestamo));
 		} else {
-			for (FinPrestamoNovacion prestamoNovacion : objFinPrestamoSocio.getFinPrestamoNovacions1()) {
+			for (FinPrestamoNovacion prestamoNovacion : objFinPrestamoSocio.getFinPrestamoNovacions2()) {
 				if (prestamo.getIdPrestamoSocio() == prestamo.getIdPrestamoSocio()) {
-					objFinPrestamoSocio.getFinPrestamoNovacions1().remove(prestamoNovacion);
+					objFinPrestamoSocio.getFinPrestamoNovacions2().remove(prestamoNovacion);
 					break;
 				}
 			}
 		}
-		System.out.println(objFinPrestamoSocio.getFinPrestamoNovacions1().size());
 	}
 
 	public void inicializarDescuentoPrestamo() {
@@ -253,8 +215,8 @@ public class ControladorGestionCreditos implements Serializable {
 		objFinPrestamoSocio.setFinTipoSolicitud(new FinTipoSolicitud(2));
 		objFinPrestamoSocio.setFinPrestamoRequisitos(new ArrayList<FinPrestamoRequisito>());
 		objFinPrestamoSocio.setFinTablaAmortizacions(new ArrayList<FinTablaAmortizacion>());
-		objFinPrestamoSocio.setFinPrestamoNovacions1(new ArrayList<FinPrestamoNovacion>());
-		objFinPrestamoSocio.getFinPrestamoNovacions1().add(new FinPrestamoNovacion(objFinPrestamoSocio, prestamoSocio));
+		objFinPrestamoSocio.setFinPrestamoNovacions2(new ArrayList<FinPrestamoNovacion>());
+		objFinPrestamoSocio.getFinPrestamoNovacions2().add(new FinPrestamoNovacion(objFinPrestamoSocio, prestamoSocio));
 		return "/modulos/prestamosFina/novacionCredito?faces-redirect=true";
 	}
 
@@ -271,7 +233,7 @@ public class ControladorGestionCreditos implements Serializable {
 		objFinPrestamoSocio.setFinTipoSolicitud(new FinTipoSolicitud(2));
 		objFinPrestamoSocio.setFinPrestamoRequisitos(new ArrayList<FinPrestamoRequisito>());
 		objFinPrestamoSocio.setFinTablaAmortizacions(new ArrayList<FinTablaAmortizacion>());
-		objFinPrestamoSocio.setFinPrestamoNovacions1(new ArrayList<FinPrestamoNovacion>());
+		objFinPrestamoSocio.setFinPrestamoNovacions2(new ArrayList<FinPrestamoNovacion>());
 	}
 
 	public void cargarRequisitoTipoCredito() {
@@ -314,9 +276,7 @@ public class ControladorGestionCreditos implements Serializable {
 
 	public void imprimirSolicitudCredito(FinPrestamoSocio prestamoSocio) {
 		try {
-			SimpleDateFormat formatoCompleto = new SimpleDateFormat("dd/MM/yyyy");
 			SimpleDateFormat formatodia = new SimpleDateFormat("dd");
-			SimpleDateFormat formatoMes = new SimpleDateFormat("MM");
 			SimpleDateFormat formatoanio = new SimpleDateFormat("yyyy");
 			Map<String, Object> parametros = new HashMap<String, Object>();
 			parametros.put("apelativoSG",
@@ -335,6 +295,7 @@ public class ControladorGestionCreditos implements Serializable {
 							+ " meses plazo, a una tasa de interés del "
 							+ prestamoSocio.getFinTipoCredito().getTasaInteres() + "%.");
 			parametros.put("nroSolicitud", String.valueOf(prestamoSocio.getIdPrestamoSocio()));
+			parametros.put("codEmpelado", String.valueOf(prestamoSocio.getUsrSocio().getIdSocio()));
 			parametros.put("lugarFecha",
 					"Ibarra, " + formatodia.format(prestamoSocio.getFechaSolicitud()) + " de "
 							+ ModelUtil.getMesAlfanumerico(prestamoSocio.getFechaSolicitud()) + " del "
@@ -343,6 +304,111 @@ public class ControladorGestionCreditos implements Serializable {
 			lstPrestamo.add(prestamoSocio);
 			JRBeanCollectionDataSource beanCollectionDataSource = new JRBeanCollectionDataSource(lstPrestamo);
 			File jasper = new File(beanLogin.getPathReporte() + "solicitudPrestamo.jasper");
+			JasperPrint jasperPrint;
+			try {
+				jasperPrint = JasperFillManager.fillReport(jasper.getPath(), parametros, beanCollectionDataSource);
+				archivo = JasperExportManager.exportReportToPdf(jasperPrint);
+			} catch (JRException e) {
+				JSFUtil.crearMensajeERROR("Error al generar el reporte de solicitud. " + e.getMessage());
+				e.printStackTrace();
+			}
+		} catch (Exception e) {
+			JSFUtil.crearMensajeERROR("Error al generar el reporte de solicitud. " + e.getMessage());
+			e.printStackTrace();
+		}
+
+	}
+
+	public void imprimirSolicitudSecretario(FinPrestamoSocio prestamoSocio) {
+		try {
+			SimpleDateFormat formatodia = new SimpleDateFormat("dd");
+			SimpleDateFormat formatoanio = new SimpleDateFormat("yyyy");
+			Map<String, Object> parametros = new HashMap<String, Object>();
+			parametros.put("apelativoSG",
+					managerGestionSistema.buscarValorParametroNombre("APELATIVO SECRETARIO GENERAL"));
+			parametros.put("nombreSocio", prestamoSocio.getUsrSocio().getGesPersona().getApellidos() + " "
+					+ prestamoSocio.getUsrSocio().getGesPersona().getNombres());
+			parametros.put("cedulaSocio", prestamoSocio.getUsrSocio().getCedulaSocio());
+			parametros.put("telefono", prestamoSocio.getUsrSocio().getGesPersona().getTelefono());
+			parametros.put("nombreSG", managerGestionSistema.buscarValorParametroNombre("NOMBRE SECRETARIO GENERAL"));
+			parametros.put("primerTexto",
+					"Como es de su conocimiento conforme solicitud Nº " + prestamoSocio.getIdPrestamoSocio()
+							+ ", con fecha " + formatodia.format(prestamoSocio.getFechaSolicitud()) + " de "
+							+ ModelUtil.getMesAlfanumerico(prestamoSocio.getFechaSolicitud()) + " de "
+							+ formatoanio.format(prestamoSocio.getFechaSolicitud())
+							+ ", solicité se me otorgue un prestamo de $" + prestamoSocio.getValorPrestamo()
+							+ ", mismo que será cancelado en " + prestamoSocio.getPlazoMeses()
+							+ " cuotas mensuales de $" + prestamoSocio.getCuotaMensual() + ", apartir de "
+							+ ModelUtil.getMesAlfanumerico(prestamoSocio.getFechaPrimeraCouta()) + " de "
+							+ formatoanio.format(prestamoSocio.getFechaPrimeraCouta()) + " a "
+							+ ModelUtil.getMesAlfanumerico(prestamoSocio.getFechaUltimaCuota()) + " de "
+							+ formatoanio.format(prestamoSocio.getFechaUltimaCuota())+".");
+			parametros.put("segundoTexto",
+					"De ser aprobada mi solicitud de PRÉSTAMO, Autorizo en forma libre y voluntaria con carácter de irrevocable "
+							+ "ante sus autoridades competentes se descuente los valores correspondientes conforme a las especificaciones "
+							+ "del inciso anterior.");
+			parametros.put("nroSolicitud", String.valueOf(prestamoSocio.getIdPrestamoSocio()));
+			parametros.put("codEmpelado", String.valueOf(prestamoSocio.getUsrSocio().getIdSocio()));
+			parametros.put("lugarFecha",
+					"Ibarra, " + formatodia.format(prestamoSocio.getFechaSolicitud()) + " de "
+							+ ModelUtil.getMesAlfanumerico(prestamoSocio.getFechaSolicitud()) + " del "
+							+ formatoanio.format(prestamoSocio.getFechaSolicitud()));
+			List<FinPrestamoSocio> lstPrestamo = new ArrayList<FinPrestamoSocio>();
+			lstPrestamo.add(prestamoSocio);
+			JRBeanCollectionDataSource beanCollectionDataSource = new JRBeanCollectionDataSource(lstPrestamo);
+			File jasper = new File(beanLogin.getPathReporte() + "solicitudSecretario.jasper");
+			JasperPrint jasperPrint;
+			try {
+				jasperPrint = JasperFillManager.fillReport(jasper.getPath(), parametros, beanCollectionDataSource);
+				archivo = JasperExportManager.exportReportToPdf(jasperPrint);
+			} catch (JRException e) {
+				JSFUtil.crearMensajeERROR("Error al generar el reporte de solicitud. " + e.getMessage());
+				e.printStackTrace();
+			}
+		} catch (Exception e) {
+			JSFUtil.crearMensajeERROR("Error al generar el reporte de solicitud. " + e.getMessage());
+			e.printStackTrace();
+		}
+
+	}
+
+	public void imprimirSolicitudPresidente(FinPrestamoSocio prestamoSocio) {
+		try {
+			SimpleDateFormat formatodia = new SimpleDateFormat("dd");
+			SimpleDateFormat formatoanio = new SimpleDateFormat("yyyy");
+			Map<String, Object> parametros = new HashMap<String, Object>();
+			parametros.put("apelativoSG",
+					managerGestionSistema.buscarValorParametroNombre("APELATIVO PRESIDENTE EJECUTIVO"));
+			parametros.put("nombreSocio", prestamoSocio.getUsrSocio().getGesPersona().getApellidos() + " "
+					+ prestamoSocio.getUsrSocio().getGesPersona().getNombres());
+			parametros.put("cedulaSocio", prestamoSocio.getUsrSocio().getCedulaSocio());
+			parametros.put("telefono", prestamoSocio.getUsrSocio().getGesPersona().getTelefono());
+			parametros.put("nombreSG", managerGestionSistema.buscarValorParametroNombre("PRESIDENTE EJECUTIVO"));
+			parametros.put("primerTexto",
+					"Pongo en su conocimiiento que con fecha " + formatodia.format(prestamoSocio.getFechaSolicitud())
+							+ " de " + ModelUtil.getMesAlfanumerico(prestamoSocio.getFechaSolicitud()) + " de "
+							+ formatoanio.format(prestamoSocio.getFechaSolicitud())
+							+ ", solicité se me otorgue un préstamo de $" + prestamoSocio.getValorPrestamo()
+							+ ", mismo que será cancelado en " + prestamoSocio.getPlazoMeses()
+							+ " cuotas mensuales de $" + prestamoSocio.getCuotaMensual() + ", a partir de "
+							+ ModelUtil.getMesAlfanumerico(prestamoSocio.getFechaPrimeraCouta()) + " de "
+							+ formatoanio.format(prestamoSocio.getFechaPrimeraCouta()) + " a "
+							+ ModelUtil.getMesAlfanumerico(prestamoSocio.getFechaUltimaCuota()) + " de "
+							+ formatoanio.format(prestamoSocio.getFechaUltimaCuota()) + ".");
+			parametros.put("segundoTexto", "Descuentos que serán realizados con mi autorización, "
+					+ "en forma libre y voluntaria con carácter de irrevocable ante su Autoridad los valores correspondientes conforme a "
+					+ "las especificaciones del inciso anterior, "
+					+ "se entregarán al Comité de Empresa conforme a las normas vigentes y proceso interno de Emelnorte.");
+			parametros.put("nroSolicitud", String.valueOf(prestamoSocio.getIdPrestamoSocio()));
+			parametros.put("codEmpelado", String.valueOf(prestamoSocio.getUsrSocio().getIdSocio()));
+			parametros.put("lugarFecha",
+					"Ibarra, " + formatodia.format(prestamoSocio.getFechaSolicitud()) + " de "
+							+ ModelUtil.getMesAlfanumerico(prestamoSocio.getFechaSolicitud()) + " del "
+							+ formatoanio.format(prestamoSocio.getFechaSolicitud()));
+			List<FinPrestamoSocio> lstPrestamo = new ArrayList<FinPrestamoSocio>();
+			lstPrestamo.add(prestamoSocio);
+			JRBeanCollectionDataSource beanCollectionDataSource = new JRBeanCollectionDataSource(lstPrestamo);
+			File jasper = new File(beanLogin.getPathReporte() + "solicitudPresiEjec.jasper");
 			JasperPrint jasperPrint;
 			try {
 				jasperPrint = JasperFillManager.fillReport(jasper.getPath(), parametros, beanCollectionDataSource);
@@ -414,7 +480,7 @@ public class ControladorGestionCreditos implements Serializable {
 			return objFinPrestamoSocio.getValorPrestamo();
 		else {
 			BigDecimal valorCapitalPendiente = new BigDecimal(0);
-			for (FinPrestamoNovacion novacion : objFinPrestamoSocio2.getFinPrestamoNovacions1()) {
+			for (FinPrestamoNovacion novacion : objFinPrestamoSocio2.getFinPrestamoNovacions2()) {
 				valorCapitalPendiente = valorCapitalPendiente.add(novacion.getFinPrestamoSocio1().getSaldoCapital());
 			}
 			return objFinPrestamoSocio2.getValorPrestamo().subtract(valorCapitalPendiente);
@@ -618,7 +684,8 @@ public class ControladorGestionCreditos implements Serializable {
 					.get(objFinPrestamoSocio.getFinTablaAmortizacions().size() - 1).getFechaPago());
 			objFinPrestamoSocio.setValorRecibido(calcularValorRecibirNovacion(objFinPrestamoSocio));
 			if (objFinPrestamoSocio.getFinTipoSolicitud().getIdTipoSolicitud() == 2)
-				objFinPrestamoSocio.getFinPrestamoNovacions1().forEach(prestamo -> {
+
+				objFinPrestamoSocio.getFinPrestamoNovacions2().forEach(prestamo -> {
 					prestamo.getFinPrestamoSocio1().setFinEstadoCredito(new FinEstadoCredito(8));
 					try {
 						managerGestionCredito.actualizarSolicitudCredito(prestamo.getFinPrestamoSocio1());

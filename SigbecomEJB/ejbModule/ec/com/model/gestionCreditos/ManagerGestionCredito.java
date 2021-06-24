@@ -199,6 +199,14 @@ public class ManagerGestionCredito {
 		objPrestamo.getFinTablaAmortizacions().forEach(table -> {
 			table.getFinEstadoCuota().getIdEstadoCuota();
 		});
+		objPrestamo.getFinPrestamoNovacions1().forEach(creditos -> {
+			creditos.getFinPrestamoSocio2().getIdPrestamoSocio();
+			creditos.getFinPrestamoSocio1().getIdPrestamoSocio();
+		});
+		objPrestamo.getFinPrestamoNovacions2().forEach(creditos -> {
+			creditos.getFinPrestamoSocio2().getIdPrestamoSocio();
+			creditos.getFinPrestamoSocio1().getIdPrestamoSocio();
+		});
 		return objPrestamo;
 	}
 
@@ -235,7 +243,7 @@ public class ManagerGestionCredito {
 		} catch (Exception e) {
 			throw new Exception("Error al ingresar cuota a descontar, comuniquese con el administrador.");
 		}
-		
+
 	}
 
 	@SuppressWarnings("unchecked")

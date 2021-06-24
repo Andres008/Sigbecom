@@ -89,7 +89,7 @@ public class FinPrestamoSocio implements Serializable {
 	private List<FinPrestamoNovacion> finPrestamoNovacions1;
 
 	// bi-directional many-to-one association to FinPrestamoNovacion
-	@OneToMany(mappedBy = "finPrestamoSocio2")
+	@OneToMany(mappedBy = "finPrestamoSocio2", cascade = CascadeType.ALL)
 	private List<FinPrestamoNovacion> finPrestamoNovacions2;
 
 	// bi-directional many-to-one association to FinResolucionPrestamo
