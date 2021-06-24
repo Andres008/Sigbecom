@@ -218,7 +218,7 @@ public class BeanLogin implements Serializable {
 	public String getPathReporte() {
 		if (ModelUtil.isEmpty(pathReporte)) {
 			try {
-				pathReporte = managerGestionSistema.buscarValorParametroNombre("PATH REPORTES");
+				pathReporte = managerGestionSistema.buscarValorParametroNombre("PATH_REPORTES");
 			} catch (Exception e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
