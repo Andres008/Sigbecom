@@ -303,7 +303,7 @@ public class ControladorGestionCreditos implements Serializable {
 			List<FinPrestamoSocio> lstPrestamo = new ArrayList<FinPrestamoSocio>();
 			lstPrestamo.add(prestamoSocio);
 			JRBeanCollectionDataSource beanCollectionDataSource = new JRBeanCollectionDataSource(lstPrestamo);
-			File jasper = new File(beanLogin.getPathReporte() + "solicitudPrestamo.jasper");
+			File jasper = new File(beanLogin.getPathReporte() + "creditos/solicitudPrestamo.jasper");
 			JasperPrint jasperPrint;
 			try {
 				jasperPrint = JasperFillManager.fillReport(jasper.getPath(), parametros, beanCollectionDataSource);
@@ -356,7 +356,7 @@ public class ControladorGestionCreditos implements Serializable {
 			List<FinPrestamoSocio> lstPrestamo = new ArrayList<FinPrestamoSocio>();
 			lstPrestamo.add(prestamoSocio);
 			JRBeanCollectionDataSource beanCollectionDataSource = new JRBeanCollectionDataSource(lstPrestamo);
-			File jasper = new File(beanLogin.getPathReporte() + "solicitudSecretario.jasper");
+			File jasper = new File(beanLogin.getPathReporte() + "creditos/solicitudSecretario.jasper");
 			JasperPrint jasperPrint;
 			try {
 				jasperPrint = JasperFillManager.fillReport(jasper.getPath(), parametros, beanCollectionDataSource);
@@ -408,7 +408,7 @@ public class ControladorGestionCreditos implements Serializable {
 			List<FinPrestamoSocio> lstPrestamo = new ArrayList<FinPrestamoSocio>();
 			lstPrestamo.add(prestamoSocio);
 			JRBeanCollectionDataSource beanCollectionDataSource = new JRBeanCollectionDataSource(lstPrestamo);
-			File jasper = new File(beanLogin.getPathReporte() + "solicitudPresiEjec.jasper");
+			File jasper = new File(beanLogin.getPathReporte() + "creditos/solicitudPresiEjec.jasper");
 			JasperPrint jasperPrint;
 			try {
 				jasperPrint = JasperFillManager.fillReport(jasper.getPath(), parametros, beanCollectionDataSource);
