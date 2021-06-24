@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://java.sun.com/jsf/html" xmlns:f="http://java.sun.com/jsf/core" xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:p="http://primefaces.org/ui">
+
+<h:head>
+	<f:facet name="first">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0"/>
+        <meta name="apple-mobile-web-app-capable" content="yes" />
+    </f:facet>
+        <title><ui:insert name="title">Beneficios</ui:insert></title>
+        <h:outputScript name="js/nanoscroller.js" library="california-layout" />
+        <h:outputScript name="js/layout.js" library="california-layout" />
+        <h:outputStylesheet library="css" name="theme.css"/>
+</h:head>
+
+<h:body styleClass="main-body">
+
+        <div class="layout-wrapper #{guestPreferences.menuLayout != 'static' ? guestPreferences.menuLayout : null}">
+            <ui:include src="/affordances/megamenu.xhtml" />
+            <ui:include src="/affordances/topbar.xhtml" />
+            <ui:include src="/affordances/sidebar.xhtml" />
+            <ui:include src="/affordances/right-sidebar.xhtml" />
+			<div class="layout-main">
+                <div class="route-bar">
+                    <div class="route-bar-breadcrumb">
+                        <i class="fa fa-home"></i> <span>/CONVENIOS/Registro Empresas</span>
+                        <ui:insert name="viewname" />
+                    </div>
+					<ui:include src="/affordances/route-bar-menu.xhtml" />
+                </div>
+				<div class="layout-main-content" align="center">
+                    <H1>REGISTRO DE EMPRESAS</H1>
+                    <h:form id="form1">
+	                    <p:growl id="growl" showDetail="true" sticky="true" />
+						<p:panel header="Registrar Empresas" toggleable="true" collapsed="true">
+							<p:panelGrid columns="2" styleClass="ui-noborder">
+								<p:outputLabel for="nom" value="Nombre Empresa:" />
+								<p:inputText id="nom" size="100" required="true" 
+									value="#{frmRegistroEmpresa.convEmpresa.empresa}"
+									placeholder="Nombre de la Empresa" style="text-transform: uppercase" />
+								<p:outputLabel for="dir" value="Dirección: " />
+								<p:inputTextarea id="dir" required="true" cols="102"
+									value="#{frmRegistroEmpresa.convEmpresa.direccion}"
+									placeholder="Dirección de la Empresa" style="text-transform: uppercase"/>
+							</p:panelGrid>
+							<p:commandButton value="Registrar"
+								action="#{frmRegistroEmpresa.registrarEmpresa()}" update="@form">
+								<p:confirm header="Confirmación"
+								message="Esta seguro de ingresar la información?"
+								icon="pi pi-exclamation-triangle" />
+							</p:commandButton>
+							<p:confirmDialog global="true" showEffect="fade" hideEffect="fade"
+								responsive="true" width="350">
+								<p:commandButton value="Si" type="button"
+									styleClass="ui-confirmdialog-yes" />
+								<p:commandButton value="No" type="button"
+									styleClass="ui-confirmdialog-no ui-button-flat" />
+							</p:confirmDialog>
+	                    </p:panel>
+	                    <p:separator/>
+	                </h:form>
+	                <h:form id="form2">
+	                	<p:growl id="growl" showDetail="true" sticky="true" />
+	                	<p:panel id="pnl"  header="LISTADO DE EMPRESAS">
+						<p:dataTable value="#{frmRegistroEmpresa.lstConvEmpresa}"
+							id="tblEmp" editable="true" var="dato" paginator="true"
+							rows="10">
+							<p:ajax event="rowEdit" listener="#{frmRegistroEmpresa.onRowEdit}" update="form2:growl"/>
+            				<p:ajax event="rowEditCancel" listener="#{frmRegistroEmpresa.onRowCancel}" update="form2:growl"/>
+							<f:facet name="header">
+								Expanda la fila para ver los detalles
+							</f:facet>
+							<p:column headerText="" style="width:2rem">
+								<p:rowToggler />
+							</p:column>
+							<p:column headerText="EMPRESA">
+								<p:cellEditor>
+				                    <f:facet name="output">
+				                        <h:outputText value="#{dato.empresa}"/>
+				                    </f:facet>
+				                    <f:facet name="input">
+				                        <p:inputText value="#{dato.empresa}" style="width:100%"/>
+				                    </f:facet>
+				                </p:cellEditor>
+							</p:column>
+							<p:column headerText="DIRECCION">
+								<p:cellEditor>
+				                    <f:facet name="output">
+				                        <h:outputText value="#{dato.direccion}"/>
+				                    </f:facet>
+				                    <f:facet name="input">
+				                        <p:inputText  value="#{dato.direccion}" style="width:100%"/>
+				                    </f:facet>
+				                </p:cellEditor>
+							</p:column>
+							<p:column width="6">
+									<p:rowEditor editTitle="Edit Row" cancelTitle="Cancel Edit" saveTitle="Save Row" 
+										/>
+				            </p:column>
+							<p:rowExpansion>
+								<p:panel style="text-align:right">
+									<p:commandButton value="Nuevo Contacto"
+										onclick="PF('dlgReg').show();">
+									</p:commandButton>
+								</p:panel>
+								<p:panel>
+									<p:dataTable value="#{dato.convContactos}"
+													id="tblCon" editable="true" var="con">
+										<f:facet name="header">
+								            LISTA DE CONTACTOS
+										</f:facet>
+										<p:column headerText="NOMBRES" >
+											<h:outputText value="#{con.apellidos} #{con.nombres}" />
+										</p:column>
+										<p:column headerText="CARGO">
+								           <h:outputText value="#{con.cargo}"/>
+								        </p:column>
+								        <p:column headerText="CELULAR">
+								           <h:outputText value="#{con.celular}"/>
+								        </p:column>
+								        <p:column headerText="TELEFONO">
+								           <h:outputText value="#{con.telefono}"/>
+								        </p:column>
+								        <p:column headerText="CORREO">
+								           <h:outputText value="#{con.email}"/>
+								        </p:column>
+									</p:dataTable>
+								</p:panel>
+								<p:panel style="text-align:right">
+									<p:commandButton value="Nuevo Servicio"
+										onclick="PF('dlgSer').show();">
+									</p:commandButton>
+								</p:panel>
+								<p:panel>
+									<p:dataTable value="#{dato.convServicios}"
+													id="tblSer" editable="true" var="ser">
+										<f:facet name="header">
+								            LISTA DE SERVICIOS
+										</f:facet>
+										<p:column headerText="SERVICIO">
+								            <h:outputText value="#{ser.servicioProducto}"/>
+								        </p:column>
+								        <p:column headerText="DETALLE">
+								            <h:outputText value="#{ser.detalle}"/>
+								        </p:column>
+								        <p:column headerText="MONTO_MAX">
+								            <h:outputText value="#{ser.montoMax}"/>
+								        </p:column>
+								        <p:column headerText="INTERES">
+								            <h:outputText value="#{ser.interes}"/>
+								        </p:column>
+								        <p:column headerText="ESTADO">
+								            <h:outputText value="#{ser.estado}"/>
+								        </p:column>
+									</p:dataTable>
+								</p:panel>
+							</p:rowExpansion>
+						</p:dataTable>
+					</p:panel>
+	                </h:form>
+<!-- Inicio de Dialogs -->
+
+<p:dialog
+	header="REGISTRO DE CONTACTO"  resizable="false" closable="true"
+	widgetVar="dlgReg" modal="true" position="center"
+	hideEffect="fade" >
+	<h:form id="frmReg">
+		<p:messages id="msgReg" closable="true" showDetail="true"/>
+		<p:panelGrid columns="2">
+			<p:outputLabel value="Nombres:"/>
+			<p:inputText />
+			<p:outputLabel value="Apellidos:"/>
+			<p:inputText />
+			<p:outputLabel value="Cargo:"/>
+			<p:inputText />
+			<p:outputLabel value="Celular:"/>
+			<p:inputText />
+			<p:outputLabel value="Teléfono:"/>
+			<p:inputText />
+			<p:outputLabel value="Email:"/>
+		</p:panelGrid>
+		<p:panel>
+			<h:panelGrid columns="2" cellpadding="10">
+				<p:commandButton value="Cancelar"/>
+				<p:commandButton value="Registrar"/>
+			</h:panelGrid>
+		</p:panel>
+	</h:form>
+</p:dialog>
+<p:dialog
+	header="REGISTRO DE SERVICIOS"  resizable="false" closable="true"
+	widgetVar="dlgSer" modal="true" position="center"
+	hideEffect="fade" >
+	<h:form id="frmSer">
+		<p:messages id="msgSer" closable="true" showDetail="true"/>
+		<p:panelGrid columns="2">
+			<p:outputLabel value="Servicio:"/>
+			<p:inputText />
+			<p:outputLabel value="Detalle:"/>
+			<p:inputText />
+			<p:outputLabel value="Monto Máximo Permitido:"/>
+			<p:inputText />
+			<p:outputLabel value="Interes:"/>
+			<p:inputText />
+			<p:outputLabel value="Estado:"/>
+			<p:inputText />
+		</p:panelGrid>
+		<p:panel>
+			<h:panelGrid columns="2" cellpadding="10">
+				<p:commandButton value="Cancelar"/>
+				<p:commandButton value="Registrar"/>
+			</h:panelGrid>
+		</p:panel>
+	</h:form>
+</p:dialog>
+<!-- Fin de Dialogs -->
+                </div>
+				<ui:include src="/affordances/footer.xhtml" />
+            </div>
+        </div>
+		
+        <p:ajaxStatus style="width:32px;height:32px;position:fixed;right:7px;bottom:7px">
+           <f:facet name="start">
+               <i class="fa fa-circle-o-notch fa-spin ajax-loader" aria-hidden="true"></i>
+           </f:facet>
+
+           <f:facet name="complete">
+               <h:outputText value="" />
+           </f:facet>
+       </p:ajaxStatus>
+
+        <h:outputStylesheet name="css/nanoscroller.css" library="california-layout" />
+        <h:outputStylesheet name="css/layout-#{guestPreferences.theme}.css" library="california-layout" />
+    </h:body>
+</html>

@@ -40,6 +40,11 @@ public class SesvasSolicitud implements Serializable {
 	@JoinColumn(name="cedula_socio")
 	private UsrSocio usrSocio;
 	
+	//bi-directional many-to-one association to SesvasBeneficio
+	@ManyToOne
+	@JoinColumn(name="id_pariente")
+	private GesPariente gesPariente;
+	
 	@Column(name="estado")
 	private String estado;
 	
@@ -51,6 +56,15 @@ public class SesvasSolicitud implements Serializable {
 	
 	@Column(name="resolucion")
 	private String resolucion;
+	
+	@Column(name="periodo")
+	private String periodo;
+	
+	@Column(name="fecha_revision")
+	private Timestamp fechaRevision;
+	
+	@Column(name="observacion")
+	private String observacion;
 	
 	public SesvasSolicitud() {
 	}
@@ -139,6 +153,38 @@ public class SesvasSolicitud implements Serializable {
 
 	public void setResolucion(String resolucion) {
 		this.resolucion = resolucion;
+	}
+
+	public String getPeriodo() {
+		return periodo;
+	}
+
+	public void setPeriodo(String periodo) {
+		this.periodo = periodo;
+	}
+
+	public GesPariente getGesPariente() {
+		return gesPariente;
+	}
+
+	public void setGesPariente(GesPariente gesPariente) {
+		this.gesPariente = gesPariente;
+	}
+
+	public Timestamp getFechaRevision() {
+		return fechaRevision;
+	}
+
+	public void setFechaRevision(Timestamp fechaRevision) {
+		this.fechaRevision = fechaRevision;
+	}
+
+	public String getObservacion() {
+		return observacion;
+	}
+
+	public void setObservacion(String observacion) {
+		this.observacion = observacion;
 	}
 	
 }

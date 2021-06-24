@@ -1,6 +1,8 @@
 package ec.com.model.dao.entity;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
+
 import javax.persistence.*;
 import java.util.List;
 
@@ -20,10 +22,20 @@ public class SesvasBeneficio implements Serializable {
 	@GeneratedValue(strategy=GenerationType.SEQUENCE, generator="SESVAS_BENEFICIOS_IDSESVASBENEFICIOS_GENERATOR")
 	@Column(name="id_sesvas_beneficios")
 	private long idSesvasBeneficios;
-
+	
 	private String beneficios;
 
 	private String detalle;
+	
+	private String estado;
+	
+	private String resolucion;
+	
+	@Column(name="tipo_cobertura")
+	private String tipoCobertura;
+	
+	@Column(name="monto_maximo")
+	private BigDecimal montoMaximo; 
 
 	//bi-directional many-to-one association to SesvasRequisito
 	@OneToMany(mappedBy="sesvasBeneficio")
@@ -32,6 +44,13 @@ public class SesvasBeneficio implements Serializable {
 	//bi-directional many-to-one association to SesvasSolicitud
 	@OneToMany(mappedBy="sesvasBeneficio")
 	private List<SesvasSolicitud> sesvasSolicituds;
+	
+	//bi-directional many-to-one association to SesvasBeneficiario
+	@OneToMany(mappedBy="sesvasBeneficio")
+	private List<SesvasBeneficiario> sesvasBeneficiarios;
+	
+	@Column(name="detalle_finalizacion")
+	private String detalleFinalizacion; 
 
 	public SesvasBeneficio() {
 	}
@@ -104,4 +123,66 @@ public class SesvasBeneficio implements Serializable {
 		return sesvasSolicitud;
 	}
 
+	public String getEstado() {
+		return estado;
+	}
+
+	public void setEstado(String estado) {
+		this.estado = estado;
+	}
+
+	public String getResolucion() {
+		return resolucion;
+	}
+
+	public void setResolucion(String resolucion) {
+		this.resolucion = resolucion;
+	}
+
+	public BigDecimal getMontoMaximo() {
+		return montoMaximo;
+	}
+
+	public void setMontoMaximo(BigDecimal montoMaximo) {
+		this.montoMaximo = montoMaximo;
+	}
+
+	public String getTipoCobertura() {
+		return tipoCobertura;
+	}
+
+	public void setTipoCobertura(String tipoCobertura) {
+		this.tipoCobertura = tipoCobertura;
+	}
+	
+	public List<SesvasBeneficiario> getSesvasBeneficiarios() {
+		return this.sesvasBeneficiarios;
+	}
+
+	public void setSesvasBeneficiarios(List<SesvasBeneficiario> sesvasBeneficiarios) {
+		this.sesvasBeneficiarios = sesvasBeneficiarios;
+	}
+
+	public SesvasBeneficiario addSesvasBeneficiario(SesvasBeneficiario sesvasBeneficiario) {
+		getSesvasBeneficiarios().add(sesvasBeneficiario);
+		sesvasBeneficiario.setSesvasBeneficio(this);
+
+		return sesvasBeneficiario;
+	}
+
+	public SesvasBeneficiario removeSesvasBeneficiario(SesvasBeneficiario sesvasBeneficiario) {
+		getSesvasBeneficiarios().remove(sesvasBeneficiario);
+		sesvasBeneficiario.setSesvasBeneficio(null);
+
+		return sesvasBeneficiario;
+	}
+
+	public String getDetalleFinalizacion() {
+		return detalleFinalizacion;
+	}
+
+	public void setDetalleFinalizacion(String detalleFinalizacion) {
+		this.detalleFinalizacion = detalleFinalizacion;
+	}
+	
 }

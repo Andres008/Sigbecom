@@ -1,6 +1,8 @@
 package ec.com.model.dao.entity;
 
 import java.io.Serializable;
+import java.util.List;
+
 import javax.persistence.*;
 
 
@@ -39,6 +41,10 @@ public class GesPariente implements Serializable {
 	@ManyToOne
 	@JoinColumn(name="cedula_socio")
 	private UsrSocio usrSocio;
+	
+	//bi-directional many-to-one association to gesPariente
+	@OneToMany(mappedBy="gesPariente")
+	private List<SesvasSolicitud> sesvasSolicituds;
 
 	public GesPariente() {
 	}
@@ -91,4 +97,24 @@ public class GesPariente implements Serializable {
 		this.usrSocio = usrSocio;
 	}
 
+	public List<SesvasSolicitud> getSesvasSolicituds() {
+		return sesvasSolicituds;
+	}
+
+	public void setSesvasSolicituds(List<SesvasSolicitud> sesvasSolicituds) {
+		this.sesvasSolicituds = sesvasSolicituds;
+	}
+	public SesvasSolicitud addSesvasSolicitud(SesvasSolicitud sesvasSolicitud) {
+		getSesvasSolicituds().add(sesvasSolicitud);
+		sesvasSolicitud.setGesPariente(this);
+
+		return sesvasSolicitud;
+	}
+
+	public SesvasSolicitud removeSesvasSolicitud(SesvasSolicitud sesvasSolicitud) {
+		getSesvasSolicituds().remove(sesvasSolicitud);
+		sesvasSolicitud.setGesPariente(null);
+
+		return sesvasSolicitud;
+	}
 }
