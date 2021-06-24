@@ -145,7 +145,7 @@
 										actionListener="#{controladorMenuPerfiles.cargarMenuPerfil(menu)}"
 										value="Nuevo Perfil" oncomplete="PF('infPerfil').show()"
 										update="@form:infPerfil" />
-									<p:dataTable id="inscriPer"
+									<p:dataTable id="inscriPer" sortBy="#{perfil.orden}"
 										emptyMessage="No existen perfiles registrados" editable="true"
 										value="#{menu.autPerfiles}" var="perfil">
 										<p:ajax event="rowEdit" listener="#{controladorRol.onRowEdit}"
