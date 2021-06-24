@@ -238,7 +238,7 @@ public class FrmMisSolicitudes implements Serializable{
 		//String pathImages = homeUsuario + "/sigbecom/images/logo-comite.png";
 		//String pathReportes = homeUsuario + "/sigbecom/reportes/sesvas/rpteSesvasSolicitud.jasper";
 		String pathImages =  beanLogin.getPathImagesReportes()+ "logo-comite.png";
-		String pathReportes = beanLogin.getPathReportes() + "sesvas/rpteSesvasSolicitud.jasper";
+		String pathReportes = beanLogin.getPathReporte()+ "sesvas/rpteSesvasSolicitud.jasper";
 		String contenido = "";
 		String pariente = "N/A";
 		String parienteNombres="N/A";
