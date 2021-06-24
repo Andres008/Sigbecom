@@ -234,9 +234,11 @@ public class FrmMisSolicitudes implements Serializable{
 		}
 	}
 	public void generarPdf() {
-		String homeUsuario = System.getProperty("user.home");
-		String pathImages = homeUsuario + "/sigbecom/images/logo-comite.png";
-		String pathReportes = homeUsuario + "/sigbecom/reportes/sesvas/rpteSesvasSolicitud.jasper";
+		//String homeUsuario = System.getProperty("user.home");
+		//String pathImages = homeUsuario + "/sigbecom/images/logo-comite.png";
+		//String pathReportes = homeUsuario + "/sigbecom/reportes/sesvas/rpteSesvasSolicitud.jasper";
+		String pathImages =  beanLogin.getPathImagesReportes()+ "logo-comite.png";
+		String pathReportes = beanLogin.getPathReportes() + "sesvas/rpteSesvasSolicitud.jasper";
 		String contenido = "";
 		String pariente = "N/A";
 		String parienteNombres="N/A";
