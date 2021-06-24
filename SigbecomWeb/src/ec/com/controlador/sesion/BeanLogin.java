@@ -148,12 +148,25 @@ public class BeanLogin implements Serializable {
 
 	public String getPathImagesReportes() {
 		String valorPath = "";
-		/*
-		 * try { valorPath =
-		 * managerParametros.getValorParametro("PATH_IMAGES_REPORTES"); } catch
-		 * (Exception e) { // TODO Auto-generated catch block e.printStackTrace(); }
-		 */
+		
+		//try { valorPath =
+		//		managerGestionSistema.getValorParametro("PATH_IMAGES_REPORTES"); } catch
+		// (Exception e) { // TODO Auto-generated catch block e.printStackTrace(); }
+		
+		//return valorPath;
+	
+		
+		if (ModelUtil.isEmpty(pathReporte)) {
+			try {
+				valorPath = managerGestionSistema.buscarValorParametroNombre("PATH_IMAGES_REPORTES");
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
 		return valorPath;
+		
+		
 	}
 
 	/*******************************************************************
