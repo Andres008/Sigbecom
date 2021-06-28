@@ -21,7 +21,7 @@
 </h:head>
 
 <h:body styleClass="main-body"
-	onload="#{controladorGestionCreditos.inicializarMisSolicitudes()}">
+	onload="#{controladorGestionCreditos.inicializarAdministrarCreditos()}">
 
 	<div
 		class="layout-wrapper #{guestPreferences.menuLayout != 'static' ? guestPreferences.menuLayout : null}">
@@ -39,7 +39,7 @@
 				<ui:include src="/affordances/route-bar-menu.xhtml" />
 			</div>
 			<div class="layout-main-content" align="center">
-				<H1>REVISIÓN DE SOLICITUDES DE PRESTAMO</H1>
+				<H1>ADMINISTRACIÓN DE PRESTAMOS</H1>
 				<h:form id="solicitudes">
 					<p:growl id="growl" showDetail="true" sticky="true" />
 					<p:dataTable id="tblSolicitud" var="solicitud"
@@ -47,6 +47,10 @@
 						value="#{controladorGestionCreditos.lstFinPrestamoSocio}">
 						<p:column headerText="Id Solicitud">
 							<p:outputLabel value="#{solicitud.idPrestamoSocio}" />
+						</p:column>
+						<p:column headerText="Nombre Socio">
+							<p:outputLabel
+								value="#{solicitud.usrSocio.gesPersona.apellidos} #{solicitud.usrSocio.gesPersona.nombres}" />
 						</p:column>
 						<p:column headerText="Estado Credito">
 							<p:outputLabel value="#{solicitud.finEstadoCredito.descripcion}" />
@@ -56,15 +60,12 @@
 						</p:column>
 						<p:column headerText="Tipo Solicitud">
 							<p:outputLabel
-								rendered="#{solicitud.finTipoSolicitud.idTipoSolicitud==1}"
 								value="#{solicitud.finTipoSolicitud.tipoSolicitud}" />
-							<p:commandButton value="Novación"
-								rendered="#{solicitud.finTipoSolicitud.idTipoSolicitud==2}" />
 						</p:column>
 						<p:column headerText="Valor Solicitado">
 							<p:outputLabel value="#{solicitud.valorPrestamo}" />
 						</p:column>
-						<p:column headerText="Valor Acreditar">
+						<p:column headerText="Valor Acreditado">
 							<p:outputLabel value="#{solicitud.valorRecibido}" />
 						</p:column>
 						<p:column headerText="Cuotas Pagadas">
@@ -78,20 +79,117 @@
 								actionListener="#{controladorGestionCreditos.cargarFinPrestamoSocioAmortizacion(solicitud)}"
 								oncomplete="PF('infRevision').show()" />
 						</p:column>
-						<p:column headerText="Novación">
-							<p:commandButton
-								action="#{controladorGestionCreditos.inicializarNovacionCredito(solicitud)}"
-								value="Solicitar"
-								rendered="#{controladorGestionCreditos.verificarNovacion(solicitud)}" />
+						<p:column headerText="Imprimir">
+							<p:panelGrid columns="1" styleClass="ui-noborder">
+								<p:commandButton value="solicitud" update="@form"
+									process="@this"
+									actionListener="#{controladorGestionCreditos.imprimirSolicitudCredito(solicitud)}"
+									oncomplete="PF('infPDF').show()" />
+							</p:panelGrid>
 						</p:column>
 						<p:column headerText="Historial">
 							<p:commandButton value="Historial" update="@form" process="@this"
 								actionListener="#{controladorGestionCreditos.cargarFinPrestamoSocioAmortizacion(solicitud)}"
 								oncomplete="PF('infAccion').show()" />
 						</p:column>
+						<p:column headerText="Ingresar Acción">
+							<p:commandButton value="Acción" update="@form" process="@this"
+								actionListener="#{controladorGestionCreditos.cargarFinPrestamoSocioAccion(solicitud)}"
+								oncomplete="PF('ingAccion').show()" />
+						</p:column>
 					</p:dataTable>
-					<p:dialog header="pdf" widgetVar="infPDF" id="inf" modal="true"
-						position="top" showEffect="fade" hideEffect="fade"
+					<p:dialog header="Ingresar Acciones Credito" widgetVar="ingAccion"
+						id="ingAccion" modal="true" position="top" showEffect="fade"
+						hideEffect="fade" resizable="false" width="90%">
+						<p:panel id="pnlAccion">
+							<p:selectOneMenu
+								value="#{controladorGestionCreditos.panelAccion}">
+								<f:selectItem itemLabel="Seleccione Acción" itemValue="0"
+									noSelectionOption="true" />
+								<f:selectItem itemLabel="Precancelar Credito" itemValue="1" />
+								<f:selectItem itemLabel="Aplazamiento Cuota" itemValue="2" />
+								<p:ajax update="@form:pnlAccion" />
+							</p:selectOneMenu>
+							<p:panel header="Precancelar Prestamo"
+								rendered="#{controladorGestionCreditos.panelAccion==1}">
+								<p:panelGrid styleClass="ui-noborder" columns="2">
+									<p:outputLabel value="Observacion" />
+									<p:inputTextarea cols="25" rows="1"
+										value="#{controladorGestionCreditos.accionCredito.observacion}"
+										autoResize="true" />
+								</p:panelGrid>
+								<p:commandButton value="Precancelar"
+									actionListener="#{controladorGestionCreditos.accionPrecancelarPrestamo()}"
+									update="@form">
+									<p:confirm header="Confirmación"
+										message="Esta a punto de precancelar este credito, esta seguro de realizar esta acción?"
+										icon="pi pi-exclamation-triangle" />
+								</p:commandButton>
+								<p:confirmDialog global="true" showEffect="fade"
+									hideEffect="fade" responsive="true" width="350">
+									<p:commandButton value="Si" type="button"
+										styleClass="ui-confirmdialog-yes" />
+									<p:commandButton value="No" type="button"
+										styleClass="ui-confirmdialog-no ui-button-flat" />
+								</p:confirmDialog>
+							</p:panel>
+							<p:panel header="Aplazamiento Cuota"
+								rendered="#{controladorGestionCreditos.panelAccion==2}">
+								<p:panelGrid styleClass="ui-noborder" columns="2">
+									<p:outputLabel value="Observacion" />
+									<p:inputTextarea cols="25" rows="1"
+										value="#{controladorGestionCreditos.accionCredito.observacion}"
+										autoResize="true" />
+										<p:outputLabel value="Meses Aplazamiento" />
+										<p:spinner min="0" value="#{controladorGestionCreditos.mesesAplazados}"/>
+								</p:panelGrid>
+								<p:commandButton value="Aplazar Cuota"
+									actionListener="#{controladorGestionCreditos.accionAplazarCuota()}"
+									update="@form">
+									<p:confirm header="Confirmación"
+										message="Esta a punto de aplazar cuotas a este credito, esta seguro de realizar esta acción?"
+										icon="pi pi-exclamation-triangle" />
+								</p:commandButton>
+								<p:confirmDialog global="true" showEffect="fade"
+									hideEffect="fade" responsive="true" width="350">
+									<p:commandButton value="Si" type="button"
+										styleClass="ui-confirmdialog-yes" />
+									<p:commandButton value="No" type="button"
+										styleClass="ui-confirmdialog-no ui-button-flat" />
+								</p:confirmDialog>
+							</p:panel>
+						</p:panel>
+
+					</p:dialog>
+					<p:dialog header="Acciones Credito" widgetVar="infAccion"
+						id="infAccion" modal="true" position="top" showEffect="fade"
+						hideEffect="fade" resizable="false" width="90%">
+						<p:dataTable emptyMessage="No existen datos." rows="10"
+							sortBy="#{amortizacion.fecha}" paginator="true"
+							sortOrder="descending"
+							value="#{controladorGestionCreditos.objFinPrestamoSocio.finAccionPrestamos}"
+							var="amortizacion">
+							<p:column headerText="Acción">
+								<p:outputLabel
+									value="#{amortizacion.finAccionesCredito.descripcion}" />
+							</p:column>
+							<p:column headerText="Fecha">
+								<p:outputLabel value="#{amortizacion.fecha}">
+									<f:convertDateTime pattern="dd/MM/yyyy HH:mm" />
+								</p:outputLabel>
+							</p:column>
+							<p:column headerText="Usuario">
+								<p:outputLabel
+									value="#{amortizacion.usrSocio.gesPersona.apellidos} #{amortizacion.usrSocio.gesPersona.nombres}" />
+							</p:column>
+							<p:column headerText="Observación">
+								<p:outputLabel value="#{amortizacion.observacion}" />
+							</p:column>
+						</p:dataTable>
+					</p:dialog>
+
+					<p:dialog header="Documentos" widgetVar="infPDF" id="inf"
+						modal="true" position="top" showEffect="fade" hideEffect="fade"
 						resizable="false" width="90%">
 						<p:media cache="false"
 							value="#{controladorGestionCreditos.reportePDF()}" width="1050"
@@ -101,7 +199,7 @@
 						id="infRevision" modal="true" position="top" showEffect="fade"
 						hideEffect="fade" resizable="false" width="90%">
 						<p:dataTable emptyMessage="No existen datos." rows="10"
-							paginator="true"
+							paginator="true" sortBy="#{amortizacion.numeroCuota}"
 							value="#{controladorGestionCreditos.objFinPrestamoSocio.finTablaAmortizacions}"
 							var="amortizacion">
 							<p:column headerText="Número Cuota">
@@ -127,32 +225,6 @@
 							</p:column>
 							<p:column headerText="Saldo Capital">
 								<p:outputLabel value="#{amortizacion.saldoCapital}" />
-							</p:column>
-						</p:dataTable>
-					</p:dialog>
-
-					<p:dialog header="Acciones Credito" widgetVar="infAccion"
-						id="infAccion" modal="true" position="top" showEffect="fade"
-						hideEffect="fade" resizable="false" width="90%">
-						<p:dataTable emptyMessage="No existen datos." rows="10" sortBy="#{amortizacion.fecha}" 
-							paginator="true" sortOrder="descending"
-							value="#{controladorGestionCreditos.objFinPrestamoSocio.finAccionPrestamos}"
-							var="amortizacion">
-							<p:column headerText="Acción">
-								<p:outputLabel
-									value="#{amortizacion.finAccionesCredito.descripcion}" />
-							</p:column>
-							<p:column headerText="Fecha">
-								<p:outputLabel value="#{amortizacion.fecha}">
-									<f:convertDateTime pattern="dd/MM/yyyy HH:mm" />
-								</p:outputLabel>
-							</p:column>
-							<p:column headerText="Usuario">
-								<p:outputLabel
-									value="#{amortizacion.usrSocio.gesPersona.apellidos} #{amortizacion.usrSocio.gesPersona.nombres}" />
-							</p:column>
-							<p:column headerText="Observación">
-								<p:outputLabel value="#{amortizacion.observacion}" />
 							</p:column>
 						</p:dataTable>
 					</p:dialog>

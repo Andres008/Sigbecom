@@ -51,6 +51,10 @@ public class FinPrestamoSocio implements Serializable {
 
 	@Column(name = "valor_recibido")
 	private BigDecimal valorRecibido;
+	
+	//bi-directional many-to-one association to FinAccionPrestamo
+		@OneToMany(mappedBy="finPrestamoSocio", cascade = CascadeType.ALL)
+		private List<FinAccionPrestamo> finAccionPrestamos;
 
 	// bi-directional many-to-one association to FinGaranteCredito
 	@OneToMany(mappedBy = "finPrestamoSocio")
@@ -328,6 +332,14 @@ public class FinPrestamoSocio implements Serializable {
 
 	public void setFinResolucionPrestamo(FinResolucionPrestamo finResolucionPrestamo) {
 		this.finResolucionPrestamo = finResolucionPrestamo;
+	}
+
+	public List<FinAccionPrestamo> getFinAccionPrestamos() {
+		return finAccionPrestamos;
+	}
+
+	public void setFinAccionPrestamos(List<FinAccionPrestamo> finAccionPrestamos) {
+		this.finAccionPrestamos = finAccionPrestamos;
 	}
 
 }

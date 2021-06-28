@@ -8,6 +8,7 @@ import java.io.Serializable;
 import java.math.BigDecimal;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -30,6 +31,8 @@ import org.primefaces.model.file.UploadedFile;
 
 import ec.com.controlador.sesion.BeanLogin;
 import ec.com.model.auditoria.ManagerLog;
+import ec.com.model.dao.entity.FinAccionPrestamo;
+import ec.com.model.dao.entity.FinAccionesCredito;
 import ec.com.model.dao.entity.FinCuotasDescontada;
 import ec.com.model.dao.entity.FinEstadoCredito;
 import ec.com.model.dao.entity.FinEstadoCuota;
@@ -101,6 +104,11 @@ public class ControladorGestionCreditos implements Serializable {
 	private boolean valorChecked;
 
 	private UsrSocio objSocio;
+
+	private long panelAccion;
+	private FinAccionPrestamo accionCredito;
+
+	private int mesesAplazados;
 
 	public ControladorGestionCreditos() {
 
@@ -175,6 +183,14 @@ public class ControladorGestionCreditos implements Serializable {
 		}
 	}
 
+	public void inicializarAdministrarCreditos() {
+		try {
+			lstFinPrestamoSocio = managerGestionCredito.buscarSolicitudesVigentes();
+		} catch (Exception e) {
+			JSFUtil.crearMensajeERROR(e.getMessage());
+		}
+	}
+
 	public String mesAnioLetras() {
 		return ModelUtil.getMesAlfanumerico(new Date()) + " " + ModelUtil.getAnioActual();
 	}
@@ -207,6 +223,7 @@ public class ControladorGestionCreditos implements Serializable {
 		objFinPrestamoSocio.setFinTipoSolicitud(new FinTipoSolicitud(1));
 		objFinPrestamoSocio.setFinPrestamoRequisitos(new ArrayList<FinPrestamoRequisito>());
 		objFinPrestamoSocio.setFinTablaAmortizacions(new ArrayList<FinTablaAmortizacion>());
+		objFinPrestamoSocio.setFinAccionPrestamos(new ArrayList<FinAccionPrestamo>());
 	}
 
 	public String inicializarNovacionCredito(FinPrestamoSocio prestamoSocio) {
@@ -342,7 +359,7 @@ public class ControladorGestionCreditos implements Serializable {
 							+ ModelUtil.getMesAlfanumerico(prestamoSocio.getFechaPrimeraCouta()) + " de "
 							+ formatoanio.format(prestamoSocio.getFechaPrimeraCouta()) + " a "
 							+ ModelUtil.getMesAlfanumerico(prestamoSocio.getFechaUltimaCuota()) + " de "
-							+ formatoanio.format(prestamoSocio.getFechaUltimaCuota())+".");
+							+ formatoanio.format(prestamoSocio.getFechaUltimaCuota()) + ".");
 			parametros.put("segundoTexto",
 					"De ser aprobada mi solicitud de PRÉSTAMO, Autorizo en forma libre y voluntaria con carácter de irrevocable "
 							+ "ante sus autoridades competentes se descuente los valores correspondientes conforme a las especificaciones "
@@ -451,6 +468,10 @@ public class ControladorGestionCreditos implements Serializable {
 			objFinPrestamoSocio.setValorRecibido(calcularValorRecibirNovacion(objFinPrestamoSocio));
 			objFinPrestamoSocio.setCuotasPagadas(new BigDecimal(0));
 			objFinPrestamoSocio.setFinTablaAmortizacions(new ArrayList<FinTablaAmortizacion>());
+			FinAccionPrestamo accion = new FinAccionPrestamo(new Timestamp(new Date().getTime()),
+					new FinAccionesCredito(1), objFinPrestamoSocio, beanLogin.getCredencial().getObjUsrSocio(),
+					"Solicitud de prestamo Creada");
+			objFinPrestamoSocio.getFinAccionPrestamos().add(accion);
 			managerGestionCredito.ingresarCreditoSocio(objFinPrestamoSocio);
 			managerLog.generarLogUsabilidad(beanLogin.getCredencial(), this.getClass(), "ingresarCreditoSocio",
 					"Se ingreso correctamente credito Nº" + objFinPrestamoSocio.getIdPrestamoSocio());
@@ -595,6 +616,85 @@ public class ControladorGestionCreditos implements Serializable {
 		}
 	}
 
+	public void cargarFinPrestamoSocioAccion(FinPrestamoSocio prestamoSocio) {
+		try {
+			objFinPrestamoSocio = managerGestionCredito.buscarSolicitudPrestamoById(prestamoSocio.getIdPrestamoSocio());
+			accionCredito = new FinAccionPrestamo();
+			panelAccion = 0;
+			mesesAplazados = 0;
+		} catch (Exception e) {
+			JSFUtil.crearMensajeERROR("Error al cargar solicitud credito.");
+		}
+	}
+
+	public void accionPrecancelarPrestamo() {
+		try {
+			if (ModelUtil.isEmpty(accionCredito.getObservacion()))
+				throw new Exception(
+						"Atención, para el registro de esta acción es necesario la observación de responsabilidad.");
+			accionCredito.setFecha(new Timestamp(new Date().getTime()));
+			accionCredito.setFinAccionesCredito(new FinAccionesCredito(6));
+			accionCredito.setFinPrestamoSocio(objFinPrestamoSocio);
+			accionCredito.setUsrSocio(beanLogin.getCredencial().getObjUsrSocio());
+			objFinPrestamoSocio.getFinAccionPrestamos().add(accionCredito);
+			objFinPrestamoSocio.getFinEstadoCredito().setIdEstadoCredito(7);
+			managerGestionCredito.actualizarSolicitudCredito(objFinPrestamoSocio);
+			managerLog.generarLogAuditoria(beanLogin.getCredencial(), this.getClass(), "accionPrecancelarPrestamo",
+					"Precancelaci{on de prestamo: " + objFinPrestamoSocio.getIdPrestamoSocio());
+			correoUtil.enviarCorreoElectronico(objFinPrestamoSocio.getUsrSocio().getGesPersona().getEmail(),
+					"Precancelación de Prestamo", "Atención se realizó la precancelacipon de su prestamo.");
+			inicializarAdministrarCreditos();
+		} catch (Exception e) {
+			JSFUtil.crearMensajeERROR(e.getMessage());
+			e.printStackTrace();
+		}
+
+	}
+
+	public void accionAplazarCuota() {
+		try {
+			if (ModelUtil.isEmpty(accionCredito.getObservacion()))
+				throw new Exception(
+						"Atención, para el registro de esta acción es necesario la observación de responsabilidad.");
+			accionCredito.setFecha(new Timestamp(new Date().getTime()));
+			accionCredito.setFinAccionesCredito(new FinAccionesCredito(7));
+			accionCredito.setFinPrestamoSocio(objFinPrestamoSocio);
+			accionCredito.setUsrSocio(beanLogin.getCredencial().getObjUsrSocio());
+			objFinPrestamoSocio.getFinAccionPrestamos().add(accionCredito);
+			aplazarCuota(objFinPrestamoSocio, mesesAplazados);
+			objFinPrestamoSocio.setFechaUltimaCuota(
+					ModelUtil.getSumarMeses(objFinPrestamoSocio.getFechaUltimaCuota(), mesesAplazados));
+			managerGestionCredito.actualizarSolicitudCredito(objFinPrestamoSocio);
+			managerLog.generarLogAuditoria(beanLogin.getCredencial(), this.getClass(), "accionPrecancelarPrestamo",
+					"Aplazamiento Coutas: " + objFinPrestamoSocio.getIdPrestamoSocio());
+			correoUtil.enviarCorreoElectronico(objFinPrestamoSocio.getUsrSocio().getGesPersona().getEmail(),
+					"Aplazamiento cuotas Prestamo", "Atención se realizó el aplazamiento de cuotas a su prestamo.");
+			inicializarAdministrarCreditos();
+		} catch (Exception e) {
+			JSFUtil.crearMensajeERROR(e.getMessage());
+			e.printStackTrace();
+		}
+
+	}
+
+	private void aplazarCuota(FinPrestamoSocio objFinPrestamoSocio2, int i) {
+		for (FinTablaAmortizacion amortizacion : objFinPrestamoSocio2.getFinTablaAmortizacions()) {
+			if (amortizacion.getFinEstadoCuota().getIdEstadoCuota() != 3) {
+				amortizacion.setFechaPago(ModelUtil.getSumarMeses(amortizacion.getFechaPago(), i));
+			}
+
+		}
+	}
+
+	public void cargarFinPrestamoHistorial(FinPrestamoSocio prestamoSocio) {
+		try {
+			objFinPrestamoSocio = managerGestionCredito.buscarSolicitudPrestamoById(prestamoSocio.getIdPrestamoSocio());
+		} catch (Exception e) {
+			JSFUtil.crearMensajeERROR(e.getMessage());
+			e.printStackTrace();
+		}
+	}
+
 	public void aceptarRevisionSolicitudPrestamo() {
 		objFinPrestamoSocio.getFinResolucionPrestamo().setFechaRevision(new Date());
 		objFinPrestamoSocio.getFinResolucionPrestamo()
@@ -602,6 +702,10 @@ public class ControladorGestionCreditos implements Serializable {
 		try {
 			managerGestionCredito.ingresarResolucionCredito(objFinPrestamoSocio.getFinResolucionPrestamo());
 			objFinPrestamoSocio.getFinEstadoCredito().setIdEstadoCredito(new Long(3));
+			FinAccionPrestamo accion = new FinAccionPrestamo(new Timestamp(new Date().getTime()),
+					new FinAccionesCredito(2), objFinPrestamoSocio, beanLogin.getCredencial().getObjUsrSocio(),
+					"Solicitud de prestamo Revisada");
+			objFinPrestamoSocio.getFinAccionPrestamos().add(accion);
 			managerGestionCredito.actualizarSolicitudCredito(objFinPrestamoSocio);
 			managerLog.generarLogAuditoria(beanLogin.getCredencial(), this.getClass(),
 					"aceptarRevisionSolicitudPrestamo",
@@ -624,10 +728,13 @@ public class ControladorGestionCreditos implements Serializable {
 		try {
 			managerGestionCredito.actualizarResolucionCredito(objFinPrestamoSocio.getFinResolucionPrestamo());
 			objFinPrestamoSocio.getFinEstadoCredito().setIdEstadoCredito(new Long(4));
+			FinAccionPrestamo accion = new FinAccionPrestamo(new Timestamp(new Date().getTime()),
+					new FinAccionesCredito(3), objFinPrestamoSocio, beanLogin.getCredencial().getObjUsrSocio(),
+					"Solicitud de prestamo Aprobada.");
+			objFinPrestamoSocio.getFinAccionPrestamos().add(accion);
 			managerGestionCredito.actualizarSolicitudCredito(objFinPrestamoSocio);
 			managerLog.generarLogAuditoria(beanLogin.getCredencial(), this.getClass(),
-					"aceptarRevisionSolicitudPrestamo",
-					"Se acepto solicitud prestamo: " + objFinPrestamoSocio.getIdPrestamoSocio());
+					"aceptarRevisionSolicitudPrestamo", "Se acepto solicitud prestamo: ");
 			JSFUtil.crearMensajeINFO("Se aprobo la solicitud de prestamo.");
 			correoUtil.enviarCorreoElectronico(objFinPrestamoSocio.getUsrSocio().getGesPersona().getEmail(),
 					"Aprobación de Prestamo", "Atención su solicitud de prestamo fue aprobada.");
@@ -688,11 +795,16 @@ public class ControladorGestionCreditos implements Serializable {
 				objFinPrestamoSocio.getFinPrestamoNovacions2().forEach(prestamo -> {
 					prestamo.getFinPrestamoSocio1().setFinEstadoCredito(new FinEstadoCredito(8));
 					try {
+
 						managerGestionCredito.actualizarSolicitudCredito(prestamo.getFinPrestamoSocio1());
 					} catch (Exception e) {
 						JSFUtil.crearMensajeERROR("Error al actualizar estado credito.");
 					}
 				});
+			FinAccionPrestamo accion = new FinAccionPrestamo(new Timestamp(new Date().getTime()),
+					new FinAccionesCredito(4), objFinPrestamoSocio, beanLogin.getCredencial().getObjUsrSocio(),
+					"Solicitud de prestamo Acreditada. ");
+			objFinPrestamoSocio.getFinAccionPrestamos().add(accion);
 			managerGestionCredito.actualizarSolicitudCredito(objFinPrestamoSocio);
 			managerLog.generarLogAuditoria(beanLogin.getCredencial(), this.getClass(), "registrarAcreditacionPrestamo",
 					"Se acredito solicitud prestamo: " + objFinPrestamoSocio.getIdPrestamoSocio());
@@ -713,8 +825,15 @@ public class ControladorGestionCreditos implements Serializable {
 		objFinPrestamoSocio.getFinResolucionPrestamo()
 				.setIdUsuarioAprobador(beanLogin.getCredencial().getObjUsrSocio().getCedulaSocio());
 		try {
+			if (ModelUtil.isEmpty(objFinPrestamoSocio.getFinResolucionPrestamo().getResolucion()))
+				throw new Exception("Atención para la negación se requiere la observación");
 			managerGestionCredito.actualizarResolucionCredito(objFinPrestamoSocio.getFinResolucionPrestamo());
 			objFinPrestamoSocio.getFinEstadoCredito().setIdEstadoCredito(new Long(2));
+			FinAccionPrestamo accion = new FinAccionPrestamo(new Timestamp(new Date().getTime()),
+					new FinAccionesCredito(5), objFinPrestamoSocio, beanLogin.getCredencial().getObjUsrSocio(),
+					"Solicitud de prestamo Negada, en aprobación. "
+							+ objFinPrestamoSocio.getFinResolucionPrestamo().getResolucion());
+			objFinPrestamoSocio.getFinAccionPrestamos().add(accion);
 			managerGestionCredito.actualizarSolicitudCredito(objFinPrestamoSocio);
 			managerLog.generarLogAuditoria(beanLogin.getCredencial(), this.getClass(),
 					"aceptarRevisionSolicitudPrestamo",
@@ -728,20 +847,27 @@ public class ControladorGestionCreditos implements Serializable {
 			JSFUtil.crearMensajeERROR(e.getMessage());
 			managerLog.generarLogErrorGeneral(beanLogin.getCredencial(), this.getClass(),
 					"aceptarRevisionSolicitudPrestamo", e.getMessage());
+			e.printStackTrace();
 		}
 	}
 
 	public void negarRevisionSolicitudPrestamo() {
-		objFinPrestamoSocio.getFinResolucionPrestamo().setFechaRevision(new Date());
-		objFinPrestamoSocio.getFinResolucionPrestamo()
-				.setIdUsuarioRevisor(beanLogin.getCredencial().getObjUsrSocio().getCedulaSocio());
 		try {
+			if (ModelUtil.isEmpty(objFinPrestamoSocio.getFinResolucionPrestamo().getResolucion()))
+				throw new Exception("Atención para la negación se requiere la observación");
+			objFinPrestamoSocio.getFinResolucionPrestamo().setFechaRevision(new Date());
+			objFinPrestamoSocio.getFinResolucionPrestamo()
+					.setIdUsuarioRevisor(beanLogin.getCredencial().getObjUsrSocio().getCedulaSocio());
 			managerGestionCredito.ingresarResolucionCredito(objFinPrestamoSocio.getFinResolucionPrestamo());
 			objFinPrestamoSocio.getFinEstadoCredito().setIdEstadoCredito(new Long(2));
+			FinAccionPrestamo accion = new FinAccionPrestamo(new Timestamp(new Date().getTime()),
+					new FinAccionesCredito(5), objFinPrestamoSocio, beanLogin.getCredencial().getObjUsrSocio(),
+					"Solicitud de prestamo Negada en revisión., "
+							+ objFinPrestamoSocio.getFinResolucionPrestamo().getResolucion());
+			objFinPrestamoSocio.getFinAccionPrestamos().add(accion);
 			managerGestionCredito.actualizarSolicitudCredito(objFinPrestamoSocio);
-			managerLog.generarLogAuditoria(beanLogin.getCredencial(), this.getClass(),
-					"aceptarRevisionSolicitudPrestamo",
-					"Se acepto solicitud prestamo: " + objFinPrestamoSocio.getIdPrestamoSocio());
+			managerLog.generarLogAuditoria(beanLogin.getCredencial(), this.getClass(), "negarRevisionSolicitudPrestamo",
+					"Se nego solicitud prestamo: " + objFinPrestamoSocio.getIdPrestamoSocio());
 			JSFUtil.crearMensajeINFO("Se nego la solicitud de prestamo.");
 			correoUtil.enviarCorreoElectronico(objFinPrestamoSocio.getUsrSocio().getGesPersona().getEmail(),
 					"Solicitud Negada", "Atención su solicitud de prestamo fue negada con la siguente observación: "
@@ -750,7 +876,8 @@ public class ControladorGestionCreditos implements Serializable {
 		} catch (Exception e) {
 			JSFUtil.crearMensajeERROR(e.getMessage());
 			managerLog.generarLogErrorGeneral(beanLogin.getCredencial(), this.getClass(),
-					"aceptarRevisionSolicitudPrestamo", e.getMessage());
+					"negarRevisionSolicitudPrestamo", e.getMessage());
+			e.printStackTrace();
 		}
 	}
 
@@ -973,6 +1100,30 @@ public class ControladorGestionCreditos implements Serializable {
 
 	public void setReportPdf(byte[] reportPdf) {
 		this.reportPdf = reportPdf;
+	}
+
+	public long getPanelAccion() {
+		return panelAccion;
+	}
+
+	public void setPanelAccion(long panelAccion) {
+		this.panelAccion = panelAccion;
+	}
+
+	public FinAccionPrestamo getAccionCredito() {
+		return accionCredito;
+	}
+
+	public void setAccionCredito(FinAccionPrestamo accionCredito) {
+		this.accionCredito = accionCredito;
+	}
+
+	public int getMesesAplazados() {
+		return mesesAplazados;
+	}
+
+	public void setMesesAplazados(int mesesAplazados) {
+		this.mesesAplazados = mesesAplazados;
 	}
 
 }
