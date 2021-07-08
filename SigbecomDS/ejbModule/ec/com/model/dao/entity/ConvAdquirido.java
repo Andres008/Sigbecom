@@ -27,12 +27,8 @@ public class ConvAdquirido implements Serializable {
 	private String cedulaSocio;
 
 	@Temporal(TemporalType.DATE)
-	@Column(name="fecha_fin")
-	private Date fechaFin;
-
-	@Temporal(TemporalType.DATE)
-	@Column(name="fecha_inicial")
-	private Date fechaInicial;
+	@Column(name="fecha_sol")
+	private Date fechaSol;
 
 	@Column(name="valor_total")
 	private BigDecimal valorTotal;
@@ -45,7 +41,20 @@ public class ConvAdquirido implements Serializable {
 	//bi-directional many-to-one association to ConvAmortizacion
 	@OneToMany(mappedBy="convAdquirido")
 	private List<ConvAmortizacion> convAmortizacions;
-
+	
+	@Column(name="estado")
+	private String estado;
+	
+	@Column(name="adjunto")
+	private String adjunto;
+	
+	@Temporal(TemporalType.DATE)
+	@Column(name="fecha_aprob")
+	private Date fechaAprob;
+	
+	@Column(name="resolucion")
+	private String resolucion;
+	
 	public ConvAdquirido() {
 	}
 
@@ -63,22 +72,6 @@ public class ConvAdquirido implements Serializable {
 
 	public void setCedulaSocio(String cedulaSocio) {
 		this.cedulaSocio = cedulaSocio;
-	}
-
-	public Date getFechaFin() {
-		return this.fechaFin;
-	}
-
-	public void setFechaFin(Date fechaFin) {
-		this.fechaFin = fechaFin;
-	}
-
-	public Date getFechaInicial() {
-		return this.fechaInicial;
-	}
-
-	public void setFechaInicial(Date fechaInicial) {
-		this.fechaInicial = fechaInicial;
 	}
 
 	public BigDecimal getValorTotal() {
@@ -119,4 +112,44 @@ public class ConvAdquirido implements Serializable {
 		return convAmortizacion;
 	}
 
+	public String getEstado() {
+		return estado;
+	}
+
+	public void setEstado(String estado) {
+		this.estado = estado;
+	}
+
+	public String getAdjunto() {
+		return adjunto;
+	}
+
+	public void setAdjunto(String adjunto) {
+		this.adjunto = adjunto;
+	}
+
+	public Date getFechaSol() {
+		return fechaSol;
+	}
+
+	public void setFechaSol(Date fechaSol) {
+		this.fechaSol = fechaSol;
+	}
+
+	public Date getFechaAprob() {
+		return fechaAprob;
+	}
+
+	public void setFechaAprob(Date fechaAprob) {
+		this.fechaAprob = fechaAprob;
+	}
+
+	public String getResolucion() {
+		return resolucion;
+	}
+
+	public void setResolucion(String resolucion) {
+		this.resolucion = resolucion;
+	}
+	
 }

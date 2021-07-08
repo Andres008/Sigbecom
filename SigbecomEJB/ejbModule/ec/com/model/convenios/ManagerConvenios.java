@@ -6,6 +6,8 @@ import javax.ejb.EJB;
 import javax.ejb.LocalBean;
 import javax.ejb.Stateless;
 
+import ec.com.model.dao.entity.ConvAdquirido;
+import ec.com.model.dao.entity.ConvAmortizacion;
 import ec.com.model.dao.entity.ConvContacto;
 import ec.com.model.dao.entity.ConvEmpresa;
 import ec.com.model.dao.entity.ConvServicio;
@@ -57,4 +59,31 @@ public class ManagerConvenios {
 		}
 		
 	}
+    @SuppressWarnings("unchecked")
+	public List<ConvServicio> findAllConvServicioActivos() throws Exception{
+    	List<ConvServicio> lstConvServicio = managerDAOSegbecom.findWhere(ConvServicio.class, "o.estado = 'ACTIVO'", null);
+    	for (ConvServicio convServicio : lstConvServicio) {
+			for (ConvAdquirido convAdquirido : convServicio.getConvAdquiridos()) {
+				convAdquirido.getIdConvAdquiridos();
+			}
+		}
+    	return lstConvServicio;
+    }
+    public ConvServicio findByIdConvServicio(Long idServicio) throws Exception {
+    	return (ConvServicio) managerDAOSegbecom.findById(ConvServicio.class, idServicio);
+    } 
+    
+    public void insertarConvAdquirido(ConvAdquirido convAdquirido) throws Exception {
+    	managerDAOSegbecom.insertar(convAdquirido);
+    }
+	@SuppressWarnings("unchecked")
+	public List<ConvAdquirido> findByCedConvAdquirido(String cedulaSocio) throws Exception{
+    	List<ConvAdquirido> lstConvAdquiridos = managerDAOSegbecom.findWhere(ConvAdquirido.class, "o.cedulaSocio = '"+cedulaSocio+"'", null);
+    	for (ConvAdquirido convAdquirido : lstConvAdquiridos) {
+			for (ConvAmortizacion convAmortizacion : convAdquirido.getConvAmortizacions()) {
+				convAmortizacion.getIdConvAmortizacion();
+			}
+		}
+    	return lstConvAdquiridos;
+    }
 }

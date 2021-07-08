@@ -325,7 +325,6 @@ public class FrmMisSolicitudes implements Serializable{
         System.out.println("Archivo subido: "+ event.getFile().getFileName());
         this.file = event.getFile();
         JSFUtil.crearMensajeINFO("Documento cargado correctamente");
-       
     }
 	
 	public void precargarArchivo(DtoSesvasAdjunto dato) {

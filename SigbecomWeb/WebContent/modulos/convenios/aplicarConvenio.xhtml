@@ -24,137 +24,136 @@
 			<div class="layout-main">
                 <div class="route-bar">
                     <div class="route-bar-breadcrumb">
-                        <i class="fa fa-home"></i> <span>/CONVENIOS/Registro Empresas</span>
+                        <i class="fa fa-home"></i> <span>/CONVENIOS/Aplicar Convenios</span>
                         <ui:insert name="viewname" />
                     </div>
 					<ui:include src="/affordances/route-bar-menu.xhtml" />
                 </div>
 				<div class="layout-main-content" align="center">
-                    <H1>REGISTRO DE EMPRESAS</H1>
+                    <H1>APLICAR CONVENIOS</H1>
                     <h:form id="form1">
 	                    <p:growl id="growl" showDetail="true" sticky="true" />
-						<p:panel header="Registrar Empresas" toggleable="true" collapsed="true">
-							<p:panelGrid columns="2" styleClass="ui-noborder">
-								<p:outputLabel for="nom" value="Nombre Empresa:" />
-								<p:inputText id="nom" size="100" required="true" 
-									value="#{frmRegistroEmpresa.convEmpresa.empresa}"
-									placeholder="Nombre de la Empresa" style="text-transform: uppercase" />
-								<p:outputLabel for="dir" value="Dirección: " />
-								<p:inputTextarea id="dir" required="true" cols="102"
-									value="#{frmRegistroEmpresa.convEmpresa.direccion}"
-									placeholder="Dirección de la Empresa" style="text-transform: uppercase"/>
+						<p:panel header="Seleccionar Convenio" toggleable="true" collapsed="true">
+							<p:panelGrid columns="3" styleClass="ui-noborder">
+								<p:outputLabel value="Selecionar Servicio:" />
+								<p:selectOneMenu value="#{frmAplicarConvenio.idServicio}">
+									<f:selectItem itemLabel="Selecione Servicio" itemValue="0"/>
+                    				<f:selectItems value="#{frmAplicarConvenio.lstConvServicio}" var="ser"
+                    								   itemLabel="#{ser.convEmpresa.empresa} #{ser.servicioProducto}" itemValue="#{ser.idConvServicio}"/>
+								</p:selectOneMenu>
+								<p:commandButton value="Seleccionar"
+										action="#{frmAplicarConvenio.cargarConvServicio()}" update="@form">
+										<p:confirm header="Confirmación"
+										message="Esta seguro de ingresar la información?"
+										icon="pi pi-exclamation-triangle" />
+								</p:commandButton>
+								<p:confirmDialog global="true" showEffect="fade" hideEffect="fade"
+										responsive="true" width="350">
+										<p:commandButton value="Si" type="button"
+											styleClass="ui-confirmdialog-yes" />
+										<p:commandButton value="No" type="button"
+											styleClass="ui-confirmdialog-no ui-button-flat" />
+								</p:confirmDialog>
 							</p:panelGrid>
-							<p:commandButton value="Registrar"
-								action="#{frmRegistroEmpresa.registrarEmpresa()}" update="@form">
-								<p:confirm header="Confirmación"
-								message="Esta seguro de ingresar la información?"
-								icon="pi pi-exclamation-triangle" />
-							</p:commandButton>
-							<p:confirmDialog global="true" showEffect="fade" hideEffect="fade"
-								responsive="true" width="350">
-								<p:commandButton value="Si" type="button"
-									styleClass="ui-confirmdialog-yes" />
-								<p:commandButton value="No" type="button"
-									styleClass="ui-confirmdialog-no ui-button-flat" />
-							</p:confirmDialog>
-	                    </p:panel>
+							<p:panel>
+								<p:panelGrid id="datEmp" columns="3" styleClass="ui-noborder">
+									<p:outputLabel value="Empresa:"/>
+									<p:outputLabel value="#{frmAplicarConvenio.convServicio.convEmpresa.empresa}"/>
+									<p:outputLabel value=""/>
+									<p:outputLabel value="Servicio seleccionado:"/>
+									<p:outputLabel value="#{frmAplicarConvenio.convServicio.servicioProducto}" />
+									<p:outputLabel value=""/>
+									<p:outputLabel value="Detalle del Servicio :"/>
+									<p:outputLabel value="#{frmAplicarConvenio.convServicio.detalle}" />
+									<p:outputLabel value=""/>
+									<p:outputLabel value="Monto Maximo:"/>
+									<p:outputLabel value="#{frmAplicarConvenio.convServicio.montoMax}" />
+									<p:outputLabel value=""/>
+									<p:outputLabel value="Interes:"/>
+									<p:outputLabel value="#{frmAplicarConvenio.convServicio.interes}" />
+									<p:outputLabel value=""/>
+									<p:outputLabel value="Proforma pdf - png - jpg:"/>
+									<p:outputLabel value="#{frmAplicarConvenio.convAdquirido.adjunto}"/>
+									<p:fileUpload styleClass="ui-fileupload-buttonbar"  
+						        				  label="Seleccionar Archivo"
+						        				  listener="#{frmAplicarConvenio.handleFileUpload}"
+						        				  multiple="false"
+						        				  mode="advanced"
+						        				  auto="true"
+						        				  allowTypes="/(\.|\/)(pdf|png|jpg)$/"
+						        				  immediate="#{frmAplicarConvenio.precargarArchivo()}"
+						        				  update="datEmp" 
+				                      			  process="@this" 
+				                      			  skinSimple="true"
+				                    />
+								</p:panelGrid>
+								<p:panelGrid>
+									<p:commandButton value="Aplicar Convenio"
+										action="#{frmAplicarConvenio.aplicarConvenio()}" update="@form">
+										<p:confirm header="Confirmación"
+										message="Esta seguro de ingresar la información?"
+										icon="pi pi-exclamation-triangle" />
+									</p:commandButton>
+									<p:confirmDialog global="true" showEffect="fade" hideEffect="fade"
+											responsive="true" width="350">
+											<p:commandButton value="Si" type="button"
+												styleClass="ui-confirmdialog-yes" />
+											<p:commandButton value="No" type="button"
+												styleClass="ui-confirmdialog-no ui-button-flat" />
+									</p:confirmDialog>
+								</p:panelGrid>
+								
+							</p:panel>
+						</p:panel>
 	                    <p:separator/>
 	                </h:form>
 	                <h:form id="form2">
 	                	<p:growl id="growl" showDetail="true" sticky="true" />
-	                	<p:panel id="pnl"  header="LISTADO DE EMPRESAS">
-						<p:dataTable value="#{frmRegistroEmpresa.lstConvEmpresa}"
+	                	<p:panel id="pnl"  header="MIS CONVENIOS">
+						<p:dataTable value="#{frmAplicarConvenio.lstConvAdquirido}"
 							id="tblEmp" editable="true" var="dato" paginator="true"
 							rows="10">
-							<p:ajax event="rowEdit" listener="#{frmRegistroEmpresa.onRowEdit}" update="form2:growl"/>
-            				<p:ajax event="rowEditCancel" listener="#{frmRegistroEmpresa.onRowCancel}" update="form2:growl"/>
-							<f:facet name="header">
-								Expanda la fila para ver los detalles
-							</f:facet>
+							
 							<p:column headerText="" style="width:2rem">
 								<p:rowToggler />
 							</p:column>
 							<p:column headerText="EMPRESA">
-								<p:cellEditor>
-				                    <f:facet name="output">
-				                        <h:outputText value="#{dato.empresa}"/>
-				                    </f:facet>
-				                    <f:facet name="input">
-				                        <p:inputText value="#{dato.empresa}" style="width:100%"/>
-				                    </f:facet>
-				                </p:cellEditor>
+								<h:outputText value="#{dato.convServicio.convEmpresa.empresa}"/>
 							</p:column>
-							<p:column headerText="DIRECCION">
-								<p:cellEditor>
-				                    <f:facet name="output">
-				                        <h:outputText value="#{dato.direccion}"/>
-				                    </f:facet>
-				                    <f:facet name="input">
-				                        <p:inputText  value="#{dato.direccion}" style="width:100%"/>
-				                    </f:facet>
-				                </p:cellEditor>
+							<p:column headerText="SERVICIO">
+								<h:outputText value="#{dato.convServicio.servicioProducto}"/>
 							</p:column>
-							<p:column width="6">
-									<p:rowEditor editTitle="Edit Row" cancelTitle="Cancel Edit" saveTitle="Save Row" 
-										/>
+							<p:column width="VALOR">
+								<h:outputText value="#{dato.valorTotal}"/>
+				            </p:column>
+				            <p:column width="ESTADO">
+								<h:outputText value="#{dato.estado}"/>
 				            </p:column>
 							<p:rowExpansion>
-								<p:panel style="text-align:right">
-									<p:commandButton value="Nuevo Contacto"
-										onclick="PF('dlgReg').show();" action="#{frmRegistroEmpresa.cargarEmpresa(dato)}"
-									/>
-								</p:panel>
-								<p:panel>
-									<p:dataTable value="#{dato.convContactos}"
+								<p:dataTable value="#{dato.convAmortizacions}"
 													id="tblCon" editable="true" var="con">
 										<f:facet name="header">
-								            LISTA DE CONTACTOS
+								            TABLA DE AMORTIZACION
 										</f:facet>
-										<p:column headerText="NOMBRES" >
-											<h:outputText value="#{con.apellidos} #{con.nombres}" />
+										<p:column headerText="CUOTA" >
+											<h:outputText value="#{con.numeroCuota}" />
 										</p:column>
-										<p:column headerText="CARGO">
-								           <h:outputText value="#{con.cargo}"/>
+										<p:column headerText="FECHA PAGO">
+								           <h:outputText value="#{con.fechaPago}"/>
 								        </p:column>
-								        <p:column headerText="CELULAR">
-								           <h:outputText value="#{con.celular}"/>
-								        </p:column>
-								        <p:column headerText="TELEFONO">
-								           <h:outputText value="#{con.telefono}"/>
-								        </p:column>
-								        <p:column headerText="CORREO">
-								           <h:outputText value="#{con.email}"/>
-								        </p:column>
-									</p:dataTable>
-								</p:panel>
-								<p:panel style="text-align:right">
-									<p:commandButton value="Nuevo Servicio"
-										onclick="PF('dlgSer').show();" action="#{frmRegistroEmpresa.cargarEmpresaServ(dato)}">
-									</p:commandButton>
-								</p:panel>
-								<p:panel>
-									<p:dataTable value="#{dato.convServicios}"
-													id="tblSer" editable="true" var="ser">
-										<f:facet name="header">
-								            LISTA DE SERVICIOS
-										</f:facet>
-										<p:column headerText="SERVICIO">
-								            <h:outputText value="#{ser.servicioProducto}"/>
-								        </p:column>
-								        <p:column headerText="DETALLE">
-								            <h:outputText value="#{ser.detalle}"/>
-								        </p:column>
-								        <p:column headerText="MONTO_MAX">
-								            <h:outputText value="#{ser.montoMax}"/>
+								        <p:column headerText="CAPITAL">
+								           <h:outputText value="#{con.capital}"/>
 								        </p:column>
 								        <p:column headerText="INTERES">
-								            <h:outputText value="#{ser.interes}"/>
+								           <h:outputText value="#{con.interes}"/>
 								        </p:column>
-								        <p:column headerText="ESTADO">
-								            <h:outputText value="#{ser.estado}"/>
+								        <p:column headerText="VALOR CUOTA">
+								           <h:outputText value="#{con.valorCuota}"/>
+								        </p:column>
+								        <p:column headerText="SALDO">
+								           <h:outputText value="#{con.saldo}"/>
 								        </p:column>
 									</p:dataTable>
-								</p:panel>
 							</p:rowExpansion>
 						</p:dataTable>
 					</p:panel>
@@ -237,3 +236,4 @@
         <h:outputStylesheet name="css/layout-#{guestPreferences.theme}.css" library="california-layout" />
     </h:body>
 </html>
+																							
