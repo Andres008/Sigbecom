@@ -432,7 +432,6 @@ public class ControladorGestionSocios implements Serializable {
 			objUsrSocio.getGesPersona().setApellidos(objUsrSocio.getGesPersona().getApellidos().toUpperCase());
 			objUsrSocio.getGesPersona().setNombres(objUsrSocio.getGesPersona().getNombres().toUpperCase());
 			objUsrSocio.getGesPersona().setEmail(objUsrSocio.getGesPersona().getEmail().toLowerCase());
-			objUsrSocio.setFechaAlta(new Date());
 			objUsrSocio.setPrimerInicio("S");
 			objUsrSocio.setClave(ModelUtil.md5(clave));
 			objUsrSocio.getUsrEstadoSocio().setIdEstado(1);

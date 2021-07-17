@@ -43,7 +43,7 @@
 				<h:form>
 					<p:growl id="growl" showDetail="true" sticky="true" />
 					<p:panel header="Ingresar Usuario">
-					<p:commandButton value="Ingresar"
+						<p:commandButton value="Ingresar"
 							actionListener="#{controladorGestionSocios.inscribirSocio()}"
 							update="@form">
 							<p:confirm header="Confirmación"
@@ -56,10 +56,16 @@
 								value="#{controladorGestionSocios.objUsrSocio.gesPersona.cedula}"
 								required="true" placeholder="Cédula" />
 							<p:outputLabel value="Tipo Usuario" />
-							<p:selectOneMenu value="#{controladorGestionSocios.objUsrSocio.usrTipoSocio.idTipoSocio}" required="true" requiredMessage="Es obligatorio el tipo de socio.">
-								<f:selectItem itemLabel="Seleccione Tipo Usuario"/>
-								<f:selectItems value="#{controladorGestionSocios.lstSiTipoSocio()}" />
-								<p:ajax listener="#{controladorGestionSocios.cargarDescuentosSocio()}" update="@form:lstRol @form:pnlDescuentos" />
+							<p:selectOneMenu
+								value="#{controladorGestionSocios.objUsrSocio.usrTipoSocio.idTipoSocio}"
+								required="true"
+								requiredMessage="Es obligatorio el tipo de socio.">
+								<f:selectItem itemLabel="Seleccione Tipo Usuario" />
+								<f:selectItems
+									value="#{controladorGestionSocios.lstSiTipoSocio()}" />
+								<p:ajax
+									listener="#{controladorGestionSocios.cargarDescuentosSocio()}"
+									update="@form:lstRol @form:pnlDescuentos" />
 							</p:selectOneMenu>
 							<p:outputLabel value="Rol" />
 							<p:selectOneMenu id="lstRol"
@@ -88,14 +94,24 @@
 							<p:inputText
 								value="#{controladorGestionSocios.objUsrSocio.gesPersona.telefono}"
 								placeholder="Telefono" required="true" />
+							<p:outputLabel value="Fecha Ingreso" />
+							<p:calendar required="true" id="restricted" requiredMessage="Es obligatorio fecha de ingreso"
+								value="#{controladorGestionSocios.objUsrSocio.fechaAlta}"
+								navigator="true" locale="es" mindate="1/1/1900" maxdate="today"
+								mask="99/99/9999" pattern="dd/MM/yyyy">
+								<p:ajax update="@form" process="@this" />
+							</p:calendar>
 						</p:panelGrid>
 						<p:panel header="Descuentos" id="pnlDescuentos">
-							<p:dataTable var="descuento" value="#{controladorGestionSocios.objUsrSocio.usrSocioDescuentoFijos}" emptyMessage="No tiene descuentos " >
-								<p:column headerText="Descuento" >
+							<p:dataTable var="descuento"
+								value="#{controladorGestionSocios.objUsrSocio.usrSocioDescuentoFijos}"
+								emptyMessage="No tiene descuentos ">
+								<p:column headerText="Descuento">
 									<p:outputLabel value="#{descuento.usrTipoDescuento.nombre}" />
 								</p:column>
-								<p:column headerText="Valor" >
-									<p:inputNumber value="#{descuento.usrTipoDescuento.valorDefecto}" />
+								<p:column headerText="Valor">
+									<p:inputNumber
+										value="#{descuento.usrTipoDescuento.valorDefecto}" />
 								</p:column>
 							</p:dataTable>
 						</p:panel>
