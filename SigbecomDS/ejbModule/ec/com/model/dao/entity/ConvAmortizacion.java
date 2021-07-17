@@ -17,12 +17,18 @@ public class ConvAmortizacion implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@Id
-	@SequenceGenerator(name="CONV_AMORTIZACION_IDCONVAMORTIZACION_GENERATOR", sequenceName="SEQ_CONV_AMORTIZACION", allocationSize = 1)
+	@SequenceGenerator(name="CONV_AMORTIZACION_IDCONVAMORTIZACION_GENERATOR", sequenceName="SEQ_CONV_AMORTIZACION",allocationSize = 1)
 	@GeneratedValue(strategy=GenerationType.SEQUENCE, generator="CONV_AMORTIZACION_IDCONVAMORTIZACION_GENERATOR")
 	@Column(name="id_conv_amortizacion")
 	private long idConvAmortizacion;
 
+	private BigDecimal anio;
+
 	private BigDecimal capital;
+
+	@Temporal(TemporalType.DATE)
+	@Column(name="fecha_descuento")
+	private Date fechaDescuento;
 
 	@Temporal(TemporalType.DATE)
 	@Column(name="fecha_pago")
@@ -30,8 +36,10 @@ public class ConvAmortizacion implements Serializable {
 
 	private BigDecimal interes;
 
+	private BigDecimal mes;
+
 	@Column(name="numero_cuota")
-	private Integer numeroCuota;
+	private BigDecimal numeroCuota;
 
 	private BigDecimal saldo;
 
@@ -42,9 +50,11 @@ public class ConvAmortizacion implements Serializable {
 	@ManyToOne
 	@JoinColumn(name="id_conv_adquiridos")
 	private ConvAdquirido convAdquirido;
-	
-	@Column(name="estado_pago")
-	private String estadoPago;
+
+	//bi-directional many-to-one association to DescEstadoDescuento
+	@ManyToOne
+	@JoinColumn(name="id_estado_descuento")
+	private DescEstadoDescuento descEstadoDescuento;
 
 	public ConvAmortizacion() {
 	}
@@ -57,12 +67,28 @@ public class ConvAmortizacion implements Serializable {
 		this.idConvAmortizacion = idConvAmortizacion;
 	}
 
+	public BigDecimal getAnio() {
+		return this.anio;
+	}
+
+	public void setAnio(BigDecimal anio) {
+		this.anio = anio;
+	}
+
 	public BigDecimal getCapital() {
 		return this.capital;
 	}
 
 	public void setCapital(BigDecimal capital) {
 		this.capital = capital;
+	}
+
+	public Date getFechaDescuento() {
+		return this.fechaDescuento;
+	}
+
+	public void setFechaDescuento(Date fechaDescuento) {
+		this.fechaDescuento = fechaDescuento;
 	}
 
 	public Date getFechaPago() {
@@ -79,6 +105,22 @@ public class ConvAmortizacion implements Serializable {
 
 	public void setInteres(BigDecimal interes) {
 		this.interes = interes;
+	}
+
+	public BigDecimal getMes() {
+		return this.mes;
+	}
+
+	public void setMes(BigDecimal mes) {
+		this.mes = mes;
+	}
+
+	public BigDecimal getNumeroCuota() {
+		return this.numeroCuota;
+	}
+
+	public void setNumeroCuota(BigDecimal numeroCuota) {
+		this.numeroCuota = numeroCuota;
 	}
 
 	public BigDecimal getSaldo() {
@@ -105,20 +147,12 @@ public class ConvAmortizacion implements Serializable {
 		this.convAdquirido = convAdquirido;
 	}
 
-	public Integer getNumeroCuota() {
-		return numeroCuota;
+	public DescEstadoDescuento getDescEstadoDescuento() {
+		return this.descEstadoDescuento;
 	}
 
-	public void setNumeroCuota(Integer numeroCuota) {
-		this.numeroCuota = numeroCuota;
+	public void setDescEstadoDescuento(DescEstadoDescuento descEstadoDescuento) {
+		this.descEstadoDescuento = descEstadoDescuento;
 	}
 
-	public String getEstadoPago() {
-		return estadoPago;
-	}
-
-	public void setEstadoPago(String estadoPago) {
-		this.estadoPago = estadoPago;
-	}
-	
 }

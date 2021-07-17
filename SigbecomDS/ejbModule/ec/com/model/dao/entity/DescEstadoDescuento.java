@@ -16,12 +16,16 @@ public class DescEstadoDescuento implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@Id
-	@SequenceGenerator(name="DESC_ESTADO_DESCUENTO_IDESTADODESCUENTO_GENERATOR", sequenceName="SEQ_DESC_ESTADO_DESCUENTO", allocationSize = 1)
+	@SequenceGenerator(name="DESC_ESTADO_DESCUENTO_IDESTADODESCUENTO_GENERATOR", sequenceName="SEQ_DESC_ESTADO_DESCUENTO",allocationSize = 1)
 	@GeneratedValue(strategy=GenerationType.SEQUENCE, generator="DESC_ESTADO_DESCUENTO_IDESTADODESCUENTO_GENERATOR")
 	@Column(name="id_estado_descuento")
 	private long idEstadoDescuento;
 
 	private String estado;
+
+	//bi-directional many-to-one association to ConvAmortizacion
+	@OneToMany(mappedBy="descEstadoDescuento")
+	private List<ConvAmortizacion> convAmortizacions;
 
 	//bi-directional many-to-one association to DescNovedade
 	@OneToMany(mappedBy="descEstadoDescuento")
@@ -34,6 +38,10 @@ public class DescEstadoDescuento implements Serializable {
 	//bi-directional many-to-one association to FinCuotasDescontada
 	@OneToMany(mappedBy="descEstadoDescuento")
 	private List<FinCuotasDescontada> finCuotasDescontadas;
+
+	//bi-directional many-to-one association to PlanPago
+	@OneToMany(mappedBy="descEstadoDescuento")
+	private List<PlanPago> planPagos;
 
 	public DescEstadoDescuento() {
 	}
@@ -61,6 +69,28 @@ public class DescEstadoDescuento implements Serializable {
 
 	public void setEstado(String estado) {
 		this.estado = estado;
+	}
+
+	public List<ConvAmortizacion> getConvAmortizacions() {
+		return this.convAmortizacions;
+	}
+
+	public void setConvAmortizacions(List<ConvAmortizacion> convAmortizacions) {
+		this.convAmortizacions = convAmortizacions;
+	}
+
+	public ConvAmortizacion addConvAmortizacion(ConvAmortizacion convAmortizacion) {
+		getConvAmortizacions().add(convAmortizacion);
+		convAmortizacion.setDescEstadoDescuento(this);
+
+		return convAmortizacion;
+	}
+
+	public ConvAmortizacion removeConvAmortizacion(ConvAmortizacion convAmortizacion) {
+		getConvAmortizacions().remove(convAmortizacion);
+		convAmortizacion.setDescEstadoDescuento(null);
+
+		return convAmortizacion;
 	}
 
 	public List<DescNovedade> getDescNovedades() {
@@ -127,6 +157,28 @@ public class DescEstadoDescuento implements Serializable {
 		finCuotasDescontada.setDescEstadoDescuento(null);
 
 		return finCuotasDescontada;
+	}
+
+	public List<PlanPago> getPlanPagos() {
+		return this.planPagos;
+	}
+
+	public void setPlanPagos(List<PlanPago> planPagos) {
+		this.planPagos = planPagos;
+	}
+
+	public PlanPago addPlanPago(PlanPago planPago) {
+		getPlanPagos().add(planPago);
+		planPago.setDescEstadoDescuento(this);
+
+		return planPago;
+	}
+
+	public PlanPago removePlanPago(PlanPago planPago) {
+		getPlanPagos().remove(planPago);
+		planPago.setDescEstadoDescuento(null);
+
+		return planPago;
 	}
 
 }
