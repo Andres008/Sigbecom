@@ -243,10 +243,10 @@ public class FrmGestionarConvenios implements Serializable{
 				convAmortizacion.setCapital(valor);
 				convAmortizacion.setConvAdquirido(convAdquirido);
 				convAmortizacion.setInteres(interesCuota);
-				convAmortizacion.setNumeroCuota(plazo);
+				//convAmortizacion.setNumeroCuota(plazo);
 				convAmortizacion.setValorCuota(valor.add(interesCuota));
 				convAmortizacion.setSaldo(new BigDecimal(0));
-				convAmortizacion.setEstadoPago("PENDIENTE");
+				//convAmortizacion.setEstadoPago("PENDIENTE");
 				managerConvenios.insertarConvAmortizacion(convAmortizacion);
 				
 			} catch (Exception e) {
