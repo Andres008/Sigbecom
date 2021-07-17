@@ -1,6 +1,9 @@
 package ec.com.controlador.convenios;
 
+import java.io.ByteArrayInputStream;
+import java.io.InputStream;
 import java.io.Serializable;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -11,6 +14,7 @@ import javax.enterprise.context.SessionScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 
+import org.primefaces.PrimeFaces;
 import org.primefaces.event.FileUploadEvent;
 import org.primefaces.model.StreamedContent;
 import org.primefaces.model.file.UploadedFile;
@@ -21,6 +25,7 @@ import ec.com.model.convenios.ManagerConvenios;
 import ec.com.model.dao.entity.ConvAdquirido;
 import ec.com.model.dao.entity.ConvServicio;
 import ec.com.model.modulos.util.JSFUtil;
+import ec.com.model.modulos.util.ModelUtil;
 
 @Named("frmAplicarConvenio")
 @SessionScoped
@@ -102,19 +107,41 @@ public class FrmAplicarConvenio implements Serializable{
 	public void aplicarConvenio() {
 		if(convServicio!= null && convAdquirido.getAdjunto() != null) {
 			try {
+				String path=managerConvenios.buscarValorParametroNombre("PATH_REPORTES");
 				String cedulaSocio = beanLogin.getCredencial().getObjUsrSocio().getCedulaSocio();
+				String url = path+"\\convenios\\"+cedulaSocio+"\\";
+				String str = convAdquirido.getAdjunto();
+				String ext = str.substring(str.lastIndexOf('.'), str.length());
+				Date fechaActual = new Date();
+				SimpleDateFormat formato = new SimpleDateFormat("dd");
+				int diaActual = Integer.parseInt(formato.format(fechaActual));
+				String nombreArchivo = ModelUtil.getAnioActual()+"-"+
+						   ModelUtil.getMesActual()+"-"+
+						   diaActual+"-proforma";
+				convAdquirido.setAdjunto(nombreArchivo+ext);
 				convAdquirido.setConvServicio(convServicio);
 				convAdquirido.setCedulaSocio(cedulaSocio);
 				convAdquirido.setEstado("SOLICITADO");
 				convAdquirido.setFechaSol(new Date());
 				managerConvenios.insertarConvAdquirido(convAdquirido);
+				InputStream fis = new ByteArrayInputStream(archivo);
+				ModelUtil.guardarArchivo(fis, nombreArchivo, url, ext);
 				init();
+				PrimeFaces prime=PrimeFaces.current();
+				prime.ajax().update("form2");
 			} catch (Exception e) {
 				JSFUtil.crearMensajeERROR("No se ha registrado correctamente");
 				e.printStackTrace();
 			}
 		}
 	}
+	public boolean activarTablaAmortizacion(String estado) {
+		if(!estado.equalsIgnoreCase("SOLICITADO") && !estado.equalsIgnoreCase("NO APROBADO")) {
+			return true;
+		}
+		return false;
+	}
+	
 	//GETTERS AND SETTERS
 	public BeanLogin getBeanLogin() {
 		return beanLogin;

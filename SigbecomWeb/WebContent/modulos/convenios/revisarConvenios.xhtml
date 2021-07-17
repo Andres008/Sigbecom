@@ -31,7 +31,7 @@
 					<ui:include src="/affordances/route-bar-menu.xhtml" />
                 </div>
 				<div class="layout-main-content">
-                <H1>GESTIONAR CREDITOS DE CONVENIOS</H1>
+                <H1>REVISIÓN DE SOLICITUDES CONVENIOS</H1>
 				<h:form id="form1">
 					<p:growl id="growl" showDetail="true" sticky="true" />
                     <p:panel id="pnl" header="SOLICITUDES PENDIENTES">
@@ -39,13 +39,13 @@
 						    
 					    </div>	
                     	<p:dataTable id="lstSolicituds"
-                    	 value="#{frmGestionarConvenios.lstConvAdquirido}" var="sol">
+                    	 value="#{frmRevisarConvenios.lstConvAdquirido}" var="sol">
                     		
 							<p:column headerText="Cedula" style="width:4rem">
 						        	<p:outputLabel value="#{sol.cedulaSocio}"/>
 						    </p:column>
 						    <p:column headerText="Nombres Socio">
-						        	<p:outputLabel value="#{frmGestionarConvenios.nombres(sol.cedulaSocio)}"/>
+						        	<p:outputLabel value="#{frmRevisarConvenios.nombres(sol.cedulaSocio)}"/>
 						    </p:column>
 						    <p:column headerText="Empresa">
 						        	<p:outputLabel value="#{sol.convServicio.convEmpresa.empresa}"/>
@@ -61,11 +61,11 @@
 						    </p:column>
 						    <p:column headerText="documento">
 						        	<p:commandButton icon="fa fa-search" value="ver" update=":frmPDFT :frmIMAGET"
-						    					action="#{frmGestionarConvenios.cargarDocumento(sol.adjunto, sol.cedulaSocio)}"/>
+						    					action="#{frmRevisarConvenios.cargarDocumento(sol.adjunto, sol.cedulaSocio)}"/>
 						    </p:column>
 						    <p:column headerText="tramitar">
 						        	<p:commandButton  value="Tramitar" onclick="PF('dlgTramite').show();" update="frmTramite"
-						        			action="#{frmGestionarConvenios.cargarSolicitud(sol.idConvAdquiridos)}"/>
+						        			action="#{frmRevisarConvenios.cargarSolicitud(sol.idConvAdquiridos)}"/>
 						    </p:column>
 						
                     	</p:dataTable>
@@ -77,7 +77,7 @@
                     	<p:separator/>
                     <p:panel header="SOLICITUDES TRAMITADOS">
                     	<p:dataTable id="lstSolTrm" 
-                    	 value="#{frmGestionarConvenios.lstConvAdquiridoTrm}" var="sol"
+                    	 value="#{frmRevisarConvenios.lstConvAdquiridoTrm}" var="sol"
                     	 paginator="true" rows="10">
                     		<p:column headerText="" style="width:2rem">
 								<p:rowToggler />
@@ -86,7 +86,7 @@
 						        	<p:outputLabel value="#{sol.cedulaSocio}"/>
 						    </p:column>
 						    <p:column headerText="Nombres Socio">
-						        	<p:outputLabel value="#{frmGestionarConvenios.nombres(sol.cedulaSocio)}"/>
+						        	<p:outputLabel value="#{frmRevisarConvenios.nombres(sol.cedulaSocio)}"/>
 						    </p:column>
 						    <p:column headerText="Empresa">
 						        	<p:outputLabel value="#{sol.convServicio.convEmpresa.empresa}"/>
@@ -102,11 +102,11 @@
 						    </p:column>
 						    <p:column headerText="documento">
 						        	<p:commandButton icon="fa fa-search" value="ver" update=":frmPDFT :frmIMAGET"
-						    					action="#{frmGestionarConvenios.cargarDocumento(sol.adjunto, sol.cedulaSocio)}"/>
+						    					action="#{frmRevisarConvenios.cargarDocumento(sol.adjunto, sol.cedulaSocio)}"/>
 						    </p:column>
 º							<p:rowExpansion>
 							
-								<p:dataTable value="#{sol.convAmortizacions}" rendered="#{frmGestionarConvenios.activarTablaAmortizacion(dato.estado)}"
+								<p:dataTable value="#{sol.convAmortizacions}" rendered="#{frmRevisarConvenios.activarTablaAmortizacion(dato.estado)}"
 													id="tblCon" var="con">
 										<f:facet name="header">
 								            TABLA DE AMORTIZACION
@@ -139,7 +139,7 @@
 							widgetVar="dlgPDFT" id="dlgPDF" modal="true"
 							hideEffect="fade">
 							<h:form id="frmPDFT">
-								<p:media value="#{frmGestionarConvenios.pdf}" width="70%" height="600px" player="pdf"/>
+								<p:media value="#{frmRevisarConvenios.pdf}" width="70%" height="600px" player="pdf"/>
 							</h:form>
 						</p:dialog>
 						<p:dialog
@@ -151,48 +151,36 @@
 									<p:outputLabel value="Click en el boton para descargar Imagen"/>
 									<p:commandButton value="Descargar" icon="pi pi-arrow-down" ajax="false" styleClass="ui-button-outlined"
 													 onclick="PF('dlgImageT').hide()">
-										<p:fileDownload value="#{frmGestionarConvenios.download}"/>
+										<p:fileDownload value="#{frmRevisarConvenios.download}"/>
 									</p:commandButton>
 								</p:panelGrid>
 							</h:form>
 						</p:dialog>
 						<p:dialog
-							header="CREDITO CONVENIO" resizable="false" position="center" 
+							header="CALIFICAR SOLICITUD" resizable="false" position="center" 
 							widgetVar="dlgTramite" id="dlgTramite" modal="true" closable="false"
 							hideEffect="fade" >
 							<h:form id="frmTramite">
 								<p:messages id="msg" showDetail="true" closable="true"/>
 								<p:panelGrid columns="2">
 									<p:outputLabel value="Cedula de Identidad:"/>
-									<p:outputLabel value="#{frmGestionarConvenios.convAdquirido.cedulaSocio}"/>
+									<p:outputLabel value="#{frmRevisarConvenios.convAdquirido.cedulaSocio}"/>
 									<p:outputLabel value="Solicitante:"/>
-									<p:outputLabel value="#{frmGestionarConvenios.nombres}"/>
+									<p:outputLabel value="#{frmRevisarConvenios.nombres}"/>
 									<p:outputLabel value="Fecha que solicita:"/>
-									<p:outputLabel value="#{frmGestionarConvenios.convAdquirido.fechaSol}"/>
-									<p:outputLabel value="Fecha revisión:"/>
-									<p:outputLabel value="#{frmGestionarConvenios.convAdquirido.fechaRevision}"/>
-									<p:outputLabel value="Interés:"/>
-									<p:outputLabel value="#{frmGestionarConvenios.convAdquirido.convServicio.interes}"/>
+									<p:outputLabel value="#{frmRevisarConvenios.convAdquirido.fechaSol}"/>
 									<p:outputLabel value="Seleccione Opcion:"/>
-									<p:selectOneRadio id="console" value="#{frmGestionarConvenios.estado}">
-							            <f:selectItem itemLabel="NO APROBADO" itemValue="NO APROBADO"/>
-							            <f:selectItem itemLabel="APROBADO" itemValue="APROBADO"/>
-							            <p:ajax event="click" listener="#{frmGestionarConvenios.renderValor()}" update="frmTramite:val"/>
+									<p:selectOneRadio id="console" value="#{frmRevisarConvenios.estado}">
+							            <f:selectItem itemLabel="REVISADO" itemValue="REVISADO"/>
+							            <f:selectItem itemLabel="NO CALIFICA" itemValue="NO CALIFICA"/>
 							        </p:selectOneRadio>
-								
-							        <p:outputLabel for="val" value="Ingrese Valor Asignado:"/>
-							        <p:inputNumber id="val" disabled="#{frmGestionarConvenios.inputVal}" value="#{frmGestionarConvenios.valor}" symbol=" $"
-                               						symbolPosition="s" decimalSeparator="." thousandSeparator="," />
-                               		<p:outputLabel for="meses" value="Ingrese plazo:"/>
-							        <p:inputNumber id="meses" disabled="#{frmGestionarConvenios.inputVal}" 
-							        	value="#{frmGestionarConvenios.meses}"/>
-							    </p:panelGrid>
+								</p:panelGrid>
 							    <p:panel style="text-align:center">
 							    	<h:panelGrid columns="2" cellpadding="10">
 							    		<p:commandButton value="CANCELAR" onclick="PF('dlgTramite').hide()"
-							    						action="#{frmGestionarConvenios.init()}" />
+							    						action="#{frmRevisarConvenios.init()}" />
 							    		<p:commandButton value="ACEPTAR" update="@form"
-							    				action="#{frmGestionarConvenios.tramitar()}" />
+							    				action="#{frmRevisarConvenios.tramitar()}" />
 							    	</h:panelGrid>
 							    </p:panel>
 							     

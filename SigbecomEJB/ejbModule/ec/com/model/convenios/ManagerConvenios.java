@@ -6,11 +6,13 @@ import javax.ejb.EJB;
 import javax.ejb.LocalBean;
 import javax.ejb.Stateless;
 
+import ec.com.model.dao.entity.AutParametrosGenerale;
 import ec.com.model.dao.entity.ConvAdquirido;
 import ec.com.model.dao.entity.ConvAmortizacion;
 import ec.com.model.dao.entity.ConvContacto;
 import ec.com.model.dao.entity.ConvEmpresa;
 import ec.com.model.dao.entity.ConvServicio;
+import ec.com.model.dao.entity.GesPersona;
 import ec.com.model.dao.manager.ManagerDAOSegbecom;
 
 /**
@@ -76,9 +78,12 @@ public class ManagerConvenios {
     public void insertarConvAdquirido(ConvAdquirido convAdquirido) throws Exception {
     	managerDAOSegbecom.insertar(convAdquirido);
     }
+    public void insertarConvAmortizacion(ConvAmortizacion convAmortizacion) throws Exception {
+    	managerDAOSegbecom.insertar(convAmortizacion);
+    }
 	@SuppressWarnings("unchecked")
 	public List<ConvAdquirido> findByCedConvAdquirido(String cedulaSocio) throws Exception{
-    	List<ConvAdquirido> lstConvAdquiridos = managerDAOSegbecom.findWhere(ConvAdquirido.class, "o.cedulaSocio = '"+cedulaSocio+"'", null);
+    	List<ConvAdquirido> lstConvAdquiridos = managerDAOSegbecom.findWhere(ConvAdquirido.class, "o.cedulaSocio = '"+cedulaSocio+"'", "o.idConvAdquiridos DESC");
     	for (ConvAdquirido convAdquirido : lstConvAdquiridos) {
 			for (ConvAmortizacion convAmortizacion : convAdquirido.getConvAmortizacions()) {
 				convAmortizacion.getIdConvAmortizacion();
@@ -86,4 +91,58 @@ public class ManagerConvenios {
 		}
     	return lstConvAdquiridos;
     }
+	public String buscarValorParametroNombre(String nombre) throws Exception {
+		try {
+			@SuppressWarnings("unchecked")
+			List<AutParametrosGenerale> lstParametro = managerDAOSegbecom.findWhere(AutParametrosGenerale.class,
+					"o.nombre='" + nombre.toUpperCase() + "' and o.estado='A'", null);
+			if (lstParametro.isEmpty())
+				throw new Exception("Parametro no encontrado.");
+			if (lstParametro.size() > 1)
+				throw new Exception("Más de un parametro encontrado.");
+			return lstParametro.get(0).getValor();
+		} catch (Exception e) {
+			throw new Exception("Error al buscar parametro. " + e.getMessage());
+
+		}
+	}
+	@SuppressWarnings("unchecked")
+	public List<ConvAdquirido> findConvAdquiridoByEstado(String estado) throws Exception{
+    	List<ConvAdquirido> lstConvAdquiridos = managerDAOSegbecom.findWhere(ConvAdquirido.class, "o.estado = '"+estado+"'", "o.idConvAdquiridos DESC");
+    	for (ConvAdquirido convAdquirido : lstConvAdquiridos) {
+			for (ConvAmortizacion convAmortizacion : convAdquirido.getConvAmortizacions()) {
+				convAmortizacion.getIdConvAmortizacion();
+			}
+		}
+    	return lstConvAdquiridos;
+    }
+	@SuppressWarnings("unchecked")
+	public List<ConvAdquirido> findConvAdquiridoTramitados() throws Exception{
+    	List<ConvAdquirido> lstConvAdquiridos = managerDAOSegbecom.findWhere(ConvAdquirido.class, "o.estado != 'SOLICITADO'", "o.idConvAdquiridos DESC");
+    	for (ConvAdquirido convAdquirido : lstConvAdquiridos) {
+			for (ConvAmortizacion convAmortizacion : convAdquirido.getConvAmortizacions()) {
+				convAmortizacion.getIdConvAmortizacion();
+			}
+		}
+    	return lstConvAdquiridos;
+    }
+	@SuppressWarnings("unchecked")
+	public List<ConvAdquirido> findConvAdquiridoRevisados() throws Exception{
+    	List<ConvAdquirido> lstConvAdquiridos = managerDAOSegbecom.findWhere(ConvAdquirido.class, "o.estado != 'REVISADO' AND o.estado != 'SOLICITADO' AND o.estado != 'NO CALIFICA'", "o.idConvAdquiridos DESC");
+    	for (ConvAdquirido convAdquirido : lstConvAdquiridos) {
+			for (ConvAmortizacion convAmortizacion : convAdquirido.getConvAmortizacions()) {
+				convAmortizacion.getIdConvAmortizacion();
+			}
+		}
+    	return lstConvAdquiridos;
+    }
+	@SuppressWarnings("unchecked")
+	public GesPersona findNombresByCedula(String cedula) throws Exception{
+		List<GesPersona> lstGespersona = managerDAOSegbecom.findWhere(GesPersona.class, "o.cedula = '"+cedula+"'", null);
+		if (lstGespersona.isEmpty())
+			throw new Exception("Parametro no encontrado.");
+		if (lstGespersona.size() > 1)
+			throw new Exception("Más de un parametro encontrado.");
+		return lstGespersona.get(0);
+	}
 }

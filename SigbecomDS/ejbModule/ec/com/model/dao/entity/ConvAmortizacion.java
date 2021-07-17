@@ -31,7 +31,7 @@ public class ConvAmortizacion implements Serializable {
 	private BigDecimal interes;
 
 	@Column(name="numero_cuota")
-	private BigDecimal numeroCuota;
+	private Integer numeroCuota;
 
 	private BigDecimal saldo;
 
@@ -42,6 +42,9 @@ public class ConvAmortizacion implements Serializable {
 	@ManyToOne
 	@JoinColumn(name="id_conv_adquiridos")
 	private ConvAdquirido convAdquirido;
+	
+	@Column(name="estado_pago")
+	private String estadoPago;
 
 	public ConvAmortizacion() {
 	}
@@ -78,14 +81,6 @@ public class ConvAmortizacion implements Serializable {
 		this.interes = interes;
 	}
 
-	public BigDecimal getNumeroCuota() {
-		return this.numeroCuota;
-	}
-
-	public void setNumeroCuota(BigDecimal numeroCuota) {
-		this.numeroCuota = numeroCuota;
-	}
-
 	public BigDecimal getSaldo() {
 		return this.saldo;
 	}
@@ -110,4 +105,20 @@ public class ConvAmortizacion implements Serializable {
 		this.convAdquirido = convAdquirido;
 	}
 
+	public Integer getNumeroCuota() {
+		return numeroCuota;
+	}
+
+	public void setNumeroCuota(Integer numeroCuota) {
+		this.numeroCuota = numeroCuota;
+	}
+
+	public String getEstadoPago() {
+		return estadoPago;
+	}
+
+	public void setEstadoPago(String estadoPago) {
+		this.estadoPago = estadoPago;
+	}
+	
 }

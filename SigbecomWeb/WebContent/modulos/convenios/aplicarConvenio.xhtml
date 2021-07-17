@@ -123,15 +123,25 @@
 							<p:column headerText="SERVICIO">
 								<h:outputText value="#{dato.convServicio.servicioProducto}"/>
 							</p:column>
-							<p:column width="VALOR">
+							<p:column headerText="VALOR">
 								<h:outputText value="#{dato.valorTotal}"/>
 				            </p:column>
-				            <p:column width="ESTADO">
+				            <p:column headerText="FECHA SOL">
+								<h:outputText value="#{dato.fechaSol}"/>
+				            </p:column>
+				            <p:column headerText="ESTADO">
 								<h:outputText value="#{dato.estado}"/>
 				            </p:column>
+				            <p:column headerText="FECHA APROB">
+								<h:outputText value="#{dato.fechaAprob}"/>
+				            </p:column>
+				            <p:column headerText="RESOLUCION">
+								<h:outputText value="#{dato.resolucion}"/>
+				            </p:column>
 							<p:rowExpansion>
-								<p:dataTable value="#{dato.convAmortizacions}"
-													id="tblCon" editable="true" var="con">
+							
+								<p:dataTable value="#{dato.convAmortizacions}" rendered="#{frmAplicarConvenio.activarTablaAmortizacion(dato.estado)}"
+													id="tblCon" var="con">
 										<f:facet name="header">
 								            TABLA DE AMORTIZACION
 										</f:facet>

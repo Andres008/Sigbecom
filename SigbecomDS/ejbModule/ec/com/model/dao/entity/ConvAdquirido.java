@@ -55,6 +55,12 @@ public class ConvAdquirido implements Serializable {
 	@Column(name="resolucion")
 	private String resolucion;
 	
+	@Temporal(TemporalType.DATE)
+	@Column(name="fecha_revision")
+	private Date fechaRevision;
+	
+	private BigDecimal interes;
+	
 	public ConvAdquirido() {
 	}
 
@@ -150,6 +156,22 @@ public class ConvAdquirido implements Serializable {
 
 	public void setResolucion(String resolucion) {
 		this.resolucion = resolucion;
+	}
+
+	public Date getFechaRevision() {
+		return fechaRevision;
+	}
+
+	public void setFechaRevision(Date fechaRevision) {
+		this.fechaRevision = fechaRevision;
+	}
+
+	public BigDecimal getInteres() {
+		return interes;
+	}
+
+	public void setInteres(BigDecimal interes) {
+		this.interes = interes;
 	}
 	
 }
