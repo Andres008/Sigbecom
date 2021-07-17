@@ -5,21 +5,20 @@ import javax.persistence.*;
 import java.util.Date;
 import java.util.List;
 
-
 /**
  * The persistent class for the aut_rol database table.
  * 
  */
 @Entity
-@Table(name="aut_rol")
-@NamedQuery(name="AutRol.findAll", query="SELECT a FROM AutRol a")
+@Table(name = "aut_rol")
+@NamedQuery(name = "AutRol.findAll", query = "SELECT a FROM AutRol a")
 public class AutRol implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@Id
-	@SequenceGenerator(name="AUT_ROL_IDROL_GENERATOR", sequenceName="SEQ_AUT_ROL", allocationSize = 1)
-	@GeneratedValue(strategy=GenerationType.SEQUENCE, generator="AUT_ROL_IDROL_GENERATOR")
-	@Column(name="id_rol")
+	@SequenceGenerator(name = "AUT_ROL_IDROL_GENERATOR", sequenceName = "SEQ_AUT_ROL", allocationSize = 1)
+	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "AUT_ROL_IDROL_GENERATOR")
+	@Column(name = "id_rol")
 	private long idRol;
 
 	private String descripcion;
@@ -27,22 +26,27 @@ public class AutRol implements Serializable {
 	private String estado;
 
 	@Temporal(TemporalType.DATE)
-	@Column(name="fecha_final")
+	@Column(name = "fecha_final")
 	private Date fechaFinal;
 
 	@Temporal(TemporalType.DATE)
-	@Column(name="fecha_inicial")
+	@Column(name = "fecha_inicial")
 	private Date fechaInicial;
 
 	private String nombre;
 
-	//bi-directional many-to-one association to AutRolPerfil
-	@OneToMany(mappedBy="autRol")
+	// bi-directional many-to-one association to AutRolPerfil
+	@OneToMany(mappedBy = "autRol")
 	private List<AutRolPerfil> autRolPerfils;
 
-	//bi-directional many-to-one association to UsrSocio
-	@OneToMany(mappedBy="autRol")
+	// bi-directional many-to-one association to UsrSocio
+	@OneToMany(mappedBy = "autRol")
 	private List<UsrSocio> usrSocios;
+
+	// bi-directional many-to-one association to UsrTipoSocio
+	@ManyToOne
+	@JoinColumn(name = "id_tipo_socio")
+	private UsrTipoSocio usrTipoSocio;
 
 	public AutRol() {
 	}
@@ -137,6 +141,14 @@ public class AutRol implements Serializable {
 		usrSocio.setAutRol(null);
 
 		return usrSocio;
+	}
+
+	public UsrTipoSocio getUsrTipoSocio() {
+		return usrTipoSocio;
+	}
+
+	public void setUsrTipoSocio(UsrTipoSocio usrTipoSocio) {
+		this.usrTipoSocio = usrTipoSocio;
 	}
 
 }

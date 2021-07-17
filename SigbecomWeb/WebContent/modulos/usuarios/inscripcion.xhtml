@@ -43,45 +43,70 @@
 				<h:form>
 					<p:growl id="growl" showDetail="true" sticky="true" />
 					<p:panel header="Ingresar Usuario">
+					<p:commandButton value="Ingresar"
+							actionListener="#{controladorGestionSocios.inscribirSocio()}"
+							update="@form">
+							<p:confirm header="Confirmación"
+								message="Esta seguro de ingresar la información?"
+								icon="pi pi-exclamation-triangle" />
+						</p:commandButton>
 						<p:panelGrid columns="4" styleClass="ui-noborder">
 							<p:outputLabel value="Cedula" />
 							<p:inputText
-								value="#{controladorGestionSocios.objUsrSocio.gesPersona.cedula}" required="true" placeholder="Cédula"/>
+								value="#{controladorGestionSocios.objUsrSocio.gesPersona.cedula}"
+								required="true" placeholder="Cédula" />
+							<p:outputLabel value="Tipo Usuario" />
+							<p:selectOneMenu value="#{controladorGestionSocios.objUsrSocio.usrTipoSocio.idTipoSocio}" required="true" requiredMessage="Es obligatorio el tipo de socio.">
+								<f:selectItem itemLabel="Seleccione Tipo Usuario"/>
+								<f:selectItems value="#{controladorGestionSocios.lstSiTipoSocio()}" />
+								<p:ajax listener="#{controladorGestionSocios.cargarDescuentosSocio()}" update="@form:lstRol @form:pnlDescuentos" />
+							</p:selectOneMenu>
 							<p:outputLabel value="Rol" />
-							<p:selectOneMenu
-								value="#{controladorGestionSocios.objUsrSocio.autRol.idRol}" required="true">
+							<p:selectOneMenu id="lstRol"
+								value="#{controladorGestionSocios.objUsrSocio.autRol.idRol}"
+								required="true">
 								<f:selectItem itemLabel="Seleccione Rol"
 									noSelectionOption="true" />
-								<f:selectItems value="#{controladorMenuPerfiles.siAutRol()}" />
+								<f:selectItems value="#{controladorGestionSocios.siAutRol()}" />
 							</p:selectOneMenu>
 							<p:outputLabel value="Apellidos" />
 							<p:inputText
-								value="#{controladorGestionSocios.objUsrSocio.gesPersona.apellidos}" placeholder="Apellidos" required="true" style="text-transform: uppercase" />
+								value="#{controladorGestionSocios.objUsrSocio.gesPersona.apellidos}"
+								placeholder="Apellidos" required="true"
+								style="text-transform: uppercase" />
 							<p:outputLabel value="Nombres" />
 							<p:inputText
-								value="#{controladorGestionSocios.objUsrSocio.gesPersona.nombres}" placeholder="Nombres" required="true" style="text-transform: uppercase"/>
+								value="#{controladorGestionSocios.objUsrSocio.gesPersona.nombres}"
+								placeholder="Nombres" required="true"
+								style="text-transform: uppercase" />
 							<p:outputLabel value="Correo Electronico" />
 							<p:inputText
-								value="#{controladorGestionSocios.objUsrSocio.gesPersona.email}" placeholder="Correo Electronico" required="true" style="text-transform: lowercase"/>
+								value="#{controladorGestionSocios.objUsrSocio.gesPersona.email}"
+								placeholder="Correo Electronico" required="true"
+								style="text-transform: lowercase" />
 							<p:outputLabel value="Telefono" />
 							<p:inputText
-								value="#{controladorGestionSocios.objUsrSocio.gesPersona.telefono}" placeholder="Telefono" required="true"/>
+								value="#{controladorGestionSocios.objUsrSocio.gesPersona.telefono}"
+								placeholder="Telefono" required="true" />
 						</p:panelGrid>
-						<p:commandButton value="Ingresar"
-								actionListener="#{controladorGestionSocios.inscribirSocio()}"
-								update="@form"> 
-								<p:confirm header="Confirmación"
-								message="Esta seguro de ingresar la información?"
-								icon="pi pi-exclamation-triangle" />
-								</p:commandButton>
-								
-								<p:confirmDialog global="true" showEffect="fade"
-										hideEffect="fade" responsive="true" width="350">
-										<p:commandButton value="Si" type="button"
-											styleClass="ui-confirmdialog-yes" />
-										<p:commandButton value="No" type="button"
-											styleClass="ui-confirmdialog-no ui-button-flat" />
-									</p:confirmDialog>
+						<p:panel header="Descuentos" id="pnlDescuentos">
+							<p:dataTable var="descuento" value="#{controladorGestionSocios.objUsrSocio.usrSocioDescuentoFijos}" emptyMessage="No tiene descuentos " >
+								<p:column headerText="Descuento" >
+									<p:outputLabel value="#{descuento.usrTipoDescuento.nombre}" />
+								</p:column>
+								<p:column headerText="Valor" >
+									<p:inputNumber value="#{descuento.usrTipoDescuento.valorDefecto}" />
+								</p:column>
+							</p:dataTable>
+						</p:panel>
+
+						<p:confirmDialog global="true" showEffect="fade" hideEffect="fade"
+							responsive="true" width="350">
+							<p:commandButton value="Si" type="button"
+								styleClass="ui-confirmdialog-yes" />
+							<p:commandButton value="No" type="button"
+								styleClass="ui-confirmdialog-no ui-button-flat" />
+						</p:confirmDialog>
 					</p:panel>
 				</h:form>
 

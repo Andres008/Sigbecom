@@ -67,7 +67,7 @@ public class JSFUtil {
 	 * @param mensaje Contenido del mensaje.
 	 * @param detalle Detalle del mensaje. Puede ser null.
 	 */
-	public static void crearMensajeWARN(String mensaje,String detalle){
+	public static void crearMensajeWARN(String detalle){
 		crearMensaje(FacesMessage.SEVERITY_WARN, "Atención se produjo una ADVERTENCIA.",detalle);
 	}
 	

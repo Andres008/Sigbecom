@@ -53,10 +53,15 @@ import ec.com.model.dao.entity.UsrLicenciaSocio;
 import ec.com.model.dao.entity.UsrParroquia;
 import ec.com.model.dao.entity.UsrProvincia;
 import ec.com.model.dao.entity.UsrSocio;
+import ec.com.model.dao.entity.UsrSocioDescuentoFijo;
 import ec.com.model.dao.entity.UsrTipoCuenta;
+import ec.com.model.dao.entity.UsrTipoDescuento;
+import ec.com.model.dao.entity.UsrTipoDescuentoSocio;
 import ec.com.model.dao.entity.UsrTipoInstruccion;
 import ec.com.model.dao.entity.UsrTipoLicencia;
+import ec.com.model.dao.entity.UsrTipoSocio;
 import ec.com.model.dao.entity.UsrTipoVivienda;
+import ec.com.model.gestionDescuentos.ManagerGestionDescuentos;
 import ec.com.model.gestionPersonas.ManagerGestionPersonas;
 import ec.com.model.gestionSistema.ManagerGestionSistema;
 import ec.com.model.gestionSocios.ManagerGestionSocios;
@@ -89,6 +94,9 @@ public class ControladorGestionSocios implements Serializable {
 	ManagerGestionSistema managerGestionSistema;
 
 	@EJB
+	ManagerGestionDescuentos managerGestionDescuentos;
+
+	@EJB
 	CorreoUtil correoUtil;
 
 	private UsrSocio objUsrSocio;
@@ -108,11 +116,29 @@ public class ControladorGestionSocios implements Serializable {
 	private UsrCuentaSocio objUsrCuentaSocio;
 
 	private List<UsrSocio> lstUsrSocio;
-	
+
 	private List<GesPariente> lstFamilia;
+
+	private UsrTipoSocio objUsrTipoSocio;
+
+	private List<UsrTipoSocio> lstUsrTipoSocio;
+
+	private UsrTipoDescuento objUsrTipoDescuento;
 
 	public ControladorGestionSocios() {
 		// TODO Auto-generated constructor stub
+	}
+
+	public void inicializarTipoUsuario() {
+		objUsrTipoSocio = new UsrTipoSocio();
+		objUsrTipoSocio.setUsrTipoDescuentoSocios(new ArrayList<UsrTipoDescuentoSocio>());
+		objUsrTipoDescuento = new UsrTipoDescuento();
+		try {
+			lstUsrTipoSocio = managerGestionSocios.buscarTodoTipoSocio();
+		} catch (Exception e) {
+			JSFUtil.crearMensajeERROR(e.getMessage());
+			e.printStackTrace();
+		}
 	}
 
 	public void inicializarIngresoSocio() {
@@ -120,6 +146,7 @@ public class ControladorGestionSocios implements Serializable {
 		objUsrSocio.setGesPersona(new GesPersona());
 		objUsrSocio.setAutRol(new AutRol());
 		objUsrSocio.setUsrEstadoSocio(new UsrEstadoSocio());
+		objUsrSocio.setUsrTipoSocio(new UsrTipoSocio());
 	}
 
 	public void inicializarConsultaSocio() {
@@ -129,7 +156,7 @@ public class ControladorGestionSocios implements Serializable {
 			JSFUtil.crearMensajeERROR(e.getMessage());
 		}
 	}
-	
+
 	public void inicializarConsultaFamiliares() {
 		try {
 			lstFamilia = managerGestionSocios.buscarFamiliares();
@@ -220,9 +247,9 @@ public class ControladorGestionSocios implements Serializable {
 			FacesContext.getCurrentInstance().addMessage(null, message);
 		}
 	}
-	
+
 	public String calcularEdad(Date fechaNac) {
-		if (fechaNac!= null)
+		if (fechaNac != null)
 			return ModelUtil.calcularEdad(fechaNac).toString();
 		return "Sin fecha Nacimiento";
 	}
@@ -252,6 +279,37 @@ public class ControladorGestionSocios implements Serializable {
 			e.printStackTrace();
 			managerLog.generarLogErrorGeneral(beanLogin.getCredencial(), this.getClass(), "actualizarPersonaSocio",
 					e.getMessage());
+		}
+	}
+
+	public void cargarDescuentosSocio() {
+		try {
+			UsrTipoSocio tipoSocio = managerGestionSocios
+					.buscarTipoSocioById(objUsrSocio.getUsrTipoSocio().getIdTipoSocio());
+			objUsrSocio.setUsrSocioDescuentoFijos(new ArrayList<UsrSocioDescuentoFijo>());
+			for (UsrTipoDescuentoSocio usrDescuento : tipoSocio.getUsrTipoDescuentoSocios()) {
+				UsrSocioDescuentoFijo fijo = new UsrSocioDescuentoFijo();
+				fijo.setFechaInicial(new Date());
+				fijo.setEstado("A");
+				fijo.setUsrTipoDescuento(usrDescuento.getUsrTipoDescuento());
+				fijo.setValor(usrDescuento.getUsrTipoDescuento().getValorDefecto());
+				fijo.setUsrSocio(objUsrSocio);
+				objUsrSocio.getUsrSocioDescuentoFijos().add(fijo);
+			}
+		} catch (Exception e) {
+			JSFUtil.crearMensajeERROR(e.getMessage());
+			e.printStackTrace();
+		}
+	}
+
+	public void ingresarTipoSocio() {
+		objUsrTipoSocio.setEstado("A");
+		try {
+			managerGestionSistema.insertarTipoUsuario(objUsrTipoSocio);
+			inicializarTipoUsuario();
+		} catch (Exception e) {
+			JSFUtil.crearMensajeERROR(e.getMessage());
+			e.printStackTrace();
 		}
 	}
 
@@ -367,7 +425,7 @@ public class ControladorGestionSocios implements Serializable {
 		try {
 			if (managerGestionSocios.buscarSocioExisteById(objUsrSocio.getGesPersona().getCedula()))
 				throw new Exception("Usuario ya se encuentra registrado.");
-			//String clave = ModelUtil.randomAlphaNumeric();
+			// String clave = ModelUtil.randomAlphaNumeric();
 			String clave = objUsrSocio.getGesPersona().getCedula();
 			ModelUtil.verificarCedulaEcuador(objUsrSocio.getGesPersona().getCedula());
 			ModelUtil.esEmailCorrecto(objUsrSocio.getGesPersona().getEmail());
@@ -461,6 +519,85 @@ public class ControladorGestionSocios implements Serializable {
 				lstSiEtnia.add(siCivil);
 			}
 			return lstSiEtnia;
+		} catch (Exception e) {
+			JSFUtil.crearMensajeERROR(e.getMessage());
+			e.printStackTrace();
+			return null;
+		}
+	}
+
+	/***
+	 * Metodo que retorna una lista SI de AutRol
+	 * 
+	 * @return
+	 */
+	public List<SelectItem> siAutRol() {
+		List<SelectItem> lstSiAutRol = new ArrayList<SelectItem>();
+		try {
+
+			for (AutRol autRol : managerGestionSistema
+					.buscarAutRolByTipoUsuario(objUsrSocio.getUsrTipoSocio().getIdTipoSocio())) {
+				SelectItem siRol = new SelectItem();
+				siRol.setLabel(autRol.getNombre());
+				siRol.setValue(autRol.getIdRol());
+				lstSiAutRol.add(siRol);
+			}
+			return lstSiAutRol;
+		} catch (Exception e) {
+			JSFUtil.crearMensajeERROR(e.getMessage());
+			e.printStackTrace();
+			return null;
+		}
+
+	}
+
+	public List<SelectItem> lstSiTipoSocio() {
+		List<SelectItem> lstSiTipoSocio = new ArrayList<SelectItem>();
+		try {
+			for (UsrTipoSocio usrTipoSocio : managerGestionSocios.buscarTodoTipoSocio()) {
+				SelectItem siCivil = new SelectItem();
+				siCivil.setLabel(usrTipoSocio.getNombre());
+				siCivil.setValue(usrTipoSocio.getIdTipoSocio());
+				lstSiTipoSocio.add(siCivil);
+			}
+			return lstSiTipoSocio;
+		} catch (Exception e) {
+			JSFUtil.crearMensajeERROR(e.getMessage());
+			e.printStackTrace();
+			return null;
+		}
+	}
+
+	public List<SelectItem> lstSiSocio() {
+		List<SelectItem> lstSiTipoSocio = new ArrayList<SelectItem>();
+		try {
+			for (UsrSocio usrTipoSocio : managerGestionSocios.buscarTodosSocios()) {
+				SelectItem siCivil = new SelectItem();
+				siCivil.setLabel(usrTipoSocio.getCedulaSocio() + " " + usrTipoSocio.getGesPersona().getApellidos() + " "
+						+ usrTipoSocio.getGesPersona().getNombres());
+				siCivil.setValue(usrTipoSocio.getCedulaSocio());
+				lstSiTipoSocio.add(siCivil);
+			}
+			return lstSiTipoSocio;
+		} catch (Exception e) {
+			JSFUtil.crearMensajeERROR(e.getMessage());
+			e.printStackTrace();
+			return null;
+		}
+	}
+
+	public List<SelectItem> lstSiTipoDescuento() {
+		List<SelectItem> lstSiTipoSocio = new ArrayList<SelectItem>();
+
+		try {
+			for (UsrTipoDescuento usrTipoSocio : managerGestionDescuentos.buscarTodoDescuentos().stream()
+					.filter(descuento -> descuento.getEstado().equals("A")).collect(Collectors.toList())) {
+				SelectItem siCivil = new SelectItem();
+				siCivil.setLabel(usrTipoSocio.getNombre());
+				siCivil.setValue(usrTipoSocio.getIdDescuento());
+				lstSiTipoSocio.add(siCivil);
+			}
+			return lstSiTipoSocio;
 		} catch (Exception e) {
 			JSFUtil.crearMensajeERROR(e.getMessage());
 			e.printStackTrace();
@@ -637,6 +774,25 @@ public class ControladorGestionSocios implements Serializable {
 		}
 	}
 
+	public void agregarDescuentoSocio() {
+
+		try {
+			for (UsrTipoDescuentoSocio usrTipoDescuento : objUsrTipoSocio.getUsrTipoDescuentoSocios()) {
+				if (usrTipoDescuento.getUsrTipoDescuento().getIdDescuento() == objUsrTipoDescuento.getIdDescuento())
+					throw new Exception("Descuento ya se encuentra registrado.");
+			}
+			UsrTipoDescuentoSocio tipoDescuento = new UsrTipoDescuentoSocio();
+			tipoDescuento.setUsrTipoSocio(objUsrTipoSocio);
+			tipoDescuento.setUsrTipoDescuento(
+					managerGestionDescuentos.buscarTipoDescuentoById(objUsrTipoDescuento.getIdDescuento()));
+			objUsrTipoSocio.getUsrTipoDescuentoSocios().add(tipoDescuento);
+			objUsrTipoDescuento = new UsrTipoDescuento();
+		} catch (Exception e) {
+			JSFUtil.crearMensajeWARN(e.getMessage());
+		}
+
+	}
+
 	public void agregarCuenta() {
 		try {
 			objUsrCuentaSocio.setUsrTipoCuenta(
@@ -738,7 +894,7 @@ public class ControladorGestionSocios implements Serializable {
 	public void handleFileUpload(FileUploadEvent event) {
 		try {
 			this.file = event.getFile();
-			//verificarTamanioFotografia(event);
+			// verificarTamanioFotografia(event);
 			objUsrSocio.setUrlFoto(ModelUtil.guardarArchivo(event.getFile().getInputStream(),
 					beanLogin.getCredencial().getObjUsrSocio().getCedulaSocio(),
 					managerGestionSistema.buscarValorParametroNombre("PATH_FOTOS"), ".jpg"));
@@ -943,6 +1099,30 @@ public class ControladorGestionSocios implements Serializable {
 
 	public void setLstFamilia(List<GesPariente> lstFamilia) {
 		this.lstFamilia = lstFamilia;
+	}
+
+	public UsrTipoSocio getObjUsrTipoSocio() {
+		return objUsrTipoSocio;
+	}
+
+	public void setObjUsrTipoSocio(UsrTipoSocio objUsrTipoSocio) {
+		this.objUsrTipoSocio = objUsrTipoSocio;
+	}
+
+	public List<UsrTipoSocio> getLstUsrTipoSocio() {
+		return lstUsrTipoSocio;
+	}
+
+	public void setLstUsrTipoSocio(List<UsrTipoSocio> lstUsrTipoSocio) {
+		this.lstUsrTipoSocio = lstUsrTipoSocio;
+	}
+
+	public UsrTipoDescuento getObjUsrTipoDescuento() {
+		return objUsrTipoDescuento;
+	}
+
+	public void setObjUsrTipoDescuento(UsrTipoDescuento objUsrTipoDescuento) {
+		this.objUsrTipoDescuento = objUsrTipoDescuento;
 	}
 
 }

@@ -121,6 +121,15 @@ public class UsrSocio implements Serializable {
 	// bi-directional many-to-one association to SesvasSolicitud
 	@OneToMany(mappedBy = "usrSocio")
 	private List<SesvasSolicitud> sesvasSolicituds;
+	
+	//bi-directional many-to-one association to UsrTipoSocio
+		@ManyToOne
+		@JoinColumn(name="id_tipo_socio")
+		private UsrTipoSocio usrTipoSocio;
+
+		//bi-directional many-to-one association to UsrSocioDescuentoFijo
+		@OneToMany(mappedBy="usrSocio", cascade = CascadeType.ALL)
+		private List<UsrSocioDescuentoFijo> usrSocioDescuentoFijos;
 
 	public UsrSocio() {
 	}
@@ -424,4 +433,22 @@ public class UsrSocio implements Serializable {
 
 		return finPrestamoSocio;
 	}
+
+	public UsrTipoSocio getUsrTipoSocio() {
+		return usrTipoSocio;
+	}
+
+	public void setUsrTipoSocio(UsrTipoSocio usrTipoSocio) {
+		this.usrTipoSocio = usrTipoSocio;
+	}
+
+	public List<UsrSocioDescuentoFijo> getUsrSocioDescuentoFijos() {
+		return usrSocioDescuentoFijos;
+	}
+
+	public void setUsrSocioDescuentoFijos(List<UsrSocioDescuentoFijo> usrSocioDescuentoFijos) {
+		this.usrSocioDescuentoFijos = usrSocioDescuentoFijos;
+	}
+	
+	
 }
