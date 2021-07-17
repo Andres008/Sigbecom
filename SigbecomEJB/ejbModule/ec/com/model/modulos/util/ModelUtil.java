@@ -194,6 +194,21 @@ public class ModelUtil {
 		return calendar.getTime(); // Devuelve el objeto Date con los nuevos dÃ­as aÃ±adidos
 	}
 
+	/**
+	 * Suma o resta meses a una fecha.
+	 * 
+	 * @param Fecha  original.
+	 * @param numero de dias a ser sumados.
+	 * @return fecha sumada el numero de dias
+	 */
+	public static Date getSumarMeses(Date fecha, int mes) {
+		Calendar calendar = Calendar.getInstance();
+		calendar.setTime(fecha); // Configuramos la fecha que se recibe
+		calendar.add(Calendar.MONTH, mes); // numero de dÃ­as a aÃ±adir, o restar en caso de dÃ­as<0
+
+		return calendar.getTime(); // Devuelve el objeto Date con los nuevos dÃ­as aÃ±adidos
+	}
+
 	// Diferencias entre dos fechas
 	// @param fechaInicial La fecha de inicio
 	// @param fechaFinal La fecha de fin

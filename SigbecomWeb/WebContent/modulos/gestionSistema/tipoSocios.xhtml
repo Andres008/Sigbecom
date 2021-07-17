@@ -21,7 +21,7 @@
 </h:head>
 
 <h:body styleClass="main-body"
-	onload="#{controladorRol.inicializarAutRol()}">
+	onload="#{controladorGestionSocios.inicializarTipoUsuario()}">
 
 	<div
 		class="layout-wrapper #{guestPreferences.menuLayout != 'static' ? guestPreferences.menuLayout : null}">
@@ -39,25 +39,44 @@
 				<ui:include src="/affordances/route-bar-menu.xhtml" />
 			</div>
 			<div class="layout-main-content" align="center">
-				<H1>ADMINISTRACION ROLES DE USUARIO</H1>
+				<H1>ADMINISTRACION TIPOS DE SOCIOS</H1>
 				<h:form>
 					<p:growl id="growl" showDetail="true" sticky="true" />
-					<p:panel header="Ingresar Roles" toggleable="true" collapsed="true">
+					<p:panel header="Ingresar Tipo Usuario" toggleable="true"
+						collapsed="true">
 						<p:panelGrid columns="2" styleClass="ui-noborder">
-							<p:outputLabel value="Nombre" />
-							<p:inputText value="#{controladorRol.objAutRol.nombre}"
-								placeholder="Nombre Rol" style="text-transform: uppercase" />
-								<p:outputLabel value="Tipo Usuario" />
-							<p:selectOneMenu value="#{controladorRol.objAutRol.usrTipoSocio.idTipoSocio}" required="true" requiredMessage="Es obligatorio el tipo de socio.">
-								<f:selectItem itemLabel="Seleccione Tipo Usuario"/>
-								<f:selectItems value="#{controladorGestionSocios.lstSiTipoSocio()}" />
-							</p:selectOneMenu>
-							<p:outputLabel value="Descripción" />
-							<p:inputTextarea value="#{controladorRol.objAutRol.descripcion}"
-								placeholder="Descripción Rol" style="text-transform: uppercase" />
+							<p:outputLabel value="Tipo Usuario" />
+							<p:inputText
+								value="#{controladorGestionSocios.objUsrTipoSocio.nombre}"
+								placeholder="Nombre Tipo Usuario"
+								style="text-transform: uppercase" />
+							<p:outputLabel value="Descripción Tipo Usuario" />
+							<p:inputTextarea
+								value="#{controladorGestionSocios.objUsrTipoSocio.descripcion}"
+								placeholder="Descripción Tipo Usuario"
+								style="text-transform: uppercase" />
 						</p:panelGrid>
+						<p:panel header="Descuentos" >
+							<p:panelGrid columns="3" styleClass="iu-noborder" >
+								<p:outputLabel value="Tipo Descuento"/>
+								<p:selectOneMenu value="#{controladorGestionSocios.objUsrTipoDescuento.idDescuento}" >
+									<f:selectItem itemLabel="Seleccione Descuento"/>
+									<f:selectItems value="#{controladorGestionSocios.lstSiTipoDescuento()}" />
+								</p:selectOneMenu>
+								<p:commandButton value="Agregar" actionListener="#{controladorGestionSocios.agregarDescuentoSocio()}" update="@form"/>
+							</p:panelGrid>
+							<p:dataTable value="#{controladorGestionSocios.objUsrTipoSocio.usrTipoDescuentoSocios}" var="descuento" emptyMessage="No tiene descuento ingresado." >
+								<p:column headerText="Descuento" >
+									<p:outputLabel value="#{descuento.usrTipoDescuento.nombre}" />
+								</p:column>
+								<p:column headerText="Valor Dolares" >
+									<p:outputLabel value="#{descuento.usrTipoDescuento.valorDefecto}" />
+								</p:column>
+							</p:dataTable>
+						</p:panel>
 						<p:commandButton value="Ingresar"
-							action="#{controladorRol.ingresarAutRol()}" update="@form">
+							action="#{controladorGestionSocios.ingresarTipoSocio()}"
+							update="@form">
 							<p:confirm header="Confirmación"
 								message="Esta seguro de ingresar la información?"
 								icon="pi pi-exclamation-triangle" />
@@ -71,8 +90,9 @@
 						</p:confirmDialog>
 					</p:panel>
 					<p:separator></p:separator>
-					<p:panel header="Roles Ingresados">
-						<p:dataTable value="#{controladorRol.lstAutRols}" var="rol"
+					<p:panel header="Tipo Socios Ingresados">
+						<p:dataTable value="#{controladorGestionSocios.lstUsrTipoSocio}"
+							var="rol" emptyMessage="No existen Tipo de Usuarios Ingresados"
 							editable="true" paginator="true" rows="10">
 							<p:ajax event="rowEdit" listener="#{controladorRol.onRowEdit}"
 								update="@form:growl" process="@this" />
@@ -101,28 +121,25 @@
 								</p:cellEditor>
 
 							</p:column>
-							<p:column headerText="Fecha Inicial">
-								<p:outputLabel value="#{rol.fechaInicial}" />
+							<p:column headerText="Descuentos">
+								<p:dataTable value="#{rol.usrTipoDescuentoSocios}" emptyMessage="No tiene descuentos"
+									var="descuento">
+									<p:column headerText="Descuento">
+										<p:outputLabel value="#{descuento.usrTipoDescuento.nombre}" />
+									</p:column>
+									<p:column headerText="Valor Dolares">
+										<p:outputLabel
+											value="#{descuento.usrTipoDescuento.valorDefecto}" />
+									</p:column>
+								</p:dataTable>
 							</p:column>
-							<p:column headerText="Fecha Final">
-								<p:outputLabel value="#{rol.fechaFinal}" />
-							</p:column>
-							<p:column headerText="Estado">
+							<p:column headerText="Estado" width="50">
 								<p:outputLabel
 									value="#{controladorRol.nombreEstado(rol.estado)}" />
 							</p:column>
 							<p:column headerText="Editar">
 								<p:rowEditor editTitle="Edit Row" cancelTitle="Cancel Edit"
 									saveTitle="Save Row" />
-							</p:column>
-							<p:column headerText="Inactivar">
-								<p:commandButton icon="ui-icon-close" rendered="#{rol.estado eq 'A'?true:false}"
-									actionListener="#{controladorRol.inactivarRol(rol)}"
-									update="@form">
-									<p:confirm header="Confirmación"
-										message="Esta seguro de inactivar este Rol?"
-										icon="pi pi-exclamation-triangle" />
-								</p:commandButton>
 							</p:column>
 						</p:dataTable>
 					</p:panel>

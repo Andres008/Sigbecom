@@ -21,7 +21,7 @@
 </h:head>
 
 <h:body styleClass="main-body"
-	onload="#{controladorRol.inicializarAutRol()}">
+	onload="#{controladorGestionDescuentos.inicializarNovedadesEconomicas()}">
 
 	<div
 		class="layout-wrapper #{guestPreferences.menuLayout != 'static' ? guestPreferences.menuLayout : null}">
@@ -39,25 +39,32 @@
 				<ui:include src="/affordances/route-bar-menu.xhtml" />
 			</div>
 			<div class="layout-main-content" align="center">
-				<H1>ADMINISTRACION ROLES DE USUARIO</H1>
+				<H1>ADMINISTRACION NOVEDADES ECONÓMICAS</H1>
 				<h:form>
 					<p:growl id="growl" showDetail="true" sticky="true" />
-					<p:panel header="Ingresar Roles" toggleable="true" collapsed="true">
+					<p:panel header="Ingresar Novedad Económica Socio"
+						toggleable="true" collapsed="true">
 						<p:panelGrid columns="2" styleClass="ui-noborder">
-							<p:outputLabel value="Nombre" />
-							<p:inputText value="#{controladorRol.objAutRol.nombre}"
-								placeholder="Nombre Rol" style="text-transform: uppercase" />
-								<p:outputLabel value="Tipo Usuario" />
-							<p:selectOneMenu value="#{controladorRol.objAutRol.usrTipoSocio.idTipoSocio}" required="true" requiredMessage="Es obligatorio el tipo de socio.">
-								<f:selectItem itemLabel="Seleccione Tipo Usuario"/>
-								<f:selectItems value="#{controladorGestionSocios.lstSiTipoSocio()}" />
+							<p:outputLabel value="Socio" />
+							<p:selectOneMenu filter="true" filterMatchMode="contains"
+								value="#{controladorGestionDescuentos.objDescNovedade.usrSocio2.cedulaSocio}">
+								<f:selectItem itemLabel="Seleccione el Socio" />
+								<f:selectItems value="#{controladorGestionSocios.lstSiSocio()}" />
 							</p:selectOneMenu>
-							<p:outputLabel value="Descripción" />
-							<p:inputTextarea value="#{controladorRol.objAutRol.descripcion}"
-								placeholder="Descripción Rol" style="text-transform: uppercase" />
+							<p:outputLabel value="Descripción Novedad" />
+							<p:inputTextarea rows="1" autoResize="true"
+								value="#{controladorGestionDescuentos.objDescNovedade.descripcion}"
+								placeholder="Descripción" required="true"
+								requiredMessage="La descripción es novedad."
+								style="text-transform: uppercase" />
+							<p:outputLabel value="Valor" />
+							<p:inputNumber
+								value="#{controladorGestionDescuentos.objDescNovedade.valor}"
+								placeholder="Valor" />
 						</p:panelGrid>
 						<p:commandButton value="Ingresar"
-							action="#{controladorRol.ingresarAutRol()}" update="@form">
+							action="#{controladorGestionDescuentos.ingresarNovedadEconomica()}"
+							update="@form">
 							<p:confirm header="Confirmación"
 								message="Esta seguro de ingresar la información?"
 								icon="pi pi-exclamation-triangle" />
@@ -71,58 +78,35 @@
 						</p:confirmDialog>
 					</p:panel>
 					<p:separator></p:separator>
-					<p:panel header="Roles Ingresados">
-						<p:dataTable value="#{controladorRol.lstAutRols}" var="rol"
+					<p:panel header="Tipo Descuento Ingresados">
+						<p:dataTable
+							value="#{controladorGestionDescuentos.lstDescNovedade}"
+							var="novedad" emptyMessage="No existen Novedades Ingresadas"
 							editable="true" paginator="true" rows="10">
-							<p:ajax event="rowEdit" listener="#{controladorRol.onRowEdit}"
-								update="@form:growl" process="@this" />
-							<p:ajax event="rowEditCancel"
-								listener="#{controladorRol.onRowCancel}" update="@form:growl" />
-							<p:column headerText="Rol">
-								<p:cellEditor>
-									<f:facet name="output">
-										<p:outputLabel value="#{rol.nombre}" />
-									</f:facet>
-									<f:facet name="input">
-										<p:inputText id="nombreInput" value="#{rol.nombre}"
-											style="width:100%" />
-									</f:facet>
-								</p:cellEditor>
-							</p:column>
 							<p:column headerText="Descripción">
-								<p:cellEditor>
-									<f:facet name="output">
-										<p:outputLabel value="#{rol.descripcion}" />
-									</f:facet>
-									<f:facet name="input">
-										<p:inputTextarea id="descripcionInput"
-											value="#{rol.descripcion}" style="width:100%" />
-									</f:facet>
-								</p:cellEditor>
-
+								<p:outputLabel value="#{novedad.descripcion}" />
 							</p:column>
-							<p:column headerText="Fecha Inicial">
-								<p:outputLabel value="#{rol.fechaInicial}" />
+							<p:column headerText="Valor" width="50">
+								<p:outputLabel value="#{novedad.valor}">
+									<f:convertNumber minFractionDigits="2" />
+								</p:outputLabel>
 							</p:column>
-							<p:column headerText="Fecha Final">
-								<p:outputLabel value="#{rol.fechaFinal}" />
+							<p:column headerText="Cédula Socio" width="100"
+								filterBy="#{novedad.usrSocio2.cedulaSocio}"
+								filterMatchMode="contains">
+								<p:outputLabel value="#{novedad.usrSocio2.cedulaSocio}" />
 							</p:column>
-							<p:column headerText="Estado">
+							<p:column headerText="Socio">
 								<p:outputLabel
-									value="#{controladorRol.nombreEstado(rol.estado)}" />
+									value="#{novedad.usrSocio2.gesPersona.apellidos} #{novedad.usrSocio2.gesPersona.nombres}" />
 							</p:column>
-							<p:column headerText="Editar">
-								<p:rowEditor editTitle="Edit Row" cancelTitle="Cancel Edit"
-									saveTitle="Save Row" />
+							<p:column headerText="Fecha" width="90">
+								<p:outputLabel value="#{novedad.fechaRegistro}">
+									<f:convertDateTime pattern="dd/MM/yyyy " />
+								</p:outputLabel>
 							</p:column>
-							<p:column headerText="Inactivar">
-								<p:commandButton icon="ui-icon-close" rendered="#{rol.estado eq 'A'?true:false}"
-									actionListener="#{controladorRol.inactivarRol(rol)}"
-									update="@form">
-									<p:confirm header="Confirmación"
-										message="Esta seguro de inactivar este Rol?"
-										icon="pi pi-exclamation-triangle" />
-								</p:commandButton>
+							<p:column headerText="Estado Novedad" width="70">
+								<p:outputLabel value="#{novedad.descEstadoDescuento.estado}" />
 							</p:column>
 						</p:dataTable>
 					</p:panel>

@@ -81,15 +81,47 @@
 						</p:column>
 						<p:column headerText="Imprimir">
 							<p:panelGrid columns="1" styleClass="ui-noborder">
-								<p:commandButton value="solicitud" update="@form" process="@this"
+								<p:commandButton value="solicitud" update="@form"
+									process="@this"
 									actionListener="#{controladorGestionCreditos.imprimirSolicitudCredito(solicitud)}"
 									oncomplete="PF('infPDF').show()" />
 							</p:panelGrid>
 						</p:column>
+						<p:column headerText="Historial">
+							<p:commandButton value="Historial" update="@form" process="@this"
+								actionListener="#{controladorGestionCreditos.cargarFinPrestamoSocioAmortizacion(solicitud)}"
+								oncomplete="PF('infAccion').show()" />
+						</p:column>
 					</p:dataTable>
-					
-					<p:dialog header="Documentos" widgetVar="infPDF" id="inf" modal="true"
-						position="top" showEffect="fade" hideEffect="fade"
+					<p:dialog header="Acciones Credito" widgetVar="infAccion"
+						id="infAccion" modal="true" position="top" showEffect="fade"
+						hideEffect="fade" resizable="false" width="90%">
+						<p:dataTable emptyMessage="No existen datos." rows="10"
+							sortBy="#{amortizacion.fecha}" paginator="true"
+							sortOrder="descending"
+							value="#{controladorGestionCreditos.objFinPrestamoSocio.finAccionPrestamos}"
+							var="amortizacion">
+							<p:column headerText="Acción">
+								<p:outputLabel
+									value="#{amortizacion.finAccionesCredito.descripcion}" />
+							</p:column>
+							<p:column headerText="Fecha">
+								<p:outputLabel value="#{amortizacion.fecha}">
+									<f:convertDateTime pattern="dd/MM/yyyy HH:mm" />
+								</p:outputLabel>
+							</p:column>
+							<p:column headerText="Usuario">
+								<p:outputLabel
+									value="#{amortizacion.usrSocio.gesPersona.apellidos} #{amortizacion.usrSocio.gesPersona.nombres}" />
+							</p:column>
+							<p:column headerText="Observación">
+								<p:outputLabel value="#{amortizacion.observacion}" />
+							</p:column>
+						</p:dataTable>
+					</p:dialog>
+
+					<p:dialog header="Documentos" widgetVar="infPDF" id="inf"
+						modal="true" position="top" showEffect="fade" hideEffect="fade"
 						resizable="false" width="90%">
 						<p:media cache="false"
 							value="#{controladorGestionCreditos.reportePDF()}" width="1050"

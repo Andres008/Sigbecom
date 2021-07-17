@@ -389,7 +389,7 @@ public class FrmMisSolicitudes implements Serializable{
 			}
         }
         else {
-        	JSFUtil.crearMensajeWARN("Campos necesarios","Se necesita que seleccione los archivos correspondientes a la columna Requisitos");
+        	//JSFUtil.crearMensajeWARN("Campos necesarios","Se necesita que seleccione los archivos correspondientes a la columna Requisitos");
         }
     }
 	

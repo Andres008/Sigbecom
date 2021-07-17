@@ -13,6 +13,7 @@ import ec.com.model.dao.entity.AutRol;
 import ec.com.model.dao.entity.AutRolPerfil;
 import ec.com.model.dao.entity.UsrEstadoSocio;
 import ec.com.model.dao.entity.UsrSocio;
+import ec.com.model.dao.entity.UsrTipoSocio;
 import ec.com.model.dao.entity.VAutMenuRol;
 import ec.com.model.dao.manager.ManagerDAOSegbecom;
 import ec.com.model.modulos.util.ModelUtil;
@@ -214,5 +215,19 @@ public class ManagerGestionSistema {
 		} catch (Exception e) {
 			throw new Exception("Error al insertar parametro. " + e.getMessage());
 		}
+	}
+
+	public void insertarTipoUsuario(UsrTipoSocio objUsrTipoSocio) throws Exception {
+		try {
+			managerDAOSegbecom.insertar(objUsrTipoSocio);
+		} catch (Exception e) {
+			throw new Exception("Error al insertar tipo de socio. " + e.getMessage());
+		}
+
+	}
+
+	@SuppressWarnings("unchecked")
+	public List<AutRol>  buscarAutRolByTipoUsuario(long idTipoSocio) throws Exception {
+		return managerDAOSegbecom.findWhere(AutRol.class, "o.usrTipoSocio.idTipoSocio="+idTipoSocio, "o.nombre ASC");
 	}
 }

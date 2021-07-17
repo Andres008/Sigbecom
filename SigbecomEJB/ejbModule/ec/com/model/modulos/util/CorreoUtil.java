@@ -19,71 +19,58 @@ import ec.com.model.gestionSistema.ManagerGestionSistema;
 @LocalBean
 public class CorreoUtil {
 
-	private  String host;
-	private  String user;
-	private  String clave;
-	private  String port;
+	private String host;
+	private String user;
+	private String clave;
+	private String port;
 	@EJB
 	private ManagerGestionSistema managerGestionSistema;
 
-
 	public void enviarCorreoElectronico(String destinatario, String asunto, String mensaje) throws Exception {
-		enviarConGMail(destinatario.trim(), asunto.trim(), crearMensaje(asunto, mensaje, ""));
+		if (!ModelUtil.isEmpty(destinatario))
+			enviarConGMail(destinatario.trim(), asunto.trim(), crearMensaje(asunto, mensaje, ""));
 	}
-	
-	 private String crearMensaje(String asunto,String contenido,String nota){
-	    	String contenidoInicial;
-	    	String contenidoAsunto;
-	    	String contenidoPrincipal;
-	    	String contenidoNota;
-	    	String contenidoFinal;
-	    	SimpleDateFormat anio = new SimpleDateFormat("yyyy");
-	    	String link = "";
-			try {
-				link = managerGestionSistema.buscarValorParametroNombre("LINK_SISTEMA");
-			} catch (Exception e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-	    	contenidoInicial=""
-	    			+ "<body style=\"font-family:Verdana, Arial, Helvetica, sans-serif;\">"
-					+ "   <table style=\"border-collapse:collapse; border:10px solid #008da9; height:auto; margin:0 auto; width:790px;\">"
-					+ "      <tbody style=\"background:#fff; color:#333; font-size:12px; height:50px; line-height:1.6; padding:10px 20px 10px;\">";
-	    	contenidoAsunto = ""
-	    			+ "         <tr>"
-	    			+ "            <td style=\"background:#fff; color:#333; font-size:12px; height:50px; line-height:1.6; padding:10px 20px 10px;\">"
-					+ "               <h4 style=\"border-bottom:1px solid #ccc; color:#000; font-size:15px; margin:10px 0 10px; padding:0 0 5px;\">"
-	    			+ "Notificaci&oacute;n del sistema SIGBECOM: "+asunto
-	    			+ "               </h4>"
-	    			+ "            </td>"
-	    			+ "         </tr>";
-	    	contenidoPrincipal = "" + "         <tr>"
-					+ "            <td style=\"background:#fff; color:#333; font-size:12px; height:50px; line-height:1.6; padding:10px 20px 10px;\">"
-					+ contenido + "            </td>" + "         </tr>" + "         <tr>"
-					+ "            <td style=\"background:#fff; color:#333; font-size:12px; height:50px; line-height:1.6; padding:10px 20px 10px;\">"
-					+ "<a href=\""+ link +"\">Link del sistema: "+link+"</a>"
-					+ "            </td>" + "         </tr>";
-			contenidoNota = ""
-	    			+ "         <tr>"
-	    			+ "            <td style=\"background: none repeat scroll 0 0 #FFFFFF; color: #333333; font-size: 12px; mheight: 50px; line-height: 1.6; padding: 10px 20px;\">"
-	    			+ "              <p>===================================<br>"
-	    			+ nota +         "<br/>===================================</p>"
-	    			+ "            </td>"
-	    			+ "         </tr>";
-	    	contenidoFinal = ""
-	    			+ "       </tbody>"
-	    			+ "       <tfoot>"
-	    			+ "          <tr>"
-	    			+ "             <td style=\"background:#ddd; color:#333; font-size:12px; line-height:1.3; padding:15px 0; text-align:center;\">"
-	    			+ "               <br>Copyright&copy;"+ anio.format(new Date()) +" COMITE DE EMPRESA IBARRA. Reservados todos los derechos."
-	                + "             </td>"
-	                + "          </tr>"
-	                + "       </tfoot>"
-	                + "    </table>"
-	                + "</body>";
-	    	return contenidoInicial+contenidoAsunto+contenidoPrincipal+contenidoNota+contenidoFinal;
-	    }
-	
+
+	private String crearMensaje(String asunto, String contenido, String nota) {
+		String contenidoInicial;
+		String contenidoAsunto;
+		String contenidoPrincipal;
+		String contenidoNota;
+		String contenidoFinal;
+		SimpleDateFormat anio = new SimpleDateFormat("yyyy");
+		String link = "";
+		try {
+			link = managerGestionSistema.buscarValorParametroNombre("LINK_SISTEMA");
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		contenidoInicial = "" + "<body style=\"font-family:Verdana, Arial, Helvetica, sans-serif;\">"
+				+ "   <table style=\"border-collapse:collapse; border:10px solid #008da9; height:auto; margin:0 auto; width:790px;\">"
+				+ "      <tbody style=\"background:#fff; color:#333; font-size:12px; height:50px; line-height:1.6; padding:10px 20px 10px;\">";
+		contenidoAsunto = "" + "         <tr>"
+				+ "            <td style=\"background:#fff; color:#333; font-size:12px; height:50px; line-height:1.6; padding:10px 20px 10px;\">"
+				+ "               <h4 style=\"border-bottom:1px solid #ccc; color:#000; font-size:15px; margin:10px 0 10px; padding:0 0 5px;\">"
+				+ "Notificaci&oacute;n del sistema SIGBECOM: " + asunto + "               </h4>" + "            </td>"
+				+ "         </tr>";
+		contenidoPrincipal = "" + "         <tr>"
+				+ "            <td style=\"background:#fff; color:#333; font-size:12px; height:50px; line-height:1.6; padding:10px 20px 10px;\">"
+				+ contenido + "            </td>" + "         </tr>" + "         <tr>"
+				+ "            <td style=\"background:#fff; color:#333; font-size:12px; height:50px; line-height:1.6; padding:10px 20px 10px;\">"
+				+ "<a href=\"" + link + "\">Link del sistema: " + link + "</a>" + "            </td>"
+				+ "         </tr>";
+		contenidoNota = "" + "         <tr>"
+				+ "            <td style=\"background: none repeat scroll 0 0 #FFFFFF; color: #333333; font-size: 12px; mheight: 50px; line-height: 1.6; padding: 10px 20px;\">"
+				+ "              <p>===================================<br>" + nota
+				+ "<br/>===================================</p>" + "            </td>" + "         </tr>";
+		contenidoFinal = "" + "       </tbody>" + "       <tfoot>" + "          <tr>"
+				+ "             <td style=\"background:#ddd; color:#333; font-size:12px; line-height:1.3; padding:15px 0; text-align:center;\">"
+				+ "               <br>Copyright&copy;" + anio.format(new Date())
+				+ " COMITE DE EMPRESA IBARRA. Reservados todos los derechos." + "             </td>" + "          </tr>"
+				+ "       </tfoot>" + "    </table>" + "</body>";
+		return contenidoInicial + contenidoAsunto + contenidoPrincipal + contenidoNota + contenidoFinal;
+	}
+
 	private void cargarParametrosCorreo() throws Exception {
 		host = managerGestionSistema.buscarValorParametroNombre("HOST_MAIL");
 		user = managerGestionSistema.buscarValorParametroNombre("USER_MAIL");
@@ -110,7 +97,7 @@ public class CorreoUtil {
 																							// varios de la misma
 																							// manera
 		message.setSubject(asunto);
-		//message.setText(cuerpo);
+		// message.setText(cuerpo);
 		Transport transport = session.getTransport("smtp");
 		transport.connect("smtp.gmail.com", user, clave);
 		message.setContent(cuerpo, "text/html;charset=UTF-8");
@@ -125,5 +112,5 @@ public class CorreoUtil {
 	public void setManagerGestionSistema(ManagerGestionSistema managerGestionSistema) {
 		this.managerGestionSistema = managerGestionSistema;
 	}
-	
+
 }

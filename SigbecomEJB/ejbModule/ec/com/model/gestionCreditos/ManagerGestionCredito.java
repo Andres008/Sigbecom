@@ -157,6 +157,9 @@ public class ManagerGestionCredito {
 				prestamoSocio.getFinPrestamoRequisitos().forEach(requisitos -> {
 					requisitos.getId();
 				});
+				prestamoSocio.getFinAccionPrestamos().forEach(accion -> {
+					accion.getObservacion();
+				});
 			});
 			return lstFinPrestamoSocio;
 		} catch (Exception e) {
@@ -207,6 +210,7 @@ public class ManagerGestionCredito {
 			creditos.getFinPrestamoSocio2().getIdPrestamoSocio();
 			creditos.getFinPrestamoSocio1().getIdPrestamoSocio();
 		});
+		objPrestamo.getFinAccionPrestamos().forEach(accion -> accion.getObservacion());
 		return objPrestamo;
 	}
 
@@ -249,6 +253,12 @@ public class ManagerGestionCredito {
 	@SuppressWarnings("unchecked")
 	public List<FinPrestamoSocio> buscarTodosSolicitudes() throws Exception {
 		return managerDAOSegbecom.findAll(FinPrestamoSocio.class, "o.idPrestamoSocio DESC");
+	}
+
+	@SuppressWarnings("unchecked")
+	public List<FinPrestamoSocio> buscarSolicitudesVigentes() throws Exception {
+		return managerDAOSegbecom.findWhere(FinPrestamoSocio.class, "o.finEstadoCredito.idEstadoCredito=5",
+				"o.idPrestamoSocio DESC");
 	}
 
 }
