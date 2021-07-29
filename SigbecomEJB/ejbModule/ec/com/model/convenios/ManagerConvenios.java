@@ -1,5 +1,6 @@
 package ec.com.model.convenios;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.ejb.EJB;
@@ -12,6 +13,7 @@ import ec.com.model.dao.entity.ConvAmortizacion;
 import ec.com.model.dao.entity.ConvContacto;
 import ec.com.model.dao.entity.ConvEmpresa;
 import ec.com.model.dao.entity.ConvServicio;
+import ec.com.model.dao.entity.DescEstadoDescuento;
 import ec.com.model.dao.entity.GesPersona;
 import ec.com.model.dao.manager.ManagerDAOSegbecom;
 
@@ -144,5 +146,15 @@ public class ManagerConvenios {
 		if (lstGespersona.size() > 1)
 			throw new Exception("Más de un parametro encontrado.");
 		return lstGespersona.get(0);
+	}
+	@SuppressWarnings("unchecked")
+	public DescEstadoDescuento findWhereEstadoDescEstadoDescuento(String estado) throws Exception {
+		List<DescEstadoDescuento> lstEstadoDes = new ArrayList<DescEstadoDescuento>();
+		lstEstadoDes = managerDAOSegbecom.findWhere(DescEstadoDescuento.class, "o.estado='"+estado+"'", null);
+		if (lstEstadoDes.isEmpty())
+			throw new Exception("Parametro no encontrado.");
+		if (lstEstadoDes.size() > 1)
+			throw new Exception("Más de un parametro encontrado.");
+		return lstEstadoDes.get(0);
 	}
 }

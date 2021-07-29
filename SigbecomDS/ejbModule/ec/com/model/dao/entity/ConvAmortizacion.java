@@ -22,7 +22,7 @@ public class ConvAmortizacion implements Serializable {
 	@Column(name="id_conv_amortizacion")
 	private long idConvAmortizacion;
 
-	private BigDecimal anio;
+	private Integer anio;
 
 	private BigDecimal capital;
 
@@ -36,10 +36,10 @@ public class ConvAmortizacion implements Serializable {
 
 	private BigDecimal interes;
 
-	private BigDecimal mes;
+	private Integer mes;
 
 	@Column(name="numero_cuota")
-	private BigDecimal numeroCuota;
+	private Integer numeroCuota;
 
 	private BigDecimal saldo;
 
@@ -65,14 +65,6 @@ public class ConvAmortizacion implements Serializable {
 
 	public void setIdConvAmortizacion(long idConvAmortizacion) {
 		this.idConvAmortizacion = idConvAmortizacion;
-	}
-
-	public BigDecimal getAnio() {
-		return this.anio;
-	}
-
-	public void setAnio(BigDecimal anio) {
-		this.anio = anio;
 	}
 
 	public BigDecimal getCapital() {
@@ -106,23 +98,7 @@ public class ConvAmortizacion implements Serializable {
 	public void setInteres(BigDecimal interes) {
 		this.interes = interes;
 	}
-
-	public BigDecimal getMes() {
-		return this.mes;
-	}
-
-	public void setMes(BigDecimal mes) {
-		this.mes = mes;
-	}
-
-	public BigDecimal getNumeroCuota() {
-		return this.numeroCuota;
-	}
-
-	public void setNumeroCuota(BigDecimal numeroCuota) {
-		this.numeroCuota = numeroCuota;
-	}
-
+	
 	public BigDecimal getSaldo() {
 		return this.saldo;
 	}
@@ -155,4 +131,28 @@ public class ConvAmortizacion implements Serializable {
 		this.descEstadoDescuento = descEstadoDescuento;
 	}
 
+	public Integer getNumeroCuota() {
+		return numeroCuota;
+	}
+
+	public void setNumeroCuota(Integer numeroCuota) {
+		this.numeroCuota = numeroCuota;
+	}
+
+	public Integer getAnio() {
+		return anio;
+	}
+
+	public void setAnio(Integer anio) {
+		this.anio = anio;
+	}
+
+	public Integer getMes() {
+		return mes;
+	}
+
+	public void setMes(Integer mes) {
+		this.mes = mes;
+	}
+	
 }

@@ -67,10 +67,14 @@
 									<p:outputLabel value="#{frmAplicarConvenio.convServicio.detalle}" />
 									<p:outputLabel value=""/>
 									<p:outputLabel value="Monto Maximo:"/>
-									<p:outputLabel value="#{frmAplicarConvenio.convServicio.montoMax}" />
+									<p:outputLabel value="#{frmAplicarConvenio.convServicio.montoMax}">
+										<f:convertNumber pattern="#0.00" />
+									</p:outputLabel>
 									<p:outputLabel value=""/>
-									<p:outputLabel value="Interes:"/>
-									<p:outputLabel value="#{frmAplicarConvenio.convServicio.interes}" />
+									<p:outputLabel value="Interes (%):"/>
+									<p:outputLabel value="#{frmAplicarConvenio.convServicio.interes}">
+										<f:convertNumber pattern="#0.00" />
+									</p:outputLabel>
 									<p:outputLabel value=""/>
 									<p:outputLabel value="Proforma pdf - png - jpg:"/>
 									<p:outputLabel value="#{frmAplicarConvenio.convAdquirido.adjunto}"/>
