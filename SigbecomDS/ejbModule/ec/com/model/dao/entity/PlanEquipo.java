@@ -37,6 +37,10 @@ public class PlanEquipo implements Serializable {
 	//bi-directional many-to-one association to PlanContratoComite
 	@OneToMany(mappedBy="planEquipo")
 	private List<PlanContratoComite> planContratoComites;
+	
+	@ManyToOne
+	@JoinColumn(name="id_plan_empresa")
+	private PlanOperadora planOperadora;
 
 	public PlanEquipo() {
 	}
@@ -111,4 +115,12 @@ public class PlanEquipo implements Serializable {
 		return planContratoComite;
 	}
 
+	public PlanOperadora getPlanOperadora() {
+		return planOperadora;
+	}
+
+	public void setPlanOperadora(PlanOperadora planOperadora) {
+		this.planOperadora = planOperadora;
+	}
+	
 }

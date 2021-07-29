@@ -32,6 +32,10 @@ public class PlanOperadora implements Serializable {
 	//bi-directional many-to-one association to PlanPlanMovil
 	@OneToMany(mappedBy="planOperadora")
 	private List<PlanPlanMovil> planPlanMovils;
+	
+	//bi-directional many-to-one association to PlanPlanMovil
+	@OneToMany(mappedBy="planOperadora")
+	private List<PlanEquipo> planEquipos;
 
 	public PlanOperadora() {
 	}
@@ -104,4 +108,26 @@ public class PlanOperadora implements Serializable {
 		return planPlanMovil;
 	}
 
+	public List<PlanEquipo> getPlanEquipos() {
+		return planEquipos;
+	}
+
+	public void setPlanEquipos(List<PlanEquipo> planEquipos) {
+		this.planEquipos = planEquipos;
+	}
+
+	public PlanEquipo addPlanEquipo(PlanEquipo planEquipo) {
+		getPlanEquipos().add(planEquipo);
+		planEquipo.setPlanOperadora(this);
+
+		return planEquipo;
+	}
+
+	public PlanEquipo removePlanEquipo(PlanEquipo planEquipo) {
+		getPlanEquipos().remove(planEquipo);
+		planEquipo.setPlanOperadora(null);
+
+		return planEquipo;
+	}
+	
 }
