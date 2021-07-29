@@ -10,6 +10,7 @@ import ec.com.model.dao.entity.ConvContacto;
 import ec.com.model.dao.entity.ConvEmpresa;
 import ec.com.model.dao.entity.ConvServicio;
 import ec.com.model.dao.entity.PlanContacto;
+import ec.com.model.dao.entity.PlanEquipo;
 import ec.com.model.dao.entity.PlanOperadora;
 import ec.com.model.dao.entity.PlanPlanMovil;
 import ec.com.model.dao.manager.ManagerDAOSegbecom;
@@ -64,6 +65,10 @@ public class ManagerPlanesMoviles {
     
     public void insertarPlanPlanMovil(PlanPlanMovil planPlanServicio) throws Exception {
     	managerDAOSegbecom.insertar(planPlanServicio);
+    }
+    
+    public void insertarPlanEquipo(PlanEquipo planEquipo) throws Exception {
+    	managerDAOSegbecom.insertar(planEquipo);
     }
    
 }

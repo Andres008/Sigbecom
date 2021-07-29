@@ -16,8 +16,8 @@ import org.primefaces.PrimeFaces;
 import org.primefaces.event.RowEditEvent;
 
 import ec.com.controlador.sesion.BeanLogin;
-import ec.com.model.dao.entity.ConvEmpresa;
 import ec.com.model.dao.entity.PlanContacto;
+import ec.com.model.dao.entity.PlanEquipo;
 import ec.com.model.dao.entity.PlanOperadora;
 import ec.com.model.dao.entity.PlanPlanMovil;
 import ec.com.model.modulos.util.JSFUtil;
@@ -37,6 +37,7 @@ public class FrmRegistroOperadora implements Serializable {
 	
 	private PlanContacto planContacto;
 	private PlanPlanMovil planPlanMovil;
+	private PlanEquipo planEquipo;
 	
 	@Inject
 	private BeanLogin beanLogin;
@@ -47,6 +48,8 @@ public class FrmRegistroOperadora implements Serializable {
 		lstPlanOperadora = new ArrayList<PlanOperadora>();
 		planContacto = new PlanContacto();
 		planPlanMovil = new PlanPlanMovil();
+		planEquipo = new PlanEquipo();
+		
 		cargarListaEmpresas();
 	}
 	
@@ -142,6 +145,36 @@ public class FrmRegistroOperadora implements Serializable {
 		}
 	}
 	
+	public void cargarEquipoMovil(PlanOperadora planOperadora) {
+		planEquipo.setPlanOperadora(planOperadora);
+	}
+	
+	public void registrarEquipoMovil() {
+		System.out.println("RegsitroServicio:"+planEquipo.getEquipo());
+		if(!planEquipo.getDetalle().isEmpty()&&!planEquipo.getEquipo().isEmpty()){
+			try {
+				//planPlanMovil.se("ACTIVO");
+				BigDecimal precioRef= planEquipo.getPrecioRef().setScale(2, RoundingMode.HALF_EVEN);
+				BigDecimal interes= planEquipo.getInteres().setScale(2, RoundingMode.HALF_EVEN);
+				BigDecimal cuotaRef= planEquipo.getCuotaRef().setScale(2, RoundingMode.HALF_EVEN);
+				planEquipo.setPrecioRef(precioRef);
+				planEquipo.setInteres(interes);
+				planEquipo.setCuotaRef(cuotaRef);
+				managerPlanesMoviles.insertarPlanEquipo(planEquipo);
+				JSFUtil.crearMensajeINFO("Plan Móvil Registrado correctamente");
+				init();
+				cargarListaEmpresas();
+				PrimeFaces prime=PrimeFaces.current();
+				prime.executeScript("PF('dlgEq').hide();");
+				prime.ajax().update("form1");
+				prime.ajax().update("form2");
+			} catch (Exception e) {
+				JSFUtil.crearMensajeERROR("No se registro correctamente");
+				e.printStackTrace();
+			}
+		}
+	}
+	
 	public PlanOperadora getPlanOperadora() {
 		return planOperadora;
 	}
@@ -186,6 +219,16 @@ public class FrmRegistroOperadora implements Serializable {
 
 	public void setPlanPlanMovil(PlanPlanMovil planPlanMovil) {
 		this.planPlanMovil = planPlanMovil;
+	}
+
+
+	public PlanEquipo getPlanEquipo() {
+		return planEquipo;
+	}
+
+
+	public void setPlanEquipo(PlanEquipo planEquipo) {
+		this.planEquipo = planEquipo;
 	}
 	
 }

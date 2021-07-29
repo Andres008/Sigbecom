@@ -213,6 +213,36 @@
 		</p:panel>
 	</h:form>
 </p:dialog>
+
+<p:dialog
+	header="REGISTRO EQUIPOS MOVILES"  resizable="false" closable="true"
+	widgetVar="dlgEq" modal="true" position="center"
+	hideEffect="fade" >
+	<h:form id="frmEq">
+		<p:messages id="msgEq" closable="true" showDetail="true"/>
+		<p:panelGrid columns="2">
+			<p:outputLabel for="eq" value="Equipo Móvil:"/>
+			<p:inputText id="eq" value="#{frmRegistroOperadora.planEquipo.equipo}" />
+			<p:outputLabel for="det" value="Detalle:"/>
+			<p:inputText id="det" value="#{frmRegistroOperadora.planEquipo.detalle}"/>
+			<p:outputLabel for="mon" value="Precio Referencial:"/>
+			<p:inputText id="mon" value="#{frmRegistroOperadora.planEquipo.precioRef}"/>
+			<p:outputLabel for="cuo" value="Cuota Referencial:"/>
+			<p:inputText id="cuo" value="#{frmRegistroOperadora.planEquipo.cuotaRef}"/>
+			<p:outputLabel for="in" value="Interes:"/>
+			<p:inputText id="in" value="#{frmRegistroOperadora.planPlanMovil.interes}"/>
+		</p:panelGrid>
+		<p:panel>
+			<h:panelGrid columns="2" cellpadding="10">
+				<p:commandButton value="Cancelar" onclick="PF('dlgEq').hide();" update="form2 frmEq"
+					action="#{frmRegistroOperadora.init()}"/>
+				<p:commandButton value="Registrar"
+					action="#{frmRegistroOperadora.registrarEquipoMovil()}" update="frmEq"/>
+			</h:panelGrid>
+		</p:panel>
+	</h:form>
+</p:dialog>
+
 <!-- Fin de Dialogs -->
                 </div>
 				<ui:include src="/affordances/footer.xhtml" />
