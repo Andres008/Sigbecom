@@ -156,6 +156,7 @@ public class ControladorGestionSocios implements Serializable {
 
 	public void inicializarConsultaSocio() {
 		try {
+			inicializarIngresoSocio();
 			lstUsrSocio = managerGestionSocios.buscarTodosSocios();
 		} catch (Exception e) {
 			JSFUtil.crearMensajeERROR(e.getMessage());
