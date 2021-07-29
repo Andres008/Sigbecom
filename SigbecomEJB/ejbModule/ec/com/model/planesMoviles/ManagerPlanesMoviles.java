@@ -46,6 +46,9 @@ public class ManagerPlanesMoviles {
 			for (PlanPlanMovil planPlanMovil : planOperadora.getPlanPlanMovils()) {
 				planPlanMovil.getIdPlanMovil();
 			}
+			for (PlanEquipo planEquipo : planOperadora.getPlanEquipos()) {
+				planEquipo.getIdEquipo();
+			}
 		}
     	return lstEmpresas;
     }

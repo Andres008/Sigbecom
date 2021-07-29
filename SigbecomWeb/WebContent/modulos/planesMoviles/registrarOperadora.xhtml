@@ -153,6 +153,40 @@
 								        </p:column>
 									</p:dataTable>
 								</p:panel>
+								<p:panel style="text-align:right">
+									<p:commandButton value="Registrar Equipo Móvil"
+										onclick="PF('dlgEq').show();" action="#{frmRegistroOperadora.cargarEquipoMovil(dato)}">
+									</p:commandButton>
+								</p:panel>
+								<p:panel>
+									<p:dataTable value="#{dato.planEquipos}"
+													id="tblSer" editable="true" var="ser">
+										<f:facet name="header">
+								            LISTA DE EQUIPOS MOVILES
+										</f:facet>
+										<p:column headerText="EQUIPO">
+								            <h:outputText value="#{ser.equipo}"/>
+								        </p:column>
+								        <p:column headerText="DETALLE">
+								            <h:outputText value="#{ser.detalle}"/>
+								        </p:column>
+								        <p:column headerText="PRECIO REF">
+								            <h:outputText value="#{ser.precioRef}">
+								            	<f:convertNumber pattern="#0.00" />
+								            </h:outputText>
+								        </p:column>
+								        <p:column headerText="CUOTA REF">
+								            <h:outputText value="#{ser.cuotaRef}">
+								            	<f:convertNumber pattern="#0.00" />
+								            </h:outputText>
+								        </p:column>
+								        <p:column headerText="INTERES">
+								            <h:outputText value="#{ser.interes}">
+								            	<f:convertNumber pattern="#0.00" />
+								            </h:outputText>
+								        </p:column>
+									</p:dataTable>
+								</p:panel>
 							</p:rowExpansion>
 						</p:dataTable>
 					</p:panel>
