@@ -1,11 +1,235 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"> 
-<html xmlns="http://www.w3.org/1999/xhtml"
-      xmlns:ui="http://java.sun.com/jsf/facelets"
-      xmlns:f="http://java.sun.com/jsf/core"
-      xmlns:h="http://java.sun.com/jsf/html"> 
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://java.sun.com/jsf/html" xmlns:f="http://java.sun.com/jsf/core" xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:p="http://primefaces.org/ui">
 
-<h:head></h:head> 
-<body> 
+<h:head>
+	<f:facet name="first">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0"/>
+        <meta name="apple-mobile-web-app-capable" content="yes" />
+    </f:facet>
+        <title><ui:insert name="title">Beneficios</ui:insert></title>
+        <h:outputScript name="js/nanoscroller.js" library="california-layout" />
+        <h:outputScript name="js/layout.js" library="california-layout" />
+        <h:outputStylesheet library="css" name="theme.css"/>
+</h:head>
 
-</body> 
+<h:body styleClass="main-body">
+
+        <div class="layout-wrapper #{guestPreferences.menuLayout != 'static' ? guestPreferences.menuLayout : null}">
+            <ui:include src="/affordances/megamenu.xhtml" />
+            <ui:include src="/affordances/topbar.xhtml" />
+            <ui:include src="/affordances/sidebar.xhtml" />
+            <ui:include src="/affordances/right-sidebar.xhtml" />
+			<div class="layout-main">
+                <div class="route-bar">
+                    <div class="route-bar-breadcrumb">
+                        <i class="fa fa-home"></i> <span>/PLANES MOVILES/Registro Operadoras</span>
+                        <ui:insert name="viewname" />
+                    </div>
+					<ui:include src="/affordances/route-bar-menu.xhtml" />
+                </div>
+				<div class="layout-main-content" align="center">
+                    <H1>REGISTRO DE OPERADORAS</H1>
+                    <h:form id="form1">
+	                    <p:growl id="growl" showDetail="true" sticky="true" />
+						<p:panel header="Registro de Operadoras" toggleable="true" collapsed="true">
+							<p:panelGrid columns="2" styleClass="ui-noborder">
+								<p:outputLabel for="nom" value="Nombre Operadora:" />
+								<p:inputText id="nom" size="100" required="true" 
+									value="#{frmRegistroOperadora.planOperadora.empresa}"
+									placeholder="Nombre de la Operadora Móvil" style="text-transform: uppercase" />
+								<p:outputLabel for="dir" value="Dirección: " />
+								<p:inputTextarea id="dir" required="true" cols="102"
+									value="#{frmRegistroOperadora.planOperadora.direccion}"
+									placeholder="Dirección de la Operadora" style="text-transform: uppercase"/>
+							</p:panelGrid>
+							<p:commandButton value="Registrar"
+								action="#{frmRegistroOperadora.registrarEmpresa()}" update="@form">
+								<p:confirm header="Confirmación"
+								message="Esta seguro de ingresar la información?"
+								icon="pi pi-exclamation-triangle" />
+							</p:commandButton>
+							<p:confirmDialog global="true" showEffect="fade" hideEffect="fade"
+								responsive="true" width="350">
+								<p:commandButton value="Si" type="button"
+									styleClass="ui-confirmdialog-yes" />
+								<p:commandButton value="No" type="button"
+									styleClass="ui-confirmdialog-no ui-button-flat" />
+							</p:confirmDialog>
+	                    </p:panel>
+	                    <p:separator/>
+	                </h:form>
+	                <h:form id="form2">
+	                	<p:growl id="growl" showDetail="true" sticky="true" />
+	                	<p:panel id="pnl"  header="LISTADO DE OPERADORAS MÓVILES">
+						<p:dataTable value="#{frmRegistroOperadora.lstPlanOperadora}"
+							id="tblEmp" editable="true" var="dato" paginator="true"
+							rows="10">
+							<p:ajax event="rowEdit" listener="#{frmRegistroOperadora.onRowEdit}" update="form2:growl"/>
+            				<p:ajax event="rowEditCancel" listener="#{frmRegistroOperadora.onRowCancel}" update="form2:growl"/>
+							<f:facet name="header">
+								Expanda la fila para ver los detalles
+							</f:facet>
+							<p:column headerText="" style="width:2rem">
+								<p:rowToggler />
+							</p:column>
+							<p:column headerText="OPERADORA">
+								<p:cellEditor>
+				                    <f:facet name="output">
+				                        <h:outputText value="#{dato.empresa}"/>
+				                    </f:facet>
+				                    <f:facet name="input">
+				                        <p:inputText value="#{dato.empresa}" style="width:100%"/>
+				                    </f:facet>
+				                </p:cellEditor>
+							</p:column>
+							<p:column headerText="DIRECCION">
+								<p:cellEditor>
+				                    <f:facet name="output">
+				                        <h:outputText value="#{dato.direccion}"/>
+				                    </f:facet>
+				                    <f:facet name="input">
+				                        <p:inputText  value="#{dato.direccion}" style="width:100%"/>
+				                    </f:facet>
+				                </p:cellEditor>
+							</p:column>
+							<p:column width="6">
+									<p:rowEditor editTitle="Edit Row" cancelTitle="Cancel Edit" saveTitle="Save Row" 
+										/>
+				            </p:column>
+							<p:rowExpansion>
+								<p:panel style="text-align:right">
+									<p:commandButton value="Nuevo Contacto"
+										onclick="PF('dlgReg').show();" action="#{frmRegistroOperadora.cargarEmpresa(dato)}"
+									/>
+								</p:panel>
+								<p:panel>
+									<p:dataTable value="#{dato.planContactos}"
+													id="tblCon" editable="true" var="con">
+										<f:facet name="header">
+								            LISTA DE CONTACTOS
+										</f:facet>
+										<p:column headerText="NOMBRES" >
+											<h:outputText value="#{con.apellidos} #{con.nombres}" />
+										</p:column>
+										<p:column headerText="CARGO">
+								           <h:outputText value="#{con.cargo}"/>
+								        </p:column>
+								        <p:column headerText="CELULAR">
+								           <h:outputText value="#{con.celular}"/>
+								        </p:column>
+								        <p:column headerText="CORREO">
+								           <h:outputText value="#{con.email}"/>
+								        </p:column>
+									</p:dataTable>
+								</p:panel>
+								<p:panel style="text-align:right">
+									<p:commandButton value="Nuevo Servicio"
+										onclick="PF('dlgSer').show();" action="#{frmRegistroOperadora.cargarPlanPlanMovil(dato)}">
+									</p:commandButton>
+								</p:panel>
+								<p:panel>
+									<p:dataTable value="#{dato.planPlanMovils}"
+													id="tblSer" editable="true" var="ser">
+										<f:facet name="header">
+								            LISTA DE PLANES MOVILES
+										</f:facet>
+										<p:column headerText="SERVICIO">
+								            <h:outputText value="#{ser.plan}"/>
+								        </p:column>
+								        <p:column headerText="DETALLE">
+								            <h:outputText value="#{ser.detalle}"/>
+								        </p:column>
+								        <p:column headerText="PRECIO">
+								            <h:outputText value="#{ser.precio}">
+								            	<f:convertNumber pattern="#0.00" />
+								            </h:outputText>
+								        </p:column>
+								        <p:column headerText="INTERES">
+								            <h:outputText value="#{ser.interes}">
+								            	<f:convertNumber pattern="#0.00" />
+								            </h:outputText>
+								        </p:column>
+									</p:dataTable>
+								</p:panel>
+							</p:rowExpansion>
+						</p:dataTable>
+					</p:panel>
+	                </h:form>
+<!-- Inicio de Dialogs -->
+
+<p:dialog
+	header="REGISTRO DE CONTACTO"  resizable="false" closable="true"
+	widgetVar="dlgReg" modal="true" position="center"
+	hideEffect="fade" >
+	<h:form id="frmReg">
+		<p:messages id="msgReg" closable="true" showDetail="false"/>
+		<p:panelGrid columns="2">
+			<p:outputLabel for="nomb" value="Nombres:"/>
+			<p:inputText id="nomb" value="#{frmRegistroOperadora.planContacto.nombres}" required="true"/>
+			<p:outputLabel for="ape" value="Apellidos:"/>
+			<p:inputText id="ape" value="#{frmRegistroOperadora.planContacto.apellidos}" required="true"/>
+			<p:outputLabel for="car" value="Cargo:"/>
+			<p:inputText id="car" value="#{frmRegistroOperadora.planContacto.cargo}" required="true"/>
+			<p:outputLabel for="cel" value="Celular:"/>
+			<p:inputText id="cel" value="#{frmRegistroOperadora.planContacto.celular}" required="true"/>
+			<p:outputLabel for="ema" value="E-mail:"/>
+			<p:inputText id="ema" value="#{frmRegistroOperadora.planContacto.email}" required="true"/>
+		</p:panelGrid>
+		<p:panel>
+			<h:panelGrid columns="2" cellpadding="10">
+				<p:commandButton value="Cancelar" onclick="PF('dlgReg').hide();" update="form2 frmReg"
+				action="#{frmRegistroOperadora.init()}"/>
+				<p:commandButton value="Registrar" 
+					action="#{frmRegistroOperadora.registrarContacto()}" update="frmReg"/>
+			</h:panelGrid>
+		</p:panel>
+	</h:form>
+</p:dialog>
+<p:dialog
+	header="REGISTRO PLANES MOVILES"  resizable="false" closable="true"
+	widgetVar="dlgSer" modal="true" position="center"
+	hideEffect="fade" >
+	<h:form id="frmSer">
+		<p:messages id="msgSer" closable="true" showDetail="true"/>
+		<p:panelGrid columns="2">
+			<p:outputLabel for="ser" value="Plan Móvil:"/>
+			<p:inputText id="ser" value="#{frmRegistroOperadora.planPlanMovil.plan}" />
+			<p:outputLabel for="det" value="Detalle:"/>
+			<p:inputText id="det" value="#{frmRegistroOperadora.planPlanMovil.detalle}"/>
+			<p:outputLabel for="mon" value="Precio:"/>
+			<p:inputText id="mon" value="#{frmRegistroOperadora.planPlanMovil.precio}"/>
+			<p:outputLabel for="in" value="Interes:"/>
+			<p:inputText id="in" value="#{frmRegistroOperadora.planPlanMovil.interes}"/>
+		</p:panelGrid>
+		<p:panel>
+			<h:panelGrid columns="2" cellpadding="10">
+				<p:commandButton value="Cancelar" onclick="PF('dlgReg').hide();" update="form2 frmSer"
+					action="#{frmRegistroOperadora.init()}"/>
+				<p:commandButton value="Registrar"
+					action="#{frmRegistroOperadora.registrarPlanMovil()}" update="frmSer"/>
+			</h:panelGrid>
+		</p:panel>
+	</h:form>
+</p:dialog>
+<!-- Fin de Dialogs -->
+                </div>
+				<ui:include src="/affordances/footer.xhtml" />
+            </div>
+        </div>
+		
+        <p:ajaxStatus style="width:32px;height:32px;position:fixed;right:7px;bottom:7px">
+           <f:facet name="start">
+               <i class="fa fa-circle-o-notch fa-spin ajax-loader" aria-hidden="true"></i>
+           </f:facet>
+
+           <f:facet name="complete">
+               <h:outputText value="" />
+           </f:facet>
+       </p:ajaxStatus>
+
+        <h:outputStylesheet name="css/nanoscroller.css" library="california-layout" />
+        <h:outputStylesheet name="css/layout-#{guestPreferences.theme}.css" library="california-layout" />
+    </h:body>
 </html>
