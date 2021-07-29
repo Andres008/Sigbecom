@@ -291,7 +291,13 @@ public class ManagerGestionSocios {
 	@SuppressWarnings("unchecked")
 	public List<UsrSocio> buscarTodosSocios() throws Exception {
 		try {
-			return managerDAOSegbecom.findAll(UsrSocio.class, "o.gesPersona.apellidos ASC");
+			List<UsrSocio> lstUsuario = managerDAOSegbecom.findAll(UsrSocio.class, "o.gesPersona.apellidos ASC");
+			lstUsuario.forEach(usuarios->{
+				usuarios.getGesParientes().forEach(parientes->{
+					parientes.getIdPariente();
+				});
+			});
+			return lstUsuario;
 		} catch (Exception e) {
 			throw new Exception("Error al buscar listado de socios");
 		}
