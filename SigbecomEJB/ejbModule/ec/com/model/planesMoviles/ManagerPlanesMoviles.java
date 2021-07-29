@@ -6,6 +6,8 @@ import javax.ejb.EJB;
 import javax.ejb.LocalBean;
 import javax.ejb.Stateless;
 
+import org.apache.taglibs.standard.tag.common.core.UrlSupport;
+
 import ec.com.model.dao.entity.ConvContacto;
 import ec.com.model.dao.entity.ConvEmpresa;
 import ec.com.model.dao.entity.ConvServicio;
@@ -13,6 +15,7 @@ import ec.com.model.dao.entity.PlanContacto;
 import ec.com.model.dao.entity.PlanEquipo;
 import ec.com.model.dao.entity.PlanOperadora;
 import ec.com.model.dao.entity.PlanPlanMovil;
+import ec.com.model.dao.entity.UsrSocio;
 import ec.com.model.dao.manager.ManagerDAOSegbecom;
 
 /**
@@ -73,5 +76,14 @@ public class ManagerPlanesMoviles {
     public void insertarPlanEquipo(PlanEquipo planEquipo) throws Exception {
     	managerDAOSegbecom.insertar(planEquipo);
     }
-   
+    
+    @SuppressWarnings("unchecked")
+   	public List<UsrSocio> findAllUsuarios() throws Exception{
+       	List<UsrSocio> lstUsrSocio = managerDAOSegbecom.findAll(UsrSocio.class);
+       	return lstUsrSocio;
+    }
+    public UsrSocio findUsrSocioByCedulaSocio(String cedulaSocio) throws Exception {
+    	UsrSocio usrSocio = (UsrSocio) managerDAOSegbecom.findById(UsrSocio.class, cedulaSocio);
+    	return usrSocio;
+    }
 }
