@@ -43,10 +43,12 @@
 				<h:form>
 					<p:growl id="growl" showDetail="true" sticky="true" />
 					<p:panel header="Usuarios">
-						<p:dataTable id="tblSocios" value="#{controladorGestionSocios.lstUsrSocio}"
-							editable="true" var="socio" paginator="true" rows="10">
+						<p:dataTable id="tblSocios"
+							value="#{controladorGestionSocios.lstUsrSocio}" editable="true"
+							var="socio" paginator="true" rows="10">
 							<p:ajax event="rowEdit" listener="#{controladorRol.onRowEdit}"
-								update="@form:growl @form:tblSocios" process="@this" oncomplete="#{controladorGestionSocios.inicializarConsultaSocio()}" />
+								update="@form:growl @form:tblSocios" process="@this"
+								oncomplete="#{controladorGestionSocios.inicializarConsultaSocio()}" />
 							<p:ajax event="rowEditCancel"
 								listener="#{controladorRol.onRowCancel}" update="@form:growl" />
 							<p:column headerText="Cédula">
@@ -65,7 +67,8 @@
 										<p:outputLabel value="#{socio.autRol.nombre}" />
 									</f:facet>
 									<f:facet name="input">
-										<p:selectOneMenu value="#{socio.autRol.idRol}" required="true" style="color : black">
+										<p:selectOneMenu value="#{socio.autRol.idRol}" required="true"
+											style="color : black">
 											<f:selectItem itemLabel="Seleccione Rol"
 												noSelectionOption="true" />
 											<f:selectItems value="#{controladorMenuPerfiles.siAutRol()}" />
@@ -74,19 +77,21 @@
 								</p:cellEditor>
 							</p:column>
 							<p:column headerText="Estado">
-							<p:cellEditor>
+								<p:cellEditor>
 									<f:facet name="output">
 										<p:outputLabel value="#{socio.usrEstadoSocio.estado}" />
 									</f:facet>
 									<f:facet name="input">
-										<p:selectOneMenu value="#{socio.usrEstadoSocio.idEstado}" required="true" style="color : black">
+										<p:selectOneMenu value="#{socio.usrEstadoSocio.idEstado}"
+											required="true" style="color : black">
 											<f:selectItem itemLabel="Seleccione Rol"
 												noSelectionOption="true" />
-											<f:selectItems value="#{controladorMenuPerfiles.siAutEstado()}" />
+											<f:selectItems
+												value="#{controladorMenuPerfiles.siAutEstado()}" />
 										</p:selectOneMenu>
 									</f:facet>
 								</p:cellEditor>
-								
+
 							</p:column>
 							<p:column headerText="Editar">
 								<p:rowEditor editTitle="Edit Row" cancelTitle="Cancel Edit"
@@ -97,6 +102,22 @@
 									actionListener="#{controladorGestionSocios.cargarUsrSocio(socio)}"
 									oncomplete="PF('infPersonal').show()"
 									update="@form:infPersonal" />
+							</p:column>
+							<p:column headerText="Reiniciar Contraseña">
+								<p:commandButton icon="fa fa-reply"
+									actionListener="#{controladorGestionSocios.restablecerContraseña(socio)}"
+									update="@form">
+									<p:confirm header="Confirmación"
+										message="Esta seguro de reiniciar la contraseña?"
+										icon="pi pi-exclamation-triangle" />
+								</p:commandButton>
+								<p:confirmDialog global="true" showEffect="fade"
+									hideEffect="fade" responsive="true" width="350">
+									<p:commandButton value="Si" type="button"
+										styleClass="ui-confirmdialog-yes" />
+									<p:commandButton value="No" type="button"
+										styleClass="ui-confirmdialog-no ui-button-flat" />
+								</p:confirmDialog>
 							</p:column>
 						</p:dataTable>
 					</p:panel>

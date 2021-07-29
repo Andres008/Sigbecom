@@ -149,6 +149,11 @@ public class ControladorGestionSocios implements Serializable {
 		objUsrSocio.setUsrTipoSocio(new UsrTipoSocio());
 	}
 
+	public void inicializarCambioContraseña() {
+		objUsrSocio = beanLogin.getCredencial().getObjUsrSocio();
+		objUsrSocio.setClave("");
+	}
+
 	public void inicializarConsultaSocio() {
 		try {
 			lstUsrSocio = managerGestionSocios.buscarTodosSocios();
@@ -257,6 +262,18 @@ public class ControladorGestionSocios implements Serializable {
 	public void cargarUsrSocio(UsrSocio objUsrSocioAux) {
 		try {
 			objUsrSocio = managerGestionSocios.buscarSocioById(objUsrSocioAux.getCedulaSocio());
+		} catch (Exception e) {
+			JSFUtil.crearMensajeERROR(e.getMessage());
+		}
+	}
+
+	public void restablecerContraseña(UsrSocio objUsrSocioAux) {
+		try {
+			objUsrSocioAux.setClave(ModelUtil.md5(objUsrSocioAux.getCedulaSocio()));
+			objUsrSocioAux.setPrimerInicio("S");
+			managerGestionSocios.actualizarUsrSocio(objUsrSocioAux);
+			inicializarConsultaSocio();
+			JSFUtil.crearMensajeINFO("Contraseña restablecida correctamente.");
 		} catch (Exception e) {
 			JSFUtil.crearMensajeERROR(e.getMessage());
 		}
@@ -447,6 +464,7 @@ public class ControladorGestionSocios implements Serializable {
 							+ objUsrSocio.getCedulaSocio() + " , Contraseña:" + clave);
 			JSFUtil.crearMensajeINFO("Usuario creado correctamente.");
 			inicializarIngresoSocio();
+
 		} catch (Exception e) {
 			managerLog.generarLogErrorGeneral(beanLogin.getCredencial(), this.getClass(), "inscribirUsuario",
 					"Error al crear usuario " + objUsrSocio.getGesPersona().getCedula());
@@ -454,6 +472,18 @@ public class ControladorGestionSocios implements Serializable {
 			e.printStackTrace();
 		}
 
+	}
+
+	public void cambiarContrasenia() {
+		try {
+			objUsrSocio.setClave(ModelUtil.md5(objUsrSocio.getClave()));
+			managerGestionSocios.actualizarUsrSocio(objUsrSocio);
+			managerLog.generarLogUsabilidad(beanLogin.getCredencial(), this.getClass(), "cambiarContrasenia",
+					"Se cambio la contraseña" + objUsrSocio.getGesPersona().getCedula());
+			JSFUtil.crearMensajeINFO("Cambio de contraseña correcta.");
+		} catch (Exception e) {
+			JSFUtil.crearMensajeERROR("Error al cambiar la contraseña, " + e.getMessage());
+		}
 	}
 
 	public void inicializarGesPariente() {
