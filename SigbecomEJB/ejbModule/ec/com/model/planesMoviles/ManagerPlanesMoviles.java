@@ -12,6 +12,7 @@ import ec.com.model.dao.entity.ConvContacto;
 import ec.com.model.dao.entity.ConvEmpresa;
 import ec.com.model.dao.entity.ConvServicio;
 import ec.com.model.dao.entity.PlanContacto;
+import ec.com.model.dao.entity.PlanContratoComite;
 import ec.com.model.dao.entity.PlanEquipo;
 import ec.com.model.dao.entity.PlanOperadora;
 import ec.com.model.dao.entity.PlanPlanMovil;
@@ -85,5 +86,32 @@ public class ManagerPlanesMoviles {
     public UsrSocio findUsrSocioByCedulaSocio(String cedulaSocio) throws Exception {
     	UsrSocio usrSocio = (UsrSocio) managerDAOSegbecom.findById(UsrSocio.class, cedulaSocio);
     	return usrSocio;
+    }
+    public PlanEquipo findEquipoMovilByIdEquipo(Long idEquipo) throws Exception {
+    	PlanEquipo planEquipo = (PlanEquipo) managerDAOSegbecom.findById(PlanEquipo.class, idEquipo);
+    	return planEquipo;
+    }
+    public PlanPlanMovil findPlanMovilByid(Long idPlanMovil) throws Exception {
+    	PlanPlanMovil planMovil = (PlanPlanMovil) managerDAOSegbecom.findById(PlanPlanMovil.class, idPlanMovil);
+    	return planMovil;
+    }
+    @SuppressWarnings("unchecked")
+   	public List<PlanPlanMovil> findAllPlanesMoviles() throws Exception{
+       	List<PlanPlanMovil> lstPlanMovil = managerDAOSegbecom.findAll(PlanPlanMovil.class);
+       	return lstPlanMovil;
+    }
+    @SuppressWarnings("unchecked")
+   	public List<PlanEquipo> findAllEquipos() throws Exception{
+       	List<PlanEquipo> lstPlanEquipo = managerDAOSegbecom.findAll(PlanEquipo.class);
+       	return lstPlanEquipo;
+    }
+    
+    @SuppressWarnings("unchecked")
+   	public List<PlanContratoComite> findAllUsuariosConPlanes() throws Exception{
+       	List<PlanContratoComite> lstPlanContratoComite = managerDAOSegbecom.findAll(PlanContratoComite.class);
+       	return lstPlanContratoComite;
+    }
+    public void insertarPlanContratoComite(PlanContratoComite planContratoComite) throws Exception {
+    	managerDAOSegbecom.insertar(planContratoComite);
     }
 }

@@ -34,7 +34,8 @@
                     <h:form id="form1">
 	                    <p:growl id="growl" showDetail="true" sticky="true" />
 						<p:panel header="Registro Planes Moviles" toggleable="true" collapsed="true">
-							<p:panelGrid columns="3" styleClass="ui-noborder">
+							<p:panelGrid columns="4" styleClass="ui-noborder" layout="grid"
+								columnClasses="ui-g-12 ui-md-6 ui-lg-4, ui-g-12 ui-md-6 ui-lg-4, ui-g-12 ui-md-6 ui-lg-4">
 								<p:outputLabel for="nom" value="Seleccione Cliente:" />
 								<p:selectOneMenu id="nom" value="#{frmAplicarPlanMovil.cedulaSocio}"
 												 filter="true" filterMatchMode="contains">
@@ -42,22 +43,88 @@
 										noSelectionOption="true" />
 			                    <f:selectItems value="#{frmAplicarPlanMovil.lstUsrSocio}" var="dat"
 			                    			itemLabel="#{dat.cedulaSocio} #{dat.gesPersona.apellidos} #{dat.gesPersona.nombres}" itemValue="#{dat.cedulaSocio}"/>
-			                    
-				                </p:selectOneMenu>
-								<p:commandButton icon="fa fa-handshake-o"  value="Seleccionar" update="@form" style="width:150px;"
+			                    </p:selectOneMenu>
+								<p:commandButton icon="fa fa-handshake-o"  value="Agregar Cliente" update="@form" style="width:170px;"
 	                    			action="#{frmAplicarPlanMovil.cargarContrato()}"/>
-								<p:outputLabel for="dir" value="Dirección: " />
 							</p:panelGrid>
-							<p:panelGrid columns="3" styleClass="ui-noborder">
-								<p:outputLabel for="nom" value="Cedula:" />
-								<p:outputLabel for="nom" value="Nombres:" />
+							<p:panelGrid columns="4" styleClass="ui-noborder" layout="grid"
+								columnClasses="ui-g-12 ui-md-6 ui-lg-4, ui-g-12 ui-md-6 ui-lg-4, ui-g-12 ui-md-6 ui-lg-4">
+								<p:outputLabel  value="Seleccionar Plan Movil:" />
+								<p:selectOneMenu id="plan" value="#{frmAplicarPlanMovil.idPlanMovil}"
+												 filter="true" filterMatchMode="contains">
+			                    	<f:selectItem itemLabel="Seleccione Cliente" noSelectionOption="true" />
+			                    	<f:selectItems value="#{frmAplicarPlanMovil.lstPlanMovils}" var="dat"
+			                    			itemLabel="#{dat.plan} #{dat.detalle}" itemValue="#{dat.idPlanMovil}"/>
+			                    </p:selectOneMenu>
+								<p:commandButton icon="fa fa-handshake-o"  value="Agregar Plan" update="@form" style="width:170px;"
+	                    			action="#{frmAplicarPlanMovil.cargarPlanMovil()}"/>
 							</p:panelGrid>
-							<p:commandButton value="Registrar"
-								action="#{frmRegistroOperadora.registrarEmpresa()}" update="@form">
-								<p:confirm header="Confirmación"
-								message="Esta seguro de ingresar la información?"
-								icon="pi pi-exclamation-triangle" />
-							</p:commandButton>
+							<p:panelGrid columns="4" styleClass="ui-noborder" layout="grid"
+								columnClasses="ui-g-12 ui-md-6 ui-lg-4, ui-g-12 ui-md-6 ui-lg-4, ui-g-12 ui-md-6 ui-lg-4">
+								<p:outputLabel  value="Seleccionar Equipo Movil:" />
+								<p:selectOneMenu id="equipo" value="#{frmAplicarPlanMovil.idEquipo}"
+												 filter="true" filterMatchMode="contains">
+			                    	<f:selectItem itemLabel="Seleccione Equipo Móvil" noSelectionOption="true" />
+			                    	<f:selectItems value="#{frmAplicarPlanMovil.lstEquipos}" var="dat"
+			                    			itemLabel="#{dat.equipo} #{dat.detalle}" itemValue="#{dat.idEquipo}"/>
+			                    </p:selectOneMenu>
+								<p:commandButton icon="fa fa-handshake-o"  value="Agregar Equipo" update="@form" style="width:170px;"
+	                    			action="#{frmAplicarPlanMovil.cargarEquipoMovil()}"/>
+							</p:panelGrid>
+							<p:separator/>
+							<p:panelGrid columns="3" styleClass="ui-noborder"
+										 columnClasses="ui-g-12 ui-md-6 ui-lg-4, ui-g-12 ui-md-6 ui-lg-4, ui-g-12 ui-md-6 ui-lg-4">
+								<p:panelGrid columns="2" styleClass="ui-noborder" rendered="#{frmAplicarPlanMovil.panelCliente}">
+									<p:outputLabel  value="Cedula:" />
+									<p:outputLabel  value="#{frmAplicarPlanMovil.planContratoComite.usrSocio.cedulaSocio}"/>
+									<p:outputLabel  value="Nombres:" />
+									<p:outputLabel  value="#{frmAplicarPlanMovil.planContratoComite.usrSocio.gesPersona.apellidos} #{frmAplicarPlanMovil.planContratoComite.usrSocio.gesPersona.nombres}"/>
+									<p:outputLabel for="cel"  value="Número de Celular:" />
+									<p:inputText id="cel" required="true" value="#{frmAplicarPlanMovil.planContratoComite.lineaTelefono}"/>
+									<p:outputLabel for="feCli"  value="Fecha Contrato:" />
+									<p:datePicker id="feCli" required="true" showIcon="true" size="15"
+										 value="#{frmAplicarPlanMovil.planContratoComite.fechaContrato}" />
+								</p:panelGrid>
+								<p:panelGrid columns="2" styleClass="ui-noborder" rendered="#{frmAplicarPlanMovil.panelPlan}">
+									<p:outputLabel  value="Plan:" />
+									<p:outputLabel  value="#{frmAplicarPlanMovil.planContratoComite.planPlanMovil.plan}"/>
+									<p:outputLabel  value="Detalle:" />
+									<p:outputLabel  value="#{frmAplicarPlanMovil.planContratoComite.planPlanMovil.detalle}"/>
+									<p:outputLabel for="prePlan"  value="Precio:" />
+									<p:inputText id="prePlan" value="#{frmAplicarPlanMovil.planContratoComite.valorPlanMovil}">
+										<f:convertNumber pattern="#0.00" />
+									</p:inputText>
+									<p:outputLabel for="inPlan" value="Interes:" />
+									<p:inputText id="inPlan" value="#{frmAplicarPlanMovil.planContratoComite.interesPlanMovil}">
+										<f:convertNumber pattern="#0.00" />
+									</p:inputText>
+								</p:panelGrid>		
+								<p:panelGrid columns="2" styleClass="ui-noborder" rendered="#{frmAplicarPlanMovil.panelEquipo}">
+									<p:outputLabel  value="Equipo:" />
+									<p:outputLabel  value="#{frmAplicarPlanMovil.planContratoComite.planEquipo.equipo}"/>
+									<p:outputLabel  value="Detalle:" />
+									<p:outputLabel  value="#{frmAplicarPlanMovil.planContratoComite.planEquipo.detalle}"/>
+									<p:outputLabel for="preMov"  value="Precio:" />
+									<p:inputText id="preMov" required="true" value="#{frmAplicarPlanMovil.planContratoComite.valorEquipo}">
+										<f:convertNumber pattern="#0.00" />
+									</p:inputText>
+									<p:outputLabel for="inMov"  value="Interes:" />
+									<p:inputText id="inMov" required="true" value="#{frmAplicarPlanMovil.planContratoComite.interesEquipo}">
+										<f:convertNumber pattern="#0.00" />
+									</p:inputText>
+								</p:panelGrid>
+							</p:panelGrid>
+							<p:panelGrid columns="2" styleClass="ui-noborder">
+								<p:commandButton value="Cancelar"
+									action="#{frmAplicarPlanMovil.init()}" update="@form">
+								</p:commandButton>							
+								<p:commandButton value="Registrar"
+									action="#{frmAplicarPlanMovil.registrarPlanMovil()}" update="@form">
+									<p:confirm header="Confirmación"
+									message="Esta seguro de ingresar la información?"
+									icon="pi pi-exclamation-triangle" />
+								</p:commandButton>
+							</p:panelGrid>	
 							<p:confirmDialog global="true" showEffect="fade" hideEffect="fade"
 								responsive="true" width="350">
 								<p:commandButton value="Si" type="button"
@@ -65,137 +132,39 @@
 								<p:commandButton value="No" type="button"
 									styleClass="ui-confirmdialog-no ui-button-flat" />
 							</p:confirmDialog>
+							
 	                    </p:panel>
 	                    <p:separator/>
 	                </h:form>
 	                <h:form id="form2">
 	                	<p:growl id="growl" showDetail="true" sticky="true" />
 	                	<p:panel id="pnl"  header="LISTADO PLANES MOVILES DE LOS USUARIOS ">
-						<p:dataTable value="#{frmRegistroOperadora.lstPlanOperadora}"
-							id="tblEmp" editable="true" var="dato" paginator="true"
-							rows="10">
-							<p:ajax event="rowEdit" listener="#{frmRegistroOperadora.onRowEdit}" update="form2:growl"/>
-            				<p:ajax event="rowEditCancel" listener="#{frmRegistroOperadora.onRowCancel}" update="form2:growl"/>
-							<f:facet name="header">
-								Expanda la fila para ver los detalles
-							</f:facet>
-							<p:column headerText="" style="width:2rem">
-								<p:rowToggler />
+						<p:dataTable value="#{frmAplicarPlanMovil.lstPlanContratoComites}"
+							id="tblEmp" editable="true" var="dato"
+							rows="10" sortBy="#{dato.usrSocio.cedulaSocio}">
+							
+							<p:headerRow field="#{dato.usrSocio.gesPersona.apellidos} #{dato.usrSocio.gesPersona.nombres}" 
+										expandable="true">
+								<p:column colspan="5">
+				                    <div class="p-d-inline-flex p-ai-center" style="vertical-align: middle">
+				                        <h:outputText styleClass="p-ml-2" value="#{dato.usrSocio.cedulaSocio}"/>
+				                    </div>
+				                </p:column>
+							</p:headerRow>
+							<p:column headerText="CEDULA">
+								<h:outputText value="#{dato.usrSocio.cedulaSocio}"/>
 							</p:column>
-							<p:column headerText="OPERADORA">
-								<p:cellEditor>
-				                    <f:facet name="output">
-				                        <h:outputText value="#{dato.empresa}"/>
-				                    </f:facet>
-				                    <f:facet name="input">
-				                        <p:inputText value="#{dato.empresa}" style="width:100%"/>
-				                    </f:facet>
-				                </p:cellEditor>
+							<p:column headerText="NOMBRES">
+								<h:outputText value="#{dato.usrSocio.gesPersona.apellidos} #{dato.usrSocio.gesPersona.nombres}"/>
 							</p:column>
-							<p:column headerText="DIRECCION">
-								<p:cellEditor>
-				                    <f:facet name="output">
-				                        <h:outputText value="#{dato.direccion}"/>
-				                    </f:facet>
-				                    <f:facet name="input">
-				                        <p:inputText  value="#{dato.direccion}" style="width:100%"/>
-				                    </f:facet>
-				                </p:cellEditor>
+							<p:column headerText="Plan Movil">
+								 <h:outputText value="#{dato.planPlanMovil.plan}"/>
 							</p:column>
+							
 							<p:column width="6">
 									<p:rowEditor editTitle="Edit Row" cancelTitle="Cancel Edit" saveTitle="Save Row" 
 										/>
 				            </p:column>
-							<p:rowExpansion>
-								<p:panel style="text-align:right">
-									<p:commandButton value="Nuevo Contacto"
-										onclick="PF('dlgReg').show();" action="#{frmRegistroOperadora.cargarEmpresa(dato)}"
-									/>
-								</p:panel>
-								<p:panel>
-									<p:dataTable value="#{dato.planContactos}"
-													id="tblCon" editable="true" var="con">
-										<f:facet name="header">
-								            LISTA DE CONTACTOS
-										</f:facet>
-										<p:column headerText="NOMBRES" >
-											<h:outputText value="#{con.apellidos} #{con.nombres}" />
-										</p:column>
-										<p:column headerText="CARGO">
-								           <h:outputText value="#{con.cargo}"/>
-								        </p:column>
-								        <p:column headerText="CELULAR">
-								           <h:outputText value="#{con.celular}"/>
-								        </p:column>
-								        <p:column headerText="CORREO">
-								           <h:outputText value="#{con.email}"/>
-								        </p:column>
-									</p:dataTable>
-								</p:panel>
-								<p:panel style="text-align:right">
-									<p:commandButton value="Nuevo Servicio"
-										onclick="PF('dlgSer').show();" action="#{frmRegistroOperadora.cargarPlanPlanMovil(dato)}">
-									</p:commandButton>
-								</p:panel>
-								<p:panel>
-									<p:dataTable value="#{dato.planPlanMovils}"
-													id="tblSer" editable="true" var="ser">
-										<f:facet name="header">
-								            LISTA DE PLANES MOVILES
-										</f:facet>
-										<p:column headerText="SERVICIO">
-								            <h:outputText value="#{ser.plan}"/>
-								        </p:column>
-								        <p:column headerText="DETALLE">
-								            <h:outputText value="#{ser.detalle}"/>
-								        </p:column>
-								        <p:column headerText="PRECIO">
-								            <h:outputText value="#{ser.precio}">
-								            	<f:convertNumber pattern="#0.00" />
-								            </h:outputText>
-								        </p:column>
-								        <p:column headerText="INTERES">
-								            <h:outputText value="#{ser.interes}">
-								            	<f:convertNumber pattern="#0.00" />
-								            </h:outputText>
-								        </p:column>
-									</p:dataTable>
-								</p:panel>
-								<p:panel style="text-align:right">
-									<p:commandButton value="Registrar Equipo Móvil"
-										onclick="PF('dlgEq').show();" action="#{frmRegistroOperadora.cargarEquipoMovil(dato)}">
-									</p:commandButton>
-								</p:panel>
-								<p:panel>
-									<p:dataTable value="#{dato.planEquipos}"
-													id="tblEq" editable="true" var="ser">
-										<f:facet name="header">
-								            LISTA DE EQUIPOS MOVILES
-										</f:facet>
-										<p:column headerText="EQUIPO">
-								            <h:outputText value="#{ser.equipo}"/>
-								        </p:column>
-								        <p:column headerText="DETALLE">
-								            <h:outputText value="#{ser.detalle}"/>
-								        </p:column>
-								        <p:column headerText="PRECIO REF">
-								            <h:outputText value="#{ser.precioRef}">
-								            	<f:convertNumber pattern="#0.00" />
-								            </h:outputText>
-								        </p:column>
-								        <p:column headerText="CUOTA REF">
-								            <h:outputText value="#{ser.cuotaRef}">
-								            	<f:convertNumber pattern="#0.00" />
-								            </h:outputText>
-								        </p:column>
-								        <p:column headerText="INTERES">
-								            <h:outputText value="#{ser.interes}">
-								            	<f:convertNumber pattern="#0.00" />
-								            </h:outputText>
-								        </p:column>
-									</p:dataTable>
-								</p:panel>
-							</p:rowExpansion>
 						</p:dataTable>
 					</p:panel>
 	                </h:form>

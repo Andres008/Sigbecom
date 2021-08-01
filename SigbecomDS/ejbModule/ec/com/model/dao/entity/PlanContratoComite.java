@@ -26,18 +26,27 @@ public class PlanContratoComite implements Serializable {
 	@Temporal(TemporalType.DATE)
 	@Column(name="fecha_contrato")
 	private Date fechaContrato;
+	
+	@Column(name="interes_plan_movil")
+	private BigDecimal interesPlanMovil;
 
-	private BigDecimal interes;
-
-	@Column(name="linea_estado")
-	private String lineaEstado;
+	@Column(name="estado_plan_movil")
+	private String estadoPlanMovil;
 
 	@Column(name="linea_telefono")
 	private String lineaTelefono;
 
-	@Column(name="valor_mensual")
-	private BigDecimal valorMensual;
+	@Column(name="valor_plan_movil")
+	private BigDecimal valorPlanMovil;
+	
+	@Column(name="valor_equipo")
+	private BigDecimal valorEquipo;
 
+	@Column(name="interes_equipo")
+	private BigDecimal interesEquipo;
+	
+	@Column(name="estado_equipo")
+	private String estadoEquipo;
 	//bi-directional many-to-one association to PlanEquipo
 	@ManyToOne
 	@JoinColumn(name="id_equipo")
@@ -76,22 +85,6 @@ public class PlanContratoComite implements Serializable {
 		this.fechaContrato = fechaContrato;
 	}
 
-	public BigDecimal getInteres() {
-		return this.interes;
-	}
-
-	public void setInteres(BigDecimal interes) {
-		this.interes = interes;
-	}
-
-	public String getLineaEstado() {
-		return this.lineaEstado;
-	}
-
-	public void setLineaEstado(String lineaEstado) {
-		this.lineaEstado = lineaEstado;
-	}
-
 	public String getLineaTelefono() {
 		return this.lineaTelefono;
 	}
@@ -99,15 +92,6 @@ public class PlanContratoComite implements Serializable {
 	public void setLineaTelefono(String lineaTelefono) {
 		this.lineaTelefono = lineaTelefono;
 	}
-
-	public BigDecimal getValorMensual() {
-		return this.valorMensual;
-	}
-
-	public void setValorMensual(BigDecimal valorMensual) {
-		this.valorMensual = valorMensual;
-	}
-
 	public PlanEquipo getPlanEquipo() {
 		return this.planEquipo;
 	}
@@ -154,4 +138,52 @@ public class PlanContratoComite implements Serializable {
 		return planPago;
 	}
 
+	public String getEstadoPlanMovil() {
+		return estadoPlanMovil;
+	}
+
+	public void setEstadoPlanMovil(String estadoPlanMovil) {
+		this.estadoPlanMovil = estadoPlanMovil;
+	}
+
+	public BigDecimal getValorPlanMovil() {
+		return valorPlanMovil;
+	}
+
+	public void setValorPlanMovil(BigDecimal valorPlanMovil) {
+		this.valorPlanMovil = valorPlanMovil;
+	}
+
+	public BigDecimal getValorEquipo() {
+		return valorEquipo;
+	}
+
+	public void setValorEquipo(BigDecimal valorEquipo) {
+		this.valorEquipo = valorEquipo;
+	}
+
+	public BigDecimal getInteresEquipo() {
+		return interesEquipo;
+	}
+
+	public void setInteresEquipo(BigDecimal interesEquipo) {
+		this.interesEquipo = interesEquipo;
+	}
+
+	public String getEstadoEquipo() {
+		return estadoEquipo;
+	}
+
+	public void setEstadoEquipo(String estadoEquipo) {
+		this.estadoEquipo = estadoEquipo;
+	}
+
+	public BigDecimal getInteresPlanMovil() {
+		return interesPlanMovil;
+	}
+
+	public void setInteresPlanMovil(BigDecimal interesPlanMovil) {
+		this.interesPlanMovil = interesPlanMovil;
+	}
+	
 }
