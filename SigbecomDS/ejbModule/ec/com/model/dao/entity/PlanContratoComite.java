@@ -45,6 +45,9 @@ public class PlanContratoComite implements Serializable {
 	@Column(name="interes_equipo")
 	private BigDecimal interesEquipo;
 	
+	@Column(name="valor_no_socio")
+	private BigDecimal valorNoSocio;
+	
 	@Column(name="estado_equipo")
 	private String estadoEquipo;
 	//bi-directional many-to-one association to PlanEquipo
@@ -184,6 +187,14 @@ public class PlanContratoComite implements Serializable {
 
 	public void setInteresPlanMovil(BigDecimal interesPlanMovil) {
 		this.interesPlanMovil = interesPlanMovil;
+	}
+
+	public BigDecimal getValorNoSocio() {
+		return valorNoSocio;
+	}
+
+	public void setValorNoSocio(BigDecimal valorNoSocio) {
+		this.valorNoSocio = valorNoSocio;
 	}
 	
 }

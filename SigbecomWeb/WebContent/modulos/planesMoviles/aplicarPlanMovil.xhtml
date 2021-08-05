@@ -47,7 +47,7 @@
 								<p:commandButton icon="fa fa-handshake-o"  value="Agregar Cliente" update="@form" style="width:170px;"
 	                    			action="#{frmAplicarPlanMovil.cargarContrato()}"/>
 							</p:panelGrid>
-							<p:panelGrid columns="4" styleClass="ui-noborder" layout="grid"
+							<p:panelGrid columns="4" styleClass="ui-noborder" layout="grid" rendered="#{frmAplicarPlanMovil.pnlPlanMovil}"
 								columnClasses="ui-g-12 ui-md-6 ui-lg-4, ui-g-12 ui-md-6 ui-lg-4, ui-g-12 ui-md-6 ui-lg-4">
 								<p:outputLabel  value="Seleccionar Plan Movil:" />
 								<p:selectOneMenu id="plan" value="#{frmAplicarPlanMovil.idPlanMovil}"
@@ -59,7 +59,7 @@
 								<p:commandButton icon="fa fa-handshake-o"  value="Agregar Plan" update="@form" style="width:170px;"
 	                    			action="#{frmAplicarPlanMovil.cargarPlanMovil()}"/>
 							</p:panelGrid>
-							<p:panelGrid columns="4" styleClass="ui-noborder" layout="grid"
+							<p:panelGrid  columns="4" styleClass="ui-noborder" layout="grid" rendered="#{frmAplicarPlanMovil.pnlEquipo}"
 								columnClasses="ui-g-12 ui-md-6 ui-lg-4, ui-g-12 ui-md-6 ui-lg-4, ui-g-12 ui-md-6 ui-lg-4">
 								<p:outputLabel  value="Seleccionar Equipo Movil:" />
 								<p:selectOneMenu id="equipo" value="#{frmAplicarPlanMovil.idEquipo}"
@@ -138,34 +138,162 @@
 	                </h:form>
 	                <h:form id="form2">
 	                	<p:growl id="growl" showDetail="true" sticky="true" />
-	                	<p:panel id="pnl"  header="LISTADO PLANES MOVILES DE LOS USUARIOS ">
-						<p:dataTable value="#{frmAplicarPlanMovil.lstPlanContratoComites}"
-							id="tblEmp" editable="true" var="dato"
-							rows="10" sortBy="#{dato.usrSocio.cedulaSocio}">
-							
-							<p:headerRow field="#{dato.usrSocio.gesPersona.apellidos} #{dato.usrSocio.gesPersona.nombres}" 
-										expandable="true">
-								<p:column colspan="5">
-				                    <div class="p-d-inline-flex p-ai-center" style="vertical-align: middle">
-				                        <h:outputText styleClass="p-ml-2" value="#{dato.usrSocio.cedulaSocio}"/>
-				                    </div>
-				                </p:column>
-							</p:headerRow>
-							<p:column headerText="CEDULA">
-								<h:outputText value="#{dato.usrSocio.cedulaSocio}"/>
+	                	<p:panel id="pnl"  header="LISTADO PLANES MOVILES USUARIOS ">
+						<p:dataTable value="#{frmAplicarPlanMovil.lstUsersSocios}"
+							id="tblEmp"  var="dato" paginator="true"
+							rows="10">
+							<f:facet name="header">
+								LISTADO DE SOCIOS
+							</f:facet>
+							<p:column headerText="" style="width:2rem">
+								<p:rowToggler />
 							</p:column>
-							<p:column headerText="NOMBRES">
-								<h:outputText value="#{dato.usrSocio.gesPersona.apellidos} #{dato.usrSocio.gesPersona.nombres}"/>
+							<p:column headerText="CEDULA" filterBy="#{dato.cedulaSocio}">
+								<h:outputText value="#{dato.cedulaSocio}"/>
 							</p:column>
-							<p:column headerText="Plan Movil">
-								 <h:outputText value="#{dato.planPlanMovil.plan}"/>
+							<p:column headerText="APELLIDOS" filterBy="#{dato.gesPersona.apellidos}">
+								<h:outputText value="#{dato.gesPersona.apellidos}"/>
+							</p:column>
+							<p:column headerText="NOMBRES" filterBy="#{dato.gesPersona.nombres}">
+								<h:outputText value="#{dato.gesPersona.nombres}"/>
 							</p:column>
 							
-							<p:column width="6">
-									<p:rowEditor editTitle="Edit Row" cancelTitle="Cancel Edit" saveTitle="Save Row" 
-										/>
-				            </p:column>
+							<p:rowExpansion>
+								<p:panel>
+									<p:dataTable value="#{dato.planContratoComites}"  
+													id="tblCon" editable="true" var="con">
+										<f:facet name="header">
+								            LISTADO DE PLANES MOVILES 
+										</f:facet>
+										<p:ajax event="rowEdit" listener="#{frmAplicarPlanMovil.onRowEdit}" update="form2:growl"/>
+            							<p:ajax event="rowEditCancel" listener="#{frmAplicarPlanMovil.onRowCancel}" update="form2:growl"/>
+										<p:column headerText="FECHA CONTRATO" >
+											<h:outputText value="#{con.fechaContrato}" />
+										</p:column>
+										<p:column headerText="PLAN MOVIL" >
+											<h:outputText value="#{con.planPlanMovil.plan}" />
+										</p:column>
+										<p:column headerText="VALOR PLAN">
+								           <p:cellEditor>
+							                    <f:facet name="output">
+							                        <h:outputText value="#{con.valorPlanMovil}">
+							                        	<f:convertNumber pattern="#0.00" />
+							                        </h:outputText>
+							                    </f:facet>
+							                    <f:facet name="input">
+							                        <p:inputText value="#{con.valorPlanMovil}" style="width:100%">
+							                        	<f:convertNumber pattern="#0.00" />
+							                        </p:inputText>
+							                    </f:facet>
+							                </p:cellEditor>
+								        </p:column>
+								        <p:column headerText="INTERES PLAN">
+								           	<p:cellEditor>
+								           		<f:facet name="output">
+							                        <h:outputText value="#{con.interesPlanMovil}">
+										           		<f:convertNumber pattern="#0.00" />
+										           </h:outputText>
+							                    </f:facet>
+							                    <f:facet name="input">
+							                        <p:inputText value="#{con.interesPlanMovil}" style="width:100%">
+							                        	<f:convertNumber pattern="#0.00" />
+							                        </p:inputText>
+							                    </f:facet>
+							            	</p:cellEditor>
+								        </p:column>
+								        <p:column headerText="ESTADO PLAN">
+								           	<p:cellEditor>
+								           		<f:facet name="output">
+							                        <h:outputText value="#{con.estadoPlanMovil}"/>
+										        </f:facet>
+							                    <f:facet name="input">
+							                        <h:selectOneMenu id="option" value="#{con.estadoPlanMovil}" style="width:100%">
+									                   	<f:selectItem itemLabel="Seleccione Valor" noSelectionOption="true"/>
+									                   	<f:selectItem itemLabel="ACTIVO" itemValue="ACTIVO"/>
+									                    <f:selectItem itemLabel="INACTIVO" itemValue="INACTIVO"/>
+									                </h:selectOneMenu>
+							                    </f:facet>
+							            	</p:cellEditor>
+								        </p:column>
+								        <p:column headerText="EQUIPO MOVIL">
+								           <h:outputText value="#{con.planEquipo.equipo}"/>
+								        </p:column>
+								        <p:column headerText="VALOR EQUIPO">
+								           <p:cellEditor>
+							                    <f:facet name="output">
+							                        <h:outputText value="#{con.valorEquipo}">
+							                        	<f:convertNumber pattern="#0.00" />
+							                        </h:outputText>
+							                    </f:facet>
+							                    <f:facet name="input">
+							                        <p:inputText value="#{con.valorEquipo}" style="width:100%">
+							                        	<f:convertNumber pattern="#0.00" />
+							                        </p:inputText>
+							                    </f:facet>
+							                </p:cellEditor>
+								        </p:column>
+								        <p:column headerText="INTERES EQUIPO">
+								           
+								           <p:cellEditor>
+								           		<f:facet name="output">
+							                        <h:outputText value="#{con.interesEquipo}">
+										           		<f:convertNumber pattern="#0.00" />
+										           </h:outputText>
+							                    </f:facet>
+							                    <f:facet name="input">
+							                        <p:inputText value="#{con.interesEquipo}" style="width:100%">
+							                        	<f:convertNumber pattern="#0.00" />
+							                        </p:inputText>
+							                    </f:facet>
+							            	</p:cellEditor>
+								        </p:column>
+								        <p:column headerText="ESTADO PLAN">
+								          	<p:cellEditor>
+								           		<f:facet name="output">
+							                         <h:outputText value="#{con.estadoEquipo}"/>
+										        </f:facet>
+							                    <f:facet name="input">
+							                        <h:selectOneMenu  value="#{con.estadoEquipo}" style="width:100%">
+									                   	<f:selectItem itemLabel="Seleccione Valor" noSelectionOption="true"/>
+									                   	<f:selectItem itemLabel="ACTIVO" itemValue="ACTIVO"/>
+									                    <f:selectItem itemLabel="INACTIVO" itemValue="INACTIVO"/>
+									                </h:selectOneMenu>
+							                    </f:facet>
+							            	</p:cellEditor>
+								        </p:column>
+								        <p:column headerText="VALOR NO SOCIO">
+								        	<p:cellEditor>
+							                    <f:facet name="output">
+							                        <h:outputText value="#{con.valorNoSocio}">
+							                        	<f:convertNumber pattern="#0.00" />
+							                        </h:outputText>
+							                    </f:facet>
+							                    <f:facet name="input">
+							                        <p:inputText value="#{con.valorNoSocio}" style="width:100%">
+							                        	<f:convertNumber pattern="#0.00" />
+							                        </p:inputText>
+							                    </f:facet>
+							                </p:cellEditor>
+								        </p:column>
+								        <p:column width="6">
+												<p:rowEditor editTitle="Edit Row" cancelTitle="Cancel Edit" saveTitle="Save Row"/>
+							            </p:column>
+									</p:dataTable>
+								</p:panel>
+								
+							</p:rowExpansion>
 						</p:dataTable>
+						<br/>
+						<br/>
+						<p:separator/>
+						<p:panelGrid columns="2" styleClass="ui-noborder">
+								<p:commandButton value="Generar Planilla Mes"
+									action="#{frmAplicarPlanMovil.generarPlanillaMes()}" update="form2">
+									<p:confirm header="Confirmación"
+									message="Esta seguro de ingresar la información?"
+									icon="pi pi-exclamation-triangle" />
+								</p:commandButton>
+							</p:panelGrid>	
 					</p:panel>
 	                </h:form>
 <!-- Inicio de Dialogs -->

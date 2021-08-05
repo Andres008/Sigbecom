@@ -132,7 +132,7 @@ public class UsrSocio implements Serializable {
 	private List<UsrSocioDescuentoFijo> usrSocioDescuentoFijos;
 	
 	//bi-directional many-to-one association to UsrSocioDescuentoFijo
-	@OneToMany(mappedBy="planContratoComite", cascade = CascadeType.ALL)
+	@OneToMany(mappedBy="usrSocio")
 	private List<PlanContratoComite> planContratoComites;
 
 	public UsrSocio() {

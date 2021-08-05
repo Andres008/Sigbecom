@@ -1,5 +1,6 @@
 package ec.com.model.planesMoviles;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.ejb.EJB;
@@ -11,10 +12,12 @@ import org.apache.taglibs.standard.tag.common.core.UrlSupport;
 import ec.com.model.dao.entity.ConvContacto;
 import ec.com.model.dao.entity.ConvEmpresa;
 import ec.com.model.dao.entity.ConvServicio;
+import ec.com.model.dao.entity.DescEstadoDescuento;
 import ec.com.model.dao.entity.PlanContacto;
 import ec.com.model.dao.entity.PlanContratoComite;
 import ec.com.model.dao.entity.PlanEquipo;
 import ec.com.model.dao.entity.PlanOperadora;
+import ec.com.model.dao.entity.PlanPago;
 import ec.com.model.dao.entity.PlanPlanMovil;
 import ec.com.model.dao.entity.UsrSocio;
 import ec.com.model.dao.manager.ManagerDAOSegbecom;
@@ -106,12 +109,49 @@ public class ManagerPlanesMoviles {
        	return lstPlanEquipo;
     }
     
-    @SuppressWarnings("unchecked")
-   	public List<PlanContratoComite> findAllUsuariosConPlanes() throws Exception{
-       	List<PlanContratoComite> lstPlanContratoComite = managerDAOSegbecom.findAll(PlanContratoComite.class);
-       	return lstPlanContratoComite;
+   	
+	@SuppressWarnings("unchecked")
+	public List<UsrSocio> findAllUsuariosSocios() throws Exception{
+   		List<UsrSocio> lstUserSocio = findAllUsuarios();
+   		//List<UsrSocio> lstUserSocio = managerDAOSegbecom.findWhere(UsrSocio.class, "o.usrTipoSocio.idTipoSocio <> '4'", null);
+       	for (UsrSocio usrSocio : lstUserSocio) {
+			for (PlanContratoComite planContratoComite : usrSocio.getPlanContratoComites()) {
+				planContratoComite.getIdContrato();
+			}
+		}
+       	return lstUserSocio;
+    }
+  
+   	@SuppressWarnings("unchecked")
+	public List<UsrSocio> findAllUsuariosNoSocios() throws Exception{
+       	List<UsrSocio> lstUsrSocio = managerDAOSegbecom.findWhere(UsrSocio.class, "o.usrTipoSocio.idTipoSocio = '4'", null);
+       	for (UsrSocio usrSocio : lstUsrSocio) {
+			for (PlanContratoComite planContratoComite : usrSocio.getPlanContratoComites()) {
+				planContratoComite.getIdContrato();
+			}
+		}
+       	return lstUsrSocio;
     }
     public void insertarPlanContratoComite(PlanContratoComite planContratoComite) throws Exception {
     	managerDAOSegbecom.insertar(planContratoComite);
     }
+    
+    @SuppressWarnings("unchecked")
+   	public List<PlanPago> findAllPlanPago() throws Exception{
+       	List<PlanPago> lstPlanPago = managerDAOSegbecom.findAll(PlanPago.class);
+       	return lstPlanPago;
+    }
+    public void insertarPlanPago(PlanPago planPago) throws Exception {
+    	managerDAOSegbecom.insertar(planPago);
+    }
+    @SuppressWarnings("unchecked")
+	public DescEstadoDescuento findWhereEstadoDescEstadoDescuento(String estado) throws Exception {
+		List<DescEstadoDescuento> lstEstadoDes = new ArrayList<DescEstadoDescuento>();
+		lstEstadoDes = managerDAOSegbecom.findWhere(DescEstadoDescuento.class, "o.estado='"+estado+"'", null);
+		if (lstEstadoDes.isEmpty())
+			throw new Exception("Parametro no encontrado.");
+		if (lstEstadoDes.size() > 1)
+			throw new Exception("Más de un parametro encontrado.");
+		return lstEstadoDes.get(0);
+	}
 }
