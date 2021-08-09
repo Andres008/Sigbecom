@@ -22,21 +22,20 @@ public class PlanEquipo implements Serializable {
 	@Column(name="id_equipo")
 	private long idEquipo;
 
-	@Column(name="cuota_ref")
-	private BigDecimal cuotaRef;
-
 	private String detalle;
 
 	private String equipo;
 
-	private BigDecimal interes;
-
-	@Column(name="precio_ref")
-	private BigDecimal precioRef;
+	@Column(name="precio")
+	private BigDecimal precio;
 
 	//bi-directional many-to-one association to PlanContratoComite
 	@OneToMany(mappedBy="planEquipo")
 	private List<PlanContratoComite> planContratoComites;
+	
+	@ManyToOne
+	@JoinColumn(name="id_plan_empresa")
+	private PlanOperadora planOperadora;
 
 	public PlanEquipo() {
 	}
@@ -47,14 +46,6 @@ public class PlanEquipo implements Serializable {
 
 	public void setIdEquipo(long idEquipo) {
 		this.idEquipo = idEquipo;
-	}
-
-	public BigDecimal getCuotaRef() {
-		return this.cuotaRef;
-	}
-
-	public void setCuotaRef(BigDecimal cuotaRef) {
-		this.cuotaRef = cuotaRef;
 	}
 
 	public String getDetalle() {
@@ -73,20 +64,12 @@ public class PlanEquipo implements Serializable {
 		this.equipo = equipo;
 	}
 
-	public BigDecimal getInteres() {
-		return this.interes;
+	public BigDecimal getPrecio() {
+		return precio;
 	}
 
-	public void setInteres(BigDecimal interes) {
-		this.interes = interes;
-	}
-
-	public BigDecimal getPrecioRef() {
-		return this.precioRef;
-	}
-
-	public void setPrecioRef(BigDecimal precioRef) {
-		this.precioRef = precioRef;
+	public void setPrecio(BigDecimal precio) {
+		this.precio = precio;
 	}
 
 	public List<PlanContratoComite> getPlanContratoComites() {
@@ -111,4 +94,12 @@ public class PlanEquipo implements Serializable {
 		return planContratoComite;
 	}
 
+	public PlanOperadora getPlanOperadora() {
+		return planOperadora;
+	}
+
+	public void setPlanOperadora(PlanOperadora planOperadora) {
+		this.planOperadora = planOperadora;
+	}
+	
 }

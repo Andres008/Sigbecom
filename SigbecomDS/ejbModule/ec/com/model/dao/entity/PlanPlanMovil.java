@@ -24,8 +24,6 @@ public class PlanPlanMovil implements Serializable {
 
 	private String detalle;
 
-	private BigDecimal interes;
-
 	private String plan;
 
 	private BigDecimal precio;
@@ -56,14 +54,6 @@ public class PlanPlanMovil implements Serializable {
 
 	public void setDetalle(String detalle) {
 		this.detalle = detalle;
-	}
-
-	public BigDecimal getInteres() {
-		return this.interes;
-	}
-
-	public void setInteres(BigDecimal interes) {
-		this.interes = interes;
 	}
 
 	public String getPlan() {

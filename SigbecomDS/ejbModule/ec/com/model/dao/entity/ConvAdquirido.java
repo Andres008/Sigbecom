@@ -22,31 +22,22 @@ public class ConvAdquirido implements Serializable {
 	@GeneratedValue(strategy=GenerationType.SEQUENCE, generator="CONV_ADQUIRIDO_IDCONVADQUIRIDOS_GENERATOR")
 	@Column(name="id_conv_adquiridos")
 	private long idConvAdquiridos;
-
-	@Column(name="cedula_socio")
-	private String cedulaSocio;
-
-	@Temporal(TemporalType.DATE)
-	@Column(name="fecha_sol")
-	private Date fechaSol;
-
-	@Column(name="valor_total")
-	private BigDecimal valorTotal;
-
+	
 	//bi-directional many-to-one association to ConvServicio
 	@ManyToOne
 	@JoinColumn(name="id_conv_servicio")
 	private ConvServicio convServicio;
 
-	//bi-directional many-to-one association to ConvAmortizacion
-	@OneToMany(mappedBy="convAdquirido")
-	private List<ConvAmortizacion> convAmortizacions;
+	@Column(name="cedula_socio")
+	private String cedulaSocio;
 	
-	@Column(name="estado")
-	private String estado;
+	@Column(name="valor_total")
+	private BigDecimal valorTotal;
 	
-	@Column(name="adjunto")
-	private String adjunto;
+	@Temporal(TemporalType.DATE)
+	@Column(name="fecha_sol")
+	private Date fechaSol;
+
 	
 	@Temporal(TemporalType.DATE)
 	@Column(name="fecha_aprob")
@@ -60,6 +51,25 @@ public class ConvAdquirido implements Serializable {
 	private Date fechaRevision;
 	
 	private BigDecimal interes;
+	
+	@Column(name="estado")
+	private String estado;
+	
+	@Column(name="adjunto")
+	private String adjunto;
+	
+	@Column(name="plazo")
+	private Integer plazo;
+	
+	@Column(name="interes_total")
+	private BigDecimal interesTotal;
+	
+	@Column(name="deuda_total")
+	private BigDecimal deudaTotal;
+
+	//bi-directional many-to-one association to ConvAmortizacion
+	@OneToMany(mappedBy="convAdquirido")
+	private List<ConvAmortizacion> convAmortizacions;
 	
 	public ConvAdquirido() {
 	}
@@ -172,6 +182,30 @@ public class ConvAdquirido implements Serializable {
 
 	public void setInteres(BigDecimal interes) {
 		this.interes = interes;
+	}
+
+	public BigDecimal getInteresTotal() {
+		return interesTotal;
+	}
+
+	public void setInteresTotal(BigDecimal interesTotal) {
+		this.interesTotal = interesTotal;
+	}
+
+	public BigDecimal getDeudaTotal() {
+		return deudaTotal;
+	}
+
+	public void setDeudaTotal(BigDecimal deudaTotal) {
+		this.deudaTotal = deudaTotal;
+	}
+
+	public Integer getPlazo() {
+		return plazo;
+	}
+
+	public void setPlazo(Integer plazo) {
+		this.plazo = plazo;
 	}
 	
 }

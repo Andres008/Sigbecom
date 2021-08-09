@@ -145,10 +145,14 @@
 								            <h:outputText value="#{ser.detalle}"/>
 								        </p:column>
 								        <p:column headerText="MONTO_MAX">
-								            <h:outputText value="#{ser.montoMax}"/>
+								            <h:outputText value="#{ser.montoMax}">
+								            	<f:convertNumber pattern="#0.00" />
+								            </h:outputText>
 								        </p:column>
 								        <p:column headerText="INTERES">
-								            <h:outputText value="#{ser.interes}"/>
+								            <h:outputText value="#{ser.interes}">
+								            	<f:convertNumber pattern="#0.00" />
+								            </h:outputText>
 								        </p:column>
 								        <p:column headerText="ESTADO">
 								            <h:outputText value="#{ser.estado}"/>

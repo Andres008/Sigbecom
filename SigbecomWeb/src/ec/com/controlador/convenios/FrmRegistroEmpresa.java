@@ -1,6 +1,8 @@
 package ec.com.controlador.convenios;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -113,6 +115,10 @@ public class FrmRegistroEmpresa implements Serializable{
 		if(!convServicio.getDetalle().isEmpty()&&!convServicio.getServicioProducto().isEmpty()){
 			try {
 				convServicio.setEstado("ACTIVO");
+				BigDecimal montoMax= convServicio.getMontoMax().setScale(2, RoundingMode.HALF_EVEN);
+				BigDecimal interes= convServicio.getInteres().setScale(2, RoundingMode.HALF_EVEN);
+				convServicio.setMontoMax(montoMax);
+				convServicio.setInteres(interes);
 				managerConvenios.insertarConvServicio(convServicio);
 				JSFUtil.crearMensajeINFO("Servicio Registrado correctamente");
 				init();

@@ -1,11 +1,262 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"> 
-<html xmlns="http://www.w3.org/1999/xhtml"
-      xmlns:ui="http://java.sun.com/jsf/facelets"
-      xmlns:f="http://java.sun.com/jsf/core"
-      xmlns:h="http://java.sun.com/jsf/html"> 
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://java.sun.com/jsf/html" xmlns:f="http://java.sun.com/jsf/core" xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:p="http://primefaces.org/ui">
 
-<h:head></h:head> 
-<body> 
+<h:head>
+	<f:event type="preRenderView" listener="#{controlFormularios.verificarSesion()}" />
+	<f:facet name="first">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0"/>
+        <meta name="apple-mobile-web-app-capable" content="yes" />
+    </f:facet>
+        <title><ui:insert name="title">Plan Móvil</ui:insert></title>
+        <h:outputScript name="js/nanoscroller.js" library="california-layout" />
+        <h:outputScript name="js/layout.js" library="california-layout" />
+        <h:outputStylesheet library="css" name="theme.css"/>
+</h:head>
 
-</body> 
+<h:body styleClass="main-body">
+
+        <div class="layout-wrapper #{guestPreferences.menuLayout != 'static' ? guestPreferences.menuLayout : null}">
+            <ui:include src="/affordances/megamenu.xhtml" />
+            <ui:include src="/affordances/topbar.xhtml" />
+            <ui:include src="/affordances/sidebar.xhtml" />
+            <ui:include src="/affordances/right-sidebar.xhtml" />
+			<div class="layout-main">
+                <div class="route-bar">
+                    <div class="route-bar-breadcrumb">
+                        <i class="fa fa-home"></i> <span>/PLANES MOVILES/Plan Móvil</span>
+                        <ui:insert name="viewname" />
+                    </div>
+					<ui:include src="/affordances/route-bar-menu.xhtml" />
+                </div>
+				<div class="layout-main-content" align="center">
+                    <H1>Gestión Planes Móviles</H1>
+                    <h:form id="form1">
+	                    <p:growl id="growl" showDetail="true" sticky="true" />
+						<p:panel id="pnls" header="Registro Planes Moviles" toggleable="true" collapsed="#{frmAplicarPlanMovil.pnlDatos}">
+							<p:panelGrid columns="3" styleClass="ui-noborder" layout="grid"
+								columnClasses="ui-g-12 ui-md-6 ui-lg-4, ui-g-12 ui-md-6 ui-lg-4, ui-g-12 ui-md-6 ui-lg-4">
+								<p:outputLabel for="nom" value="Seleccione Cliente:" />
+								<p:selectOneMenu id="nom" value="#{frmAplicarPlanMovil.cedulaSocio}"
+												 filter="true" filterMatchMode="contains">
+			                    	<f:selectItem itemLabel="Seleccione Cliente"
+										noSelectionOption="true" />
+			                    	<f:selectItems value="#{frmAplicarPlanMovil.lstUsrSocio}" var="dat"
+			                    			itemLabel="#{dat.cedulaSocio} #{dat.gesPersona.apellidos} #{dat.gesPersona.nombres}" itemValue="#{dat.cedulaSocio}"/>
+			                    </p:selectOneMenu>
+								<p:commandButton icon="fa fa-handshake-o"  value="Agregar Cliente" update="@form" style="width:170px;"
+	                    			action="#{frmAplicarPlanMovil.cargarContrato()}"/>
+	                    		
+	                    		<p:outputLabel for="ope" value="Seleccione Operadora:" />
+								<p:selectOneMenu id="ope" value="#{frmAplicarPlanMovil.idOperadora}">
+			                    	<f:selectItem itemLabel="Seleccione Operadoras"
+										noSelectionOption="true" />
+			                    	<f:selectItems value="#{frmAplicarPlanMovil.lstPlanOperadoras}" var="dat"
+			                    			itemLabel="#{dat.empresa}" itemValue="#{dat.idPlanEmpresa}"/>
+			                    	<p:ajax event="change" update="form1"
+        								listener="#{frmAplicarPlanMovil.cargarPlanesAndEquiposMoviles()}" />
+			                    </p:selectOneMenu>
+								<p:outputLabel/>
+	                    		
+							</p:panelGrid>
+							<p:panelGrid id="pnlPlan" columns="4" styleClass="ui-noborder" layout="grid" rendered="#{frmAplicarPlanMovil.pnlPlanMovil}"
+								columnClasses="ui-g-12 ui-md-6 ui-lg-4, ui-g-12 ui-md-6 ui-lg-4, ui-g-12 ui-md-6 ui-lg-4">
+								<p:outputLabel  value="Seleccionar Plan Movil:" />
+								<p:selectOneMenu id="plan" value="#{frmAplicarPlanMovil.idPlanMovil}"
+												 filter="true" filterMatchMode="contains">
+			                    	<f:selectItem itemLabel="Seleccione plan móvil" noSelectionOption="true" />
+			                    	<f:selectItems value="#{frmAplicarPlanMovil.lstPlanMovils}" var="dat"
+			                    			itemLabel="#{dat.plan} #{dat.detalle}" itemValue="#{dat.idPlanMovil}"/>
+			                    </p:selectOneMenu>
+								<p:commandButton icon="fa fa-handshake-o"  value="Agregar Plan" update="@form" style="width:170px;"
+	                    			action="#{frmAplicarPlanMovil.cargarPlanMovil()}"/>
+							</p:panelGrid>
+							
+							<p:separator/>
+							<p:panelGrid columns="1" styleClass="ui-noborder"
+										 columnClasses="ui-g-12 ui-md-6 ui-lg-4, ui-g-12 ui-md-6 ui-lg-4, ui-g-12 ui-md-6 ui-lg-4">
+								<p:panelGrid columns="2" styleClass="ui-noborder" rendered="#{frmAplicarPlanMovil.panelCliente}">
+									<p:outputLabel  value="Cedula:" />
+									<p:outputLabel  value="#{frmAplicarPlanMovil.planContratoComite.usrSocio.cedulaSocio}"/>
+									<p:outputLabel  value="Nombres:" />
+									<p:outputLabel  value="#{frmAplicarPlanMovil.planContratoComite.usrSocio.gesPersona.apellidos} #{frmAplicarPlanMovil.planContratoComite.usrSocio.gesPersona.nombres}"/>
+									<p:outputLabel for="cel"  value="Número de Celular:" />
+									<p:inputMask id="cel" value="#{frmAplicarPlanMovil.planContratoComite.lineaTelefono}" mask="9999999999" validateMask="true"/>
+									<p:outputLabel for="feIni"  value="Fecha Contrato:" />
+									<p:datePicker id="feIni" showIcon="true" size="15"
+										 value="#{frmAplicarPlanMovil.planContratoComite.fechaContrato}" />
+									<p:outputLabel for="feFin"  value="Fecha Fin Contrato:" />
+									<p:datePicker id="feFin" showIcon="true" size="15"
+										 value="#{frmAplicarPlanMovil.planContratoComite.fechaFinContrato}" />
+								</p:panelGrid>
+								<p:panelGrid columns="2" styleClass="ui-noborder" rendered="#{frmAplicarPlanMovil.panelPlan}">
+									<p:outputLabel  value="Plan:" />
+									<p:outputLabel  value="#{frmAplicarPlanMovil.planContratoComite.planPlanMovil.plan}"/>
+									<p:outputLabel  value="Detalle:" />
+									<p:outputLabel  value="#{frmAplicarPlanMovil.planContratoComite.planPlanMovil.detalle}"/>
+								</p:panelGrid>		
+								
+							</p:panelGrid>
+							<p:panelGrid columns="2" styleClass="ui-noborder">
+								<p:commandButton value="Cancelar"
+									action="#{frmAplicarPlanMovil.init()}" update="@form">
+								</p:commandButton>							
+								<p:commandButton value="Registrar"
+									action="#{frmAplicarPlanMovil.registrarPlanMovil()}" update="@form">
+									<p:confirm header="Confirmación"
+									message="Esta seguro de ingresar la información?"
+									icon="pi pi-exclamation-triangle" />
+								</p:commandButton>
+							</p:panelGrid>	
+							<p:confirmDialog global="true" showEffect="fade" hideEffect="fade"
+								responsive="true" width="350">
+								<p:commandButton value="Si" type="button"
+									styleClass="ui-confirmdialog-yes" />
+								<p:commandButton value="No" type="button"
+									styleClass="ui-confirmdialog-no ui-button-flat" />
+							</p:confirmDialog>
+							
+	                    </p:panel>
+	                    <p:separator/>
+	                </h:form>
+	                <h:form id="form2">
+	                	<p:growl id="growl" showDetail="true" sticky="true" />
+	                	<p:panel id="pnl"  header="LISTADO PLANES MOVILES USUARIOS ">
+						<p:dataTable value="#{frmAplicarPlanMovil.lstUsersSocios}"
+							id="tblEmp"  var="dato" paginator="true"
+							rows="10">
+							<f:facet name="header">
+								LISTADO DE SOCIOS
+							</f:facet>
+							<p:column headerText="" style="width:2rem">
+								<p:rowToggler />
+							</p:column>
+							<p:column headerText="CEDULA" filterBy="#{dato.cedulaSocio}">
+								<h:outputText value="#{dato.cedulaSocio}"/>
+							</p:column>
+							<p:column headerText="APELLIDOS" filterBy="#{dato.gesPersona.apellidos}">
+								<h:outputText value="#{dato.gesPersona.apellidos}"/>
+							</p:column>
+							<p:column headerText="NOMBRES" filterBy="#{dato.gesPersona.nombres}">
+								<h:outputText value="#{dato.gesPersona.nombres}"/>
+							</p:column>
+							<p:column headerText="TIPO SOCIO">
+								<h:outputText value="#{dato.usrTipoSocio.nombre}"/>
+							</p:column>
+							
+							<p:rowExpansion>
+								<p:panel>
+									<p:dataTable value="#{dato.planContratoComites}"  
+													id="tblCon" editable="true" var="con">
+										<f:facet name="header">
+								            LISTADO DE PLANES MOVILES 
+										</f:facet>
+										<p:ajax event="rowEdit" listener="#{frmAplicarPlanMovil.onRowEdit}" update="form2:growl"/>
+            							<p:ajax event="rowEditCancel" listener="#{frmAplicarPlanMovil.onRowCancel}" update="form2:growl"/>
+										<p:column headerText="OPERADORA" >
+											<h:outputText value="#{con.planPlanMovil.planOperadora.empresa}" />
+										</p:column>										
+										<p:column headerText="PLAN MOVIL" >
+											<h:outputText value="#{con.planPlanMovil.plan}" />
+										</p:column>
+										<p:column headerText="DETALLE" >
+											<h:outputText value="#{con.fechaContrato}" />
+										</p:column>
+										<p:column headerText="FECHA CONTRATO" >
+											<h:outputText value="#{con.fechaContrato}" />
+										</p:column>
+										<p:column headerText="FECHA FIN" >
+											<h:outputText value="#{con.fechaFinContrato}" />
+										</p:column>
+										<p:column headerText="LINEA" >
+											<h:outputText value="#{con.lineaTelefono}" />
+										</p:column>
+										<p:column headerText="ESTADO">
+											<p:cellEditor>
+							                    <f:facet name="output">
+							                        <h:outputText value="#{con.estado}"/>
+							                    </f:facet>
+							                    <f:facet name="input">
+							                        <h:selectOneMenu id="option" value="#{con.estado}" style="width:100%">
+												       <f:selectItem itemLabel="Seleccione Valor" noSelectionOption="true"/>
+												       <f:selectItem itemLabel="ACTIVO" itemValue="ACTIVO"/>
+												       <f:selectItem itemLabel="INACTIVO" itemValue="INACTIVO"/>
+												    </h:selectOneMenu>
+							                    </f:facet>
+							                </p:cellEditor>
+										</p:column>
+										<p:column width="6">
+												<p:rowEditor editTitle="Edit Row" cancelTitle="Cancel Edit" saveTitle="Save Row"/>
+							            </p:column>
+									</p:dataTable>
+								</p:panel>
+								
+							</p:rowExpansion>
+						</p:dataTable>
+						<br/>
+						<br/>
+						<p:separator/>
+						<p:panelGrid columns="2" styleClass="ui-noborder">
+								<p:commandButton value="Generar Planilla Mes"
+									action="#{frmAplicarPlanMovil.generarPlanillaMes()}" update="form2">
+									<p:confirm header="Confirmación"
+									message="Esta seguro de ingresar la información?"
+									icon="pi pi-exclamation-triangle" />
+								</p:commandButton>
+							</p:panelGrid>	
+					</p:panel>
+	                </h:form>
+<!-- Inicio de Dialogs -->
+
+<p:dialog
+	header="REGISTRO DE CONTACTO"  resizable="false" closable="true"
+	widgetVar="dlgReg" modal="true" position="center"
+	hideEffect="fade" >
+	<h:form id="frmReg">
+		<p:messages id="msgReg" closable="true" showDetail="false"/>
+		<p:panelGrid columns="2">
+			<p:outputLabel for="nomb" value="Nombres:"/>
+			<p:inputText id="nomb" value="#{frmRegistroOperadora.planContacto.nombres}" required="true"/>
+			<p:outputLabel for="ape" value="Apellidos:"/>
+			<p:inputText id="ape" value="#{frmRegistroOperadora.planContacto.apellidos}" required="true"/>
+			<p:outputLabel for="car" value="Cargo:"/>
+			<p:inputText id="car" value="#{frmRegistroOperadora.planContacto.cargo}" required="true"/>
+			<p:outputLabel for="cel" value="Celular:"/>
+			<p:inputText id="cel" value="#{frmRegistroOperadora.planContacto.celular}" required="true"/>
+			<p:outputLabel for="ema" value="E-mail:"/>
+			<p:inputText id="ema" value="#{frmRegistroOperadora.planContacto.email}" required="true"/>
+		</p:panelGrid>
+		<p:panel>
+			<h:panelGrid columns="2" cellpadding="10">
+				<p:commandButton value="Cancelar" onclick="PF('dlgReg').hide();" update="form2 frmReg"
+				action="#{frmRegistroOperadora.init()}"/>
+				<p:commandButton value="Registrar" 
+					action="#{frmRegistroOperadora.registrarContacto()}" update="frmReg"/>
+			</h:panelGrid>
+		</p:panel>
+	</h:form>
+</p:dialog>
+
+
+<!-- Fin de Dialogs -->
+                </div>
+				<ui:include src="/affordances/footer.xhtml" />
+            </div>
+        </div>
+		
+        <p:ajaxStatus style="width:32px;height:32px;position:fixed;right:7px;bottom:7px">
+           <f:facet name="start">
+               <i class="fa fa-circle-o-notch fa-spin ajax-loader" aria-hidden="true"></i>
+           </f:facet>
+
+           <f:facet name="complete">
+               <h:outputText value="" />
+           </f:facet>
+       </p:ajaxStatus>
+
+        <h:outputStylesheet name="css/nanoscroller.css" library="california-layout" />
+        <h:outputStylesheet name="css/layout-#{guestPreferences.theme}.css" library="california-layout" />
+    </h:body>
 </html>
+

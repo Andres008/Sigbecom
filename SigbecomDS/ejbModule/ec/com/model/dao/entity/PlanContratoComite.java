@@ -26,19 +26,23 @@ public class PlanContratoComite implements Serializable {
 	@Temporal(TemporalType.DATE)
 	@Column(name="fecha_contrato")
 	private Date fechaContrato;
-
-	private BigDecimal interes;
-
-	@Column(name="linea_estado")
-	private String lineaEstado;
+	
+	@Temporal(TemporalType.DATE)
+	@Column(name="fecha_fin_contrato")
+	private Date fechaFinContrato;
 
 	@Column(name="linea_telefono")
 	private String lineaTelefono;
-
-	@Column(name="valor_mensual")
-	private BigDecimal valorMensual;
-
-	//bi-directional many-to-one association to PlanEquipo
+	
+	@Column(name="valor_plan")
+	private BigDecimal valorPlan;
+	
+	@Column(name="costo_administrativo")
+	private BigDecimal costoAdministrativo;
+	
+	@Column(name="estado")
+	private String estado;
+	
 	@ManyToOne
 	@JoinColumn(name="id_equipo")
 	private PlanEquipo planEquipo;
@@ -76,22 +80,6 @@ public class PlanContratoComite implements Serializable {
 		this.fechaContrato = fechaContrato;
 	}
 
-	public BigDecimal getInteres() {
-		return this.interes;
-	}
-
-	public void setInteres(BigDecimal interes) {
-		this.interes = interes;
-	}
-
-	public String getLineaEstado() {
-		return this.lineaEstado;
-	}
-
-	public void setLineaEstado(String lineaEstado) {
-		this.lineaEstado = lineaEstado;
-	}
-
 	public String getLineaTelefono() {
 		return this.lineaTelefono;
 	}
@@ -99,15 +87,6 @@ public class PlanContratoComite implements Serializable {
 	public void setLineaTelefono(String lineaTelefono) {
 		this.lineaTelefono = lineaTelefono;
 	}
-
-	public BigDecimal getValorMensual() {
-		return this.valorMensual;
-	}
-
-	public void setValorMensual(BigDecimal valorMensual) {
-		this.valorMensual = valorMensual;
-	}
-
 	public PlanEquipo getPlanEquipo() {
 		return this.planEquipo;
 	}
@@ -154,4 +133,36 @@ public class PlanContratoComite implements Serializable {
 		return planPago;
 	}
 
+	public Date getFechaFinContrato() {
+		return fechaFinContrato;
+	}
+
+	public void setFechaFinContrato(Date fechaFinContrato) {
+		this.fechaFinContrato = fechaFinContrato;
+	}
+
+	public String getEstado() {
+		return estado;
+	}
+
+	public void setEstado(String estado) {
+		this.estado = estado;
+	}
+
+	public BigDecimal getValorPlan() {
+		return valorPlan;
+	}
+
+	public void setValorPlan(BigDecimal valorPlan) {
+		this.valorPlan = valorPlan;
+	}
+
+	public BigDecimal getCostoAdministrativo() {
+		return costoAdministrativo;
+	}
+
+	public void setCostoAdministrativo(BigDecimal costoAdministrativo) {
+		this.costoAdministrativo = costoAdministrativo;
+	}
+	
 }
