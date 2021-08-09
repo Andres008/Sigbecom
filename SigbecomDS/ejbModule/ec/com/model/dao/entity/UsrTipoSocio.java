@@ -38,7 +38,11 @@ public class UsrTipoSocio implements Serializable {
 	//bi-directional many-to-one association to UsrTipoDescuentoSocio
 	@OneToMany(mappedBy="usrTipoSocio", cascade = CascadeType.ALL)
 	private List<UsrTipoDescuentoSocio> usrTipoDescuentoSocios;
-
+	
+	//bi-directional many-to-one association to AutRol
+	@OneToMany(mappedBy="usrTipoSocio")
+	private List<PlanCostosAdm> planCostosAdms;
+	
 	public UsrTipoSocio() {
 	}
 
@@ -140,4 +144,25 @@ public class UsrTipoSocio implements Serializable {
 		return usrTipoDescuentoSocio;
 	}
 
+	public List<PlanCostosAdm> getPlanCostosAdms() {
+		return planCostosAdms;
+	}
+
+	public void setPlanCostosAdms(List<PlanCostosAdm> planCostosAdms) {
+		this.planCostosAdms = planCostosAdms;
+	}
+	
+	public PlanCostosAdm addPlanCostosAdm(PlanCostosAdm planCostosAdm) {
+		getPlanCostosAdms().add(planCostosAdm);
+		planCostosAdm.setUsrTipoSocio(this);
+
+		return planCostosAdm;
+	}
+
+	public PlanCostosAdm removePlanCostosAdm(PlanCostosAdm planCostosAdm) {
+		getPlanCostosAdms().remove(planCostosAdm);
+		planCostosAdm.setUsrTipoSocio(null);
+
+		return planCostosAdm;
+	}
 }

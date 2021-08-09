@@ -127,9 +127,7 @@ public class FrmRegistroOperadora implements Serializable {
 			try {
 				//planPlanMovil.se("ACTIVO");
 				BigDecimal precio= planPlanMovil.getPrecio().setScale(2, RoundingMode.HALF_EVEN);
-				BigDecimal interes= planPlanMovil.getInteres().setScale(2, RoundingMode.HALF_EVEN);
 				planPlanMovil.setPrecio(precio);
-				planPlanMovil.setInteres(interes);
 				managerPlanesMoviles.insertarPlanPlanMovil(planPlanMovil);
 				JSFUtil.crearMensajeINFO("Plan Móvil Registrado correctamente");
 				init();
@@ -154,12 +152,8 @@ public class FrmRegistroOperadora implements Serializable {
 		if(!planEquipo.getDetalle().isEmpty()&&!planEquipo.getEquipo().isEmpty()){
 			try {
 				//planPlanMovil.se("ACTIVO");
-				BigDecimal precioRef= planEquipo.getPrecioRef().setScale(2, RoundingMode.HALF_EVEN);
-				BigDecimal interes= planEquipo.getInteres().setScale(2, RoundingMode.HALF_EVEN);
-				BigDecimal cuotaRef= planEquipo.getCuotaRef().setScale(2, RoundingMode.HALF_EVEN);
-				planEquipo.setPrecioRef(precioRef);
-				planEquipo.setInteres(interes);
-				planEquipo.setCuotaRef(cuotaRef);
+				BigDecimal precio= planEquipo.getPrecio().setScale(2, RoundingMode.HALF_EVEN);
+				planEquipo.setPrecio(precio);
 				managerPlanesMoviles.insertarPlanEquipo(planEquipo);
 				JSFUtil.crearMensajeINFO("Plan Móvil Registrado correctamente");
 				init();

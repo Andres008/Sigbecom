@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://java.sun.com/jsf/html" xmlns:f="http://java.sun.com/jsf/core" xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:p="http://primefaces.org/ui">
+
+<h:head>
+	<f:event type="preRenderView" listener="#{controlFormularios.verificarSesion()}" />
+	<f:facet name="first">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0"/>
+        <meta name="apple-mobile-web-app-capable" content="yes" />
+    </f:facet>
+        <title><ui:insert name="title">Plan Móvil</ui:insert></title>
+        <h:outputScript name="js/nanoscroller.js" library="california-layout" />
+        <h:outputScript name="js/layout.js" library="california-layout" />
+        <h:outputStylesheet library="css" name="theme.css"/>
+</h:head>
+
+<h:body styleClass="main-body">
+
+        <div class="layout-wrapper #{guestPreferences.menuLayout != 'static' ? guestPreferences.menuLayout : null}">
+            <ui:include src="/affordances/megamenu.xhtml" />
+            <ui:include src="/affordances/topbar.xhtml" />
+            <ui:include src="/affordances/sidebar.xhtml" />
+            <ui:include src="/affordances/right-sidebar.xhtml" />
+			<div class="layout-main">
+                <div class="route-bar">
+                    <div class="route-bar-breadcrumb">
+                        <i class="fa fa-home"></i> <span>/PLANES MOVILES/Valores Administrativos</span>
+                        <ui:insert name="viewname" />
+                    </div>
+					<ui:include src="/affordances/route-bar-menu.xhtml" />
+                </div>
+				<div class="layout-main-content" align="center">
+                    <H1>Configuración de Valores Administrativos - Planes Móviles</H1>
+                    <h:form id="form1">
+	                    <p:growl id="growl" showDetail="true" sticky="true" />
+						<p:panel header="Registro de Valores" toggleable="true" collapsed="true">
+							<p:panelGrid columns="2" styleClass="ui-noborder">
+								<p:outputLabel for="tip" value="Tipo Usuario:" />
+								<p:selectOneMenu id="tip" required="true" value="#{frmCostosAdministrativos.idTipoSocio}">
+				                    <f:selectItem itemLabel="Seleccione Tipo" noSelectionOption="true" />
+				                    <f:selectItems value="#{frmCostosAdministrativos.lstTipoSocio}" var="dat"
+				                    			itemLabel="#{dat.nombre}" itemValue="#{dat.idTipoSocio}"/>
+			                    </p:selectOneMenu>
+								<p:outputLabel for="car" value="Costo Cargo:" />
+								<p:inputText id="car" required="true" 
+									value="#{frmCostosAdministrativos.planCostosAdm.cargo}">
+									<p:keyFilter mask="num" />
+								</p:inputText>
+								<p:outputLabel for="adm" value="Costo Administrativo: " />
+								<p:inputText id="adm" required="true"
+									value="#{frmCostosAdministrativos.planCostosAdm.administracion}">
+									<p:keyFilter mask="num" />
+								</p:inputText>
+								<p:outputLabel for="lin" value="Costo Línea: " />
+								<p:inputText id="lin" required="true" cols="102"
+									value="#{frmCostosAdministrativos.planCostosAdm.costoLinea}">
+									<p:keyFilter mask="num" />
+								</p:inputText>	
+							</p:panelGrid>
+							<p:commandButton value="Registrar"
+								action="#{frmCostosAdministrativos.registrarValoresAdm()}" update="@form">
+								<p:confirm header="Confirmación"
+								message="Esta seguro de ingresar la información?"
+								icon="pi pi-exclamation-triangle" />
+							</p:commandButton>
+							<p:confirmDialog global="true" showEffect="fade" hideEffect="fade"
+								responsive="true" width="350">
+								<p:commandButton value="Si" type="button"
+									styleClass="ui-confirmdialog-yes" />
+								<p:commandButton value="No" type="button"
+									styleClass="ui-confirmdialog-no ui-button-flat" />
+							</p:confirmDialog>
+	                    </p:panel>
+	                    <p:separator/>
+	                </h:form>
+	                <h:form id="form2">
+	                	<p:growl id="growl" showDetail="true" sticky="true" />
+	                	<p:panel id="pnl"  header="LISTA DE VALORES ADMINISTRATIVOS">
+						<p:dataTable value="#{frmCostosAdministrativos.lstPlanCostosAdm}"
+							id="tblEmp" editable="true" var="dato" paginator="true"
+							rows="10">
+							<p:ajax event="rowEdit" listener="#{frmCostosAdministrativos.onRowEdit}" update="form2:growl"/>
+            				<p:ajax event="rowEditCancel" listener="#{frmCostosAdministrativos.onRowCancel}" update="form2:growl"/>
+							<p:column headerText="TIPO USUARIO">
+								<h:outputText value="#{dato.usrTipoSocio.nombre}"/>
+							</p:column>
+							<p:column headerText="VALOR CARGO">
+								<p:cellEditor>
+				                    <f:facet name="output">
+				                        <h:outputText value="#{dato.cargo}">
+				                        	<f:convertNumber pattern="#0.00" />
+				                        </h:outputText>
+				                    </f:facet>
+				                    <f:facet name="input">
+				                        <p:inputText value="#{dato.cargo}" style="width:100%"/>
+				                    </f:facet>
+				                </p:cellEditor>
+							</p:column>
+							<p:column headerText="VALOR ADMINISTRACION">
+								<p:cellEditor>
+				                    <f:facet name="output">
+				                        <h:outputText value="#{dato.administracion}">
+				                        	<f:convertNumber pattern="#0.00" />
+				                        </h:outputText>
+				                    </f:facet>
+				                    <f:facet name="input">
+				                        <p:inputText  value="#{dato.administracion}" style="width:100%"/>
+				                    </f:facet>
+				                </p:cellEditor>
+							</p:column>
+							<p:column headerText="COSTO LINEA">
+								<p:cellEditor>
+				                    <f:facet name="output">
+				                        <h:outputText value="#{dato.costoLinea}">
+				                        	<f:convertNumber pattern="#0.00" />
+				                        </h:outputText>
+				                    </f:facet>
+				                    <f:facet name="input">
+				                        <p:inputText  value="#{dato.costoLinea}" style="width:100%"/>
+				                    </f:facet>
+				                </p:cellEditor>
+							</p:column>
+							<p:column headerText="ESTADO">
+								<p:cellEditor>
+				                    <f:facet name="output">
+				                        <h:outputText value="#{dato.estado}"/>
+				                    </f:facet>
+				                    <f:facet name="input">
+				                        <h:selectOneMenu id="option" value="#{dato.estado}" style="width:100%">
+									       <f:selectItem itemLabel="Seleccione Valor" noSelectionOption="true"/>
+									       <f:selectItem itemLabel="ACTIVO" itemValue="ACTIVO"/>
+									       <f:selectItem itemLabel="INACTIVO" itemValue="INACTIVO"/>
+									    </h:selectOneMenu>
+				                    </f:facet>
+				                </p:cellEditor>
+							</p:column>
+							<p:column width="6">
+									<p:rowEditor editTitle="Edit Row" cancelTitle="Cancel Edit" saveTitle="Save Row"/>
+				            </p:column>
+						</p:dataTable>
+					</p:panel>
+	                </h:form>
+<!-- Inicio de Dialogs -->
+
+<!-- Fin de Dialogs -->
+                </div>
+				<ui:include src="/affordances/footer.xhtml" />
+            </div>
+        </div>
+		
+        <p:ajaxStatus style="width:32px;height:32px;position:fixed;right:7px;bottom:7px">
+           <f:facet name="start">
+               <i class="fa fa-circle-o-notch fa-spin ajax-loader" aria-hidden="true"></i>
+           </f:facet>
+
+           <f:facet name="complete">
+               <h:outputText value="" />
+           </f:facet>
+       </p:ajaxStatus>
+
+        <h:outputStylesheet name="css/nanoscroller.css" library="california-layout" />
+        <h:outputStylesheet name="css/layout-#{guestPreferences.theme}.css" library="california-layout" />
+    </h:body>
+</html>

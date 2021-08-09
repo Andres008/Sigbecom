@@ -25,7 +25,7 @@ public class ControlFormularios implements Serializable{
 	 		//TppContratista tppContratista = (TppContratista) context.getExternalContext().getSessionMap().get("tppContratista");
 	 		Credencial credencial = (Credencial) context.getExternalContext().getSessionMap().get("credencial");
 	 		if(credencial==null) {
-				FacesContext.getCurrentInstance().getExternalContext().redirect("./../access.xhtml");
+				FacesContext.getCurrentInstance().getExternalContext().redirect("/SigbecomWeb/faces/access.xhtml");
 			}
 		} catch (IOException e) {
 			// TODO Auto-generated catch block

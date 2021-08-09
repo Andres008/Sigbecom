@@ -15,11 +15,13 @@ import ec.com.model.dao.entity.ConvServicio;
 import ec.com.model.dao.entity.DescEstadoDescuento;
 import ec.com.model.dao.entity.PlanContacto;
 import ec.com.model.dao.entity.PlanContratoComite;
+import ec.com.model.dao.entity.PlanCostosAdm;
 import ec.com.model.dao.entity.PlanEquipo;
 import ec.com.model.dao.entity.PlanOperadora;
 import ec.com.model.dao.entity.PlanPago;
 import ec.com.model.dao.entity.PlanPlanMovil;
 import ec.com.model.dao.entity.UsrSocio;
+import ec.com.model.dao.entity.UsrTipoSocio;
 import ec.com.model.dao.manager.ManagerDAOSegbecom;
 
 /**
@@ -99,18 +101,21 @@ public class ManagerPlanesMoviles {
     	return planMovil;
     }
     @SuppressWarnings("unchecked")
-   	public List<PlanPlanMovil> findAllPlanesMoviles() throws Exception{
-       	List<PlanPlanMovil> lstPlanMovil = managerDAOSegbecom.findAll(PlanPlanMovil.class);
+   	public List<PlanPlanMovil> findAllPlanesMovilesByIdOperadora(Long idOperadora) throws Exception{
+       	List<PlanPlanMovil> lstPlanMovil = managerDAOSegbecom.findWhere(PlanPlanMovil.class, "o.planOperadora.idPlanEmpresa='"+idOperadora+"'", null);
        	return lstPlanMovil;
     }
     @SuppressWarnings("unchecked")
-   	public List<PlanEquipo> findAllEquipos() throws Exception{
-       	List<PlanEquipo> lstPlanEquipo = managerDAOSegbecom.findAll(PlanEquipo.class);
+   	public List<PlanEquipo> findAllEquiposByIdOperadora(Long idOperadora) throws Exception{
+       	List<PlanEquipo> lstPlanEquipo = managerDAOSegbecom.findWhere(PlanEquipo.class, "o.planOperadora.idPlanEmpresa='"+idOperadora+"'", null);
        	return lstPlanEquipo;
     }
-    
+    @SuppressWarnings("unchecked")
+   	public List<PlanOperadora> findAllOperadoras() throws Exception{
+       	List<PlanOperadora> lstPlanOperadora = managerDAOSegbecom.findAll(PlanOperadora.class);
+       	return lstPlanOperadora;
+    }
    	
-	@SuppressWarnings("unchecked")
 	public List<UsrSocio> findAllUsuariosSocios() throws Exception{
    		List<UsrSocio> lstUserSocio = findAllUsuarios();
    		//List<UsrSocio> lstUserSocio = managerDAOSegbecom.findWhere(UsrSocio.class, "o.usrTipoSocio.idTipoSocio <> '4'", null);
@@ -154,4 +159,33 @@ public class ManagerPlanesMoviles {
 			throw new Exception("Más de un parametro encontrado.");
 		return lstEstadoDes.get(0);
 	}
+    @SuppressWarnings("unchecked")
+   	public List<UsrTipoSocio> findAllUsrTipoSocioEstadoActivo() throws Exception{
+       	List<UsrTipoSocio> lstUsrTipoSocio = managerDAOSegbecom.findWhere(UsrTipoSocio.class, "o.estado='A'", null);
+       	return lstUsrTipoSocio;
+    }
+    
+   	public UsrTipoSocio findByIdTipoSocio(long idTipoSocio) throws Exception{
+       	UsrTipoSocio usrTipoSocio = (UsrTipoSocio) managerDAOSegbecom.findById(UsrTipoSocio.class, idTipoSocio);
+       	return usrTipoSocio;
+    }
+   	
+    public void insertarPlanCostosAdm(PlanCostosAdm planCostosAdm) throws Exception {
+    	managerDAOSegbecom.insertar(planCostosAdm);
+    }
+    
+    @SuppressWarnings("unchecked")
+	public List<PlanCostosAdm> findAllPlanCostosAdm() throws Exception {
+    	List<PlanCostosAdm> lstPlanCostosAdm = managerDAOSegbecom.findAll(PlanCostosAdm.class);
+    	return lstPlanCostosAdm;
+    }
+    @SuppressWarnings("unchecked")
+	public PlanCostosAdm findPlanCostosAdmBytipoUsr(String tipoUsr) throws Exception {
+    	List<PlanCostosAdm> lstPlanCostosAdm = managerDAOSegbecom.findWhere(PlanCostosAdm.class, "o.usrTipoSocio.nombre ='"+tipoUsr+"'", null);
+    	if(lstPlanCostosAdm!=null && lstPlanCostosAdm.size()==1) {
+    		return lstPlanCostosAdm.get(0);
+    	}
+    	else
+    		return null;
+    }
 }

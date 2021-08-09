@@ -2,6 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://java.sun.com/jsf/html" xmlns:f="http://java.sun.com/jsf/core" xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:p="http://primefaces.org/ui">
 
 <h:head>
+	<f:event type="preRenderView" listener="#{controlFormularios.verificarSesion()}" />
 	<f:facet name="first">
         <meta http-equiv="X-UA-Compatible" content="IE=edge" />
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
@@ -33,46 +34,47 @@
                     <H1>Gestión Planes Móviles</H1>
                     <h:form id="form1">
 	                    <p:growl id="growl" showDetail="true" sticky="true" />
-						<p:panel header="Registro Planes Moviles" toggleable="true" collapsed="true">
-							<p:panelGrid columns="4" styleClass="ui-noborder" layout="grid"
+						<p:panel id="pnls" header="Registro Planes Moviles" toggleable="true" collapsed="#{frmAplicarPlanMovil.pnlDatos}">
+							<p:panelGrid columns="3" styleClass="ui-noborder" layout="grid"
 								columnClasses="ui-g-12 ui-md-6 ui-lg-4, ui-g-12 ui-md-6 ui-lg-4, ui-g-12 ui-md-6 ui-lg-4">
 								<p:outputLabel for="nom" value="Seleccione Cliente:" />
 								<p:selectOneMenu id="nom" value="#{frmAplicarPlanMovil.cedulaSocio}"
 												 filter="true" filterMatchMode="contains">
-			                    <f:selectItem itemLabel="Seleccione Cliente"
+			                    	<f:selectItem itemLabel="Seleccione Cliente"
 										noSelectionOption="true" />
-			                    <f:selectItems value="#{frmAplicarPlanMovil.lstUsrSocio}" var="dat"
+			                    	<f:selectItems value="#{frmAplicarPlanMovil.lstUsrSocio}" var="dat"
 			                    			itemLabel="#{dat.cedulaSocio} #{dat.gesPersona.apellidos} #{dat.gesPersona.nombres}" itemValue="#{dat.cedulaSocio}"/>
 			                    </p:selectOneMenu>
 								<p:commandButton icon="fa fa-handshake-o"  value="Agregar Cliente" update="@form" style="width:170px;"
 	                    			action="#{frmAplicarPlanMovil.cargarContrato()}"/>
+	                    		
+	                    		<p:outputLabel for="ope" value="Seleccione Operadora:" />
+								<p:selectOneMenu id="ope" value="#{frmAplicarPlanMovil.idOperadora}">
+			                    	<f:selectItem itemLabel="Seleccione Operadoras"
+										noSelectionOption="true" />
+			                    	<f:selectItems value="#{frmAplicarPlanMovil.lstPlanOperadoras}" var="dat"
+			                    			itemLabel="#{dat.empresa}" itemValue="#{dat.idPlanEmpresa}"/>
+			                    	<p:ajax event="change" update="form1"
+        								listener="#{frmAplicarPlanMovil.cargarPlanesAndEquiposMoviles()}" />
+			                    </p:selectOneMenu>
+								<p:outputLabel/>
+	                    		
 							</p:panelGrid>
-							<p:panelGrid columns="4" styleClass="ui-noborder" layout="grid" rendered="#{frmAplicarPlanMovil.pnlPlanMovil}"
+							<p:panelGrid id="pnlPlan" columns="4" styleClass="ui-noborder" layout="grid" rendered="#{frmAplicarPlanMovil.pnlPlanMovil}"
 								columnClasses="ui-g-12 ui-md-6 ui-lg-4, ui-g-12 ui-md-6 ui-lg-4, ui-g-12 ui-md-6 ui-lg-4">
 								<p:outputLabel  value="Seleccionar Plan Movil:" />
 								<p:selectOneMenu id="plan" value="#{frmAplicarPlanMovil.idPlanMovil}"
 												 filter="true" filterMatchMode="contains">
-			                    	<f:selectItem itemLabel="Seleccione Cliente" noSelectionOption="true" />
+			                    	<f:selectItem itemLabel="Seleccione plan móvil" noSelectionOption="true" />
 			                    	<f:selectItems value="#{frmAplicarPlanMovil.lstPlanMovils}" var="dat"
 			                    			itemLabel="#{dat.plan} #{dat.detalle}" itemValue="#{dat.idPlanMovil}"/>
 			                    </p:selectOneMenu>
 								<p:commandButton icon="fa fa-handshake-o"  value="Agregar Plan" update="@form" style="width:170px;"
 	                    			action="#{frmAplicarPlanMovil.cargarPlanMovil()}"/>
 							</p:panelGrid>
-							<p:panelGrid  columns="4" styleClass="ui-noborder" layout="grid" rendered="#{frmAplicarPlanMovil.pnlEquipo}"
-								columnClasses="ui-g-12 ui-md-6 ui-lg-4, ui-g-12 ui-md-6 ui-lg-4, ui-g-12 ui-md-6 ui-lg-4">
-								<p:outputLabel  value="Seleccionar Equipo Movil:" />
-								<p:selectOneMenu id="equipo" value="#{frmAplicarPlanMovil.idEquipo}"
-												 filter="true" filterMatchMode="contains">
-			                    	<f:selectItem itemLabel="Seleccione Equipo Móvil" noSelectionOption="true" />
-			                    	<f:selectItems value="#{frmAplicarPlanMovil.lstEquipos}" var="dat"
-			                    			itemLabel="#{dat.equipo} #{dat.detalle}" itemValue="#{dat.idEquipo}"/>
-			                    </p:selectOneMenu>
-								<p:commandButton icon="fa fa-handshake-o"  value="Agregar Equipo" update="@form" style="width:170px;"
-	                    			action="#{frmAplicarPlanMovil.cargarEquipoMovil()}"/>
-							</p:panelGrid>
+							
 							<p:separator/>
-							<p:panelGrid columns="3" styleClass="ui-noborder"
+							<p:panelGrid columns="1" styleClass="ui-noborder"
 										 columnClasses="ui-g-12 ui-md-6 ui-lg-4, ui-g-12 ui-md-6 ui-lg-4, ui-g-12 ui-md-6 ui-lg-4">
 								<p:panelGrid columns="2" styleClass="ui-noborder" rendered="#{frmAplicarPlanMovil.panelCliente}">
 									<p:outputLabel  value="Cedula:" />
@@ -80,39 +82,21 @@
 									<p:outputLabel  value="Nombres:" />
 									<p:outputLabel  value="#{frmAplicarPlanMovil.planContratoComite.usrSocio.gesPersona.apellidos} #{frmAplicarPlanMovil.planContratoComite.usrSocio.gesPersona.nombres}"/>
 									<p:outputLabel for="cel"  value="Número de Celular:" />
-									<p:inputText id="cel" required="true" value="#{frmAplicarPlanMovil.planContratoComite.lineaTelefono}"/>
-									<p:outputLabel for="feCli"  value="Fecha Contrato:" />
-									<p:datePicker id="feCli" required="true" showIcon="true" size="15"
+									<p:inputMask id="cel" value="#{frmAplicarPlanMovil.planContratoComite.lineaTelefono}" mask="9999999999" validateMask="true"/>
+									<p:outputLabel for="feIni"  value="Fecha Contrato:" />
+									<p:datePicker id="feIni" showIcon="true" size="15"
 										 value="#{frmAplicarPlanMovil.planContratoComite.fechaContrato}" />
+									<p:outputLabel for="feFin"  value="Fecha Fin Contrato:" />
+									<p:datePicker id="feFin" showIcon="true" size="15"
+										 value="#{frmAplicarPlanMovil.planContratoComite.fechaFinContrato}" />
 								</p:panelGrid>
 								<p:panelGrid columns="2" styleClass="ui-noborder" rendered="#{frmAplicarPlanMovil.panelPlan}">
 									<p:outputLabel  value="Plan:" />
 									<p:outputLabel  value="#{frmAplicarPlanMovil.planContratoComite.planPlanMovil.plan}"/>
 									<p:outputLabel  value="Detalle:" />
 									<p:outputLabel  value="#{frmAplicarPlanMovil.planContratoComite.planPlanMovil.detalle}"/>
-									<p:outputLabel for="prePlan"  value="Precio:" />
-									<p:inputText id="prePlan" value="#{frmAplicarPlanMovil.planContratoComite.valorPlanMovil}">
-										<f:convertNumber pattern="#0.00" />
-									</p:inputText>
-									<p:outputLabel for="inPlan" value="Interes:" />
-									<p:inputText id="inPlan" value="#{frmAplicarPlanMovil.planContratoComite.interesPlanMovil}">
-										<f:convertNumber pattern="#0.00" />
-									</p:inputText>
 								</p:panelGrid>		
-								<p:panelGrid columns="2" styleClass="ui-noborder" rendered="#{frmAplicarPlanMovil.panelEquipo}">
-									<p:outputLabel  value="Equipo:" />
-									<p:outputLabel  value="#{frmAplicarPlanMovil.planContratoComite.planEquipo.equipo}"/>
-									<p:outputLabel  value="Detalle:" />
-									<p:outputLabel  value="#{frmAplicarPlanMovil.planContratoComite.planEquipo.detalle}"/>
-									<p:outputLabel for="preMov"  value="Precio:" />
-									<p:inputText id="preMov" required="true" value="#{frmAplicarPlanMovil.planContratoComite.valorEquipo}">
-										<f:convertNumber pattern="#0.00" />
-									</p:inputText>
-									<p:outputLabel for="inMov"  value="Interes:" />
-									<p:inputText id="inMov" required="true" value="#{frmAplicarPlanMovil.planContratoComite.interesEquipo}">
-										<f:convertNumber pattern="#0.00" />
-									</p:inputText>
-								</p:panelGrid>
+								
 							</p:panelGrid>
 							<p:panelGrid columns="2" styleClass="ui-noborder">
 								<p:commandButton value="Cancelar"
@@ -157,6 +141,9 @@
 							<p:column headerText="NOMBRES" filterBy="#{dato.gesPersona.nombres}">
 								<h:outputText value="#{dato.gesPersona.nombres}"/>
 							</p:column>
+							<p:column headerText="TIPO SOCIO">
+								<h:outputText value="#{dato.usrTipoSocio.nombre}"/>
+							</p:column>
 							
 							<p:rowExpansion>
 								<p:panel>
@@ -167,115 +154,39 @@
 										</f:facet>
 										<p:ajax event="rowEdit" listener="#{frmAplicarPlanMovil.onRowEdit}" update="form2:growl"/>
             							<p:ajax event="rowEditCancel" listener="#{frmAplicarPlanMovil.onRowCancel}" update="form2:growl"/>
-										<p:column headerText="FECHA CONTRATO" >
-											<h:outputText value="#{con.fechaContrato}" />
-										</p:column>
+										<p:column headerText="OPERADORA" >
+											<h:outputText value="#{con.planPlanMovil.planOperadora.empresa}" />
+										</p:column>										
 										<p:column headerText="PLAN MOVIL" >
 											<h:outputText value="#{con.planPlanMovil.plan}" />
 										</p:column>
-										<p:column headerText="VALOR PLAN">
-								           <p:cellEditor>
+										<p:column headerText="DETALLE" >
+											<h:outputText value="#{con.fechaContrato}" />
+										</p:column>
+										<p:column headerText="FECHA CONTRATO" >
+											<h:outputText value="#{con.fechaContrato}" />
+										</p:column>
+										<p:column headerText="FECHA FIN" >
+											<h:outputText value="#{con.fechaFinContrato}" />
+										</p:column>
+										<p:column headerText="LINEA" >
+											<h:outputText value="#{con.lineaTelefono}" />
+										</p:column>
+										<p:column headerText="ESTADO">
+											<p:cellEditor>
 							                    <f:facet name="output">
-							                        <h:outputText value="#{con.valorPlanMovil}">
-							                        	<f:convertNumber pattern="#0.00" />
-							                        </h:outputText>
+							                        <h:outputText value="#{con.estado}"/>
 							                    </f:facet>
 							                    <f:facet name="input">
-							                        <p:inputText value="#{con.valorPlanMovil}" style="width:100%">
-							                        	<f:convertNumber pattern="#0.00" />
-							                        </p:inputText>
+							                        <h:selectOneMenu id="option" value="#{con.estado}" style="width:100%">
+												       <f:selectItem itemLabel="Seleccione Valor" noSelectionOption="true"/>
+												       <f:selectItem itemLabel="ACTIVO" itemValue="ACTIVO"/>
+												       <f:selectItem itemLabel="INACTIVO" itemValue="INACTIVO"/>
+												    </h:selectOneMenu>
 							                    </f:facet>
 							                </p:cellEditor>
-								        </p:column>
-								        <p:column headerText="INTERES PLAN">
-								           	<p:cellEditor>
-								           		<f:facet name="output">
-							                        <h:outputText value="#{con.interesPlanMovil}">
-										           		<f:convertNumber pattern="#0.00" />
-										           </h:outputText>
-							                    </f:facet>
-							                    <f:facet name="input">
-							                        <p:inputText value="#{con.interesPlanMovil}" style="width:100%">
-							                        	<f:convertNumber pattern="#0.00" />
-							                        </p:inputText>
-							                    </f:facet>
-							            	</p:cellEditor>
-								        </p:column>
-								        <p:column headerText="ESTADO PLAN">
-								           	<p:cellEditor>
-								           		<f:facet name="output">
-							                        <h:outputText value="#{con.estadoPlanMovil}"/>
-										        </f:facet>
-							                    <f:facet name="input">
-							                        <h:selectOneMenu id="option" value="#{con.estadoPlanMovil}" style="width:100%">
-									                   	<f:selectItem itemLabel="Seleccione Valor" noSelectionOption="true"/>
-									                   	<f:selectItem itemLabel="ACTIVO" itemValue="ACTIVO"/>
-									                    <f:selectItem itemLabel="INACTIVO" itemValue="INACTIVO"/>
-									                </h:selectOneMenu>
-							                    </f:facet>
-							            	</p:cellEditor>
-								        </p:column>
-								        <p:column headerText="EQUIPO MOVIL">
-								           <h:outputText value="#{con.planEquipo.equipo}"/>
-								        </p:column>
-								        <p:column headerText="VALOR EQUIPO">
-								           <p:cellEditor>
-							                    <f:facet name="output">
-							                        <h:outputText value="#{con.valorEquipo}">
-							                        	<f:convertNumber pattern="#0.00" />
-							                        </h:outputText>
-							                    </f:facet>
-							                    <f:facet name="input">
-							                        <p:inputText value="#{con.valorEquipo}" style="width:100%">
-							                        	<f:convertNumber pattern="#0.00" />
-							                        </p:inputText>
-							                    </f:facet>
-							                </p:cellEditor>
-								        </p:column>
-								        <p:column headerText="INTERES EQUIPO">
-								           
-								           <p:cellEditor>
-								           		<f:facet name="output">
-							                        <h:outputText value="#{con.interesEquipo}">
-										           		<f:convertNumber pattern="#0.00" />
-										           </h:outputText>
-							                    </f:facet>
-							                    <f:facet name="input">
-							                        <p:inputText value="#{con.interesEquipo}" style="width:100%">
-							                        	<f:convertNumber pattern="#0.00" />
-							                        </p:inputText>
-							                    </f:facet>
-							            	</p:cellEditor>
-								        </p:column>
-								        <p:column headerText="ESTADO PLAN">
-								          	<p:cellEditor>
-								           		<f:facet name="output">
-							                         <h:outputText value="#{con.estadoEquipo}"/>
-										        </f:facet>
-							                    <f:facet name="input">
-							                        <h:selectOneMenu  value="#{con.estadoEquipo}" style="width:100%">
-									                   	<f:selectItem itemLabel="Seleccione Valor" noSelectionOption="true"/>
-									                   	<f:selectItem itemLabel="ACTIVO" itemValue="ACTIVO"/>
-									                    <f:selectItem itemLabel="INACTIVO" itemValue="INACTIVO"/>
-									                </h:selectOneMenu>
-							                    </f:facet>
-							            	</p:cellEditor>
-								        </p:column>
-								        <p:column headerText="VALOR NO SOCIO">
-								        	<p:cellEditor>
-							                    <f:facet name="output">
-							                        <h:outputText value="#{con.valorNoSocio}">
-							                        	<f:convertNumber pattern="#0.00" />
-							                        </h:outputText>
-							                    </f:facet>
-							                    <f:facet name="input">
-							                        <p:inputText value="#{con.valorNoSocio}" style="width:100%">
-							                        	<f:convertNumber pattern="#0.00" />
-							                        </p:inputText>
-							                    </f:facet>
-							                </p:cellEditor>
-								        </p:column>
-								        <p:column width="6">
+										</p:column>
+										<p:column width="6">
 												<p:rowEditor editTitle="Edit Row" cancelTitle="Cancel Edit" saveTitle="Save Row"/>
 							            </p:column>
 									</p:dataTable>
@@ -326,61 +237,7 @@
 		</p:panel>
 	</h:form>
 </p:dialog>
-<p:dialog
-	header="REGISTRO PLANES MOVILES"  resizable="false" closable="true"
-	widgetVar="dlgSer" modal="true" position="center"
-	hideEffect="fade" >
-	<h:form id="frmSer">
-		<p:messages id="msgSer" closable="true" showDetail="true"/>
-		<p:panelGrid columns="2">
-			<p:outputLabel for="ser" value="Plan Móvil:"/>
-			<p:inputText id="ser" value="#{frmRegistroOperadora.planPlanMovil.plan}" />
-			<p:outputLabel for="det" value="Detalle:"/>
-			<p:inputText id="det" value="#{frmRegistroOperadora.planPlanMovil.detalle}"/>
-			<p:outputLabel for="mon" value="Precio:"/>
-			<p:inputText id="mon" value="#{frmRegistroOperadora.planPlanMovil.precio}"/>
-			<p:outputLabel for="in" value="Interes:"/>
-			<p:inputText id="in" value="#{frmRegistroOperadora.planPlanMovil.interes}"/>
-		</p:panelGrid>
-		<p:panel>
-			<h:panelGrid columns="2" cellpadding="10">
-				<p:commandButton value="Cancelar" onclick="PF('dlgReg').hide();" update="form2 frmSer"
-					action="#{frmRegistroOperadora.init()}"/>
-				<p:commandButton value="Registrar"
-					action="#{frmRegistroOperadora.registrarPlanMovil()}" update="frmSer"/>
-			</h:panelGrid>
-		</p:panel>
-	</h:form>
-</p:dialog>
 
-<p:dialog
-	header="REGISTRO EQUIPOS MOVILES"  resizable="false" closable="true"
-	widgetVar="dlgEq" modal="true" position="center"
-	hideEffect="fade" >
-	<h:form id="frmEq">
-		<p:messages id="msgEq" closable="true" showDetail="true"/>
-		<p:panelGrid columns="2">
-			<p:outputLabel for="eq" value="Equipo Móvil:"/>
-			<p:inputText id="eq" value="#{frmRegistroOperadora.planEquipo.equipo}" />
-			<p:outputLabel for="det" value="Detalle:"/>
-			<p:inputText id="det" value="#{frmRegistroOperadora.planEquipo.detalle}"/>
-			<p:outputLabel for="mon" value="Precio Referencial:"/>
-			<p:inputText id="mon" value="#{frmRegistroOperadora.planEquipo.precioRef}"/>
-			<p:outputLabel for="cuo" value="Cuota Referencial:"/>
-			<p:inputText id="cuo" value="#{frmRegistroOperadora.planEquipo.cuotaRef}"/>
-			<p:outputLabel for="in" value="Interes:"/>
-			<p:inputText id="in" value="#{frmRegistroOperadora.planEquipo.interes}"/>
-		</p:panelGrid>
-		<p:panel>
-			<h:panelGrid columns="2" cellpadding="10">
-				<p:commandButton value="Cancelar" onclick="PF('dlgEq').hide();" update="form2 frmEq"
-					action="#{frmRegistroOperadora.init()}"/>
-				<p:commandButton value="Registrar"
-					action="#{frmRegistroOperadora.registrarEquipoMovil()}" update="frmEq"/>
-			</h:panelGrid>
-		</p:panel>
-	</h:form>
-</p:dialog>
 
 <!-- Fin de Dialogs -->
                 </div>

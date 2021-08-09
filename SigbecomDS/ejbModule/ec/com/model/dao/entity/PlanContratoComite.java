@@ -27,30 +27,22 @@ public class PlanContratoComite implements Serializable {
 	@Column(name="fecha_contrato")
 	private Date fechaContrato;
 	
-	@Column(name="interes_plan_movil")
-	private BigDecimal interesPlanMovil;
-
-	@Column(name="estado_plan_movil")
-	private String estadoPlanMovil;
+	@Temporal(TemporalType.DATE)
+	@Column(name="fecha_fin_contrato")
+	private Date fechaFinContrato;
 
 	@Column(name="linea_telefono")
 	private String lineaTelefono;
-
-	@Column(name="valor_plan_movil")
-	private BigDecimal valorPlanMovil;
 	
-	@Column(name="valor_equipo")
-	private BigDecimal valorEquipo;
-
-	@Column(name="interes_equipo")
-	private BigDecimal interesEquipo;
+	@Column(name="valor_plan")
+	private BigDecimal valorPlan;
 	
-	@Column(name="valor_no_socio")
-	private BigDecimal valorNoSocio;
+	@Column(name="costo_administrativo")
+	private BigDecimal costoAdministrativo;
 	
-	@Column(name="estado_equipo")
-	private String estadoEquipo;
-	//bi-directional many-to-one association to PlanEquipo
+	@Column(name="estado")
+	private String estado;
+	
 	@ManyToOne
 	@JoinColumn(name="id_equipo")
 	private PlanEquipo planEquipo;
@@ -141,60 +133,36 @@ public class PlanContratoComite implements Serializable {
 		return planPago;
 	}
 
-	public String getEstadoPlanMovil() {
-		return estadoPlanMovil;
+	public Date getFechaFinContrato() {
+		return fechaFinContrato;
 	}
 
-	public void setEstadoPlanMovil(String estadoPlanMovil) {
-		this.estadoPlanMovil = estadoPlanMovil;
+	public void setFechaFinContrato(Date fechaFinContrato) {
+		this.fechaFinContrato = fechaFinContrato;
 	}
 
-	public BigDecimal getValorPlanMovil() {
-		return valorPlanMovil;
+	public String getEstado() {
+		return estado;
 	}
 
-	public void setValorPlanMovil(BigDecimal valorPlanMovil) {
-		this.valorPlanMovil = valorPlanMovil;
+	public void setEstado(String estado) {
+		this.estado = estado;
 	}
 
-	public BigDecimal getValorEquipo() {
-		return valorEquipo;
+	public BigDecimal getValorPlan() {
+		return valorPlan;
 	}
 
-	public void setValorEquipo(BigDecimal valorEquipo) {
-		this.valorEquipo = valorEquipo;
+	public void setValorPlan(BigDecimal valorPlan) {
+		this.valorPlan = valorPlan;
 	}
 
-	public BigDecimal getInteresEquipo() {
-		return interesEquipo;
+	public BigDecimal getCostoAdministrativo() {
+		return costoAdministrativo;
 	}
 
-	public void setInteresEquipo(BigDecimal interesEquipo) {
-		this.interesEquipo = interesEquipo;
-	}
-
-	public String getEstadoEquipo() {
-		return estadoEquipo;
-	}
-
-	public void setEstadoEquipo(String estadoEquipo) {
-		this.estadoEquipo = estadoEquipo;
-	}
-
-	public BigDecimal getInteresPlanMovil() {
-		return interesPlanMovil;
-	}
-
-	public void setInteresPlanMovil(BigDecimal interesPlanMovil) {
-		this.interesPlanMovil = interesPlanMovil;
-	}
-
-	public BigDecimal getValorNoSocio() {
-		return valorNoSocio;
-	}
-
-	public void setValorNoSocio(BigDecimal valorNoSocio) {
-		this.valorNoSocio = valorNoSocio;
+	public void setCostoAdministrativo(BigDecimal costoAdministrativo) {
+		this.costoAdministrativo = costoAdministrativo;
 	}
 	
 }

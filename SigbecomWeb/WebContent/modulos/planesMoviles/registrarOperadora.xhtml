@@ -2,6 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://java.sun.com/jsf/html" xmlns:f="http://java.sun.com/jsf/core" xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:p="http://primefaces.org/ui">
 
 <h:head>
+	<f:event type="preRenderView" listener="#{controlFormularios.verificarSesion()}" />
 	<f:facet name="first">
         <meta http-equiv="X-UA-Compatible" content="IE=edge" />
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
@@ -107,21 +108,64 @@
 								<p:panel>
 									<p:dataTable value="#{dato.planContactos}"
 													id="tblCon" editable="true" var="con">
+										<p:ajax event="rowEdit" listener="#{frmRegistroOperadora.onRowEdit}" update="form2:growl"/>
+            							<p:ajax event="rowEditCancel" listener="#{frmRegistroOperadora.onRowCancel}" update="form2:growl"/>
 										<f:facet name="header">
 								            LISTA DE CONTACTOS
 										</f:facet>
 										<p:column headerText="NOMBRES" >
-											<h:outputText value="#{con.apellidos} #{con.nombres}" />
+											<p:cellEditor>
+							                    <f:facet name="output">
+							                        <h:outputText value="#{con.nombres}" />
+							                    </f:facet>
+							                    <f:facet name="input">
+							                        <p:inputText  value="#{con.nombres}" style="width:100%"/>
+							                    </f:facet>
+							                </p:cellEditor>
+										</p:column>
+										<p:column headerText="APELLIDOS" >
+											<p:cellEditor>
+							                    <f:facet name="output">
+							                        <h:outputText value="#{con.apellidos}" />
+							                    </f:facet>
+							                    <f:facet name="input">
+							                        <p:inputText  value="#{con.apellidos}" style="width:100%"/>
+							                    </f:facet>
+							                </p:cellEditor>
 										</p:column>
 										<p:column headerText="CARGO">
-								           <h:outputText value="#{con.cargo}"/>
+								           <p:cellEditor>
+							                    <f:facet name="output">
+							                        <h:outputText value="#{con.cargo}"/>
+							                    </f:facet>
+							                    <f:facet name="input">
+							                        <p:inputText  value="#{con.cargo}" style="width:100%"/>
+							                    </f:facet>
+							                </p:cellEditor>
 								        </p:column>
-								        <p:column headerText="CELULAR">
-								           <h:outputText value="#{con.celular}"/>
+								        <p:column headerText="CONTACTO">
+								           <p:cellEditor>
+							                    <f:facet name="output">
+							                        <h:outputText value="#{con.celular}"/>
+							                    </f:facet>
+							                    <f:facet name="input">
+							                        <p:inputText  value="#{con.celular}" style="width:100%"/>
+							                    </f:facet>
+							                </p:cellEditor>
 								        </p:column>
 								        <p:column headerText="CORREO">
-								           <h:outputText value="#{con.email}"/>
+								           <p:cellEditor>
+							                    <f:facet name="output">
+							                        <h:outputText value="#{con.email}"/>
+							                    </f:facet>
+							                    <f:facet name="input">
+							                        <p:inputText  value="#{con.email}" style="width:100%"/>
+							                    </f:facet>
+							                </p:cellEditor>
 								        </p:column>
+								        <p:column width="6">
+											<p:rowEditor editTitle="Edit Row" cancelTitle="Cancel Edit" saveTitle="Save Row"/>
+							            </p:column>
 									</p:dataTable>
 								</p:panel>
 								<p:panel style="text-align:right">
@@ -132,25 +176,48 @@
 								<p:panel>
 									<p:dataTable value="#{dato.planPlanMovils}"
 													id="tblSer" editable="true" var="ser">
+										<p:ajax event="rowEdit" listener="#{frmRegistroOperadora.onRowEdit}" update="form2:growl"/>
+            							<p:ajax event="rowEditCancel" listener="#{frmRegistroOperadora.onRowCancel}" update="form2:growl"/>
 										<f:facet name="header">
 								            LISTA DE PLANES MOVILES
 										</f:facet>
 										<p:column headerText="SERVICIO">
-								            <h:outputText value="#{ser.plan}"/>
+								            <p:cellEditor>
+							                    <f:facet name="output">
+							                        <h:outputText value="#{ser.plan}"/>
+							                    </f:facet>
+							                    <f:facet name="input">
+							                        <p:inputText  value="#{ser.plan}" style="width:100%"/>
+							                    </f:facet>
+							                </p:cellEditor>
 								        </p:column>
 								        <p:column headerText="DETALLE">
-								            <h:outputText value="#{ser.detalle}"/>
+								           	<p:cellEditor>
+							                    <f:facet name="output">
+							                        <h:outputText value="#{ser.detalle}"/>
+							                    </f:facet>
+							                    <f:facet name="input">
+							                        <p:inputText  value="#{ser.detalle}" style="width:100%"/>
+							                    </f:facet>
+							                </p:cellEditor>
 								        </p:column>
 								        <p:column headerText="PRECIO">
-								            <h:outputText value="#{ser.precio}">
-								            	<f:convertNumber pattern="#0.00" />
-								            </h:outputText>
+								            <p:cellEditor>
+							                    <f:facet name="output">
+							                        <h:outputText value="#{ser.precio}">
+										            	<f:convertNumber pattern="#0.00" />
+										            </h:outputText>
+							                    </f:facet>
+							                    <f:facet name="input">
+							                        <p:inputText  value="#{ser.precio}" style="width:100%">
+							                        	<p:keyFilter mask="num" />
+							                        </p:inputText>
+							                    </f:facet>
+							                </p:cellEditor>
 								        </p:column>
-								        <p:column headerText="INTERES">
-								            <h:outputText value="#{ser.interes}">
-								            	<f:convertNumber pattern="#0.00" />
-								            </h:outputText>
-								        </p:column>
+								       	<p:column width="6">
+											<p:rowEditor editTitle="Edit Row" cancelTitle="Cancel Edit" saveTitle="Save Row"/>
+							            </p:column>
 									</p:dataTable>
 								</p:panel>
 								<p:panel style="text-align:right">
@@ -161,31 +228,46 @@
 								<p:panel>
 									<p:dataTable value="#{dato.planEquipos}"
 													id="tblEq" editable="true" var="ser">
+										<p:ajax event="rowEdit" listener="#{frmRegistroOperadora.onRowEdit}" update="form2:growl"/>
+            							<p:ajax event="rowEditCancel" listener="#{frmRegistroOperadora.onRowCancel}" update="form2:growl"/>
 										<f:facet name="header">
 								            LISTA DE EQUIPOS MOVILES
 										</f:facet>
 										<p:column headerText="EQUIPO">
-								            <h:outputText value="#{ser.equipo}"/>
+								            <p:cellEditor>
+							                    <f:facet name="output">
+							                        <h:outputText value="#{ser.equipo}"/>
+							                    </f:facet>
+							                    <f:facet name="input">
+							                        <p:inputText  value="#{ser.equipo}" style="width:100%"/>
+							                    </f:facet>
+							                </p:cellEditor>
 								        </p:column>
 								        <p:column headerText="DETALLE">
-								            <h:outputText value="#{ser.detalle}"/>
+								            <p:cellEditor>
+							                    <f:facet name="output">
+							                        <h:outputText value="#{ser.detalle}"/>
+							                    </f:facet>
+							                    <f:facet name="input">
+							                        <p:inputText  value="#{ser.detalle}" style="width:100%"/>
+							                    </f:facet>
+							                </p:cellEditor>
 								        </p:column>
-								        <p:column headerText="PRECIO REF">
-								            <h:outputText value="#{ser.precioRef}">
-								            	<f:convertNumber pattern="#0.00" />
-								            </h:outputText>
+								        <p:column headerText="PRECIO"><p:cellEditor>
+							                    <f:facet name="output">
+							                        <h:outputText value="#{ser.precio}">
+										            	<f:convertNumber pattern="#0.00" />
+										            </h:outputText>
+							                    </f:facet>
+							                    <f:facet name="input">
+							                        <p:inputText  value="#{ser.precio}" style="width:100%"/>
+							                    </f:facet>
+							                </p:cellEditor>
 								        </p:column>
-								        <p:column headerText="CUOTA REF">
-								            <h:outputText value="#{ser.cuotaRef}">
-								            	<f:convertNumber pattern="#0.00" />
-								            </h:outputText>
-								        </p:column>
-								        <p:column headerText="INTERES">
-								            <h:outputText value="#{ser.interes}">
-								            	<f:convertNumber pattern="#0.00" />
-								            </h:outputText>
-								        </p:column>
-									</p:dataTable>
+								        <p:column width="6">
+											<p:rowEditor editTitle="Edit Row" cancelTitle="Cancel Edit" saveTitle="Save Row"/>
+							            </p:column>
+								    </p:dataTable>
 								</p:panel>
 							</p:rowExpansion>
 						</p:dataTable>
@@ -229,13 +311,13 @@
 		<p:messages id="msgSer" closable="true" showDetail="true"/>
 		<p:panelGrid columns="2">
 			<p:outputLabel for="ser" value="Plan Móvil:"/>
-			<p:inputText id="ser" value="#{frmRegistroOperadora.planPlanMovil.plan}" />
+			<p:inputText id="ser" value="#{frmRegistroOperadora.planPlanMovil.plan}" required="true"/>
 			<p:outputLabel for="det" value="Detalle:"/>
-			<p:inputText id="det" value="#{frmRegistroOperadora.planPlanMovil.detalle}"/>
+			<p:inputText id="det" value="#{frmRegistroOperadora.planPlanMovil.detalle}" required="true"/>
 			<p:outputLabel for="mon" value="Precio:"/>
-			<p:inputText id="mon" value="#{frmRegistroOperadora.planPlanMovil.precio}"/>
-			<p:outputLabel for="in" value="Interes:"/>
-			<p:inputText id="in" value="#{frmRegistroOperadora.planPlanMovil.interes}"/>
+			<p:inputText id="mon" value="#{frmRegistroOperadora.planPlanMovil.precio}" required="true">
+				<p:keyFilter mask="num" />
+			</p:inputText>
 		</p:panelGrid>
 		<p:panel>
 			<h:panelGrid columns="2" cellpadding="10">
@@ -256,15 +338,13 @@
 		<p:messages id="msgEq" closable="true" showDetail="true"/>
 		<p:panelGrid columns="2">
 			<p:outputLabel for="eq" value="Equipo Móvil:"/>
-			<p:inputText id="eq" value="#{frmRegistroOperadora.planEquipo.equipo}" />
+			<p:inputText id="eq" value="#{frmRegistroOperadora.planEquipo.equipo}" required="true"/>
 			<p:outputLabel for="det" value="Detalle:"/>
-			<p:inputText id="det" value="#{frmRegistroOperadora.planEquipo.detalle}"/>
-			<p:outputLabel for="mon" value="Precio Referencial:"/>
-			<p:inputText id="mon" value="#{frmRegistroOperadora.planEquipo.precioRef}"/>
-			<p:outputLabel for="cuo" value="Cuota Referencial:"/>
-			<p:inputText id="cuo" value="#{frmRegistroOperadora.planEquipo.cuotaRef}"/>
-			<p:outputLabel for="in" value="Interes:"/>
-			<p:inputText id="in" value="#{frmRegistroOperadora.planEquipo.interes}"/>
+			<p:inputText id="det" value="#{frmRegistroOperadora.planEquipo.detalle}" required="true"/>
+			<p:outputLabel for="precio" value="Precio Equipo:"/>
+			<p:inputText id="precio" value="#{frmRegistroOperadora.planEquipo.precio}" required="true">
+				<p:keyFilter mask="num" />
+			</p:inputText>
 		</p:panelGrid>
 		<p:panel>
 			<h:panelGrid columns="2" cellpadding="10">
