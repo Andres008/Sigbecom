@@ -7,6 +7,8 @@
 	xmlns:pc="http://primefaces.org/california">
 
 <h:head>
+	<f:event type="preRenderView"
+		listener="#{controlFormularios.verificarSesion()}" />
 	<f:facet name="first">
 		<meta http-equiv="X-UA-Compatible" content="IE=edge" />
 		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
@@ -125,7 +127,8 @@
 								value="#{controladorGestionSocios.objUsrSocio.gesPersona.telefono}"
 								placeholder="Telefono" required="true" />
 							<p:outputLabel value="Fecha Ingreso" />
-							<p:calendar required="true" id="restricted" requiredMessage="Es obligatorio fecha de ingreso"
+							<p:calendar required="true" id="restricted"
+								requiredMessage="Es obligatorio fecha de ingreso"
 								value="#{controladorGestionSocios.objUsrSocio.fechaAlta}"
 								navigator="true" locale="es" mindate="1/1/1900" maxdate="today"
 								mask="99/99/9999" pattern="dd/MM/yyyy">
