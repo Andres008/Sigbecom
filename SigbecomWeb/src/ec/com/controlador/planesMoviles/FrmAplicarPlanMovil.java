@@ -193,24 +193,20 @@ private static final long serialVersionUID = 1L;
 		}
 	}
 	
-	public void cargarEquipoMovil() {
-		System.out.println("PASO2:" + idEquipo);
-		if(idEquipo!=0) {
-			
-			try {
-				PlanEquipo planEquipo = managerPlanesMoviles.findEquipoMovilByIdEquipo(idEquipo);
-				planContratoComite.setPlanEquipo(planEquipo);
-				panelEquipo = true;
-			} catch (Exception e) {
-				JSFUtil.crearMensajeERROR("No se cargo el equipo movil requerido");
-				e.printStackTrace();
-			}
-		}
-		else {
-			JSFUtil.crearMensajeERROR("Seleccione Equipo Móvil requerido");
-		}
-		
-	}
+	/*
+	 * public void cargarEquipoMovil() { System.out.println("PASO2:" + idEquipo);
+	 * if(idEquipo!=0) {
+	 * 
+	 * try { PlanEquipo planEquipo =
+	 * managerPlanesMoviles.findEquipoMovilByIdEquipo(idEquipo);
+	 * planContratoComite.setPlanEquipo(planEquipo); panelEquipo = true; } catch
+	 * (Exception e) {
+	 * JSFUtil.crearMensajeERROR("No se cargo el equipo movil requerido");
+	 * e.printStackTrace(); } } else {
+	 * JSFUtil.crearMensajeERROR("Seleccione Equipo Móvil requerido"); }
+	 * 
+	 * }
+	 */
 	public void cargarPlanMovil() {
 		System.out.println("PASO3: "+ idPlanMovil);
 		if(idPlanMovil!=0) {

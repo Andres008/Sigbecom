@@ -20,6 +20,7 @@ import ec.com.model.dao.entity.PlanEquipo;
 import ec.com.model.dao.entity.PlanOperadora;
 import ec.com.model.dao.entity.PlanPago;
 import ec.com.model.dao.entity.PlanPlanMovil;
+import ec.com.model.dao.entity.PlanRegistroPago;
 import ec.com.model.dao.entity.UsrSocio;
 import ec.com.model.dao.entity.UsrTipoSocio;
 import ec.com.model.dao.manager.ManagerDAOSegbecom;
@@ -187,5 +188,22 @@ public class ManagerPlanesMoviles {
     	}
     	else
     		return null;
+    }
+    @SuppressWarnings("unchecked")
+	public PlanContratoComite findContratoComite(String lineaTelefono) throws Exception {
+    	List<PlanContratoComite> lstPlanContratoComite = managerDAOSegbecom.findWhere(PlanContratoComite.class, "o.lineaTelefono ='"+lineaTelefono+"'", null);
+    	if(lstPlanContratoComite!=null && lstPlanContratoComite.size()==1) {
+    		return lstPlanContratoComite.get(0);
+    	}
+    	else
+    		return null;
+    }
+    public void insertarPlanRegistroPagos(PlanRegistroPago planRegistroPago) throws Exception {
+    	managerDAOSegbecom.insertar(planRegistroPago);
+    }
+    @SuppressWarnings("unchecked")
+	public List<PlanRegistroPago> findAllPlanRegistroPago() throws Exception {
+    	List<PlanRegistroPago> lstPlanRegistroPago = managerDAOSegbecom.findAll(PlanRegistroPago.class);
+    	return lstPlanRegistroPago;
     }
 }
