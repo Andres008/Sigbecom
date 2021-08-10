@@ -206,4 +206,15 @@ public class ManagerPlanesMoviles {
     	List<PlanRegistroPago> lstPlanRegistroPago = managerDAOSegbecom.findAll(PlanRegistroPago.class);
     	return lstPlanRegistroPago;
     }
+    
+    @SuppressWarnings("unchecked")
+	public List<PlanContratoComite> findAllPlanContratoComite() throws Exception {
+    	List<PlanContratoComite> lstPlanContratoComite = managerDAOSegbecom.findAll(PlanContratoComite.class);
+    	return lstPlanContratoComite;
+    }
+    @SuppressWarnings("unchecked")
+	public List<PlanEquipo> findAllPlanEquipo() throws Exception {
+    	List<PlanEquipo> lstPlanEquipo = managerDAOSegbecom.findAll(PlanEquipo.class);
+    	return lstPlanEquipo;
+    }
 }
