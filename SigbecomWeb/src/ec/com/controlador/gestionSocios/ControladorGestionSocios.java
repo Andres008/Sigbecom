@@ -459,10 +459,10 @@ public class ControladorGestionSocios implements Serializable {
 			managerGestionSocios.insertarSocio(objUsrSocio);
 			managerLog.generarLogUsabilidad(beanLogin.getCredencial(), this.getClass(), "inscribirUsuario",
 					"Crea usuario " + objUsrSocio.getGesPersona().getCedula());
-			correoUtil.enviarCorreoElectronico(objUsrSocio.getGesPersona().getEmail(),
+			/*correoUtil.enviarCorreoElectronico(objUsrSocio.getGesPersona().getEmail(),
 					"Creación Usuarios Socio Comite de Empresa",
 					"Se ha creado su usuario para utilizar SIGBECOM (), favor acceder al sistema con las siguentes credenciales, Usuario:"
-							+ objUsrSocio.getCedulaSocio() + " , Contraseña:" + clave);
+							+ objUsrSocio.getCedulaSocio() + " , Contraseña:" + clave);*/
 			JSFUtil.crearMensajeINFO("Usuario creado correctamente.");
 			inicializarIngresoSocio();
 
