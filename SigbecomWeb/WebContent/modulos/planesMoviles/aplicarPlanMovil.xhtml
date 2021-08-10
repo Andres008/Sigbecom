@@ -172,6 +172,16 @@
 										<p:column headerText="LINEA" >
 											<h:outputText value="#{con.lineaTelefono}" />
 										</p:column>
+										<p:column headerText="VALOR PLAN" >
+											<h:outputText value="#{con.valorPlan}" >
+												<f:convertNumber pattern="#0.00" />
+											</h:outputText>
+										</p:column>
+										<p:column headerText="COSTO ADMINISTRATIVO" >
+											<h:outputText value="#{con.costoAdministrativo}" >
+												<f:convertNumber pattern="#0.00" />
+											</h:outputText>
+										</p:column>
 										<p:column headerText="ESTADO">
 											<p:cellEditor>
 							                    <f:facet name="output">

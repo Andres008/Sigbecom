@@ -60,6 +60,14 @@ public class PlanContratoComite implements Serializable {
 	//bi-directional many-to-one association to PlanPago
 	@OneToMany(mappedBy="planContratoComite")
 	private List<PlanPago> planPagos;
+	
+	//bi-directional many-to-one association to PlanAmortEquipmov
+	@OneToMany(mappedBy="planContratoComite")
+	private List<PlanAmortEquipmov> planAmortEquipmovs;
+
+	//bi-directional many-to-one association to PlanRegistroPago
+	@OneToMany(mappedBy="planContratoComite")
+	private List<PlanRegistroPago> planRegistroPagos;
 
 	public PlanContratoComite() {
 	}
@@ -164,5 +172,47 @@ public class PlanContratoComite implements Serializable {
 	public void setCostoAdministrativo(BigDecimal costoAdministrativo) {
 		this.costoAdministrativo = costoAdministrativo;
 	}
-	
+	public List<PlanAmortEquipmov> getPlanAmortEquipmovs() {
+		return this.planAmortEquipmovs;
+	}
+
+	public void setPlanAmortEquipmovs(List<PlanAmortEquipmov> planAmortEquipmovs) {
+		this.planAmortEquipmovs = planAmortEquipmovs;
+	}
+
+	public PlanAmortEquipmov addPlanAmortEquipmov(PlanAmortEquipmov planAmortEquipmov) {
+		getPlanAmortEquipmovs().add(planAmortEquipmov);
+		planAmortEquipmov.setPlanContratoComite(this);
+
+		return planAmortEquipmov;
+	}
+
+	public PlanAmortEquipmov removePlanAmortEquipmov(PlanAmortEquipmov planAmortEquipmov) {
+		getPlanAmortEquipmovs().remove(planAmortEquipmov);
+		planAmortEquipmov.setPlanContratoComite(null);
+
+		return planAmortEquipmov;
+	}
+
+	public List<PlanRegistroPago> getPlanRegistroPagos() {
+		return this.planRegistroPagos;
+	}
+
+	public void setPlanRegistroPagos(List<PlanRegistroPago> planRegistroPagos) {
+		this.planRegistroPagos = planRegistroPagos;
+	}
+
+	public PlanRegistroPago addPlanRegistroPago(PlanRegistroPago planRegistroPago) {
+		getPlanRegistroPagos().add(planRegistroPago);
+		planRegistroPago.setPlanContratoComite(this);
+
+		return planRegistroPago;
+	}
+
+	public PlanRegistroPago removePlanRegistroPago(PlanRegistroPago planRegistroPago) {
+		getPlanRegistroPagos().remove(planRegistroPago);
+		planRegistroPago.setPlanContratoComite(null);
+
+		return planRegistroPago;
+	}
 }
