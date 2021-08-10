@@ -1,5 +1,7 @@
 package ec.com.controlador.planesMoviles;
 
+import java.io.ByteArrayInputStream;
+import java.io.InputStream;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Date;
@@ -16,7 +18,7 @@ import org.apache.poi.xssf.usermodel.XSSFCell;
 import org.apache.poi.xssf.usermodel.XSSFRow;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
-
+import org.primefaces.PrimeFaces;
 import org.primefaces.event.FileUploadEvent;
 import org.primefaces.model.file.UploadedFile;
 
@@ -39,16 +41,17 @@ public class FrmPlanillaPagoPlan implements Serializable{
 	private BeanLogin beanLogin;
 	
 	private int anio;
-	private int mes;
+	private String mes;
 	private String nombreArch;
 	
 	private UploadedFile file;
+	private byte[] archivo;
 	private List<PlanRegistroPago> lstPlanRegistroPago;
 	
 	@PostConstruct
 	public void init() {
 		anio = ModelUtil.getAnio(new Date());
-		mes = 0;
+		mes = "";
 		file = null;
 		cargarRegistroPagos();
 	}
@@ -65,18 +68,18 @@ public class FrmPlanillaPagoPlan implements Serializable{
 	public void handleFileUpload(FileUploadEvent event) {
         System.out.println("Archivo subido: "+ event.getFile().getFileName());
         this.file = event.getFile();
+        archivo = file.getContent();
+        nombreArch = event.getFile().getFileName();
         JSFUtil.crearMensajeINFO("Documento cargado correctamente");
     }
 
 	public void registrarPlanillas(){
 		
-		
-		
 		System.out.println("Archivo: "+file.getFileName());
 		Date fechaIngreso = new Date();
-		
+		InputStream fis = new ByteArrayInputStream(archivo);
 		try {
-			OPCPackage pkg = OPCPackage.open(file.getInputStream());
+			OPCPackage pkg = OPCPackage.open(fis);
 			//InputStream pkg = event.getFile().getInputStream();
 			//InputStream pkg = TikaInputStream.get(event.getFile().getInputStream()); //event.getFile().getInputStream();
 			XSSFWorkbook wb = new XSSFWorkbook(pkg);
@@ -108,7 +111,7 @@ public class FrmPlanillaPagoPlan implements Serializable{
 		            	planRegistroPago.setNombreRef(nombreRef.getStringCellValue());
 		            	planRegistroPago.setValorPlan(new BigDecimal(valorPlan.getRawValue().toString()));
 		            	planRegistroPago.setAnio(anio);
-		            	planRegistroPago.setMes(mes);
+		            	planRegistroPago.setMes(Integer.parseInt(mes));
 		            	planRegistroPago.setCostoAdm(planContratoComite.getCostoAdministrativo());
 		            	//BigDecimal total = planRegistroPago.getValorPlan().add(planContratoComite.getCostoAdministrativo());
 		            	planRegistroPago.setTotal(planRegistroPago.getValorPlan().add(planRegistroPago.getCostoAdm()));
@@ -129,7 +132,9 @@ public class FrmPlanillaPagoPlan implements Serializable{
 			e.printStackTrace();
 		}
 		init();
-		
+		PrimeFaces prime=PrimeFaces.current();
+		prime.ajax().update("form1");
+		prime.ajax().update("form2");
 	}
 	
 	//GETTERS AND SETTERS
@@ -148,12 +153,12 @@ public class FrmPlanillaPagoPlan implements Serializable{
 	public void setAnio(int anio) {
 		this.anio = anio;
 	}
-
-	public int getMes() {
+	
+	public String getMes() {
 		return mes;
 	}
 
-	public void setMes(int mes) {
+	public void setMes(String mes) {
 		this.mes = mes;
 	}
 

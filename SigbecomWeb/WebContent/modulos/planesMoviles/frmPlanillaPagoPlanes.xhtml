@@ -42,10 +42,10 @@
 									<p:keyFilter mask="num" />
 								</p:inputText>
 								<p:outputLabel></p:outputLabel>
-								</h:selectOneMenu>
+								
 								<p:outputLabel for="mes" value="Seleccione Mes Planilla" />
 								<h:selectOneMenu id="mes" value="#{frmPlanillaPagoPlan.mes}" style="width:100%">
-												       <f:selectItem itemLabel="Seleccione Valor" noSelectionOption="true"/>
+												       <f:selectItem itemLabel="Seleccione Mes" noSelectionOption="true"/>
 												       <f:selectItem itemLabel="ENERO" itemValue="1"/>
 												       <f:selectItem itemLabel="FEBRERO" itemValue="2"/>
 												       <f:selectItem itemLabel="MARZO" itemValue="3"/>
@@ -59,6 +59,7 @@
 												       <f:selectItem itemLabel="NOVIEMBRE" itemValue="11"/>
 												       <f:selectItem itemLabel="DICIEMBRE" itemValue="12"/>
 								</h:selectOneMenu>
+								<p:outputLabel></p:outputLabel>
 								<p:outputLabel value="Seleccione Archivo:" />
 								<p:fileUpload styleClass="ui-fileupload-buttonbar"  
 						        				  label="Seleccionar Archivo"
@@ -71,7 +72,7 @@
 				                      			  process="@this" 
 				                      			  skinSimple="true"
 				                />
-								<p:outputLabel value="#{frmPlanillaPagoPlan.nombreArch}" />
+								<p:outputLabel id="etiqueta" value="#{frmPlanillaPagoPlan.nombreArch}" />
 							</p:panelGrid>
 							<p:separator/>
 							<p:panelGrid columns="2" styleClass="ui-noborder">
@@ -99,6 +100,12 @@
 	                <h:form id="form2">
 	                	<p:growl id="growl" showDetail="true" sticky="true" />
 	                	<p:panel id="pnl"  header="PLANILLAS DE USUARIOS ">
+	                	<div class="card" align="right">
+						    <h:commandLink >
+						    	<p:graphicImage name="images/logo_excel.png" library="california-layout" />
+						    	<p:dataExporter type="xls" target="tblEmp" fileName="ListPlanilla" ></p:dataExporter>
+						    </h:commandLink>
+					    </div>
 						<p:dataTable value="#{frmPlanillaPagoPlan.lstPlanRegistroPago}"
 							id="tblEmp"  var="dato" paginator="true"
 							rows="10">
@@ -135,7 +142,9 @@
 							<p:column headerText="AÑO" filterBy="#{dato.anio}">
 								<h:outputText value="#{dato.anio}"/>
 							</p:column>
-							
+							<p:column headerText="ESTADO" filterBy="#{dato.estado}">
+								<h:outputText value="#{dato.estado}"/>
+							</p:column>
 						</p:dataTable>
 						<br/>
 						<br/>
@@ -147,39 +156,11 @@
 									message="Esta seguro de ingresar la información?"
 									icon="pi pi-exclamation-triangle" />
 								</p:commandButton>
-							</p:panelGrid>	
+						</p:panelGrid>	
 					</p:panel>
 	                </h:form>
 <!-- Inicio de Dialogs -->
 
-<p:dialog
-	header="REGISTRO DE CONTACTO"  resizable="false" closable="true"
-	widgetVar="dlgReg" modal="true" position="center"
-	hideEffect="fade" >
-	<h:form id="frmReg">
-		<p:messages id="msgReg" closable="true" showDetail="false"/>
-		<p:panelGrid columns="2">
-			<p:outputLabel for="nomb" value="Nombres:"/>
-			<p:inputText id="nomb" value="#{frmRegistroOperadora.planContacto.nombres}" required="true"/>
-			<p:outputLabel for="ape" value="Apellidos:"/>
-			<p:inputText id="ape" value="#{frmRegistroOperadora.planContacto.apellidos}" required="true"/>
-			<p:outputLabel for="car" value="Cargo:"/>
-			<p:inputText id="car" value="#{frmRegistroOperadora.planContacto.cargo}" required="true"/>
-			<p:outputLabel for="cel" value="Celular:"/>
-			<p:inputText id="cel" value="#{frmRegistroOperadora.planContacto.celular}" required="true"/>
-			<p:outputLabel for="ema" value="E-mail:"/>
-			<p:inputText id="ema" value="#{frmRegistroOperadora.planContacto.email}" required="true"/>
-		</p:panelGrid>
-		<p:panel>
-			<h:panelGrid columns="2" cellpadding="10">
-				<p:commandButton value="Cancelar" onclick="PF('dlgReg').hide();" update="form2 frmReg"
-				action="#{frmRegistroOperadora.init()}"/>
-				<p:commandButton value="Registrar" 
-					action="#{frmRegistroOperadora.registrarContacto()}" update="frmReg"/>
-			</h:panelGrid>
-		</p:panel>
-	</h:form>
-</p:dialog>
 
 
 <!-- Fin de Dialogs -->
