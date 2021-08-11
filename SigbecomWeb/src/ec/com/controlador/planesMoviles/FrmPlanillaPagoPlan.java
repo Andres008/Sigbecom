@@ -20,6 +20,7 @@ import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.primefaces.PrimeFaces;
 import org.primefaces.event.FileUploadEvent;
+import org.primefaces.event.RowEditEvent;
 import org.primefaces.model.file.UploadedFile;
 
 import ec.com.controlador.sesion.BeanLogin;
@@ -135,6 +136,25 @@ public class FrmPlanillaPagoPlan implements Serializable{
 		PrimeFaces prime=PrimeFaces.current();
 		prime.ajax().update("form1");
 		prime.ajax().update("form2");
+	}
+	public void onRowEdit(RowEditEvent<Object> event) {
+		 try {
+			 managerPlanesMoviles.actualizarObjeto(event.getObject());
+				JSFUtil.crearMensajeINFO("Se actualizó correctamente.");
+			} catch (Exception e) {
+				JSFUtil.crearMensajeERROR(e.getMessage());
+				e.printStackTrace();
+			}
+	}
+	public void onRowCancel(RowEditEvent<Object> event) {
+      JSFUtil.crearMensajeINFO("Se canceló actualización.");
+  }
+	public boolean activarEditEstado(String estado) {
+		if(estado.equalsIgnoreCase("GENERADO")) {
+			return true;
+		}
+		else
+			return false;
 	}
 	
 	//GETTERS AND SETTERS

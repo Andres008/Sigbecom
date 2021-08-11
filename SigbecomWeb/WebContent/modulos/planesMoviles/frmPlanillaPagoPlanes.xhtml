@@ -107,11 +107,13 @@
 						    </h:commandLink>
 					    </div>
 						<p:dataTable value="#{frmPlanillaPagoPlan.lstPlanRegistroPago}"
-							id="tblEmp"  var="dato" paginator="true"
+							id="tblEmp"  var="dato" paginator="true" editable="true"
 							rows="10">
 							<f:facet name="header">
 								PLANILLA DE PLANES MOVILES
 							</f:facet>
+							<p:ajax event="rowEdit" listener="#{frmRegistroEmpresa.onRowEdit}" update="form2:growl"/>
+            				<p:ajax event="rowEditCancel" listener="#{frmRegistroEmpresa.onRowCancel}" update="form2:growl"/>
 							<p:column headerText="LINEA" filterBy="#{dato.lineaTelefono}">
 								<h:outputText value="#{dato.lineaTelefono}"/>
 							</p:column>
@@ -125,13 +127,19 @@
 								<h:outputText value="#{dato.nombreRef}"/>
 							</p:column>
 							<p:column headerText="VALOR PLAN">
-								<h:outputText value="#{dato.valorPlan}"/>
+								<h:outputText value="#{dato.valorPlan}">
+									<f:convertNumber pattern="#0.00" />
+								</h:outputText>
 							</p:column>
 							<p:column headerText="COSTO ADMISNITRATIVO">
-								<h:outputText value="#{dato.costoAdm}"/>
+								<h:outputText value="#{dato.costoAdm}">
+									<f:convertNumber pattern="#0.00" />
+								</h:outputText>
 							</p:column>
 							<p:column headerText="TOTAL PLAN">
-								<h:outputText value="#{dato.total}"/>
+								<h:outputText value="#{dato.total}">
+									<f:convertNumber pattern="#0.00" />
+								</h:outputText>
 							</p:column>
 							<p:column headerText="FECHA INGRESO">
 								<h:outputText value="#{dato.fechaIngreso}"/>
@@ -143,8 +151,21 @@
 								<h:outputText value="#{dato.anio}"/>
 							</p:column>
 							<p:column headerText="ESTADO" filterBy="#{dato.estado}">
-								<h:outputText value="#{dato.estado}"/>
+								<p:cellEditor >
+				                    <f:facet name="output">
+				                        <h:outputText value="#{dato.estado}"/>
+				                    </f:facet>
+				                    <f:facet name="input">
+				                        <h:selectOneMenu id="option" value="#{dato.estado}" style="width:100%">
+									      <f:selectItem itemLabel="PENDIENTE" itemValue="PENDIENTE"/>
+									    </h:selectOneMenu>
+				                    </f:facet>
+				                </p:cellEditor>
 							</p:column>
+							<p:column width="6">
+									<p:rowEditor rendered="#{frmPlanillaPagoPlan.activarEditEstado(dato.estado)}" editTitle="Edit Row" cancelTitle="Cancel Edit" saveTitle="Save Row" 
+										/>
+				            </p:column>
 						</p:dataTable>
 						<br/>
 						<br/>
