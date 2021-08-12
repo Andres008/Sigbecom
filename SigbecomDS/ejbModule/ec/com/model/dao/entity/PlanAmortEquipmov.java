@@ -39,7 +39,7 @@ public class PlanAmortEquipmov implements Serializable {
 	private BigDecimal total;
 
 	@Column(name="valor_capital")
-	private String valorCapital;
+	private BigDecimal valorCapital;
 
 	@Column(name="valor_cuota")
 	private BigDecimal valorCuota;
@@ -120,12 +120,12 @@ public class PlanAmortEquipmov implements Serializable {
 	public void setTotal(BigDecimal total) {
 		this.total = total;
 	}
-
-	public String getValorCapital() {
-		return this.valorCapital;
+	
+	public BigDecimal getValorCapital() {
+		return valorCapital;
 	}
 
-	public void setValorCapital(String valorCapital) {
+	public void setValorCapital(BigDecimal valorCapital) {
 		this.valorCapital = valorCapital;
 	}
 

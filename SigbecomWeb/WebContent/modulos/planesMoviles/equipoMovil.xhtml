@@ -54,12 +54,22 @@
 			                    </p:selectOneMenu>
 								<p:outputLabel for="car" value="Precio del Equipo:" />
 								<p:inputText id="car" required="true" 
-									value="#{frmCostosAdministrativos.planCostosAdm.cargo}">
+									value="#{frmEquipoMovil.planAmortEquipmov.valorCapital}">
 									<p:keyFilter mask="num" />
 								</p:inputText>
-								<p:outputLabel for="adm" value="Valor Administrativo: " />
-								<p:inputText id="adm" required="true"
-									value="#{frmCostosAdministrativos.planCostosAdm.administracion}">
+								<p:outputLabel for="adm" value="Valor Comisión: " />
+								<p:inputText id="adm" required="true" onkeyup=""
+									value="#{frmEquipoMovil.planAmortEquipmov.comision}">
+									<p:keyFilter mask="num" />
+									<f:convertNumber pattern="#0.00" />
+								</p:inputText>
+								<p:outputLabel for="tot" value="Valor Total: " />
+								<h:outputText id="tot" value="#{frmEquipoMovil.planAmortEquipmov.comision}" >
+									<f:convertNumber pattern="#0.00" />
+								</h:outputText>
+								<p:outputLabel for="plazo" value="Meses Plazo: " />
+								<p:inputText id="plazo" required="true" onkeyup=""
+									value="#{frmEquipoMovil.planAmortEquipmov.mesesPlazo}">
 									<p:keyFilter mask="num" />
 								</p:inputText>
 								

@@ -73,6 +73,7 @@ public class FrmEquipoMovil implements Serializable{
 		if(idEquipoMovil!=null) {
 			try {
 				PlanEquipo planEquipo = managerPlanesMoviles.findEquipoMovilByIdEquipo(idEquipoMovil);
+				planAmortEquipmov.setValorCapital(planEquipo.getPrecio());
 				planAmortEquipmov.setPlanEquipo(planEquipo);
 			} catch (Exception e) {
 				JSFUtil.crearMensajeERROR("No se cargo el listado correctamente");
