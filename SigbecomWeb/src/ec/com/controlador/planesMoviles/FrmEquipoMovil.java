@@ -88,8 +88,8 @@ public class FrmEquipoMovil implements Serializable{
 	
 	public void calcularTotalEquipoMovil() {
 		if(idContratoComite!= 0 && idEquipoMovil !=0){
-			System.out.println("Capital: "+ planAmortEquipmov.getValorCapital());
-			System.out.println("Comision: "+ planAmortEquipmov.getComision());
+			//System.out.println("Capital: "+ planAmortEquipmov.getValorCapital());
+			//System.out.println("Comision: "+ planAmortEquipmov.getComision());
 			BigDecimal total = planAmortEquipmov.getValorCapital().add(planAmortEquipmov.getComision());
 			planAmortEquipmov.setTotal(total);
 		}
@@ -98,6 +98,16 @@ public class FrmEquipoMovil implements Serializable{
 		}
 		PrimeFaces prime=PrimeFaces.current();
 		prime.ajax().update("form1");
+	}
+	
+	public void generarTablaAmortizacion() {
+		if(planAmortEquipmov.getComision()!=null && planAmortEquipmov.getMesesPlazo()!=null && 
+		   idContratoComite!= 0 && idEquipoMovil !=0) {
+			for(int i=0; i<planAmortEquipmov.getMesesPlazo().intValue();i++) {
+				
+			}
+			
+		}
 	}
 	
 	public BeanLogin getBeanLogin() {
