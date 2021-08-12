@@ -38,13 +38,15 @@
 							<p:panelGrid columns="2" styleClass="ui-noborder">
 								<p:outputLabel for="tip" value="Seleccionar Línea Telefónica:" />
 								<p:selectOneMenu id="tip" required="true" filter="true"
-									value="#{frmEquipoMovil.idContratoComite}">
+									value="#{frmEquipoMovil.idContratoComite}" filterMatchMode="contains">
 				                    <f:selectItem itemLabel="Seleccione Linea Telefonica" noSelectionOption="true" />
 				                    <f:selectItems value="#{frmEquipoMovil.lstPlanContratoComite}" var="dat"
-				                    			itemLabel="#{dat.lineaTelefono} #{dat.planPlanMovil.planOperadora.empresa}" itemValue="#{dat.idContrato}"/>
+				                    			itemLabel="#{dat.lineaTelefono} #{dat.planPlanMovil.planOperadora.empresa} #{dat.usrSocio.gesPersona.apellidos} #{dat.usrSocio.gesPersona.nombres}" itemValue="#{dat.idContrato}"/>
+				                    <p:ajax event="change" update="mov"
+	        								listener="#{frmEquipoMovil.cargarEquiposMoviles()}" />			
 			                    </p:selectOneMenu>
-			                    <p:outputLabel for="tip" value="Seleccionar Equipo Móvil:" />
-								<p:selectOneMenu id="tip" required="true" filter="true"
+			                    <p:outputLabel for="mov" value="Seleccionar Equipo Móvil:" />
+								<p:selectOneMenu id="mov" required="true" filter="true"
 									value="#{frmEquipoMovil.idEquipoMovil}">
 				                    <f:selectItem itemLabel="Seleccione Equipo" noSelectionOption="true" />
 				                    <f:selectItems value="#{frmEquipoMovil.lstPlanEquipo}" var="dat"

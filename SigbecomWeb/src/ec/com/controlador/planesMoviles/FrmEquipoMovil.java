@@ -11,6 +11,7 @@ import javax.inject.Inject;
 import javax.inject.Named;
 
 import ec.com.controlador.sesion.BeanLogin;
+import ec.com.model.dao.entity.PlanAmortEquipmov;
 import ec.com.model.dao.entity.PlanContratoComite;
 import ec.com.model.dao.entity.PlanEquipo;
 import ec.com.model.modulos.util.JSFUtil;
@@ -33,13 +34,16 @@ public class FrmEquipoMovil implements Serializable{
 	private Long idContratoComite;
 	private Long idEquipoMovil;
 	
+	private PlanAmortEquipmov planAmortEquipmov;
+	
 	@PostConstruct
 	public void init() {
 		lstPlanContratoComite = new ArrayList<PlanContratoComite>();
 		lstPlanEquipo = new ArrayList<PlanEquipo>();
 		idContratoComite = new Long(0);
 		idEquipoMovil = new Long(0);
-		cargarEquiposMoviles();
+		planAmortEquipmov = new PlanAmortEquipmov();
+		//cargarEquiposMoviles();
 		cargarContratosComite();
 	}
 	public void cargarContratosComite() {
@@ -51,11 +55,29 @@ public class FrmEquipoMovil implements Serializable{
 		}
 	}
 	public void cargarEquiposMoviles() {
-		try {
-			lstPlanEquipo = managerPlanesMoviles.findAllPlanEquipo();
-		} catch (Exception e) {
-			JSFUtil.crearMensajeERROR("No se cargo el listado correctamente");
-			e.printStackTrace();
+		if(idContratoComite!=null) {
+			try {
+				PlanContratoComite planContratoComite = managerPlanesMoviles.findByIdContratoComite(idContratoComite);
+				Long idPlanEmpresa = planContratoComite.getPlanPlanMovil().getPlanOperadora().getIdPlanEmpresa();
+				System.out.println("id :"+ idPlanEmpresa);
+				planAmortEquipmov.setPlanContratoComite(planContratoComite);
+				lstPlanEquipo = managerPlanesMoviles.findPlanEquipoByIdOperadora(idPlanEmpresa);
+			} catch (Exception e) {
+				JSFUtil.crearMensajeERROR("No se cargo el listado correctamente");
+				e.printStackTrace();
+			}
+		}
+	}
+	
+	public void cargarPlanEquipo() {
+		if(idEquipoMovil!=null) {
+			try {
+				PlanEquipo planEquipo = managerPlanesMoviles.findEquipoMovilByIdEquipo(idEquipoMovil);
+				planAmortEquipmov.setPlanEquipo(planEquipo);
+			} catch (Exception e) {
+				JSFUtil.crearMensajeERROR("No se cargo el listado correctamente");
+				e.printStackTrace();
+			} 
 		}
 	}
 	public BeanLogin getBeanLogin() {
@@ -88,6 +110,12 @@ public class FrmEquipoMovil implements Serializable{
 	}
 	public void setIdEquipoMovil(Long idEquipoMovil) {
 		this.idEquipoMovil = idEquipoMovil;
+	}
+	public PlanAmortEquipmov getPlanAmortEquipmov() {
+		return planAmortEquipmov;
+	}
+	public void setPlanAmortEquipmov(PlanAmortEquipmov planAmortEquipmov) {
+		this.planAmortEquipmov = planAmortEquipmov;
 	}
 	
 }

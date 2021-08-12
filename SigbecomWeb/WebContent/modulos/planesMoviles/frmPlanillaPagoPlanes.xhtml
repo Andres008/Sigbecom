@@ -34,19 +34,19 @@
                     <H1>Gestión Planilla de Pago</H1>
                     <h:form id="form1">
 	                    <p:growl id="growl" showDetail="true" sticky="true" />
-						<p:panel id="pnls" header="Cargar Planilla de Pagos" toggleable="true" collapsed="#{frmAplicarPlanMovil.pnlDatos}">
+						<p:panel id="pnls" header="Cargar Planilla de Pagos" toggleable="true" >
 							<p:panelGrid columns="3" styleClass="ui-noborder" layout="grid"
 								columnClasses="ui-g-12 ui-md-6 ui-lg-4, ui-g-12 ui-md-6 ui-lg-4, ui-g-12 ui-md-6 ui-lg-4">
 								<p:outputLabel value="Seleccione Periodo:" />
-								<p:inputText value="#{frmPlanillaPagoPlan.anio}">
+								<p:inputText value="#{frmPlanillaPagoPlan.anio}" maxlength="4">
 									<p:keyFilter mask="num" />
 								</p:inputText>
 								<p:outputLabel></p:outputLabel>
 								
 								<p:outputLabel for="mes" value="Seleccione Mes Planilla" />
-								<h:selectOneMenu id="mes" value="#{frmPlanillaPagoPlan.mes}" style="width:100%">
+								<p:selectOneMenu id="mes" value="#{frmPlanillaPagoPlan.mes}" style="width:100%">
 												       <f:selectItem itemLabel="Seleccione Mes" noSelectionOption="true"/>
-												       <f:selectItem itemLabel="ENERO" itemValue="1"/>
+												       <f:selectItem itemLabel="ENERO"  itemValue="1"/>
 												       <f:selectItem itemLabel="FEBRERO" itemValue="2"/>
 												       <f:selectItem itemLabel="MARZO" itemValue="3"/>
 												       <f:selectItem itemLabel="ABRIL" itemValue="4"/>
@@ -58,7 +58,9 @@
 												       <f:selectItem itemLabel="OCTUBRE" itemValue="10"/>
 												       <f:selectItem itemLabel="NOVIEMBRE" itemValue="11"/>
 												       <f:selectItem itemLabel="DICIEMBRE" itemValue="12"/>
-								</h:selectOneMenu>
+										<p:ajax event="change" update="form1"
+	        								listener="#{frmPlanillaPagoPlan.cargarMes()}" />		       
+								</p:selectOneMenu>
 								<p:outputLabel></p:outputLabel>
 								<p:outputLabel value="Seleccione Archivo:" />
 								<p:fileUpload styleClass="ui-fileupload-buttonbar"  
@@ -79,7 +81,7 @@
 								<p:commandButton value="Cancelar"
 									action="#{frmPlanillaPagoPlan.init()}" update="@form">
 								</p:commandButton>							
-								<p:commandButton value="Registrar"
+								<p:commandButton value="Cargar Planilla"
 									action="#{frmPlanillaPagoPlan.registrarPlanillas()}" update="@form">
 									<p:confirm header="Confirmación"
 									message="Esta seguro de ingresar la información?"
@@ -144,8 +146,8 @@
 							<p:column headerText="FECHA INGRESO">
 								<h:outputText value="#{dato.fechaIngreso}"/>
 							</p:column>
-							<p:column headerText="NUM MES" filterBy="#{dato.mes}">
-								<h:outputText value="#{dato.mes}"/>
+							<p:column headerText="NUM MES" filterBy="#{frmPlanillaPagoPlan.convertirMes(dato.mes)}">
+								<h:outputText value="#{frmPlanillaPagoPlan.convertirMes(dato.mes)}"/>
 							</p:column>
 							<p:column headerText="AÑO" filterBy="#{dato.anio}">
 								<h:outputText value="#{dato.anio}"/>
@@ -162,7 +164,7 @@
 				                    </f:facet>
 				                </p:cellEditor>
 							</p:column>
-							<p:column width="6">
+							<p:column width="6" exportable="false">
 									<p:rowEditor rendered="#{frmPlanillaPagoPlan.activarEditEstado(dato.estado)}" editTitle="Edit Row" cancelTitle="Cancel Edit" saveTitle="Save Row" 
 										/>
 				            </p:column>
@@ -171,7 +173,7 @@
 						<br/>
 						<p:separator/>
 						<p:panelGrid columns="2" styleClass="ui-noborder">
-								<p:commandButton value="Generar Planilla Mes"
+								<p:commandButton value="Generar Descuentos Roll"
 									action="#{frmAplicarPlanMovil.generarPlanillaMes()}" update="form2">
 									<p:confirm header="Confirmación"
 									message="Esta seguro de ingresar la información?"

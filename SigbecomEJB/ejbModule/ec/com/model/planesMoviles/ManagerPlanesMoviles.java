@@ -182,7 +182,7 @@ public class ManagerPlanesMoviles {
     }
     @SuppressWarnings("unchecked")
 	public PlanCostosAdm findPlanCostosAdmBytipoUsr(String tipoUsr) throws Exception {
-    	List<PlanCostosAdm> lstPlanCostosAdm = managerDAOSegbecom.findWhere(PlanCostosAdm.class, "o.usrTipoSocio.nombre ='"+tipoUsr+"'", null);
+    	List<PlanCostosAdm> lstPlanCostosAdm = managerDAOSegbecom.findWhere(PlanCostosAdm.class, "o.usrTipoSocio.nombre ='"+tipoUsr+"' AND o.estado = 'ACTIVO'", null);
     	if(lstPlanCostosAdm!=null && lstPlanCostosAdm.size()==1) {
     		return lstPlanCostosAdm.get(0);
     	}
@@ -213,8 +213,13 @@ public class ManagerPlanesMoviles {
     	return lstPlanContratoComite;
     }
     @SuppressWarnings("unchecked")
-	public List<PlanEquipo> findAllPlanEquipo() throws Exception {
-    	List<PlanEquipo> lstPlanEquipo = managerDAOSegbecom.findAll(PlanEquipo.class);
+	public List<PlanEquipo> findPlanEquipoByIdOperadora(long idPlanEmpresa) throws Exception {
+    	List<PlanEquipo> lstPlanEquipo = managerDAOSegbecom.findWhere(PlanEquipo.class, "o.planOperadora.idPlanEmpresa = '"+idPlanEmpresa+"'", null);
     	return lstPlanEquipo;
+    }
+   
+	public PlanContratoComite findByIdContratoComite(long idContratoComite) throws Exception {
+    	PlanContratoComite planContratoComite = (PlanContratoComite) managerDAOSegbecom.findById(PlanContratoComite.class, idContratoComite);
+    	return planContratoComite;
     }
 }

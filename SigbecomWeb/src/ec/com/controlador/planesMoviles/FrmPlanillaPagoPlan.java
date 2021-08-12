@@ -42,7 +42,7 @@ public class FrmPlanillaPagoPlan implements Serializable{
 	private BeanLogin beanLogin;
 	
 	private int anio;
-	private String mes;
+	private Integer mes;
 	private String nombreArch;
 	
 	private UploadedFile file;
@@ -52,7 +52,7 @@ public class FrmPlanillaPagoPlan implements Serializable{
 	@PostConstruct
 	public void init() {
 		anio = ModelUtil.getAnio(new Date());
-		mes = "";
+		mes = new Integer(0);
 		file = null;
 		cargarRegistroPagos();
 	}
@@ -73,9 +73,57 @@ public class FrmPlanillaPagoPlan implements Serializable{
         nombreArch = event.getFile().getFileName();
         JSFUtil.crearMensajeINFO("Documento cargado correctamente");
     }
+	
+	public String convertirMes(int mes) {
+		String mesAlfanumerico="";
+		switch (mes) {
+		case 1:
+			mesAlfanumerico = "ENERO";
+			break;
+		case 2:
+			mesAlfanumerico = "FEBRERO";
+			break;
+		case 3:
+			mesAlfanumerico = "MARZO";
+			break;
+		case 4:
+			mesAlfanumerico = "ABRIL";
+			break;
+		case 5:
+			mesAlfanumerico = "MAYO";
+			break;
+		case 6:
+			mesAlfanumerico = "JUNIO";
+			break;
+		case 7:
+			mesAlfanumerico = "JULIO";
+			break;
+		case 8:
+			mesAlfanumerico = "AGOSTO";
+			break;
+		case 9:
+			mesAlfanumerico = "SEPTIEMBRE";
+			break;
+		case 10:
+			mesAlfanumerico = "OCTUBRE";
+			break;
+		case 11:
+			mesAlfanumerico = "NOVIEMBRE";
+			break;
+		case 12:
+			mesAlfanumerico = "DICIEMBRE";
+			break;
+		default:
+			break;
+		}
+		return mesAlfanumerico;
+	}
+	
+	public void cargarMes() {
+		System.out.println("Mes: "+mes);
+	}
 
 	public void registrarPlanillas(){
-		
 		System.out.println("Archivo: "+file.getFileName());
 		Date fechaIngreso = new Date();
 		InputStream fis = new ByteArrayInputStream(archivo);
@@ -98,6 +146,7 @@ public class FrmPlanillaPagoPlan implements Serializable{
 	            System.out.println("Telefono: "+lineaTelefono.getRawValue());
 	            System.out.println("nombre Ref: "+nombreRef.getStringCellValue());
 	            System.out.println("Valor Plan: "+valorPlan.getRawValue());
+	            
 	            if((lineaTelefono!=null && lineaTelefono.getRawValue()!=null && !lineaTelefono.getRawValue().isEmpty() && 
 	            	!lineaTelefono.getRawValue().toString().equalsIgnoreCase("null")) &&
 	               (nombreRef!=null && nombreRef.getRawValue()!=null && !nombreRef.getRawValue().isEmpty() && 
@@ -105,6 +154,7 @@ public class FrmPlanillaPagoPlan implements Serializable{
 	               (valorPlan!=null && valorPlan.getRawValue()!=null && !valorPlan.getRawValue().isEmpty() && 
            			!valorPlan.getRawValue().toString().equalsIgnoreCase("null"))) {
 	            	 System.out.println("Dentro");
+	            	//Obtener datos del contrato
 	            	PlanContratoComite planContratoComite = managerPlanesMoviles.findContratoComite("0"+lineaTelefono.getRawValue());
 	            	if(planContratoComite!=null) {
 		            	planRegistroPago.setPlanContratoComite(planContratoComite);
@@ -112,14 +162,18 @@ public class FrmPlanillaPagoPlan implements Serializable{
 		            	planRegistroPago.setNombreRef(nombreRef.getStringCellValue());
 		            	planRegistroPago.setValorPlan(new BigDecimal(valorPlan.getRawValue().toString()));
 		            	planRegistroPago.setAnio(anio);
-		            	planRegistroPago.setMes(Integer.parseInt(mes));
-		            	planRegistroPago.setCostoAdm(planContratoComite.getCostoAdministrativo());
+		            	planRegistroPago.setMes(mes);
+		            	BigDecimal costoAdm = planContratoComite.getPlanCostosAdm().getCargo().add(planContratoComite.getPlanCostosAdm().getCostoLinea()).add(planContratoComite.getPlanCostosAdm().getAdministracion());
+		            	planRegistroPago.setCostoAdm(costoAdm);
 		            	//BigDecimal total = planRegistroPago.getValorPlan().add(planContratoComite.getCostoAdministrativo());
 		            	planRegistroPago.setTotal(planRegistroPago.getValorPlan().add(planRegistroPago.getCostoAdm()));
 		            	planRegistroPago.setEstado("GENERADO");
 		            	planRegistroPago.setFechaIngreso(fechaIngreso);
 		            	
 		            	managerPlanesMoviles.insertarPlanRegistroPagos(planRegistroPago);
+	            	}
+	            	else {
+	            		//
 	            	}
 	            	
 	            }
@@ -174,14 +228,6 @@ public class FrmPlanillaPagoPlan implements Serializable{
 		this.anio = anio;
 	}
 	
-	public String getMes() {
-		return mes;
-	}
-
-	public void setMes(String mes) {
-		this.mes = mes;
-	}
-
 	public String getNombreArch() {
 		return nombreArch;
 	}
@@ -196,6 +242,14 @@ public class FrmPlanillaPagoPlan implements Serializable{
 
 	public void setLstPlanRegistroPago(List<PlanRegistroPago> lstPlanRegistroPago) {
 		this.lstPlanRegistroPago = lstPlanRegistroPago;
+	}
+
+	public Integer getMes() {
+		return mes;
+	}
+
+	public void setMes(Integer mes) {
+		this.mes = mes;
 	}
 	
 }
