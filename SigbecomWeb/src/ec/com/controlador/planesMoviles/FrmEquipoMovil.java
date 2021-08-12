@@ -2,7 +2,9 @@ package ec.com.controlador.planesMoviles;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import javax.annotation.PostConstruct;
@@ -12,12 +14,14 @@ import javax.inject.Inject;
 import javax.inject.Named;
 
 import org.primefaces.PrimeFaces;
+import org.primefaces.event.RowEditEvent;
 
 import ec.com.controlador.sesion.BeanLogin;
 import ec.com.model.dao.entity.PlanAmortEquipmov;
 import ec.com.model.dao.entity.PlanContratoComite;
 import ec.com.model.dao.entity.PlanEquipo;
 import ec.com.model.modulos.util.JSFUtil;
+import ec.com.model.modulos.util.ModelUtil;
 import ec.com.model.planesMoviles.ManagerPlanesMoviles;
 
 @Named("frmEquipoMovil")
@@ -101,13 +105,102 @@ public class FrmEquipoMovil implements Serializable{
 	}
 	
 	public void generarTablaAmortizacion() {
+		int anio = ModelUtil.getAnio(new Date());
+		int mes = ModelUtil.getMes(new Date());
+		if(mes==12) {
+			anio++;
+			mes=1;
+		}
+		else {
+			mes++;
+		}
+		
+		//System.out.println("Fecha Suma: "+ModelUtil.getSumarMeses(fecha, 1));
+		
 		if(planAmortEquipmov.getComision()!=null && planAmortEquipmov.getMesesPlazo()!=null && 
 		   idContratoComite!= 0 && idEquipoMovil !=0) {
-			for(int i=0; i<planAmortEquipmov.getMesesPlazo().intValue();i++) {
-				
-			}
 			
+			BigDecimal sumValorCuota = new BigDecimal(0);
+			PlanAmortEquipmov amortEquipmov;
+			BigDecimal saldo = new BigDecimal(0);
+			for(int i=1; i<=planAmortEquipmov.getMesesPlazo().intValue();i++) {
+				
+				amortEquipmov = new PlanAmortEquipmov();
+				amortEquipmov.setValorCapital(planAmortEquipmov.getValorCapital());
+				amortEquipmov.setComision(planAmortEquipmov.getComision());
+				amortEquipmov.setTotal(planAmortEquipmov.getTotal());
+				amortEquipmov.setMesesPlazo(planAmortEquipmov.getMesesPlazo());
+				amortEquipmov.setNumCuota(i);
+				amortEquipmov.setEstado("GENERADO");//cuando pasa a cobros
+				amortEquipmov.setPlanContratoComite(planAmortEquipmov.getPlanContratoComite());
+				amortEquipmov.setMes(mes);
+				amortEquipmov.setAnio(anio);
+				
+				
+				if(i==1) {
+					saldo = planAmortEquipmov.getTotal();
+				}
+				
+				BigDecimal valorCuota = planAmortEquipmov.getTotal().divide(planAmortEquipmov.getMesesPlazo(),2, RoundingMode.HALF_EVEN);
+				
+				
+				amortEquipmov.setValorCuota(valorCuota);
+				
+				
+				sumValorCuota = sumValorCuota.add(valorCuota);
+				System.out.println("sumValorCuota: "+sumValorCuota);
+				System.out.println("total: "+sumValorCuota);
+				if(i==planAmortEquipmov.getMesesPlazo().intValue()) {
+					if(sumValorCuota.compareTo(planAmortEquipmov.getTotal())==1) {
+						BigDecimal tmp = sumValorCuota.subtract(planAmortEquipmov.getTotal());
+						amortEquipmov.setValorCuota(valorCuota.subtract(tmp));
+						valorCuota = valorCuota.subtract(tmp);
+						System.out.println("DATO 1");
+					}
+					else if(sumValorCuota.compareTo(planAmortEquipmov.getTotal())==-1) {
+						BigDecimal tmp = planAmortEquipmov.getTotal().subtract(sumValorCuota);
+						amortEquipmov.setValorCuota(valorCuota.add(tmp));
+						valorCuota = valorCuota.add(tmp);
+						System.out.println("DATO 2");
+					}
+				}
+				saldo = saldo.subtract(valorCuota);
+				amortEquipmov.setSaldo(saldo);
+				try {
+					managerPlanesMoviles.insertarPlanAmortEquipmov(amortEquipmov);
+					
+				} catch (Exception e) {
+					JSFUtil.crearMensajeERROR("No se cargo el listado correctamente");
+					e.printStackTrace();
+				}
+				if(mes==12) {
+					anio++;
+					mes=1;
+				}
+				else {
+					mes++;
+				}
+			}
+			init();
+			PrimeFaces prime=PrimeFaces.current();
+			prime.ajax().update("form1");
+			prime.ajax().update("form2");
+			JSFUtil.crearMensajeINFO("Información generada correctamente");
 		}
+	}
+	
+	public void onRowEdit(RowEditEvent<Object> event) {
+		 try {
+			 	managerPlanesMoviles.actualizarObjeto(event.getObject());
+				JSFUtil.crearMensajeINFO("Se actualizó correctamente.");
+			} catch (Exception e) {
+				JSFUtil.crearMensajeERROR(e.getMessage());
+				e.printStackTrace();
+			}
+	}
+	
+	public void onRowCancel(RowEditEvent<Object> event) {
+	       JSFUtil.crearMensajeINFO("Se canceló actualización.");
 	}
 	
 	public BeanLogin getBeanLogin() {

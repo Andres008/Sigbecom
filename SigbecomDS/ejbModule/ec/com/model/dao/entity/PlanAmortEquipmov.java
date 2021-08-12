@@ -29,7 +29,7 @@ public class PlanAmortEquipmov implements Serializable {
 	private BigDecimal mesesPlazo;
 
 	@Column(name="num_cuota")
-	private BigDecimal numCuota;
+	private Integer numCuota;
 
 	private BigDecimal saldo;
 
@@ -40,6 +40,10 @@ public class PlanAmortEquipmov implements Serializable {
 
 	@Column(name="valor_cuota")
 	private BigDecimal valorCuota;
+	
+	private Integer mes;
+	
+	private Integer anio;
 
 	//bi-directional many-to-one association to PlanContratoComite
 	@ManyToOne
@@ -84,14 +88,6 @@ public class PlanAmortEquipmov implements Serializable {
 
 	public void setMesesPlazo(BigDecimal mesesPlazo) {
 		this.mesesPlazo = mesesPlazo;
-	}
-
-	public BigDecimal getNumCuota() {
-		return this.numCuota;
-	}
-
-	public void setNumCuota(BigDecimal numCuota) {
-		this.numCuota = numCuota;
 	}
 
 	public BigDecimal getSaldo() {
@@ -140,6 +136,30 @@ public class PlanAmortEquipmov implements Serializable {
 
 	public void setPlanEquipo(PlanEquipo planEquipo) {
 		this.planEquipo = planEquipo;
+	}
+
+	public Integer getNumCuota() {
+		return numCuota;
+	}
+
+	public void setNumCuota(Integer numCuota) {
+		this.numCuota = numCuota;
+	}
+
+	public Integer getMes() {
+		return mes;
+	}
+
+	public void setMes(Integer mes) {
+		this.mes = mes;
+	}
+
+	public Integer getAnio() {
+		return anio;
+	}
+
+	public void setAnio(Integer anio) {
+		this.anio = anio;
 	}
 	
 }

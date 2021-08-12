@@ -13,6 +13,7 @@ import ec.com.model.dao.entity.ConvContacto;
 import ec.com.model.dao.entity.ConvEmpresa;
 import ec.com.model.dao.entity.ConvServicio;
 import ec.com.model.dao.entity.DescEstadoDescuento;
+import ec.com.model.dao.entity.PlanAmortEquipmov;
 import ec.com.model.dao.entity.PlanContacto;
 import ec.com.model.dao.entity.PlanContratoComite;
 import ec.com.model.dao.entity.PlanCostosAdm;
@@ -222,4 +223,8 @@ public class ManagerPlanesMoviles {
     	PlanContratoComite planContratoComite = (PlanContratoComite) managerDAOSegbecom.findById(PlanContratoComite.class, idContratoComite);
     	return planContratoComite;
     }
+    public void insertarPlanAmortEquipmov(PlanAmortEquipmov planAmortEquipmov) throws Exception {
+    	managerDAOSegbecom.insertar(planAmortEquipmov);
+    }
+    
 }

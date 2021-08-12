@@ -97,8 +97,8 @@
 						<p:dataTable value="#{frmEquipoMovil.lstPlanContratoComite}"
 							id="tblEmp" editable="true" var="dato" paginator="true"
 							rows="10">
-							<p:ajax event="rowEdit" listener="#{frmCostosAdministrativos.onRowEdit}" update="form2:growl"/>
-            				<p:ajax event="rowEditCancel" listener="#{frmCostosAdministrativos.onRowCancel}" update="form2:growl"/>
+							<p:ajax event="rowEdit" listener="#{frmEquipoMovil.onRowEdit}" update="form2:growl"/>
+            				<p:ajax event="rowEditCancel" listener="#{frmEquipoMovil.onRowCancel}" update="form2:growl"/>
 							<p:column headerText="LINEA TELEFONICA">
 								<h:outputText value="#{dato.lineaTelefono}"/>
 							</p:column>
@@ -112,11 +112,7 @@
 				                        	<f:convertNumber pattern="#0.00" />
 				                </h:outputText>
 							</p:column>
-							<p:column headerText="CEDULA">
-								<h:outputText value="#{dato.usrSocio.cedulaSocio}">
-				                        	<f:convertNumber pattern="#0.00" />
-				                </h:outputText>
-							</p:column>
+							
 							<p:column width="6">
 									<p:rowEditor editTitle="Edit Row" cancelTitle="Cancel Edit" saveTitle="Save Row"/>
 				            </p:column>
