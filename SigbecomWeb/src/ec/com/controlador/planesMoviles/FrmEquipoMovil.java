@@ -1,6 +1,7 @@
 package ec.com.controlador.planesMoviles;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -9,6 +10,8 @@ import javax.ejb.EJB;
 import javax.enterprise.context.SessionScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
+
+import org.primefaces.PrimeFaces;
 
 import ec.com.controlador.sesion.BeanLogin;
 import ec.com.model.dao.entity.PlanAmortEquipmov;
@@ -61,6 +64,7 @@ public class FrmEquipoMovil implements Serializable{
 				Long idPlanEmpresa = planContratoComite.getPlanPlanMovil().getPlanOperadora().getIdPlanEmpresa();
 				System.out.println("id :"+ idPlanEmpresa);
 				planAmortEquipmov.setPlanContratoComite(planContratoComite);
+				planAmortEquipmov.setValorCapital(null);
 				lstPlanEquipo = managerPlanesMoviles.findPlanEquipoByIdOperadora(idPlanEmpresa);
 			} catch (Exception e) {
 				JSFUtil.crearMensajeERROR("No se cargo el listado correctamente");
@@ -81,6 +85,21 @@ public class FrmEquipoMovil implements Serializable{
 			} 
 		}
 	}
+	
+	public void calcularTotalEquipoMovil() {
+		if(idContratoComite!= 0 && idEquipoMovil !=0){
+			System.out.println("Capital: "+ planAmortEquipmov.getValorCapital());
+			System.out.println("Comision: "+ planAmortEquipmov.getComision());
+			BigDecimal total = planAmortEquipmov.getValorCapital().add(planAmortEquipmov.getComision());
+			planAmortEquipmov.setTotal(total);
+		}
+		else {
+			planAmortEquipmov.setTotal(null);
+		}
+		PrimeFaces prime=PrimeFaces.current();
+		prime.ajax().update("form1");
+	}
+	
 	public BeanLogin getBeanLogin() {
 		return beanLogin;
 	}

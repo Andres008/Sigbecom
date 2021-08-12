@@ -25,9 +25,6 @@ public class PlanAmortEquipmov implements Serializable {
 
 	private String estado;
 
-	@Column(name="id_equipo")
-	private BigDecimal idEquipo;
-
 	@Column(name="meses_plazo")
 	private BigDecimal mesesPlazo;
 
@@ -79,14 +76,6 @@ public class PlanAmortEquipmov implements Serializable {
 
 	public void setEstado(String estado) {
 		this.estado = estado;
-	}
-
-	public BigDecimal getIdEquipo() {
-		return this.idEquipo;
-	}
-
-	public void setIdEquipo(BigDecimal idEquipo) {
-		this.idEquipo = idEquipo;
 	}
 
 	public BigDecimal getMesesPlazo() {

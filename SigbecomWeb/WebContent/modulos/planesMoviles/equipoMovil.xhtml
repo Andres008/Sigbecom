@@ -42,7 +42,7 @@
 				                    <f:selectItem itemLabel="Seleccione Linea Telefonica" noSelectionOption="true" />
 				                    <f:selectItems value="#{frmEquipoMovil.lstPlanContratoComite}" var="dat"
 				                    			itemLabel="#{dat.lineaTelefono} #{dat.planPlanMovil.planOperadora.empresa} #{dat.usrSocio.gesPersona.apellidos} #{dat.usrSocio.gesPersona.nombres}" itemValue="#{dat.idContrato}"/>
-				                    <p:ajax event="change" update="mov"
+				                    <p:ajax event="change" update="mov car"
 	        								listener="#{frmEquipoMovil.cargarEquiposMoviles()}" />			
 			                    </p:selectOneMenu>
 			                    <p:outputLabel for="mov" value="Seleccionar Equipo Móvil:" />
@@ -51,20 +51,21 @@
 				                    <f:selectItem itemLabel="Seleccione Equipo" noSelectionOption="true" />
 				                    <f:selectItems value="#{frmEquipoMovil.lstPlanEquipo}" var="dat"
 				                    			itemLabel="#{dat.equipo} #{dat.detalle}" itemValue="#{dat.idEquipo}"/>
+				                    <p:ajax event="change" update="car"
+	        								listener="#{frmEquipoMovil.cargarPlanEquipo()}" />
 			                    </p:selectOneMenu>
 								<p:outputLabel for="car" value="Precio del Equipo:" />
-								<p:inputText id="car" required="true" 
-									value="#{frmEquipoMovil.planAmortEquipmov.valorCapital}">
-									<p:keyFilter mask="num" />
-								</p:inputText>
+								<h:outputText id="car" value="#{frmEquipoMovil.planAmortEquipmov.valorCapital}" >
+									<f:convertNumber pattern="#0.00" />
+								</h:outputText>
 								<p:outputLabel for="adm" value="Valor Comisión: " />
-								<p:inputText id="adm" required="true" onkeyup=""
+								<p:inputText id="adm" required="true" 
 									value="#{frmEquipoMovil.planAmortEquipmov.comision}">
 									<p:keyFilter mask="num" />
-									<f:convertNumber pattern="#0.00" />
+									<p:ajax event="keyup" update="tot" oncomplete="#{frmEquipoMovil.calcularTotalEquipoMovil()}"/>
 								</p:inputText>
 								<p:outputLabel for="tot" value="Valor Total: " />
-								<h:outputText id="tot" value="#{frmEquipoMovil.planAmortEquipmov.comision}" >
+								<h:outputText id="tot" value="#{frmEquipoMovil.planAmortEquipmov.total}" >
 									<f:convertNumber pattern="#0.00" />
 								</h:outputText>
 								<p:outputLabel for="plazo" value="Meses Plazo: " />
@@ -74,7 +75,7 @@
 								</p:inputText>
 								
 							</p:panelGrid>
-							<p:commandButton value="Registrar"
+							<p:commandButton value="Generar Tabla Amortizacion"
 								action="#{frmCostosAdministrativos.registrarValoresAdm()}" update="@form">
 								<p:confirm header="Confirmación"
 								message="Esta seguro de ingresar la información?"
