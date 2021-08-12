@@ -446,7 +446,7 @@ public class ControladorGestionSocios implements Serializable {
 			// String clave = ModelUtil.randomAlphaNumeric();
 			String clave = objUsrSocio.getGesPersona().getCedula();
 			ModelUtil.verificarCedulaEcuador(objUsrSocio.getGesPersona().getCedula());
-			ModelUtil.esEmailCorrecto(objUsrSocio.getGesPersona().getEmail());
+			ModelUtil.esEmailCorrecto(objUsrSocio.getGesPersona().getEmail().trim());
 			objUsrSocio.getGesPersona().setApellidos(objUsrSocio.getGesPersona().getApellidos().toUpperCase());
 			objUsrSocio.getGesPersona().setNombres(objUsrSocio.getGesPersona().getNombres().toUpperCase());
 			objUsrSocio.getGesPersona().setEmail(objUsrSocio.getGesPersona().getEmail().toLowerCase());

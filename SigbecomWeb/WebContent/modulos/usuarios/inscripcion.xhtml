@@ -120,14 +120,14 @@
 							<p:outputLabel value="Correo Electronico" />
 							<p:inputText
 								value="#{controladorGestionSocios.objUsrSocio.gesPersona.email}"
-								placeholder="Correo Electronico" required="true"
+								placeholder="Correo Electronico" 
 								style="text-transform: lowercase" />
 							<p:outputLabel value="Telefono" />
 							<p:inputText
 								value="#{controladorGestionSocios.objUsrSocio.gesPersona.telefono}"
-								placeholder="Telefono" required="true" />
+								placeholder="Telefono"  />
 							<p:outputLabel value="Fecha Ingreso" />
-							<p:calendar required="true" id="restricted"
+							<p:calendar id="restricted"
 								requiredMessage="Es obligatorio fecha de ingreso"
 								value="#{controladorGestionSocios.objUsrSocio.fechaAlta}"
 								navigator="true" locale="es" mindate="1/1/1900" maxdate="today"
