@@ -2,6 +2,7 @@ package ec.com.model.planesMoviles;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.ejb.EJB;
 import javax.ejb.LocalBean;
@@ -211,6 +212,11 @@ public class ManagerPlanesMoviles {
     @SuppressWarnings("unchecked")
 	public List<PlanContratoComite> findAllPlanContratoComite() throws Exception {
     	List<PlanContratoComite> lstPlanContratoComite = managerDAOSegbecom.findAll(PlanContratoComite.class);
+    	for (PlanContratoComite planContratoComite : lstPlanContratoComite) {
+			for (PlanAmortEquipmov planAmortEquipmov : planContratoComite.getPlanAmortEquipmovs()) {
+				planAmortEquipmov.getIdAmortEquipmov();
+			}
+		}
     	return lstPlanContratoComite;
     }
     @SuppressWarnings("unchecked")
@@ -226,5 +232,14 @@ public class ManagerPlanesMoviles {
     public void insertarPlanAmortEquipmov(PlanAmortEquipmov planAmortEquipmov) throws Exception {
     	managerDAOSegbecom.insertar(planAmortEquipmov);
     }
-    
+    @SuppressWarnings("unchecked")
+	public List<PlanAmortEquipmov> findPlanAmortEquipmovByLineaTelef(String lineaTelefono) throws Exception{
+    	List<PlanAmortEquipmov> lstPlanAmortEquipmov = managerDAOSegbecom.findWhere(PlanAmortEquipmov.class, "o.planContratoComite.lineaTelefono = '"+lineaTelefono+"'", null); 
+    	if(lstPlanAmortEquipmov!= null && lstPlanAmortEquipmov.size()>0) {
+    		return lstPlanAmortEquipmov;
+    	}
+    	else {
+    		return null;
+    	}
+    }
 }

@@ -97,8 +97,10 @@
 						<p:dataTable value="#{frmEquipoMovil.lstPlanContratoComite}"
 							id="tblEmp" editable="true" var="dato" paginator="true"
 							rows="10">
-							<p:ajax event="rowEdit" listener="#{frmEquipoMovil.onRowEdit}" update="form2:growl"/>
-            				<p:ajax event="rowEditCancel" listener="#{frmEquipoMovil.onRowCancel}" update="form2:growl"/>
+							
+							<p:column headerText="" style="width:2rem">
+								<p:rowToggler />
+							</p:column>
 							<p:column headerText="LINEA TELEFONICA">
 								<h:outputText value="#{dato.lineaTelefono}"/>
 							</p:column>
@@ -112,10 +114,54 @@
 				                        	<f:convertNumber pattern="#0.00" />
 				                </h:outputText>
 							</p:column>
-							
-							<p:column width="6">
-									<p:rowEditor editTitle="Edit Row" cancelTitle="Cancel Edit" saveTitle="Save Row"/>
-				            </p:column>
+							<p:rowExpansion>
+				            	<p:dataTable value="#{dato.planAmortEquipmovs}"
+									id="tblEmp" editable="true" var="mov" paginator="true"
+									rows="10">
+				            		<p:ajax event="rowEdit" listener="#{frmEquipoMovil.onRowEdit}" update="form2:growl"/>
+            						<p:ajax event="rowEditCancel" listener="#{frmEquipoMovil.onRowCancel}" update="form2:growl"/>
+				            		<p:column headerText="Equipo Movil">
+										<h:outputText value="#{mov.planEquipo.equipo}"/>
+									</p:column>
+									<p:column headerText="Valor Equipo">
+										<h:outputText value="#{mov.valorCapital}">
+											<f:convertNumber pattern="#0.00" />
+										</h:outputText>
+									</p:column>
+									<p:column headerText="Comision">
+										<h:outputText value="#{mov.comision}">
+											<f:convertNumber pattern="#0.00" />
+										</h:outputText>
+									</p:column>
+									<p:column headerText="Total">
+										<h:outputText value="#{mov.total}">
+											<f:convertNumber pattern="#0.00" />
+										</h:outputText>
+									</p:column>
+									<p:column headerText="Plazo">
+										<h:outputText value="#{mov.mesesPlazo}"/>
+									</p:column>
+									<p:column headerText="Num Cuota">
+										<h:outputText value="#{mov.numCuota}"/>
+									</p:column>
+									<p:column headerText="Cuota">
+										<h:outputText value="#{mov.valorCuota}">
+											<f:convertNumber pattern="#0.00" />
+										</h:outputText>
+									</p:column>
+									<p:column headerText="Saldo">
+										<h:outputText value="#{mov.saldo}">
+											<f:convertNumber pattern="#0.00" />
+										</h:outputText>
+									</p:column>
+									<p:column headerText="Estado">
+										<h:outputText value="#{mov.estado}"/>
+									</p:column>
+				            		<p:column width="6">
+										<p:rowEditor editTitle="Edit Row" cancelTitle="Cancel Edit" saveTitle="Save Row"/>
+							        </p:column>
+				            	</p:dataTable>
+				            </p:rowExpansion>
 						</p:dataTable>
 					</p:panel>
 	                </h:form>
