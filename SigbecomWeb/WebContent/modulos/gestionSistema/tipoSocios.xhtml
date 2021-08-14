@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:pc="http://primefaces.org/california">
+
+<h:head>
+	<f:facet name="first">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+		<meta name="viewport"
+			content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" />
+		<meta name="apple-mobile-web-app-capable" content="yes" />
+	</f:facet>
+	<title><ui:insert name="title">SIGBECOM</ui:insert></title>
+	<h:outputScript name="js/nanoscroller.js" library="california-layout" />
+	<h:outputScript name="js/layout.js" library="california-layout" />
+	<ui:insert name="head" />
+</h:head>
+
+<h:body styleClass="main-body"
+	onload="#{controladorGestionSocios.inicializarTipoUsuario()}">
+
+	<div
+		class="layout-wrapper #{guestPreferences.menuLayout != 'static' ? guestPreferences.menuLayout : null}">
+		<ui:include src="/affordances/megamenu.xhtml" />
+		<ui:include src="/affordances/topbar.xhtml" />
+		<ui:include src="/affordances/sidebar.xhtml" />
+		<ui:include src="/affordances/right-sidebar.xhtml" />
+
+		<div class="layout-main">
+			<div class="route-bar">
+				<div class="route-bar-breadcrumb">
+					<i class="fa fa-home"></i> <span>/Registro Usuarios</span>
+					<ui:insert name="viewname" />
+				</div>
+				<ui:include src="/affordances/route-bar-menu.xhtml" />
+			</div>
+			<div class="layout-main-content" align="center">
+				<H1>ADMINISTRACION TIPOS DE SOCIOS</H1>
+				<h:form>
+					<p:growl id="growl" showDetail="true" sticky="true" />
+					<p:panel header="Ingresar Tipo Usuario" toggleable="true"
+						collapsed="true">
+						<p:panelGrid columns="2" styleClass="ui-noborder">
+							<p:outputLabel value="Tipo Usuario" />
+							<p:inputText
+								value="#{controladorGestionSocios.objUsrTipoSocio.nombre}"
+								placeholder="Nombre Tipo Usuario"
+								style="text-transform: uppercase" />
+							<p:outputLabel value="Descripción Tipo Usuario" />
+							<p:inputTextarea
+								value="#{controladorGestionSocios.objUsrTipoSocio.descripcion}"
+								placeholder="Descripción Tipo Usuario"
+								style="text-transform: uppercase" />
+						</p:panelGrid>
+						<p:panel header="Descuentos" >
+							<p:panelGrid columns="3" styleClass="iu-noborder" >
+								<p:outputLabel value="Tipo Descuento"/>
+								<p:selectOneMenu value="#{controladorGestionSocios.objUsrTipoDescuento.idDescuento}" >
+									<f:selectItem itemLabel="Seleccione Descuento"/>
+									<f:selectItems value="#{controladorGestionSocios.lstSiTipoDescuento()}" />
+								</p:selectOneMenu>
+								<p:commandButton value="Agregar" actionListener="#{controladorGestionSocios.agregarDescuentoSocio()}" update="@form"/>
+							</p:panelGrid>
+							<p:dataTable value="#{controladorGestionSocios.objUsrTipoSocio.usrTipoDescuentoSocios}" var="descuento" emptyMessage="No tiene descuento ingresado." >
+								<p:column headerText="Descuento" >
+									<p:outputLabel value="#{descuento.usrTipoDescuento.nombre}" />
+								</p:column>
+								<p:column headerText="Valor Dolares" >
+									<p:outputLabel value="#{descuento.usrTipoDescuento.valorDefecto}" />
+								</p:column>
+							</p:dataTable>
+						</p:panel>
+						<p:commandButton value="Ingresar"
+							action="#{controladorGestionSocios.ingresarTipoSocio()}"
+							update="@form">
+							<p:confirm header="Confirmación"
+								message="Esta seguro de ingresar la información?"
+								icon="pi pi-exclamation-triangle" />
+						</p:commandButton>
+						<p:confirmDialog global="true" showEffect="fade" hideEffect="fade"
+							responsive="true" width="350">
+							<p:commandButton value="Si" type="button"
+								styleClass="ui-confirmdialog-yes" />
+							<p:commandButton value="No" type="button"
+								styleClass="ui-confirmdialog-no ui-button-flat" />
+						</p:confirmDialog>
+					</p:panel>
+					<p:separator></p:separator>
+					<p:panel header="Tipo Socios Ingresados">
+						<p:dataTable value="#{controladorGestionSocios.lstUsrTipoSocio}"
+							var="rol" emptyMessage="No existen Tipo de Usuarios Ingresados"
+							editable="true" paginator="true" rows="10">
+							<p:ajax event="rowEdit" listener="#{controladorRol.onRowEdit}"
+								update="@form:growl" process="@this" />
+							<p:ajax event="rowEditCancel"
+								listener="#{controladorRol.onRowCancel}" update="@form:growl" />
+							<p:column headerText="Rol">
+								<p:cellEditor>
+									<f:facet name="output">
+										<p:outputLabel value="#{rol.nombre}" />
+									</f:facet>
+									<f:facet name="input">
+										<p:inputText id="nombreInput" value="#{rol.nombre}"
+											style="width:100%" />
+									</f:facet>
+								</p:cellEditor>
+							</p:column>
+							<p:column headerText="Descripción">
+								<p:cellEditor>
+									<f:facet name="output">
+										<p:outputLabel value="#{rol.descripcion}" />
+									</f:facet>
+									<f:facet name="input">
+										<p:inputTextarea id="descripcionInput"
+											value="#{rol.descripcion}" style="width:100%" />
+									</f:facet>
+								</p:cellEditor>
+
+							</p:column>
+							<p:column headerText="Descuentos">
+								<p:dataTable value="#{rol.usrTipoDescuentoSocios}" emptyMessage="No tiene descuentos"
+									var="descuento">
+									<p:column headerText="Descuento">
+										<p:outputLabel value="#{descuento.usrTipoDescuento.nombre}" />
+									</p:column>
+									<p:column headerText="Valor Dolares">
+										<p:outputLabel
+											value="#{descuento.usrTipoDescuento.valorDefecto}" />
+									</p:column>
+								</p:dataTable>
+							</p:column>
+							<p:column headerText="Estado" width="50">
+								<p:outputLabel
+									value="#{controladorRol.nombreEstado(rol.estado)}" />
+							</p:column>
+							<p:column headerText="Editar">
+								<p:rowEditor editTitle="Edit Row" cancelTitle="Cancel Edit"
+									saveTitle="Save Row" />
+							</p:column>
+						</p:dataTable>
+					</p:panel>
+				</h:form>
+
+			</div>
+			<ui:include src="/affordances/footer.xhtml" />
+		</div>
+	</div>
+
+	<p:ajaxStatus
+		style="width:32px;height:32px;position:fixed;right:7px;bottom:7px">
+		<f:facet name="start">
+			<i class="fa fa-circle-o-notch fa-spin ajax-loader"
+				aria-hidden="true"></i>
+		</f:facet>
+
+		<f:facet name="complete">
+			<h:outputText value="" />
+		</f:facet>
+	</p:ajaxStatus>
+
+	<h:outputStylesheet name="css/nanoscroller.css"
+		library="california-layout" />
+	<h:outputStylesheet name="css/layout-#{guestPreferences.theme}.css"
+		library="california-layout" />
+</h:body>
+</html>

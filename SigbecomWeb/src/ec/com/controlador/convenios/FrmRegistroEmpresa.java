@@ -1,6 +1,8 @@
 package ec.com.controlador.convenios;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -15,7 +17,9 @@ import org.primefaces.event.RowEditEvent;
 
 import ec.com.controlador.sesion.BeanLogin;
 import ec.com.model.convenios.ManagerConvenios;
+import ec.com.model.dao.entity.ConvContacto;
 import ec.com.model.dao.entity.ConvEmpresa;
+import ec.com.model.dao.entity.ConvServicio;
 import ec.com.model.modulos.util.JSFUtil;
 
 @Named("frmRegistroEmpresa")
@@ -27,6 +31,8 @@ public class FrmRegistroEmpresa implements Serializable{
 	
 	private ConvEmpresa convEmpresa;
 	private List<ConvEmpresa> lstConvEmpresa;
+	private ConvContacto convContacto;
+	private ConvServicio convServicio;
 	
 	@Inject
 	private BeanLogin beanLogin;
@@ -38,6 +44,8 @@ public class FrmRegistroEmpresa implements Serializable{
 	public void init() {
 		convEmpresa = new ConvEmpresa();
 		lstConvEmpresa = new ArrayList<ConvEmpresa>();
+		convContacto = new ConvContacto();
+		convServicio = new ConvServicio();
 		cargarListaEmpresasConvenio();
 	}
 	public void registrarEmpresa() {
@@ -77,6 +85,54 @@ public class FrmRegistroEmpresa implements Serializable{
 	public void onRowCancel(RowEditEvent<Object> event) {
        JSFUtil.crearMensajeINFO("Se canceló actualización.");
    }
+	public void cargarEmpresa(ConvEmpresa convEmpresa) {
+		convContacto.setConvEmpresa(convEmpresa);
+	}
+	public void registrarContacto() {
+		System.out.println("Regsitro Contacto:"+convContacto.getApellidos());
+		if(!convContacto.getNombres().isEmpty()&&!convContacto.getApellidos().isEmpty()&&!convContacto.getCargo().isEmpty()&&
+		   !convContacto.getCelular().isEmpty()&&!convContacto.getEmail().isEmpty()){
+			try {
+				managerConvenios.insertarConvContacto(convContacto);
+				JSFUtil.crearMensajeINFO("Contacto Registrado correctamente");
+				init();
+				cargarListaEmpresasConvenio();
+				PrimeFaces prime=PrimeFaces.current();
+				prime.executeScript("PF('dlgReg').hide();");
+				prime.ajax().update("form1");
+				prime.ajax().update("form2");
+			} catch (Exception e) {
+				JSFUtil.crearMensajeERROR("No se registro correctamente");
+				e.printStackTrace();
+			}
+		}
+	}
+	public void cargarEmpresaServ(ConvEmpresa convEmpresa) {
+		convServicio.setConvEmpresa(convEmpresa);
+	}
+	public void registrarServicio() {
+		System.out.println("RegsitroServicio:"+convServicio.getServicioProducto());
+		if(!convServicio.getDetalle().isEmpty()&&!convServicio.getServicioProducto().isEmpty()){
+			try {
+				convServicio.setEstado("ACTIVO");
+				BigDecimal montoMax= convServicio.getMontoMax().setScale(2, RoundingMode.HALF_EVEN);
+				BigDecimal interes= convServicio.getInteres().setScale(2, RoundingMode.HALF_EVEN);
+				convServicio.setMontoMax(montoMax);
+				convServicio.setInteres(interes);
+				managerConvenios.insertarConvServicio(convServicio);
+				JSFUtil.crearMensajeINFO("Servicio Registrado correctamente");
+				init();
+				cargarListaEmpresasConvenio();
+				PrimeFaces prime=PrimeFaces.current();
+				prime.executeScript("PF('dlgSer').hide();");
+				prime.ajax().update("form1");
+				prime.ajax().update("form2");
+			} catch (Exception e) {
+				JSFUtil.crearMensajeERROR("No se registro correctamente");
+				e.printStackTrace();
+			}
+		}
+	}
 	//GETTERS AND SETTERS
 	public ConvEmpresa getConvEmpresa() {
 		return convEmpresa;
@@ -95,6 +151,18 @@ public class FrmRegistroEmpresa implements Serializable{
 	}
 	public void setLstConvEmpresa(List<ConvEmpresa> lstConvEmpresa) {
 		this.lstConvEmpresa = lstConvEmpresa;
+	}
+	public ConvContacto getConvContacto() {
+		return convContacto;
+	}
+	public void setConvContacto(ConvContacto convContacto) {
+		this.convContacto = convContacto;
+	}
+	public ConvServicio getConvServicio() {
+		return convServicio;
+	}
+	public void setConvServicio(ConvServicio convServicio) {
+		this.convServicio = convServicio;
 	}
 	
 }

@@ -5,7 +5,16 @@
                 xmlns:p="http://primefaces.org/ui" 
                 xmlns:pc="http://primefaces.org/california">
 
+    <h:form id="statusBar">
+		<p:ajaxStatus onstart="PF('statusDialog').show()"
+	                onsuccess="PF('statusDialog').hide()" />
+	    <p:dialog widgetVar="statusDialog" modal="true" draggable="true"
+	        closable="false" resizable="false" showHeader="false"  >
+	        <p:graphicImage name="images/cargando.gif" library="california-layout" />
+	    </p:dialog>
+   	</h:form>
     <h:form>
+    	
         <div id="layout-megamenu" class="ui-g-12 layout-megamenu #{guestPreferences.darkMegaMenu ? 'layout-megamenu-dark' : ''} #{guestPreferences.gradientMegaMenu ? 'layout-megamenu-gradient' : ''}">
             <div class="ui-g-12 ui-md-6 ui-lg-3 layout-megamenu-submenu">
                 <h4>System Reports</h4>

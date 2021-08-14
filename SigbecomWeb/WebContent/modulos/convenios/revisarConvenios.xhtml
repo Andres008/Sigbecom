@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://java.sun.com/jsf/html" xmlns:f="http://java.sun.com/jsf/core" xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:p="http://primefaces.org/ui">
+
+<h:head>
+<f:facet name="first">
+            <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+            <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+            <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0"/>
+            <meta name="apple-mobile-web-app-capable" content="yes" />
+        </f:facet>
+        <title><ui:insert name="title"></ui:insert></title>
+        <h:outputScript name="js/nanoscroller.js" library="california-layout" />
+        <h:outputScript name="js/layout.js" library="california-layout" />
+        <ui:insert name="head"/>
+</h:head>
+
+<h:body styleClass="main-body">
+
+        <div class="layout-wrapper #{guestPreferences.menuLayout != 'static' ? guestPreferences.menuLayout : null}">
+            <ui:include src="/affordances/megamenu.xhtml" />
+            <ui:include src="/affordances/topbar.xhtml" />
+            <ui:include src="/affordances/sidebar.xhtml" />
+            <ui:include src="/affordances/right-sidebar.xhtml" />
+
+            <div class="layout-main">
+                <div class="route-bar">
+                    <div class="route-bar-breadcrumb">
+                        <i class="fa fa-home"></i> <span>/CONVENIOS/Revisión de Solicitudes</span>
+                        <ui:insert name="viewname" />
+                    </div>
+					<ui:include src="/affordances/route-bar-menu.xhtml" />
+                </div>
+				<div class="layout-main-content">
+                <H1>REVISIÓN DE SOLICITUDES CONVENIOS</H1>
+				<h:form id="form1">
+					<p:growl id="growl" showDetail="true" sticky="true" />
+                    <p:panel id="pnl" header="SOLICITUDES PENDIENTES">
+                    	<div class="card" align="right">
+						    
+					    </div>	
+                    	<p:dataTable id="lstSolicituds"
+                    	 value="#{frmRevisarConvenios.lstConvAdquirido}" var="sol">
+                    		
+							<p:column headerText="Cedula" style="width:4rem">
+						        	<p:outputLabel value="#{sol.cedulaSocio}"/>
+						    </p:column>
+						    <p:column headerText="Nombres Socio">
+						        	<p:outputLabel value="#{frmRevisarConvenios.nombres(sol.cedulaSocio)}"/>
+						    </p:column>
+						    <p:column headerText="Empresa">
+						        	<p:outputLabel value="#{sol.convServicio.convEmpresa.empresa}"/>
+						    </p:column>
+						    <p:column headerText="Solicitud">
+						        	<p:outputLabel value="#{sol.convServicio.detalle}"/>
+						    </p:column>
+						    <p:column headerText="Fecha Solicitud">
+						        	<p:outputLabel value="#{sol.fechaSol}"/>
+						    </p:column>
+						    <p:column headerText="Estado Tramite">
+						        	<p:outputLabel value="#{sol.estado}"/>
+						    </p:column>
+						    <p:column headerText="documento">
+						        	<p:commandButton icon="fa fa-search" value="ver" update=":frmPDFT :frmIMAGET"
+						    					action="#{frmRevisarConvenios.cargarDocumento(sol.adjunto, sol.cedulaSocio)}"/>
+						    </p:column>
+						    <p:column headerText="tramitar">
+						        	<p:commandButton  value="Tramitar" onclick="PF('dlgTramite').show();" update="frmTramite"
+						        			action="#{frmRevisarConvenios.cargarSolicitud(sol.idConvAdquiridos)}"/>
+						    </p:column>
+						
+                    	</p:dataTable>
+                    	
+                    	
+                    </p:panel>
+                    <br/>
+                    	<br/>
+                    	<p:separator/>
+                    <p:panel header="SOLICITUDES TRAMITADOS">
+                    	<p:dataTable id="lstSolTrm" 
+                    	 value="#{frmRevisarConvenios.lstConvAdquiridoTrm}" var="sol"
+                    	 paginator="true" rows="10">
+                    		<p:column headerText="" style="width:2rem">
+								<p:rowToggler />
+							</p:column>
+							<p:column headerText="Cedula" style="width:4rem">
+						        	<p:outputLabel value="#{sol.cedulaSocio}"/>
+						    </p:column>
+						    <p:column headerText="Nombres Socio">
+						        	<p:outputLabel value="#{frmRevisarConvenios.nombres(sol.cedulaSocio)}"/>
+						    </p:column>
+						    <p:column headerText="Empresa">
+						        	<p:outputLabel value="#{sol.convServicio.convEmpresa.empresa}"/>
+						    </p:column>
+						    <p:column headerText="Solicitud">
+						        	<p:outputLabel value="#{sol.convServicio.detalle}"/>
+						    </p:column>
+						    <p:column headerText="Fecha Solicitud">
+						        	<p:outputLabel value="#{sol.fechaSol}"/>
+						    </p:column>
+						    <p:column headerText="Estado Tramite">
+						        	<p:outputLabel value="#{sol.estado}"/>
+						    </p:column>
+						    <p:column headerText="documento">
+						        	<p:commandButton icon="fa fa-search" value="ver" update=":frmPDFT :frmIMAGET"
+						    					action="#{frmRevisarConvenios.cargarDocumento(sol.adjunto, sol.cedulaSocio)}"/>
+						    </p:column>
+º							<p:rowExpansion>
+							
+								<p:dataTable value="#{sol.convAmortizacions}" rendered="#{frmRevisarConvenios.activarTablaAmortizacion(dato.estado)}"
+													id="tblCon" var="con">
+										<f:facet name="header">
+								            TABLA DE AMORTIZACION
+										</f:facet>
+										<p:column headerText="CUOTA" >
+											<h:outputText value="#{con.numeroCuota}" />
+										</p:column>
+										<p:column headerText="FECHA PAGO">
+								           <h:outputText value="#{con.fechaPago}"/>
+								        </p:column>
+								        <p:column headerText="CAPITAL">
+								           <h:outputText value="#{con.capital}"/>
+								        </p:column>
+								        <p:column headerText="INTERES">
+								           <h:outputText value="#{con.interes}"/>
+								        </p:column>
+								        <p:column headerText="VALOR CUOTA">
+								           <h:outputText value="#{con.valorCuota}"/>
+								        </p:column>
+								        <p:column headerText="SALDO">
+								           <h:outputText value="#{con.saldo}"/>
+								        </p:column>
+									</p:dataTable>
+							</p:rowExpansion>
+                    	</p:dataTable>
+                    </p:panel>
+                </h:form>
+						<p:dialog
+							header="DOCUMENTO" resizable="false" position="top" width="90%"
+							widgetVar="dlgPDFT" id="dlgPDF" modal="true"
+							hideEffect="fade">
+							<h:form id="frmPDFT">
+								<p:media value="#{frmRevisarConvenios.pdf}" width="70%" height="600px" player="pdf"/>
+							</h:form>
+						</p:dialog>
+						<p:dialog
+							header="DOCUMENTO" resizable="false" position="center"
+							widgetVar="dlgImageT" id="dlgImage" modal="true"
+							hideEffect="fade" >
+							<h:form id="frmIMAGET">
+								<p:panelGrid columns="2">
+									<p:outputLabel value="Click en el boton para descargar Imagen"/>
+									<p:commandButton value="Descargar" icon="pi pi-arrow-down" ajax="false" styleClass="ui-button-outlined"
+													 onclick="PF('dlgImageT').hide()">
+										<p:fileDownload value="#{frmRevisarConvenios.download}"/>
+									</p:commandButton>
+								</p:panelGrid>
+							</h:form>
+						</p:dialog>
+						<p:dialog
+							header="CALIFICAR SOLICITUD" resizable="false" position="center" 
+							widgetVar="dlgTramite" id="dlgTramite" modal="true" closable="false"
+							hideEffect="fade" >
+							<h:form id="frmTramite">
+								<p:messages id="msg" showDetail="true" closable="true"/>
+								<p:panelGrid columns="2">
+									<p:outputLabel value="Cedula de Identidad:"/>
+									<p:outputLabel value="#{frmRevisarConvenios.convAdquirido.cedulaSocio}"/>
+									<p:outputLabel value="Solicitante:"/>
+									<p:outputLabel value="#{frmRevisarConvenios.nombres}"/>
+									<p:outputLabel value="Fecha que solicita:"/>
+									<p:outputLabel value="#{frmRevisarConvenios.convAdquirido.fechaSol}"/>
+									<p:outputLabel value="Seleccione Opcion:"/>
+									<p:selectOneRadio id="console" value="#{frmRevisarConvenios.estado}">
+							            <f:selectItem itemLabel="REVISADO" itemValue="REVISADO"/>
+							            <f:selectItem itemLabel="NO CALIFICA" itemValue="NO CALIFICA"/>
+							        </p:selectOneRadio>
+								</p:panelGrid>
+							    <p:panel style="text-align:center">
+							    	<h:panelGrid columns="2" cellpadding="10">
+							    		<p:commandButton value="CANCELAR" onclick="PF('dlgTramite').hide()"
+							    						action="#{frmRevisarConvenios.init()}" />
+							    		<p:commandButton value="ACEPTAR" update="@form"
+							    				action="#{frmRevisarConvenios.tramitar()}" />
+							    	</h:panelGrid>
+							    </p:panel>
+							     
+							</h:form>
+						</p:dialog>
+						
+                
+                </div>
+				<ui:include src="/affordances/footer.xhtml" />
+            </div>
+        </div>
+
+        <p:ajaxStatus style="width:32px;height:32px;position:fixed;right:7px;bottom:7px">
+           <f:facet name="start">
+               <i class="fa fa-circle-o-notch fa-spin ajax-loader" aria-hidden="true"></i>
+           </f:facet>
+
+           <f:facet name="complete">
+               <h:outputText value="" />
+           </f:facet>
+       </p:ajaxStatus>
+
+        <h:outputStylesheet name="css/nanoscroller.css" library="california-layout" />
+        <h:outputStylesheet name="css/layout-#{guestPreferences.theme}.css" library="california-layout" />
+    </h:body>
+</html>

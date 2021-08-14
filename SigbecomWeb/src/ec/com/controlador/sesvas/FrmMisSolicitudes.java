@@ -325,7 +325,6 @@ public class FrmMisSolicitudes implements Serializable{
         System.out.println("Archivo subido: "+ event.getFile().getFileName());
         this.file = event.getFile();
         JSFUtil.crearMensajeINFO("Documento cargado correctamente");
-       
     }
 	
 	public void precargarArchivo(DtoSesvasAdjunto dato) {
@@ -390,7 +389,7 @@ public class FrmMisSolicitudes implements Serializable{
 			}
         }
         else {
-        	JSFUtil.crearMensajeWARN("Campos necesarios","Se necesita que seleccione los archivos correspondientes a la columna Requisitos");
+        	//JSFUtil.crearMensajeWARN("Campos necesarios","Se necesita que seleccione los archivos correspondientes a la columna Requisitos");
         }
     }
 	

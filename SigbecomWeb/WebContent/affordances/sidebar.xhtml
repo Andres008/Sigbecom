@@ -1,65 +1,50 @@
-<ui:composition
-    xmlns="http://www.w3.org/1999/xhtml"
-    xmlns:f="http://java.sun.com/jsf/core"
-    xmlns:h="http://java.sun.com/jsf/html"
-    xmlns:ui="http://java.sun.com/jsf/facelets"
-    xmlns:p="http://primefaces.org/ui"
-    xmlns:pc="http://primefaces.org/california">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:pc="http://primefaces.org/california">
 
-    <div class="layout-sidebar #{guestPreferences.darkMenu ? 'layout-sidebar-dark' : ''} #{guestPreferences.gradientMenu ? 'layout-sidebar-gradient': ''}">
-        <div id="nano-container" class="nano">
-            <div class="nano-content sidebar-scroll-content">
-                <ui:fragment rendered="#{guestPreferences.profileMode == 'inline' ? true : false}">
-                    <div class="user-profile">
-                        <a id="sidebar-profile-button" href="#">
-                            <p:graphicImage height="184" width="148" value="#{beanLogin.cargarFotografia()}" library="california-layout" cache="false" />
-                            <span class="sidebar-profile-name">#{beanLogin.credencial.objUsrSocio.gesPersona.apellidos} #{beanLogin.credencial.objUsrSocio.gesPersona.nombres}</span>
-                            <span class="sidebar-profile-role">#{beanLogin.credencial.objUsrSocio.autRol.nombre}</span>
-                        </a>
-                        <ul id="sidebar-usermenu" class="usermenu">
-                            <li>
-                                <a href="#">
-                                    <i class="fa fa-fw fa-user"></i>
-                                    <span class="topbar-item-name">Datos Personales</span>
-                                </a>
-                            </li>
-                            <li>
-                                <a href="#">
-                                    <i class="ui-icon-contact"></i>
-                                    <span class="topbar-item-name">Cambiar Contraseña</span>
-                                </a>
-                            </li>
-                           
-                            <li>
-                                <a href="#">
-                                    <i class="fa fa-fw fa-bell-o"></i>
-                                    <span class="topbar-item-name">Notifificaciones</span>
-                                    <i class="layout-menuitem-toggler fa fa-fw fa-angle-down"></i>
-                                </a>
-                                <ul>
-                                    <li role="menuitem">
-                                        <a href="#">
-                                            <i class="fa fa-fw fa-tasks"></i>
-                                            <span>Pending tasks</span>
-                                        </a>
-                                    </li>
-                                </ul>
-                            </li>
-                        </ul>
-                    </div>
-                </ui:fragment>
+	<div
+		class="layout-sidebar #{guestPreferences.darkMenu ? 'layout-sidebar-dark' : ''} #{guestPreferences.gradientMenu ? 'layout-sidebar-gradient': ''}">
+		<div id="nano-container" class="nano">
+			<div class="nano-content sidebar-scroll-content">
+				<ui:fragment
+					rendered="#{guestPreferences.profileMode == 'inline' ? true : false}">
+					<div class="user-profile">
+						<a id="sidebar-profile-button" href="#"> <p:graphicImage
+								height="184" width="148" value="#{beanLogin.cargarFotografia()}"
+								library="california-layout" cache="false" /> <span
+							class="sidebar-profile-name">#{beanLogin.credencial.objUsrSocio.gesPersona.apellidos}
+								#{beanLogin.credencial.objUsrSocio.gesPersona.nombres}</span> <span
+							class="sidebar-profile-role">#{beanLogin.credencial.objUsrSocio.autRol.nombre}</span>
+						</a>
+						<h:form id="menuPersonal">
+							<ul id="sidebar-usermenu" class="usermenu">
+								<li><p:commandLink action="/modulos/usuarios/actualizacionDatos?faces-redirect=true" >
+										<i class="fa fa-fw fa-user"></i>
+										<span class="topbar-item-name">Datos Personales</span>
+									</p:commandLink></li>
+								<li><p:commandLink action="/modulos/usuarios/cambioContrasenia?faces-redirect=true" >
+										<i class="ui-icon-contact"></i>
+										<span class="topbar-item-name">Cambiar Contraseña</span>
+									</p:commandLink></li>
+							</ul>
+						</h:form>
+					</div>
+				</ui:fragment>
 
-                <h:form id="menuform">
-                	<p:growl id="messages" showDetail="false" />
-                    <pc:menu widgetVar="me" model="#{controladorAcceso.menuModel}">
-                        <f:facet name="options">
-						<p:commandButton value="Inicio" icon="ui-icon-extlink" />
-					</f:facet>
-                        </pc:menu>
-                </h:form>
-            </div>
-        </div>
+				<h:form id="menuform">
+					<p:growl id="messages" showDetail="false" />
+					<pc:menu widgetVar="me" model="#{controladorAcceso.menuModel}">
+						<f:facet name="options">
+							<p:commandButton value="Inicio" icon="ui-icon-extlink" />
+						</f:facet>
+					</pc:menu>
+				</h:form>
+			</div>
+		</div>
 
-    </div>
+	</div>
 
 </ui:composition>

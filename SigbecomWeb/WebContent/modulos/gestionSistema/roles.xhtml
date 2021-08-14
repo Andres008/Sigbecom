@@ -47,6 +47,11 @@
 							<p:outputLabel value="Nombre" />
 							<p:inputText value="#{controladorRol.objAutRol.nombre}"
 								placeholder="Nombre Rol" style="text-transform: uppercase" />
+								<p:outputLabel value="Tipo Usuario" />
+							<p:selectOneMenu value="#{controladorRol.objAutRol.usrTipoSocio.idTipoSocio}" required="true" requiredMessage="Es obligatorio el tipo de socio.">
+								<f:selectItem itemLabel="Seleccione Tipo Usuario"/>
+								<f:selectItems value="#{controladorGestionSocios.lstSiTipoSocio()}" />
+							</p:selectOneMenu>
 							<p:outputLabel value="Descripción" />
 							<p:inputTextarea value="#{controladorRol.objAutRol.descripcion}"
 								placeholder="Descripción Rol" style="text-transform: uppercase" />

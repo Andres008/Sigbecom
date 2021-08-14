@@ -22,30 +22,55 @@ public class ConvAdquirido implements Serializable {
 	@GeneratedValue(strategy=GenerationType.SEQUENCE, generator="CONV_ADQUIRIDO_IDCONVADQUIRIDOS_GENERATOR")
 	@Column(name="id_conv_adquiridos")
 	private long idConvAdquiridos;
-
-	@Column(name="cedula_socio")
-	private String cedulaSocio;
-
-	@Temporal(TemporalType.DATE)
-	@Column(name="fecha_fin")
-	private Date fechaFin;
-
-	@Temporal(TemporalType.DATE)
-	@Column(name="fecha_inicial")
-	private Date fechaInicial;
-
-	@Column(name="valor_total")
-	private BigDecimal valorTotal;
-
+	
 	//bi-directional many-to-one association to ConvServicio
 	@ManyToOne
 	@JoinColumn(name="id_conv_servicio")
 	private ConvServicio convServicio;
 
+	@Column(name="cedula_socio")
+	private String cedulaSocio;
+	
+	@Column(name="valor_total")
+	private BigDecimal valorTotal;
+	
+	@Temporal(TemporalType.DATE)
+	@Column(name="fecha_sol")
+	private Date fechaSol;
+
+	
+	@Temporal(TemporalType.DATE)
+	@Column(name="fecha_aprob")
+	private Date fechaAprob;
+	
+	@Column(name="resolucion")
+	private String resolucion;
+	
+	@Temporal(TemporalType.DATE)
+	@Column(name="fecha_revision")
+	private Date fechaRevision;
+	
+	private BigDecimal interes;
+	
+	@Column(name="estado")
+	private String estado;
+	
+	@Column(name="adjunto")
+	private String adjunto;
+	
+	@Column(name="plazo")
+	private Integer plazo;
+	
+	@Column(name="interes_total")
+	private BigDecimal interesTotal;
+	
+	@Column(name="deuda_total")
+	private BigDecimal deudaTotal;
+
 	//bi-directional many-to-one association to ConvAmortizacion
 	@OneToMany(mappedBy="convAdquirido")
 	private List<ConvAmortizacion> convAmortizacions;
-
+	
 	public ConvAdquirido() {
 	}
 
@@ -63,22 +88,6 @@ public class ConvAdquirido implements Serializable {
 
 	public void setCedulaSocio(String cedulaSocio) {
 		this.cedulaSocio = cedulaSocio;
-	}
-
-	public Date getFechaFin() {
-		return this.fechaFin;
-	}
-
-	public void setFechaFin(Date fechaFin) {
-		this.fechaFin = fechaFin;
-	}
-
-	public Date getFechaInicial() {
-		return this.fechaInicial;
-	}
-
-	public void setFechaInicial(Date fechaInicial) {
-		this.fechaInicial = fechaInicial;
 	}
 
 	public BigDecimal getValorTotal() {
@@ -119,4 +128,84 @@ public class ConvAdquirido implements Serializable {
 		return convAmortizacion;
 	}
 
+	public String getEstado() {
+		return estado;
+	}
+
+	public void setEstado(String estado) {
+		this.estado = estado;
+	}
+
+	public String getAdjunto() {
+		return adjunto;
+	}
+
+	public void setAdjunto(String adjunto) {
+		this.adjunto = adjunto;
+	}
+
+	public Date getFechaSol() {
+		return fechaSol;
+	}
+
+	public void setFechaSol(Date fechaSol) {
+		this.fechaSol = fechaSol;
+	}
+
+	public Date getFechaAprob() {
+		return fechaAprob;
+	}
+
+	public void setFechaAprob(Date fechaAprob) {
+		this.fechaAprob = fechaAprob;
+	}
+
+	public String getResolucion() {
+		return resolucion;
+	}
+
+	public void setResolucion(String resolucion) {
+		this.resolucion = resolucion;
+	}
+
+	public Date getFechaRevision() {
+		return fechaRevision;
+	}
+
+	public void setFechaRevision(Date fechaRevision) {
+		this.fechaRevision = fechaRevision;
+	}
+
+	public BigDecimal getInteres() {
+		return interes;
+	}
+
+	public void setInteres(BigDecimal interes) {
+		this.interes = interes;
+	}
+
+	public BigDecimal getInteresTotal() {
+		return interesTotal;
+	}
+
+	public void setInteresTotal(BigDecimal interesTotal) {
+		this.interesTotal = interesTotal;
+	}
+
+	public BigDecimal getDeudaTotal() {
+		return deudaTotal;
+	}
+
+	public void setDeudaTotal(BigDecimal deudaTotal) {
+		this.deudaTotal = deudaTotal;
+	}
+
+	public Integer getPlazo() {
+		return plazo;
+	}
+
+	public void setPlazo(Integer plazo) {
+		this.plazo = plazo;
+	}
+	
 }

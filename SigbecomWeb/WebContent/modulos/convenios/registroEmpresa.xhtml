@@ -101,8 +101,8 @@
 							<p:rowExpansion>
 								<p:panel style="text-align:right">
 									<p:commandButton value="Nuevo Contacto"
-										onclick="PF('dlgReg').show();">
-									</p:commandButton>
+										onclick="PF('dlgReg').show();" action="#{frmRegistroEmpresa.cargarEmpresa(dato)}"
+									/>
 								</p:panel>
 								<p:panel>
 									<p:dataTable value="#{dato.convContactos}"
@@ -129,7 +129,7 @@
 								</p:panel>
 								<p:panel style="text-align:right">
 									<p:commandButton value="Nuevo Servicio"
-										onclick="PF('dlgSer').show();">
+										onclick="PF('dlgSer').show();" action="#{frmRegistroEmpresa.cargarEmpresaServ(dato)}">
 									</p:commandButton>
 								</p:panel>
 								<p:panel>
@@ -145,10 +145,14 @@
 								            <h:outputText value="#{ser.detalle}"/>
 								        </p:column>
 								        <p:column headerText="MONTO_MAX">
-								            <h:outputText value="#{ser.montoMax}"/>
+								            <h:outputText value="#{ser.montoMax}">
+								            	<f:convertNumber pattern="#0.00" />
+								            </h:outputText>
 								        </p:column>
 								        <p:column headerText="INTERES">
-								            <h:outputText value="#{ser.interes}"/>
+								            <h:outputText value="#{ser.interes}">
+								            	<f:convertNumber pattern="#0.00" />
+								            </h:outputText>
 								        </p:column>
 								        <p:column headerText="ESTADO">
 								            <h:outputText value="#{ser.estado}"/>
@@ -166,24 +170,27 @@
 	widgetVar="dlgReg" modal="true" position="center"
 	hideEffect="fade" >
 	<h:form id="frmReg">
-		<p:messages id="msgReg" closable="true" showDetail="true"/>
+		<p:messages id="msgReg" closable="true" showDetail="false"/>
 		<p:panelGrid columns="2">
-			<p:outputLabel value="Nombres:"/>
-			<p:inputText />
-			<p:outputLabel value="Apellidos:"/>
-			<p:inputText />
-			<p:outputLabel value="Cargo:"/>
-			<p:inputText />
-			<p:outputLabel value="Celular:"/>
-			<p:inputText />
-			<p:outputLabel value="Teléfono:"/>
-			<p:inputText />
-			<p:outputLabel value="Email:"/>
+			<p:outputLabel for="nomb" value="Nombres:"/>
+			<p:inputText id="nomb" value="#{frmRegistroEmpresa.convContacto.nombres}" required="true"/>
+			<p:outputLabel for="ape" value="Apellidos:"/>
+			<p:inputText id="ape" value="#{frmRegistroEmpresa.convContacto.apellidos}" required="true"/>
+			<p:outputLabel for="car" value="Cargo:"/>
+			<p:inputText id="car" value="#{frmRegistroEmpresa.convContacto.cargo}" required="true"/>
+			<p:outputLabel for="cel" value="Celular:"/>
+			<p:inputText id="cel" value="#{frmRegistroEmpresa.convContacto.celular}" required="true"/>
+			<p:outputLabel for="tel" value="Teléfono:"/>
+			<p:inputText id="tel" value="#{frmRegistroEmpresa.convContacto.telefono}" required="true"/>
+			<p:outputLabel for="ema" value="Email:"/>
+			<p:inputText id="ema" value="#{frmRegistroEmpresa.convContacto.email}" required="true"/>
 		</p:panelGrid>
 		<p:panel>
 			<h:panelGrid columns="2" cellpadding="10">
-				<p:commandButton value="Cancelar"/>
-				<p:commandButton value="Registrar"/>
+				<p:commandButton value="Cancelar" onclick="PF('dlgReg').hide();" update="form2 frmReg"
+				action="#{frmRegistroEmpresa.init()}"/>
+				<p:commandButton value="Registrar" 
+					action="#{frmRegistroEmpresa.registrarContacto()}" update="frmReg"/>
 			</h:panelGrid>
 		</p:panel>
 	</h:form>
@@ -195,21 +202,21 @@
 	<h:form id="frmSer">
 		<p:messages id="msgSer" closable="true" showDetail="true"/>
 		<p:panelGrid columns="2">
-			<p:outputLabel value="Servicio:"/>
-			<p:inputText />
-			<p:outputLabel value="Detalle:"/>
-			<p:inputText />
-			<p:outputLabel value="Monto Máximo Permitido:"/>
-			<p:inputText />
-			<p:outputLabel value="Interes:"/>
-			<p:inputText />
-			<p:outputLabel value="Estado:"/>
-			<p:inputText />
+			<p:outputLabel for="ser" value="Servicio:"/>
+			<p:inputText id="ser" value="#{frmRegistroEmpresa.convServicio.servicioProducto}" />
+			<p:outputLabel for="det" value="Detalle:"/>
+			<p:inputText id="det" value="#{frmRegistroEmpresa.convServicio.detalle}"/>
+			<p:outputLabel for="mon" value="Monto Máximo Permitido:"/>
+			<p:inputText id="mon" value="#{frmRegistroEmpresa.convServicio.montoMax}"/>
+			<p:outputLabel for="in" value="Interes:"/>
+			<p:inputText id="in" value="#{frmRegistroEmpresa.convServicio.interes}"/>
 		</p:panelGrid>
 		<p:panel>
 			<h:panelGrid columns="2" cellpadding="10">
-				<p:commandButton value="Cancelar"/>
-				<p:commandButton value="Registrar"/>
+				<p:commandButton value="Cancelar" onclick="PF('dlgReg').hide();" update="form2 frmSer"
+					action="#{frmRegistroEmpresa.init()}"/>
+				<p:commandButton value="Registrar"
+					action="#{frmRegistroEmpresa.registrarServicio()}" update="frmSer"/>
 			</h:panelGrid>
 		</p:panel>
 	</h:form>

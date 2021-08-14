@@ -16,6 +16,7 @@ import ec.com.model.auditoria.ManagerLog;
 import ec.com.model.dao.entity.AutParametrosGenerale;
 import ec.com.model.dao.entity.AutPerfile;
 import ec.com.model.dao.entity.AutRol;
+import ec.com.model.dao.entity.UsrTipoSocio;
 import ec.com.model.gestionSistema.ManagerGestionSistema;
 import ec.com.model.modulos.util.CorreoUtil;
 import ec.com.model.modulos.util.JSFUtil;
@@ -63,6 +64,7 @@ public class ControladorRol implements Serializable {
 	public void inicializarAutRol() {
 		try {
 			objAutRol = new AutRol();
+			objAutRol.setUsrTipoSocio(new UsrTipoSocio());
 			lstAutRols = managerGestionSistema.buscarTodosAutRol();
 		} catch (Exception e) {
 			JSFUtil.crearMensajeERROR(e.getMessage());
