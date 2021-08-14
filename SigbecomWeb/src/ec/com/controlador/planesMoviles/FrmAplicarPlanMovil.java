@@ -52,13 +52,10 @@ private static final long serialVersionUID = 1L;
 	private Long idPlanMovil;
 	private Long idEquipo;
 	
-	private boolean pnlPlanMovil;
 	private boolean pnlEquipo;
 	
 	private boolean panelCliente;
 	private boolean panelEquipo;
-	private boolean panelPlan;
-	private boolean pnlDatos;
 	
 	@PostConstruct
 	public void init() {
@@ -71,11 +68,7 @@ private static final long serialVersionUID = 1L;
 		//panelgrid
 		panelCliente = false;
 		panelEquipo = false;
-		panelPlan = false;
-		
-		pnlDatos = false;
-		pnlEquipo = false;
-		pnlPlanMovil = false;
+
 		cedulaSocio = "";
 		
 		//usrSocio = new UsrSocio();
@@ -102,7 +95,7 @@ private static final long serialVersionUID = 1L;
 	public void cargarUsuariosSocios() {
 		try {
 			lstUsersSocios = managerPlanesMoviles.findAllUsuariosSocios();
-			lstUsersSocios =lstUsersSocios.stream().filter(p->p.getPlanContratoComites().size()>0).collect(Collectors.toList());
+			lstUsersSocios = lstUsersSocios.stream().filter(p->p.getPlanContratoComites().size()>0).collect(Collectors.toList());
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			JSFUtil.crearMensajeERROR("No se cargo el listado correctamente");
@@ -131,11 +124,8 @@ private static final long serialVersionUID = 1L;
 	}
 	public void cargarPlanesAndEquiposMoviles() {
 		if(idOperadora!=0) {
-			pnlDatos = false;
-			pnlEquipo = true;
-			pnlPlanMovil = true;
+			planContratoComite.setPlanPlanMovil(null);
 			cargarListaPlanesMoviles();
-			cargarListaEquiposMoviles();
 		}
 		else {
 			init();
@@ -152,15 +142,7 @@ private static final long serialVersionUID = 1L;
 		}
 	}
 	
-	private void cargarListaEquiposMoviles() {
-		try {
-			lstEquipos = managerPlanesMoviles.findAllEquiposByIdOperadora(idOperadora);
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			JSFUtil.crearMensajeERROR("No se cargo el listado correctamente");
-			e.printStackTrace();
-		}
-	}
+
 	public void cargarContrato() {
 		System.out.println("PASO1: "+cedulaSocio);
 		if(cedulaSocio!=null && !cedulaSocio.isEmpty()) {
@@ -172,8 +154,7 @@ private static final long serialVersionUID = 1L;
 				tipoUsr = usrSocio.getUsrTipoSocio().getNombre();
 				try {
 					PlanCostosAdm planCostosAdm = managerPlanesMoviles.findPlanCostosAdmBytipoUsr(tipoUsr);
-					BigDecimal costoAdministrativo = planCostosAdm.getCargo().add(planCostosAdm.getCostoLinea()).add(planCostosAdm.getAdministracion());
-					planContratoComite.setCostoAdministrativo(costoAdministrativo);
+					planContratoComite.setPlanCostosAdm(planCostosAdm);
 					planContratoComite.setUsrSocio(usrSocio);
 					panelCliente = true;
 				} catch (Exception e) {
@@ -192,21 +173,7 @@ private static final long serialVersionUID = 1L;
 			JSFUtil.crearMensajeERROR("Seleccione Cliente requerido");
 		}
 	}
-	
-	/*
-	 * public void cargarEquipoMovil() { System.out.println("PASO2:" + idEquipo);
-	 * if(idEquipo!=0) {
-	 * 
-	 * try { PlanEquipo planEquipo =
-	 * managerPlanesMoviles.findEquipoMovilByIdEquipo(idEquipo);
-	 * planContratoComite.setPlanEquipo(planEquipo); panelEquipo = true; } catch
-	 * (Exception e) {
-	 * JSFUtil.crearMensajeERROR("No se cargo el equipo movil requerido");
-	 * e.printStackTrace(); } } else {
-	 * JSFUtil.crearMensajeERROR("Seleccione Equipo Móvil requerido"); }
-	 * 
-	 * }
-	 */
+
 	public void cargarPlanMovil() {
 		System.out.println("PASO3: "+ idPlanMovil);
 		if(idPlanMovil!=0) {
@@ -214,7 +181,6 @@ private static final long serialVersionUID = 1L;
 				PlanPlanMovil planMovil = managerPlanesMoviles.findPlanMovilByid(idPlanMovil);
 				planContratoComite.setValorPlan(planMovil.getPrecio());
 				planContratoComite.setPlanPlanMovil(planMovil);
-				panelPlan = true;
 			} catch (Exception e) {
 				JSFUtil.crearMensajeERROR("No se cargo el Plan Móvil requerido");
 				e.printStackTrace();
@@ -254,6 +220,13 @@ private static final long serialVersionUID = 1L;
 			}
 	}
 	
+	public BigDecimal sumaCostosAdm(PlanCostosAdm planCostosAdm) {
+		BigDecimal total = new BigDecimal(0);
+		if(planCostosAdm!=null) {
+			total = planCostosAdm.getAdministracion().add(planCostosAdm.getCargo()).add(planCostosAdm.getCostoLinea());
+		}
+		return total;
+	}
 	public void generarPlanillaMes() {
 		/*
 		 * BigDecimal valorTotalPlan = new BigDecimal(0); BigDecimal valorTotalEquipo =
@@ -377,15 +350,7 @@ private static final long serialVersionUID = 1L;
 	public void setPanelEquipo(boolean panelEquipo) {
 		this.panelEquipo = panelEquipo;
 	}
-
-	public boolean isPanelPlan() {
-		return panelPlan;
-	}
-
-	public void setPanelPlan(boolean panelPlan) {
-		this.panelPlan = panelPlan;
-	}
-
+	
 	public List<UsrSocio> getLstUsersSocios() {
 		return lstUsersSocios;
 	}
@@ -400,14 +365,6 @@ private static final long serialVersionUID = 1L;
 
 	public void setLstUsrNoSocios(List<UsrSocio> lstUsrNoSocios) {
 		this.lstUsrNoSocios = lstUsrNoSocios;
-	}
-
-	public boolean isPnlPlanMovil() {
-		return pnlPlanMovil;
-	}
-
-	public void setPnlPlanMovil(boolean pnlPlanMovil) {
-		this.pnlPlanMovil = pnlPlanMovil;
 	}
 
 	public boolean isPnlEquipo() {
@@ -434,12 +391,4 @@ private static final long serialVersionUID = 1L;
 		this.idOperadora = idOperadora;
 	}
 
-	public boolean isPnlDatos() {
-		return pnlDatos;
-	}
-
-	public void setPnlDatos(boolean pnlDatos) {
-		this.pnlDatos = pnlDatos;
-	}
-	
 }

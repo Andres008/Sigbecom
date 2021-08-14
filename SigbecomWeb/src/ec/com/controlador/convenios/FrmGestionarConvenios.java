@@ -313,7 +313,7 @@ public class FrmGestionarConvenios implements Serializable{
 					
 					managerConvenios.insertarConvAmortizacion(convAmortizacion);
 				} catch (ParseException e) {
-					//JSFUtil.crearMensajeERROR("No se ");
+					//JSFUtil.crearMensajeERROR("No se genero correctamente");
 					e.printStackTrace();
 				} catch (Exception e) {
 					JSFUtil.crearMensajeERROR("No se registro la cuota correctamente");

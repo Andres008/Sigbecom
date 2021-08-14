@@ -25,30 +25,36 @@ public class PlanAmortEquipmov implements Serializable {
 
 	private String estado;
 
-	@Column(name="id_equipo")
-	private BigDecimal idEquipo;
-
 	@Column(name="meses_plazo")
 	private BigDecimal mesesPlazo;
 
 	@Column(name="num_cuota")
-	private BigDecimal numCuota;
+	private Integer numCuota;
 
 	private BigDecimal saldo;
 
 	private BigDecimal total;
 
 	@Column(name="valor_capital")
-	private String valorCapital;
+	private BigDecimal valorCapital;
 
 	@Column(name="valor_cuota")
 	private BigDecimal valorCuota;
+	
+	private Integer mes;
+	
+	private Integer anio;
 
 	//bi-directional many-to-one association to PlanContratoComite
 	@ManyToOne
 	@JoinColumn(name="id_contrato")
 	private PlanContratoComite planContratoComite;
 
+	//bi-directional many-to-one association to PlanContratoComite
+	@ManyToOne
+	@JoinColumn(name="id_equipo")
+	private PlanEquipo planEquipo;
+	
 	public PlanAmortEquipmov() {
 	}
 
@@ -76,28 +82,12 @@ public class PlanAmortEquipmov implements Serializable {
 		this.estado = estado;
 	}
 
-	public BigDecimal getIdEquipo() {
-		return this.idEquipo;
-	}
-
-	public void setIdEquipo(BigDecimal idEquipo) {
-		this.idEquipo = idEquipo;
-	}
-
 	public BigDecimal getMesesPlazo() {
 		return this.mesesPlazo;
 	}
 
 	public void setMesesPlazo(BigDecimal mesesPlazo) {
 		this.mesesPlazo = mesesPlazo;
-	}
-
-	public BigDecimal getNumCuota() {
-		return this.numCuota;
-	}
-
-	public void setNumCuota(BigDecimal numCuota) {
-		this.numCuota = numCuota;
 	}
 
 	public BigDecimal getSaldo() {
@@ -115,12 +105,12 @@ public class PlanAmortEquipmov implements Serializable {
 	public void setTotal(BigDecimal total) {
 		this.total = total;
 	}
-
-	public String getValorCapital() {
-		return this.valorCapital;
+	
+	public BigDecimal getValorCapital() {
+		return valorCapital;
 	}
 
-	public void setValorCapital(String valorCapital) {
+	public void setValorCapital(BigDecimal valorCapital) {
 		this.valorCapital = valorCapital;
 	}
 
@@ -140,4 +130,36 @@ public class PlanAmortEquipmov implements Serializable {
 		this.planContratoComite = planContratoComite;
 	}
 
+	public PlanEquipo getPlanEquipo() {
+		return planEquipo;
+	}
+
+	public void setPlanEquipo(PlanEquipo planEquipo) {
+		this.planEquipo = planEquipo;
+	}
+
+	public Integer getNumCuota() {
+		return numCuota;
+	}
+
+	public void setNumCuota(Integer numCuota) {
+		this.numCuota = numCuota;
+	}
+
+	public Integer getMes() {
+		return mes;
+	}
+
+	public void setMes(Integer mes) {
+		this.mes = mes;
+	}
+
+	public Integer getAnio() {
+		return anio;
+	}
+
+	public void setAnio(Integer anio) {
+		this.anio = anio;
+	}
+	
 }
