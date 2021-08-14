@@ -4,6 +4,7 @@ import java.io.Serializable;
 import javax.persistence.*;
 import java.math.BigDecimal;
 import java.util.Date;
+import java.util.List;
 
 
 /**
@@ -34,6 +35,10 @@ public class PlanCostosAdm implements Serializable {
 	@ManyToOne
 	@JoinColumn(name="id_tipo_socio")
 	private UsrTipoSocio usrTipoSocio;
+	
+	//bi-directional many-to-one association to PlanPago
+	@OneToMany(mappedBy="planCostosAdm")
+	private List<PlanContratoComite> planContratoComites;
 
 	public PlanCostosAdm() {
 	}
@@ -85,5 +90,25 @@ public class PlanCostosAdm implements Serializable {
 	public void setUsrTipoSocio(UsrTipoSocio usrTipoSocio) {
 		this.usrTipoSocio = usrTipoSocio;
 	}
-	
+
+	public List<PlanContratoComite> getPlanContratoComites() {
+		return planContratoComites;
+	}
+
+	public void setPlanContratoComites(List<PlanContratoComite> planContratoComites) {
+		this.planContratoComites = planContratoComites;
+	}
+	public PlanContratoComite addPlanContratoComite(PlanContratoComite planContratoComite) {
+		getPlanContratoComites().add(planContratoComite);
+		planContratoComite.setPlanCostosAdm(this);
+
+		return planContratoComite;
+	}
+
+	public PlanContratoComite removePlanContratoComite(PlanContratoComite planContratoComite) {
+		getPlanContratoComites().remove(planContratoComite);
+		planContratoComite.setPlanCostosAdm(null);
+
+		return planContratoComite;
+	}
 }

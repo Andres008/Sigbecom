@@ -33,6 +33,10 @@ public class PlanEquipo implements Serializable {
 	@OneToMany(mappedBy="planEquipo")
 	private List<PlanContratoComite> planContratoComites;
 	
+	//bi-directional many-to-one association to PlanContratoComite
+	@OneToMany(mappedBy="planEquipo")
+	private List<PlanAmortEquipmov> planAmortEquipmovs;
+	
 	@ManyToOne
 	@JoinColumn(name="id_plan_empresa")
 	private PlanOperadora planOperadora;
@@ -93,7 +97,27 @@ public class PlanEquipo implements Serializable {
 
 		return planContratoComite;
 	}
+	
+	public List<PlanAmortEquipmov> getPlanAmortEquipmovs() {
+		return planAmortEquipmovs;
+	}
 
+	public void setPlanAmortEquipmovs(List<PlanAmortEquipmov> planAmortEquipmovs) {
+		this.planAmortEquipmovs = planAmortEquipmovs;
+	}
+	public PlanAmortEquipmov addPlanAmortEquipmov(PlanAmortEquipmov planAmortEquipmov) {
+		getPlanAmortEquipmovs().add(planAmortEquipmov);
+		planAmortEquipmov.setPlanEquipo(this);
+
+		return planAmortEquipmov;
+	}
+
+	public PlanAmortEquipmov removePlanAmortEquipmov(PlanAmortEquipmov planAmortEquipmov) {
+		getPlanAmortEquipmovs().remove(planAmortEquipmov);
+		planAmortEquipmov.setPlanEquipo(null);
+
+		return planAmortEquipmov;
+	}
 	public PlanOperadora getPlanOperadora() {
 		return planOperadora;
 	}

@@ -37,8 +37,12 @@ public class PlanContratoComite implements Serializable {
 	@Column(name="valor_plan")
 	private BigDecimal valorPlan;
 	
-	@Column(name="costo_administrativo")
-	private BigDecimal costoAdministrativo;
+	//@Column(name="costo_administrativo")
+	//private BigDecimal costoAdministrativo;
+	
+	@ManyToOne
+	@JoinColumn(name="id_costos_adm")
+	private PlanCostosAdm planCostosAdm;
 	
 	@Column(name="estado")
 	private String estado;
@@ -165,13 +169,6 @@ public class PlanContratoComite implements Serializable {
 		this.valorPlan = valorPlan;
 	}
 
-	public BigDecimal getCostoAdministrativo() {
-		return costoAdministrativo;
-	}
-
-	public void setCostoAdministrativo(BigDecimal costoAdministrativo) {
-		this.costoAdministrativo = costoAdministrativo;
-	}
 	public List<PlanAmortEquipmov> getPlanAmortEquipmovs() {
 		return this.planAmortEquipmovs;
 	}
@@ -215,4 +212,13 @@ public class PlanContratoComite implements Serializable {
 
 		return planRegistroPago;
 	}
+
+	public PlanCostosAdm getPlanCostosAdm() {
+		return planCostosAdm;
+	}
+
+	public void setPlanCostosAdm(PlanCostosAdm planCostosAdm) {
+		this.planCostosAdm = planCostosAdm;
+	}
+	
 }

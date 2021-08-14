@@ -34,7 +34,7 @@
                     <H1>Gestión Planes Móviles</H1>
                     <h:form id="form1">
 	                    <p:growl id="growl" showDetail="true" sticky="true" />
-						<p:panel id="pnls" header="Registro Planes Moviles" toggleable="true" collapsed="#{frmAplicarPlanMovil.pnlDatos}">
+						<p:panel id="pnls" header="Registro Planes Moviles" toggleable="true" collapsed="true">
 							<p:panelGrid columns="3" styleClass="ui-noborder" layout="grid"
 								columnClasses="ui-g-12 ui-md-6 ui-lg-4, ui-g-12 ui-md-6 ui-lg-4, ui-g-12 ui-md-6 ui-lg-4">
 								<p:outputLabel for="nom" value="Seleccione Cliente:" />
@@ -47,32 +47,7 @@
 			                    </p:selectOneMenu>
 								<p:commandButton icon="fa fa-handshake-o"  value="Agregar Cliente" update="@form" style="width:170px;"
 	                    			action="#{frmAplicarPlanMovil.cargarContrato()}"/>
-	                    		
-	                    		<p:outputLabel for="ope" value="Seleccione Operadora:" />
-								<p:selectOneMenu id="ope" value="#{frmAplicarPlanMovil.idOperadora}">
-			                    	<f:selectItem itemLabel="Seleccione Operadoras"
-										noSelectionOption="true" />
-			                    	<f:selectItems value="#{frmAplicarPlanMovil.lstPlanOperadoras}" var="dat"
-			                    			itemLabel="#{dat.empresa}" itemValue="#{dat.idPlanEmpresa}"/>
-			                    	<p:ajax event="change" update="form1"
-        								listener="#{frmAplicarPlanMovil.cargarPlanesAndEquiposMoviles()}" />
-			                    </p:selectOneMenu>
-								<p:outputLabel/>
-	                    		
-							</p:panelGrid>
-							<p:panelGrid id="pnlPlan" columns="4" styleClass="ui-noborder" layout="grid" rendered="#{frmAplicarPlanMovil.pnlPlanMovil}"
-								columnClasses="ui-g-12 ui-md-6 ui-lg-4, ui-g-12 ui-md-6 ui-lg-4, ui-g-12 ui-md-6 ui-lg-4">
-								<p:outputLabel  value="Seleccionar Plan Movil:" />
-								<p:selectOneMenu id="plan" value="#{frmAplicarPlanMovil.idPlanMovil}"
-												 filter="true" filterMatchMode="contains">
-			                    	<f:selectItem itemLabel="Seleccione plan móvil" noSelectionOption="true" />
-			                    	<f:selectItems value="#{frmAplicarPlanMovil.lstPlanMovils}" var="dat"
-			                    			itemLabel="#{dat.plan} #{dat.detalle}" itemValue="#{dat.idPlanMovil}"/>
-			                    </p:selectOneMenu>
-								<p:commandButton icon="fa fa-handshake-o"  value="Agregar Plan" update="@form" style="width:170px;"
-	                    			action="#{frmAplicarPlanMovil.cargarPlanMovil()}"/>
-							</p:panelGrid>
-							
+	                    	</p:panelGrid>
 							<p:separator/>
 							<p:panelGrid columns="1" styleClass="ui-noborder"
 										 columnClasses="ui-g-12 ui-md-6 ui-lg-4, ui-g-12 ui-md-6 ui-lg-4, ui-g-12 ui-md-6 ui-lg-4">
@@ -82,21 +57,38 @@
 									<p:outputLabel  value="Nombres:" />
 									<p:outputLabel  value="#{frmAplicarPlanMovil.planContratoComite.usrSocio.gesPersona.apellidos} #{frmAplicarPlanMovil.planContratoComite.usrSocio.gesPersona.nombres}"/>
 									<p:outputLabel for="cel"  value="Número de Celular:" />
-									<p:inputMask id="cel" value="#{frmAplicarPlanMovil.planContratoComite.lineaTelefono}" mask="9999999999" validateMask="true"/>
+									<p:inputText id="cel" value="#{frmAplicarPlanMovil.planContratoComite.lineaTelefono}" maxlength="10">
+										<p:keyFilter mask="num" />
+									</p:inputText>
 									<p:outputLabel for="feIni"  value="Fecha Contrato:" />
 									<p:datePicker id="feIni" showIcon="true" size="15"
 										 value="#{frmAplicarPlanMovil.planContratoComite.fechaContrato}" />
 									<p:outputLabel for="feFin"  value="Fecha Fin Contrato:" />
 									<p:datePicker id="feFin" showIcon="true" size="15"
 										 value="#{frmAplicarPlanMovil.planContratoComite.fechaFinContrato}" />
-								</p:panelGrid>
-								<p:panelGrid columns="2" styleClass="ui-noborder" rendered="#{frmAplicarPlanMovil.panelPlan}">
-									<p:outputLabel  value="Plan:" />
-									<p:outputLabel  value="#{frmAplicarPlanMovil.planContratoComite.planPlanMovil.plan}"/>
+									<p:outputLabel for="ope" value="Seleccione Operadora:" />
+									<p:selectOneMenu id="ope" value="#{frmAplicarPlanMovil.idOperadora}">
+				                    	<f:selectItem itemLabel="Seleccione Operadoras"
+											noSelectionOption="true" />
+				                    	<f:selectItems value="#{frmAplicarPlanMovil.lstPlanOperadoras}" var="dat"
+				                    			itemLabel="#{dat.empresa}" itemValue="#{dat.idPlanEmpresa}"/>
+				                    	<p:ajax event="change" update="plan p1 p2"
+	        								listener="#{frmAplicarPlanMovil.cargarPlanesAndEquiposMoviles()}" />
+				                    </p:selectOneMenu>
+				                    <p:outputLabel  value="Seleccionar Plan Movil:" />
+									<p:selectOneMenu id="plan" value="#{frmAplicarPlanMovil.idPlanMovil}"
+													 filter="true" filterMatchMode="contains">
+				                    	<f:selectItem itemLabel="Seleccione plan móvil" noSelectionOption="true" />
+				                    	<f:selectItems value="#{frmAplicarPlanMovil.lstPlanMovils}" var="dat"
+				                    			itemLabel="#{dat.plan} #{dat.detalle}" itemValue="#{dat.idPlanMovil}"/>
+				                    	<p:ajax event="change" update="p1 p2"
+	        								listener="#{frmAplicarPlanMovil.cargarPlanMovil()}" />
+	        						</p:selectOneMenu>
+	        						<p:outputLabel  value="Plan:" />
+									<p:outputLabel id="p1"  value="#{frmAplicarPlanMovil.planContratoComite.planPlanMovil.plan}"/>
 									<p:outputLabel  value="Detalle:" />
-									<p:outputLabel  value="#{frmAplicarPlanMovil.planContratoComite.planPlanMovil.detalle}"/>
-								</p:panelGrid>		
-								
+									<p:outputLabel id="p2" value="#{frmAplicarPlanMovil.planContratoComite.planPlanMovil.detalle}"/>
+								</p:panelGrid>
 							</p:panelGrid>
 							<p:panelGrid columns="2" styleClass="ui-noborder">
 								<p:commandButton value="Cancelar"
@@ -178,19 +170,16 @@
 											</h:outputText>
 										</p:column>
 										<p:column headerText="COSTO ADMINISTRATIVO" >
-											<h:outputText value="#{con.costoAdministrativo}" >
-												<f:convertNumber pattern="#0.00" />
-											</h:outputText>
+											<h:outputText value="#{con.planCostosAdm.administracion.add(con.planCostosAdm.cargo).add(con.planCostosAdm.costoLinea)}" />
 										</p:column>
-										<p:column headerText="ESTADO">
+										<p:column headerText="ESTADO PLAN">
 											<p:cellEditor>
 							                    <f:facet name="output">
 							                        <h:outputText value="#{con.estado}"/>
 							                    </f:facet>
 							                    <f:facet name="input">
 							                        <h:selectOneMenu id="option" value="#{con.estado}" style="width:100%">
-												       <f:selectItem itemLabel="Seleccione Valor" noSelectionOption="true"/>
-												       <f:selectItem itemLabel="ACTIVO" itemValue="ACTIVO"/>
+												       <f:selectItem itemLabel="RENOVADO" itemValue="RENOVADO"/>
 												       <f:selectItem itemLabel="INACTIVO" itemValue="INACTIVO"/>
 												    </h:selectOneMenu>
 							                    </f:facet>
@@ -206,46 +195,13 @@
 						</p:dataTable>
 						<br/>
 						<br/>
-						<p:separator/>
-						<p:panelGrid columns="2" styleClass="ui-noborder">
-								<p:commandButton value="Generar Planilla Mes"
-									action="#{frmAplicarPlanMovil.generarPlanillaMes()}" update="form2">
-									<p:confirm header="Confirmación"
-									message="Esta seguro de ingresar la información?"
-									icon="pi pi-exclamation-triangle" />
-								</p:commandButton>
-							</p:panelGrid>	
+						
 					</p:panel>
 	                </h:form>
 <!-- Inicio de Dialogs -->
 
-<p:dialog
-	header="REGISTRO DE CONTACTO"  resizable="false" closable="true"
-	widgetVar="dlgReg" modal="true" position="center"
-	hideEffect="fade" >
-	<h:form id="frmReg">
-		<p:messages id="msgReg" closable="true" showDetail="false"/>
-		<p:panelGrid columns="2">
-			<p:outputLabel for="nomb" value="Nombres:"/>
-			<p:inputText id="nomb" value="#{frmRegistroOperadora.planContacto.nombres}" required="true"/>
-			<p:outputLabel for="ape" value="Apellidos:"/>
-			<p:inputText id="ape" value="#{frmRegistroOperadora.planContacto.apellidos}" required="true"/>
-			<p:outputLabel for="car" value="Cargo:"/>
-			<p:inputText id="car" value="#{frmRegistroOperadora.planContacto.cargo}" required="true"/>
-			<p:outputLabel for="cel" value="Celular:"/>
-			<p:inputText id="cel" value="#{frmRegistroOperadora.planContacto.celular}" required="true"/>
-			<p:outputLabel for="ema" value="E-mail:"/>
-			<p:inputText id="ema" value="#{frmRegistroOperadora.planContacto.email}" required="true"/>
-		</p:panelGrid>
-		<p:panel>
-			<h:panelGrid columns="2" cellpadding="10">
-				<p:commandButton value="Cancelar" onclick="PF('dlgReg').hide();" update="form2 frmReg"
-				action="#{frmRegistroOperadora.init()}"/>
-				<p:commandButton value="Registrar" 
-					action="#{frmRegistroOperadora.registrarContacto()}" update="frmReg"/>
-			</h:panelGrid>
-		</p:panel>
-	</h:form>
+<p:dialog>
+
 </p:dialog>
 
 
