@@ -72,6 +72,7 @@ public class FrmEquipoMovil implements Serializable{
 	public void cargarEquiposMoviles() {
 		if(idContratoComite!=null) {
 			try {
+				
 				PlanContratoComite planContratoComite = managerPlanesMoviles.findByIdContratoComite(idContratoComite);
 				//Verificar si ya tiene un equipo pendiente de pago
 				List<PlanAmortEquipmov> lstPlanAmortEquipmovs = managerPlanesMoviles.findPlanAmortEquipmovByLineaTelef(planContratoComite.getLineaTelefono());
