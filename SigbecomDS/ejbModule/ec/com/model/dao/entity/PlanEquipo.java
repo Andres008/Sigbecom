@@ -28,10 +28,6 @@ public class PlanEquipo implements Serializable {
 
 	@Column(name="precio")
 	private BigDecimal precio;
-
-	//bi-directional many-to-one association to PlanContratoComite
-	@OneToMany(mappedBy="planEquipo")
-	private List<PlanContratoComite> planContratoComites;
 	
 	//bi-directional many-to-one association to PlanContratoComite
 	@OneToMany(mappedBy="planEquipo")
@@ -76,28 +72,6 @@ public class PlanEquipo implements Serializable {
 		this.precio = precio;
 	}
 
-	public List<PlanContratoComite> getPlanContratoComites() {
-		return this.planContratoComites;
-	}
-
-	public void setPlanContratoComites(List<PlanContratoComite> planContratoComites) {
-		this.planContratoComites = planContratoComites;
-	}
-
-	public PlanContratoComite addPlanContratoComite(PlanContratoComite planContratoComite) {
-		getPlanContratoComites().add(planContratoComite);
-		planContratoComite.setPlanEquipo(this);
-
-		return planContratoComite;
-	}
-
-	public PlanContratoComite removePlanContratoComite(PlanContratoComite planContratoComite) {
-		getPlanContratoComites().remove(planContratoComite);
-		planContratoComite.setPlanEquipo(null);
-
-		return planContratoComite;
-	}
-	
 	public List<PlanAmortEquipmov> getPlanAmortEquipmovs() {
 		return planAmortEquipmovs;
 	}
