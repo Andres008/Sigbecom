@@ -82,6 +82,7 @@ public class ManagerGestionSocios {
 		objSocio.getUsrCuentaSocios().forEach(cuenta -> {
 			cuenta.getUsrInstitucionBancaria().getInstitucionBancaria();
 		});
+		objSocio.getUsrSocioDescuentoFijos().forEach(descuento -> descuento.getUsrTipoDescuento().getNombre());
 		return objSocio;
 	}
 
@@ -292,9 +293,12 @@ public class ManagerGestionSocios {
 	public List<UsrSocio> buscarTodosSocios() throws Exception {
 		try {
 			List<UsrSocio> lstUsuario = managerDAOSegbecom.findAll(UsrSocio.class, "o.gesPersona.apellidos ASC");
-			lstUsuario.forEach(usuarios->{
-				usuarios.getGesParientes().forEach(parientes->{
+			lstUsuario.forEach(usuarios -> {
+				usuarios.getGesParientes().forEach(parientes -> {
 					parientes.getIdPariente();
+				});
+				usuarios.getUsrSocioDescuentoFijos().forEach(descuentos -> {
+					descuentos.getUsrTipoDescuento().getNombre();
 				});
 			});
 			return lstUsuario;

@@ -119,8 +119,44 @@
 										styleClass="ui-confirmdialog-no ui-button-flat" />
 								</p:confirmDialog>
 							</p:column>
+							<p:column headerText="Ver Datos Ahorros">
+								<p:commandButton icon="ui-icon-search"
+									actionListener="#{controladorGestionSocios.cargarUsrSocio(socio)}"
+									oncomplete="PF('infAhorro').show()" update="@form:infAhorro" />
+							</p:column>
 						</p:dataTable>
 					</p:panel>
+
+
+					<p:dialog header="Datos Ahorros" widgetVar="infAhorro"
+						id="infAhorro" modal="false" position="top" showEffect="fade"
+						hideEffect="fade" resizable="false" width="90%">
+						<p:messages id="messageAhorro" showDetail="true" closable="true">
+							<p:autoUpdate />
+						</p:messages>
+						<p:panel header="Total Ahorros">
+							<p:panelGrid columns="2" >
+								<p:outputLabel value="Caja de Ahorro"/>
+								<p:outputLabel value="#{controladorGestionSocios.objUsrSocio.cajaAhorro}" />
+								<p:outputLabel value="Cesantía"/>
+								<p:outputLabel value="#{controladorGestionSocios.objUsrSocio.fondoCesantia}" />
+							</p:panelGrid>
+						</p:panel>
+						<p:panel header="Descuentos Mensuales">
+							<p:dataTable var="descuento"
+								value="#{controladorGestionSocios.objUsrSocio.usrSocioDescuentoFijos}">
+								<p:column headerText="Descuento">
+									<p:outputLabel value="#{descuento.usrTipoDescuento.nombre}" />
+								</p:column>
+								<p:column headerText="Valor">
+									<p:outputLabel value="#{descuento.valor}" />
+								</p:column>
+							</p:dataTable>
+						</p:panel>
+					</p:dialog>
+
+
+
 					<p:dialog header="Datos Personales" widgetVar="infPersonal"
 						id="infPersonal" modal="false" position="top" showEffect="fade"
 						hideEffect="fade" resizable="false" width="90%">
