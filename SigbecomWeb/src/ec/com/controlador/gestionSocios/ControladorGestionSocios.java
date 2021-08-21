@@ -453,10 +453,10 @@ public class ControladorGestionSocios implements Serializable {
 			objUsrSocio.setPrimerInicio("S");
 			objUsrSocio.setClave(ModelUtil.md5(clave));
 			objUsrSocio.getUsrEstadoSocio().setIdEstado(1);
-			if (managerGestionPersonas.buscarPersonaByCedula(objUsrSocio.getGesPersona().getCedula()) == null)
-				managerGestionPersonas.insertarPersona(objUsrSocio.getGesPersona());
-			objUsrSocio.setCedulaSocio(objUsrSocio.getGesPersona().getCedula());
-			managerGestionSocios.insertarSocio(objUsrSocio);
+			//if (managerGestionPersonas.buscarPersonaByCedula(objUsrSocio.getGesPersona().getCedula()) == null)
+			//	managerGestionPersonas.insertarPersona(objUsrSocio.getGesPersona());
+			//objUsrSocio.setCedulaSocio(objUsrSocio.getGesPersona().getCedula());
+			//managerGestionSocios.insertarSocio(objUsrSocio);
 			managerLog.generarLogUsabilidad(beanLogin.getCredencial(), this.getClass(), "inscribirUsuario",
 					"Crea usuario " + objUsrSocio.getGesPersona().getCedula());
 			/*correoUtil.enviarCorreoElectronico(objUsrSocio.getGesPersona().getEmail(),

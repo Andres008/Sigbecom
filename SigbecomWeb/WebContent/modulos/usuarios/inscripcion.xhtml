@@ -83,7 +83,7 @@
 								icon="pi pi-exclamation-triangle" />
 						</p:commandButton>
 						<p:panelGrid columns="4" styleClass="ui-noborder">
-							<p:outputLabel value="Cedula" />
+							<p:outputLabel value="Cédula" />
 							<p:inputText
 								value="#{controladorGestionSocios.objUsrSocio.gesPersona.cedula}"
 								required="true" placeholder="Cédula" />
@@ -135,7 +135,7 @@
 							</p:calendar>
 						</p:panelGrid>
 						<p:panel header="Descuentos" id="pnlDescuentos">
-							<p:dataTable var="descuento"
+							<p:dataTable var="descuento" id="tblDescuentos"
 								value="#{controladorGestionSocios.objUsrSocio.usrSocioDescuentoFijos}"
 								emptyMessage="No tiene descuentos ">
 								<p:column headerText="Descuento">
@@ -143,7 +143,9 @@
 								</p:column>
 								<p:column headerText="Valor">
 									<p:inputNumber
-										value="#{descuento.usrTipoDescuento.valorDefecto}" />
+										value="#{descuento.usrTipoDescuento.valorDefecto}">
+										<p:ajax update="@form:tblDescuentos" />
+										</p:inputNumber>
 								</p:column>
 							</p:dataTable>
 						</p:panel>
