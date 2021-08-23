@@ -51,13 +51,15 @@
 								oncomplete="#{controladorGestionSocios.inicializarConsultaSocio()}" />
 							<p:ajax event="rowEditCancel"
 								listener="#{controladorRol.onRowCancel}" update="@form:growl" />
-							<p:column headerText="Cédula" filterBy="#{socio.gesPersona.cedula}">
+							<p:column headerText="Cédula"
+								filterBy="#{socio.gesPersona.cedula}">
 								<p:outputLabel value="#{socio.gesPersona.cedula}" />
 							</p:column>
 							<p:column headerText="Código Rol" filterBy="#{socio.idSocio}">
 								<p:outputLabel value="#{socio.idSocio}" />
 							</p:column>
-							<p:column headerText="Nombres" filterBy="#{socio.gesPersona.apellidos}">
+							<p:column headerText="Nombres"
+								filterBy="#{socio.gesPersona.apellidos}">
 								<p:outputLabel
 									value="#{socio.gesPersona.apellidos} #{socio.gesPersona.nombres}" />
 							</p:column>
@@ -135,14 +137,35 @@
 							<p:autoUpdate />
 						</p:messages>
 						<p:panel header="Total Ahorros">
-							<p:panelGrid columns="2" >
-								<p:outputLabel value="Caja de Ahorro"/>
-								<p:outputLabel value="#{controladorGestionSocios.objUsrSocio.cajaAhorro}" />
-								<p:outputLabel value="Cesantía"/>
-								<p:outputLabel value="#{controladorGestionSocios.objUsrSocio.fondoCesantia}" />
+							<p:panelGrid columns="2" styleClass="ui-noborder">
+								<p:outputLabel value="Caja de Ahorro" />
+								<p:inputNumber
+									value="#{controladorGestionSocios.objUsrSocio.cajaAhorro}"
+									decimalPlaces="2" />
+								<p:outputLabel value="Cesantía" />
+								<p:inputNumber
+									value="#{controladorGestionSocios.objUsrSocio.fondoCesantia}"
+									decimalPlaces="2" />
 							</p:panelGrid>
+							<p:commandButton value="Actualizar Ahorros"
+								actionListener="#{controladorGestionSocios.actualizarSocioFondos()}"
+								update="@form">
+								<p:confirm header="Confirmación"
+									message="Esta seguro de actualizar la información?"
+									icon="pi pi-exclamation-triangle" />
+							</p:commandButton>
+							<p:confirmDialog global="true" showEffect="fade"
+								hideEffect="fade" responsive="true" width="350">
+								<p:commandButton value="Si" type="button"
+									styleClass="ui-confirmdialog-yes" />
+								<p:commandButton value="No" type="button"
+									styleClass="ui-confirmdialog-no ui-button-flat" />
+							</p:confirmDialog>
+
+
 						</p:panel>
-						<p:panel header="Descuentos Mensuales">
+						<p:panel header="Descuentos Mensuales" collapsed="true"
+							toggleable="true">
 							<p:dataTable var="descuento"
 								value="#{controladorGestionSocios.objUsrSocio.usrSocioDescuentoFijos}">
 								<p:column headerText="Descuento">
