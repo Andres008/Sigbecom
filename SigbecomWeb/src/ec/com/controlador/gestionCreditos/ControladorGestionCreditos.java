@@ -513,7 +513,7 @@ public class ControladorGestionCreditos implements Serializable {
 					.setFechaPrimeraCouta(objFinPrestamoSocio.getFinTablaAmortizacions().get(0).getFechaPago());
 			objFinPrestamoSocio.setFechaUltimaCuota(objFinPrestamoSocio.getFinTablaAmortizacions()
 					.get(objFinPrestamoSocio.getFinTablaAmortizacions().size() - 1).getFechaPago());
-			objFinPrestamoSocio.setFinEstadoCredito(new FinEstadoCredito(1));
+			objFinPrestamoSocio.setFinEstadoCredito(new FinEstadoCredito(5));
 			objFinPrestamoSocio.setValorRecibido(calcularValorRecibirNovacion(objFinPrestamoSocio));
 			objFinPrestamoSocio.getFinTablaAmortizacions().forEach(amortizar -> {
 				SimpleDateFormat anio = new SimpleDateFormat("yyyy");
