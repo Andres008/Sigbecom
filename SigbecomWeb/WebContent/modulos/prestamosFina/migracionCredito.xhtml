@@ -109,7 +109,7 @@
 										listener="#{controladorGestionCreditos.cargarTipoCredito()}" />
 								</p:selectOneMenu>
 								<p:outputLabel value="Fecha Ultima Cuota" />
-								<p:calendar id="fechaFinal"
+								<p:calendar id="fechaFinal" mask="99/99/9999"
 									value="#{controladorGestionCreditos.fechaFinalPrestamo}"
 									locale="es" pattern="dd/MM/yyyy">
 									<p:ajax update="@form:fechaFinal"
