@@ -157,7 +157,7 @@ public class ControladorGestionCreditos implements Serializable {
 			objFinPrestamoSocio = new FinPrestamoSocio();
 			objFinPrestamoSocio.setFinTablaAmortizacions(new ArrayList<FinTablaAmortizacion>());
 			lstFinPrestamoSocio = managerGestionCredito
-					.buscarSolicitudesBySocio(beanLogin.getCredencial().getObjUsrSocio());
+					.buscarSolicitudesVigentes();
 			lstFinPrestamoSocio = lstFinPrestamoSocio.stream()
 					.filter(fecha -> fecha.getFechaPrimeraCouta().before(new Date())).collect(Collectors.toList());
 			lstFinPrestamoSocio = lstFinPrestamoSocio.stream()
