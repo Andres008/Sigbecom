@@ -70,7 +70,7 @@
 				<ui:include src="/affordances/route-bar-menu.xhtml" />
 			</div>
 			<div class="layout-main-content" align="center">
-				<H1>INGRESO DE CREDITOS</H1>
+				<H1>INGRESO DE CREDITOS CON PRORROGA</H1>
 				<h:form id="ingreso">
 					<p:growl id="growl" showDetail="true" sticky="true" />
 					<p:wizard
@@ -81,11 +81,12 @@
 								<p:panelGrid columns="3" styleClass="ui-noborder">
 									<p:outputLabel value="Ingrese Número de Cédula" />
 									<p:inputMask mask="9999999999"
-										value="#{controladorGestionCreditos.objSocio.cedulaSocio}" />
-									<p:commandButton value="Buscar Socio" update="@form"
-										actionListener="#{controladorGestionCreditos.buscarSocioMigracionPrestamo()}" />
+										value="#{controladorGestionCreditos.objSocio.cedulaSocio}">
+										<p:ajax update="@form"
+											listener="#{controladorGestionCreditos.buscarSocioMigracionPrestamo()}" />
+									</p:inputMask>
 								</p:panelGrid>
-								<p:panelGrid columns="4">
+								<p:panelGrid columns="4" styleClass="ui-noborder">
 									<p:outputLabel value="Apellidos" />
 									<p:outputLabel
 										value="#{controladorGestionCreditos.objSocio.gesPersona.apellidos}" />
@@ -108,13 +109,23 @@
 									<p:ajax update="@form" process="@this"
 										listener="#{controladorGestionCreditos.cargarTipoCredito()}" />
 								</p:selectOneMenu>
-								<p:outputLabel value="Fecha Ultima Cuota" />
+								<p:outputLabel value="Fecha Primera Cuota" />
 								<p:calendar id="fechaFinal" mask="99/99/9999"
 									value="#{controladorGestionCreditos.fechaFinalPrestamo}"
 									locale="es" pattern="dd/MM/yyyy">
 									<p:ajax update="@form:fechaFinal"
 										listener="#{controladorGestionCreditos.verFechaTemp()}" />
 								</p:calendar>
+								<p:outputLabel value="Fecha Inicio Prorroga" />
+								<p:calendar id="fechaProrroga" mask="99/99/9999"
+									value="#{controladorGestionCreditos.fechaInicialProrroga}"
+									locale="es" pattern="dd/MM/yyyy">
+									<p:ajax update="@form:fechaFinal"
+										listener="#{controladorGestionCreditos.verFechaTemp()}" />
+								</p:calendar>
+								<p:outputLabel value="Meses Prorroga" />
+								<p:inputNumber
+									value="#{controladorGestionCreditos.mesesAplazados}" />
 							</p:panelGrid>
 						</p:tab>
 						<p:tab id="tabDatosCredito" title="Datos Credito">
@@ -146,7 +157,7 @@
 										maxValue="#{controladorGestionCreditos.objFinPrestamoSocio.finTipoCredito.valorMaximo}"
 										value="#{controladorGestionCreditos.objFinPrestamoSocio.valorPrestamo}">
 										<p:ajax
-											listener="#{controladorGestionCreditos.calcularCuotaMensualPrestamoMigracion()}"
+											listener="#{controladorGestionCreditos.calcularCuotaMensualPrestamoMigracionProrroga}"
 											update="@form" process="@this" />
 									</p:inputNumber>
 									<p:outputLabel value="Plazo en Meses" />
@@ -156,7 +167,7 @@
 										maxValue="#{controladorGestionCreditos.objFinPrestamoSocio.finTipoCredito.plazoMaximo}"
 										value="#{controladorGestionCreditos.objFinPrestamoSocio.plazoMeses}">
 										<p:ajax
-											listener="#{controladorGestionCreditos.calcularCuotaMensualPrestamoMigracion()}"
+											listener="#{controladorGestionCreditos.calcularCuotaMensualPrestamoMigracionProrroga}"
 											update="@form" process="@this" />
 									</p:inputNumber>
 								</p:panelGrid>
@@ -203,7 +214,7 @@
 								</p:column>
 							</p:dataTable>
 						</p:tab>
-						<p:tab id="tabGenerar" title="Generar Solicitud">
+						<p:tab id="tabGenerar" title="Ingresar Credito">
 
 							<p:panelGrid columns="1" styleClass="ui-noborder">
 								<p:panel
@@ -214,6 +225,11 @@
 										value="Estimado usuario, al aceptar y generar la solicitud esta de acuerdo con toda la información generarda en esta solicitud."
 										style="margin-left:10px;" />
 								</p:panel>
+								<p:panelGrid columns="2" styleClass="ui-noborder">
+									<p:outputLabel value="Observación" />
+									<p:inputTextarea
+										value="#{controladorGestionCreditos.objFinPrestamoSocio.observacion}" />
+								</p:panelGrid>
 								<p:commandButton value="Aceptar y Solicitar Credito"
 									action="#{controladorGestionCreditos.ingresarCreditoSocioMigracion()}"
 									update="@form">

@@ -111,7 +111,7 @@ public class ControladorGestionCreditos implements Serializable {
 
 	private int mesesAplazados;
 
-	private Date fechaFinalPrestamo;
+	private Date fechaFinalPrestamo, fechaInicialProrroga;
 
 	public ControladorGestionCreditos() {
 
@@ -156,8 +156,7 @@ public class ControladorGestionCreditos implements Serializable {
 		try {
 			objFinPrestamoSocio = new FinPrestamoSocio();
 			objFinPrestamoSocio.setFinTablaAmortizacions(new ArrayList<FinTablaAmortizacion>());
-			lstFinPrestamoSocio = managerGestionCredito
-					.buscarPrestamosVigentes();
+			lstFinPrestamoSocio = managerGestionCredito.buscarPrestamosVigentes();
 			lstFinPrestamoSocio = lstFinPrestamoSocio.stream()
 					.filter(fecha -> fecha.getFechaPrimeraCouta().before(new Date())).collect(Collectors.toList());
 			lstFinPrestamoSocio = lstFinPrestamoSocio.stream()
@@ -231,6 +230,7 @@ public class ControladorGestionCreditos implements Serializable {
 
 	public void inicializarSolicitudCreditoMigracion() {
 		fechaFinalPrestamo = new Date();
+		fechaInicialProrroga = new Date();
 		objSocio = new UsrSocio();
 		objFinPrestamoSocio = new FinPrestamoSocio();
 		objFinPrestamoSocio.setFinTipoCredito(new FinTipoCredito());
@@ -625,6 +625,7 @@ public class ControladorGestionCreditos implements Serializable {
 		try {
 			objSocio = managerGestionSistema.findByIdAutUsuario(objSocio.getCedulaSocio());
 		} catch (Exception e) {
+			inicializarSolicitudCreditoMigracion();
 			JSFUtil.crearMensajeERROR(e.getMessage());
 		}
 	}
@@ -993,6 +994,35 @@ public class ControladorGestionCreditos implements Serializable {
 			}
 	}
 
+	public void calcularCuotaMensualPrestamoMigracionProrroga() {
+		if (objFinPrestamoSocio.getValorPrestamo() != null && objFinPrestamoSocio.getPlazoMeses() != null
+				&& fechaFinalPrestamo != null)
+			if (objFinPrestamoSocio.getValorPrestamo().doubleValue() > 0
+					&& objFinPrestamoSocio.getPlazoMeses().doubleValue() > 0) {
+				objFinPrestamoSocio.setCuotaMensual(
+						ModelUtil.calcularCuotaMensual(objFinPrestamoSocio.getValorPrestamo().doubleValue(),
+								objFinPrestamoSocio.getFinTipoCredito().getTasaInteres().doubleValue(),
+								objFinPrestamoSocio.getPlazoMeses().doubleValue()));
+				objFinPrestamoSocio.setFinTablaAmortizacions(ModelUtil.calcularTablaAmortizacionMigracion(
+						objFinPrestamoSocio, ModelUtil.getSumarMeses(fechaFinalPrestamo, -1)));
+				int aux = 0;
+				SimpleDateFormat anio = new SimpleDateFormat("yyyy");
+				SimpleDateFormat mes = new SimpleDateFormat("MM");
+				SimpleDateFormat formato= new SimpleDateFormat("dd/MM/yyyy");
+				objFinPrestamoSocio.setObservacion("Prorroga de "+mesesAplazados+" meses, desde "+formato.format(fechaInicialProrroga)+".");
+				for (FinTablaAmortizacion amortiza : objFinPrestamoSocio.getFinTablaAmortizacions()) {
+					if (mes.format(fechaInicialProrroga).equals(mes.format(amortiza.getFechaPago()))
+							&& anio.format(fechaInicialProrroga).equals(anio.format(amortiza.getFechaPago()))) {
+						aux=1;
+					}
+					if (aux==1) {
+						amortiza.setFechaPago(ModelUtil.sumarRestarMes(amortiza.getFechaPago(),mesesAplazados));
+					}
+
+				}
+			}
+	}
+
 	/*
 	 * MÉTODO DEL PANEL WIZARD
 	 */
@@ -1232,6 +1262,14 @@ public class ControladorGestionCreditos implements Serializable {
 
 	public void setFechaFinalPrestamo(Date fechaFinalPrestamo) {
 		this.fechaFinalPrestamo = fechaFinalPrestamo;
+	}
+
+	public Date getFechaInicialProrroga() {
+		return fechaInicialProrroga;
+	}
+
+	public void setFechaInicialProrroga(Date fechaInicialProrroga) {
+		this.fechaInicialProrroga = fechaInicialProrroga;
 	}
 
 }

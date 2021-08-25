@@ -39,6 +39,8 @@ public class FinPrestamoSocio implements Serializable {
 	@Temporal(TemporalType.DATE)
 	@Column(name = "fecha_ultima_cuota")
 	private Date fechaUltimaCuota;
+	
+	private String observacion;
 
 	@Column(name = "plazo_meses")
 	private BigDecimal plazoMeses;
@@ -340,6 +342,14 @@ public class FinPrestamoSocio implements Serializable {
 
 	public void setFinAccionPrestamos(List<FinAccionPrestamo> finAccionPrestamos) {
 		this.finAccionPrestamos = finAccionPrestamos;
+	}
+
+	public String getObservacion() {
+		return observacion;
+	}
+
+	public void setObservacion(String observacion) {
+		this.observacion = observacion;
 	}
 
 }

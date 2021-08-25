@@ -73,6 +73,9 @@
 						<p:column headerText="Saldo Capital">
 							<p:outputLabel value="#{solicitud.saldoCapital}" />
 						</p:column>
+						<p:column headerText="Observación">
+							<p:outputLabel value="#{solicitud.observacion}" />
+						</p:column>
 						<p:column headerText="Amortización">
 							<p:commandButton value="Tabla" update="@form" process="@this"
 								actionListener="#{controladorGestionCreditos.cargarFinPrestamoSocioAmortizacion(solicitud)}"
