@@ -81,7 +81,7 @@
 				                    	<f:selectItem itemLabel="Seleccione plan móvil" noSelectionOption="true" />
 				                    	<f:selectItems value="#{frmAplicarPlanMovil.lstPlanMovils}" var="dat"
 				                    			itemLabel="#{dat.plan} #{dat.detalle}" itemValue="#{dat.idPlanMovil}"/>
-				                    	<p:ajax event="change" update="p1 p2"
+				                    	<p:ajax event="change" update="plan p1 p2"
 	        								listener="#{frmAplicarPlanMovil.cargarPlanMovil()}" />
 	        						</p:selectOneMenu>
 	        						<p:outputLabel  value="Plan:" />
@@ -136,6 +136,7 @@
 							<p:column headerText="TIPO SOCIO">
 								<h:outputText value="#{dato.usrTipoSocio.nombre}"/>
 							</p:column>
+							
 							
 							<p:rowExpansion>
 								<p:panel>

@@ -37,7 +37,7 @@ public class frmMiPlanMovil implements Serializable{
 	
 	public void cargarMisPlanesMoviles() {
 		try {
-			lstPlanPago = managerPlanesMoviles.findAllPlanPago();
+			lstPlanPago = managerPlanesMoviles.findAllPlanPagoByCedula(beanLogin.getCredencial().getObjUsrSocio().getCedulaSocio());
 		} catch (Exception e) {
 			JSFUtil.crearMensajeERROR("No se cargo el listado correctamente");
 			e.printStackTrace();

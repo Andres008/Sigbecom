@@ -2,10 +2,12 @@ package ec.com.model.planesMoviles;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.ejb.EJB;
 import javax.ejb.LocalBean;
 import javax.ejb.Stateless;
+import javax.enterprise.concurrent.LastExecution;
 
 import org.apache.taglibs.standard.tag.common.core.UrlSupport;
 
@@ -211,6 +213,11 @@ public class ManagerPlanesMoviles {
     @SuppressWarnings("unchecked")
 	public List<PlanContratoComite> findAllPlanContratoComite() throws Exception {
     	List<PlanContratoComite> lstPlanContratoComite = managerDAOSegbecom.findAll(PlanContratoComite.class);
+    	for (PlanContratoComite planContratoComite : lstPlanContratoComite) {
+			for (PlanAmortEquipmov planAmortEquipmov : planContratoComite.getPlanAmortEquipmovs()) {
+				planAmortEquipmov.getIdAmortEquipmov();
+			}
+		}
     	return lstPlanContratoComite;
     }
     @SuppressWarnings("unchecked")
@@ -226,5 +233,65 @@ public class ManagerPlanesMoviles {
     public void insertarPlanAmortEquipmov(PlanAmortEquipmov planAmortEquipmov) throws Exception {
     	managerDAOSegbecom.insertar(planAmortEquipmov);
     }
+    @SuppressWarnings("unchecked")
+	public List<PlanAmortEquipmov> findPlanAmortEquipmovByLineaTelef(String lineaTelefono) throws Exception{
+    	List<PlanAmortEquipmov> lstPlanAmortEquipmov = managerDAOSegbecom.findWhere(PlanAmortEquipmov.class, "o.planContratoComite.lineaTelefono = '"+lineaTelefono+"' AND o.estado = 'GENERADO' OR o.estado = 'PENDIENTE'", null); 
+    	if(lstPlanAmortEquipmov!= null && lstPlanAmortEquipmov.size()>0) {
+    		return lstPlanAmortEquipmov;
+    	}
+    	else {
+    		return null;
+    	}
+    }
     
+    
+    @SuppressWarnings("unchecked")
+	public List<String> findAllCedulasContratoPlanActivosRenovados() throws Exception {
+    	List<String> lstCedulasContratosPlan = managerDAOSegbecom.findDistinct(PlanContratoComite.class,"o.usrSocio.cedulaSocio" ,"o.estado = 'ACTIVO' OR o.estado = 'RENOVADO'", null);
+    	if(lstCedulasContratosPlan !=null && lstCedulasContratosPlan.size()>0) {
+    		return lstCedulasContratosPlan;
+    	}
+    	else {
+			return null;
+		}	
+    }
+    @SuppressWarnings("unchecked")
+	public List<PlanRegistroPago> findRegistroPagoGeneradosByCedula(String cedula) throws Exception {
+    	List<PlanRegistroPago> lstPlanRegistroPago = managerDAOSegbecom.findWhere(PlanRegistroPago.class, "o.planContratoComite.usrSocio.cedulaSocio = '"+cedula+"' AND o.estado = 'GENERADO'",null);
+    	if(lstPlanRegistroPago!=null && lstPlanRegistroPago.size()>0) {
+    		return lstPlanRegistroPago;
+    	}
+    	else {
+			return null;
+		}	
+    }
+    @SuppressWarnings("unchecked")
+	public List<PlanAmortEquipmov> findAmortEquipmovByPlanContratoMes(String lineaTelefono, Integer mes) throws Exception{
+    	List<PlanAmortEquipmov> lstPlanAmortEquipmov = managerDAOSegbecom.findWhere(PlanAmortEquipmov.class, "o.planContratoComite.lineaTelefono = '"+lineaTelefono+"' AND o.estado = 'GENERADO' AND o.mes = '"+mes+"'", null); 
+    	if(lstPlanAmortEquipmov!= null && lstPlanAmortEquipmov.size()>0) {
+    		return lstPlanAmortEquipmov;
+    	}
+    	else {
+    		return null;
+    	}
+    }
+    @SuppressWarnings("unchecked")
+   	public List<PlanPago> findAllPlanPagoByCedula(String cedula) throws Exception{
+       	List<PlanPago> lstPlanPago = managerDAOSegbecom.findWhere(PlanPago.class, "o.planContratoComite.usrSocio.cedulaSocio = '"+cedula+"'", "o.idPlanPagos DESC");
+       	for (PlanPago planPago : lstPlanPago) {
+			for (PlanAmortEquipmov planAmortEquipmov : planPago.getPlanAmortEquipmovs()) {
+				planAmortEquipmov.getIdAmortEquipmov();
+			}
+			for (PlanRegistroPago planRegistroPago : planPago.getPlanRegistroPagos()) {
+				planRegistroPago.getIdRegistroPagos();
+			}
+		}
+       	return lstPlanPago;
+    }
+    
+    
+	public PlanAmortEquipmov findPlanAmortEquipmovById(long idAmortEquipmov) throws Exception{
+    	PlanAmortEquipmov planAmortEquipmov = (PlanAmortEquipmov) managerDAOSegbecom.findById(PlanAmortEquipmov.class, idAmortEquipmov); 
+    	return planAmortEquipmov;
+    }
 }

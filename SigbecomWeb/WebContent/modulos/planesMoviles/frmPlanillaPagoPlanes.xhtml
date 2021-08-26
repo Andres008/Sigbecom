@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://java.sun.com/jsf/html" xmlns:f="http://java.sun.com/jsf/core" xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:p="http://primefaces.org/ui">
 
+
 <h:head>
 	<f:event type="preRenderView" listener="#{controlFormularios.verificarSesion()}" />
 	<f:facet name="first">
@@ -108,6 +109,7 @@
 						    	<p:dataExporter type="xls" target="tblEmp" fileName="ListPlanilla" ></p:dataExporter>
 						    </h:commandLink>
 					    </div>
+					    <p:separator/>
 						<p:dataTable value="#{frmPlanillaPagoPlan.lstPlanRegistroPago}"
 							id="tblEmp"  var="dato" paginator="true" editable="true"
 							rows="10">
@@ -165,7 +167,9 @@
 				                </p:cellEditor>
 							</p:column>
 							<p:column width="6" exportable="false">
-									<p:rowEditor rendered="#{frmPlanillaPagoPlan.activarEditEstado(dato.estado)}" editTitle="Edit Row" cancelTitle="Cancel Edit" saveTitle="Save Row" 
+									<!-- <p:rowEditor rendered="#{frmPlanillaPagoPlan.activarEditEstado(dato.estado)}" -->
+									 <p:rowEditor
+									editTitle="Edit Row" cancelTitle="Cancel Edit" saveTitle="Save Row" 
 										/>
 				            </p:column>
 						</p:dataTable>
@@ -174,7 +178,7 @@
 						<p:separator/>
 						<p:panelGrid columns="2" styleClass="ui-noborder">
 								<p:commandButton value="Generar Descuentos Roll"
-									action="#{frmAplicarPlanMovil.generarPlanillaMes()}" update="form2">
+									action="#{frmPlanillaPagoPlan.generarPlanillaMes()}" update="form2">
 									<p:confirm header="Confirmación"
 									message="Esta seguro de ingresar la información?"
 									icon="pi pi-exclamation-triangle" />

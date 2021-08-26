@@ -53,6 +53,14 @@ public class FrmEquipoMovil implements Serializable{
 		//cargarEquiposMoviles();
 		cargarContratosComite();
 	}
+	public void cargarListSinEquiposContratosComite() {
+		try {
+			lstPlanContratoComite = managerPlanesMoviles.findAllPlanContratoComite();
+		} catch (Exception e) {
+			JSFUtil.crearMensajeERROR("No se cargo el listado correctamente");
+			e.printStackTrace();
+		}
+	}
 	public void cargarContratosComite() {
 		try {
 			lstPlanContratoComite = managerPlanesMoviles.findAllPlanContratoComite();
@@ -64,12 +72,20 @@ public class FrmEquipoMovil implements Serializable{
 	public void cargarEquiposMoviles() {
 		if(idContratoComite!=null) {
 			try {
+				
 				PlanContratoComite planContratoComite = managerPlanesMoviles.findByIdContratoComite(idContratoComite);
-				Long idPlanEmpresa = planContratoComite.getPlanPlanMovil().getPlanOperadora().getIdPlanEmpresa();
-				System.out.println("id :"+ idPlanEmpresa);
-				planAmortEquipmov.setPlanContratoComite(planContratoComite);
-				planAmortEquipmov.setValorCapital(null);
-				lstPlanEquipo = managerPlanesMoviles.findPlanEquipoByIdOperadora(idPlanEmpresa);
+				//Verificar si ya tiene un equipo pendiente de pago
+				List<PlanAmortEquipmov> lstPlanAmortEquipmovs = managerPlanesMoviles.findPlanAmortEquipmovByLineaTelef(planContratoComite.getLineaTelefono());
+				if(lstPlanAmortEquipmovs==null) {
+					Long idPlanEmpresa = planContratoComite.getPlanPlanMovil().getPlanOperadora().getIdPlanEmpresa();
+					System.out.println("id :"+ idPlanEmpresa);
+					planAmortEquipmov.setPlanContratoComite(planContratoComite);
+					planAmortEquipmov.setValorCapital(null);
+					lstPlanEquipo = managerPlanesMoviles.findPlanEquipoByIdOperadora(idPlanEmpresa);
+				}
+				else {
+					JSFUtil.crearMensajeERROR("La cuenta tiene valores pedientes de pago de un Equipo Movil");
+				}
 			} catch (Exception e) {
 				JSFUtil.crearMensajeERROR("No se cargo el listado correctamente");
 				e.printStackTrace();
@@ -126,9 +142,10 @@ public class FrmEquipoMovil implements Serializable{
 			for(int i=1; i<=planAmortEquipmov.getMesesPlazo().intValue();i++) {
 				
 				amortEquipmov = new PlanAmortEquipmov();
-				amortEquipmov.setValorCapital(planAmortEquipmov.getValorCapital());
-				amortEquipmov.setComision(planAmortEquipmov.getComision());
-				amortEquipmov.setTotal(planAmortEquipmov.getTotal());
+				amortEquipmov.setPlanEquipo(planAmortEquipmov.getPlanEquipo());
+				amortEquipmov.setValorCapital(new BigDecimal(0));
+				amortEquipmov.setComision(new BigDecimal(0));
+				amortEquipmov.setTotal(new BigDecimal(0));
 				amortEquipmov.setMesesPlazo(planAmortEquipmov.getMesesPlazo());
 				amortEquipmov.setNumCuota(i);
 				amortEquipmov.setEstado("GENERADO");//cuando pasa a cobros
@@ -139,6 +156,9 @@ public class FrmEquipoMovil implements Serializable{
 				
 				if(i==1) {
 					saldo = planAmortEquipmov.getTotal();
+					amortEquipmov.setValorCapital(planAmortEquipmov.getValorCapital());
+					amortEquipmov.setComision(planAmortEquipmov.getComision());
+					amortEquipmov.setTotal(planAmortEquipmov.getTotal());
 				}
 				
 				BigDecimal valorCuota = planAmortEquipmov.getTotal().divide(planAmortEquipmov.getMesesPlazo(),2, RoundingMode.HALF_EVEN);
@@ -203,6 +223,57 @@ public class FrmEquipoMovil implements Serializable{
 	       JSFUtil.crearMensajeINFO("Se canceló actualización.");
 	}
 	
+	public String convertirMes(int mes) {
+		String mesAlfanumerico="";
+		switch (mes) {
+		case 1:
+			mesAlfanumerico = "ENERO";
+			break;
+		case 2:
+			mesAlfanumerico = "FEBRERO";
+			break;
+		case 3:
+			mesAlfanumerico = "MARZO";
+			break;
+		case 4:
+			mesAlfanumerico = "ABRIL";
+			break;
+		case 5:
+			mesAlfanumerico = "MAYO";
+			break;
+		case 6:
+			mesAlfanumerico = "JUNIO";
+			break;
+		case 7:
+			mesAlfanumerico = "JULIO";
+			break;
+		case 8:
+			mesAlfanumerico = "AGOSTO";
+			break;
+		case 9:
+			mesAlfanumerico = "SEPTIEMBRE";
+			break;
+		case 10:
+			mesAlfanumerico = "OCTUBRE";
+			break;
+		case 11:
+			mesAlfanumerico = "NOVIEMBRE";
+			break;
+		case 12:
+			mesAlfanumerico = "DICIEMBRE";
+			break;
+		default:
+			break;
+		}
+		return mesAlfanumerico;
+	}
+	public boolean activarEditEstado(String estado) {
+		if(estado.equalsIgnoreCase("GENERADO")) {
+			return true;
+		}
+		else
+			return false;
+	}
 	public BeanLogin getBeanLogin() {
 		return beanLogin;
 	}
