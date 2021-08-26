@@ -43,7 +43,7 @@
 				                    <f:selectItem itemLabel="Seleccione Linea Telefonica" noSelectionOption="true" />
 				                    <f:selectItems value="#{frmEquipoMovil.lstPlanContratoComite}" var="dat"
 				                    			itemLabel="#{dat.lineaTelefono} #{dat.planPlanMovil.planOperadora.empresa} #{dat.usrSocio.gesPersona.apellidos} #{dat.usrSocio.gesPersona.nombres}" itemValue="#{dat.idContrato}"/>
-				                    <p:ajax event="change" update="mov car"
+				                    <p:ajax event="change" update="mov car growl"
 	        								listener="#{frmEquipoMovil.cargarEquiposMoviles()}" />			
 			                    </p:selectOneMenu>
 			                    <p:outputLabel for="mov" value="Seleccionar Equipo Móvil:" />
@@ -95,17 +95,27 @@
 	                <h:form id="form2">
 	                	<p:growl id="growl" showDetail="true" sticky="true" />
 	                	<p:panel id="pnl"  header="LISTA DE VALORES ADMINISTRATIVOS">
+						
+						<div class="card" align="right">
+						    <h:commandLink >
+						    	<p:graphicImage name="images/logo_excel.png" library="california-layout"/>
+						    	<p:dataExporter type="xls" target="tblEmp" fileName="ListPlanesMoviles"></p:dataExporter>
+						    </h:commandLink>
+					    </div>
+					    <p:separator/>
 						<p:dataTable value="#{frmEquipoMovil.lstPlanContratoComite}"
 							id="tblEmp" editable="true" var="dato" paginator="true"
 							rows="10">
-							
-							<p:column headerText="" style="width:2rem">
+							<p:column headerText="" style="width:2rem" exportable="false">
 								<p:rowToggler />
 							</p:column>
-							<p:column headerText="LINEA TELEFONICA">
+							<p:column headerText="OPERADORA">
+								<h:outputText value="#{dato.planPlanMovil.planOperadora.empresa}"/>
+							</p:column>
+							<p:column headerText="LINEA TELEFONICA" filterBy="#{dato.lineaTelefono}">
 								<h:outputText value="#{dato.lineaTelefono}"/>
 							</p:column>
-							<p:column headerText="CEDULA">
+							<p:column headerText="CEDULA" filterBy="#{dato.usrSocio.cedulaSocio}">
 								<h:outputText value="#{dato.usrSocio.cedulaSocio}">
 				                        	<f:convertNumber pattern="#0.00" />
 				                </h:outputText>
@@ -115,10 +125,21 @@
 				                        	<f:convertNumber pattern="#0.00" />
 				                </h:outputText>
 							</p:column>
+							<p:column headerText="ESTADO PLAN" width="50">
+								<h:outputText value="#{dato.estado}"/>
+							</p:column>
 							<p:rowExpansion>
-				            	<p:dataTable value="#{dato.planAmortEquipmovs}"
-									id="tblEmp" editable="true" var="mov" paginator="true"
-									rows="10">
+								
+								<div class="card" align="right">
+								    <h:commandLink >
+								    	<p:graphicImage name="images/logo_excel.png" library="california-layout"/>
+								    	<p:dataExporter type="xls" target="tblEmp1" fileName="TablaAmortizacion"></p:dataExporter>
+								    </h:commandLink>
+							    </div>
+							    <p:separator/>
+				            	<p:dataTable value="#{dato.planAmortEquipmovs}" sortMode="single"
+									id="tblEmp1" editable="true" var="mov" allowUnsorting="true"
+									>
 				            		<p:ajax event="rowEdit" listener="#{frmEquipoMovil.onRowEdit}" update="form2:growl"/>
             						<p:ajax event="rowEditCancel" listener="#{frmEquipoMovil.onRowCancel}" update="form2:growl"/>
 				            		<p:column headerText="Equipo Movil">
@@ -142,7 +163,7 @@
 									<p:column headerText="Plazo">
 										<h:outputText value="#{mov.mesesPlazo}"/>
 									</p:column>
-									<p:column headerText="Num Cuota">
+									<p:column headerText="Num Cuota" sortOrder="asc" sortBy="#{mov.numCuota}">
 										<h:outputText value="#{mov.numCuota}"/>
 									</p:column>
 									<p:column headerText="Cuota">
@@ -155,11 +176,27 @@
 											<f:convertNumber pattern="#0.00" />
 										</h:outputText>
 									</p:column>
-									<p:column headerText="Estado">
-										<h:outputText value="#{mov.estado}"/>
+									<p:column headerText="Mes" >
+										<h:outputText value="#{frmEquipoMovil.convertirMes(mov.mes)}"/>
 									</p:column>
-				            		<p:column width="6">
-										<p:rowEditor editTitle="Edit Row" cancelTitle="Cancel Edit" saveTitle="Save Row"/>
+									<p:column headerText="Año" sortOrder="asc" sortBy="#{mov.anio}">
+										<h:outputText value="#{mov.anio}"/>
+									</p:column>
+									<p:column headerText="Estado">
+										<p:cellEditor >
+						                    <f:facet name="output">
+						                        <h:outputText value="#{mov.estado}"/>
+						                    </f:facet>
+						                    <f:facet name="input">
+						                        <h:selectOneMenu id="option" value="#{mov.estado}" style="width:100%">
+											      <f:selectItem itemLabel="PENDIENTE" itemValue="PENDIENTE"/>
+											    </h:selectOneMenu>
+						                    </f:facet>
+						                </p:cellEditor>
+									</p:column>
+				            		<p:column width="6" exportable="false">
+										<p:rowEditor rendered="#{frmEquipoMovil.activarEditEstado(mov.estado)}" 
+										editTitle="Edit Row" cancelTitle="Cancel Edit" saveTitle="Save Row"/>
 							        </p:column>
 				            	</p:dataTable>
 				            </p:rowExpansion>

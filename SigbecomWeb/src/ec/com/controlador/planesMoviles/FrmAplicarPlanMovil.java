@@ -227,45 +227,7 @@ private static final long serialVersionUID = 1L;
 		}
 		return total;
 	}
-	public void generarPlanillaMes() {
-		/*
-		 * BigDecimal valorTotalPlan = new BigDecimal(0); BigDecimal valorTotalEquipo =
-		 * new BigDecimal(0); int anio = ModelUtil.getAnio(new Date()); int mes =
-		 * ModelUtil.getMes(new Date());
-		 * 
-		 * //System.out.println("Fecha Suma: "+ModelUtil.getSumarMeses(fecha, 1));
-		 * if(mes==12) { anio++; mes=1; } else { mes++; } try { DescEstadoDescuento
-		 * descEstadoDescuento =
-		 * managerPlanesMoviles.findWhereEstadoDescEstadoDescuento("INGRESADA");
-		 * 
-		 * for (UsrSocio usrSocio :lstUsersSocios) { for (PlanContratoComite
-		 * planContratoComite : usrSocio.getPlanContratoComites()) { PlanPago planPago =
-		 * new PlanPago();
-		 * if(planContratoComite.getEstadoPlanMovil().equalsIgnoreCase("ACTIVO")) {
-		 * valorTotalPlan =
-		 * (planContratoComite.getValorPlanMovil().multiply(planContratoComite.
-		 * getInteresPlanMovil()).divide(new BigDecimal(100))).
-		 * add(planContratoComite.getValorPlanMovil()).add(planContratoComite.
-		 * getValorNoSocio()); } System.out.println("valor Total: "+valorTotalPlan);
-		 * if(planContratoComite.getEstadoEquipo().equalsIgnoreCase("ACTIVO")) {
-		 * valorTotalEquipo =
-		 * (planContratoComite.getValorEquipo().multiply(planContratoComite.
-		 * getInteresEquipo()).divide(new BigDecimal(100))).
-		 * add(planContratoComite.getValorEquipo()); }
-		 * System.out.println("valor Total Equipo: "+valorTotalEquipo);
-		 * 
-		 * planPago.setValorTotal(valorTotalPlan.add(valorTotalEquipo).setScale(2,
-		 * RoundingMode.HALF_EVEN)); planPago.setAno(new BigDecimal(anio));
-		 * planPago.setMes(new BigDecimal(mes));
-		 * planPago.setDescEstadoDescuento(descEstadoDescuento);
-		 * planPago.setPlanContratoComite(planContratoComite); try {
-		 * managerPlanesMoviles.insertarPlanPago(planPago);
-		 * JSFUtil.crearMensajeINFO("Pagos generados correctamente."); } catch
-		 * (Exception e) { // TODO Auto-generated catch block e.printStackTrace(); } } }
-		 * } catch (Exception e1) { // TODO Auto-generated catch block
-		 * e1.printStackTrace(); }
-		 */
-	}
+	
 	
 	public void onRowCancel(RowEditEvent<Object> event) {
 	       JSFUtil.crearMensajeINFO("Se canceló actualización.");

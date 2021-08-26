@@ -138,7 +138,6 @@ public class ManagerDAOSegbecom {
 	 * @return Listado resultante.
 	 */
 	@SuppressWarnings("rawtypes")
-	
 	public List findWhere(Class clase, String pClausulaWhere, String pOrderBy)
 			throws Exception {
 		// mostrarLog("findAll(where): "+clase.getSimpleName());
@@ -352,5 +351,55 @@ public class ManagerDAOSegbecom {
 		}
 		return sentenciaSQL;
 	}
+	/**
+	 * Finder generico que permite aplicar la condicion Distinct a un campo y las clausulas where y order by.
+	 * 
+	 * @param clase
+	 *            La entidad sobre la que se desea consultar. Ej: Usuario.class
+	 * @param campoDistinct
+	 * 			  Clausula en el campo del Select DISTINCT nombre del campo (sin la palabra reservada DISTINCT).
+	 * 			  Ejemplo:
+	 *            <ul>
+	 *            <li>o.nombreCampo</li>
+	 *            <li>o.nombreCampo1,o.nombreCampo2,o.nombreCampo ...</li>
+	 *            </ul>
+	 * @param pClausulaWhere
+	 *            Clausula where de tipo JPQL (sin la palabra reservada WHERE).
+	 *            Ejemplo:
+	 *            <ul>
+	 *            <li>o.nombre='Antonio'</li>
+	 *            <li>o.nombre='Antonio' and o.telefono='0444-434'</li>
+	 *            <li>o.nombre like 'Ant%'</li>
+	 *            </ul>
+	 * @param pOrderBy
+	 *            Clausula order by de tipo JPQL (sin la palabra reservada ORDER
+	 *            BY). Puede ser null para no ordenar. por ejemplo:
+	 *            <ul>
+	 *            <li>o.nombre</li>
+	 *            <li>o.codigo,o.nombre</li>
+	 *            </ul>
+	 *            Tanto para la clausula <b>where</b> como <b>order by</b> debe
+	 *            utilizarse el alias de entidad "o".
+	 * @return Listado resultante.
+	 */
+	@SuppressWarnings("rawtypes")
+	public List findDistinct(Class clase,String campoDistinct, String pClausulaWhere, String pOrderBy)
+			throws Exception {
+		// mostrarLog("findAll(where): "+clase.getSimpleName());
+		Query q;
+		List listado;
+		String sentenciaSQL;
 
+		if (pOrderBy == null || pOrderBy.length() == 0)
+			sentenciaSQL = "SELECT DISTINCT "+campoDistinct+" FROM " + clase.getSimpleName()
+					+ " o WHERE " + pClausulaWhere;
+
+		else
+			sentenciaSQL = "SELECT  DISTINCT "+campoDistinct+" FROM " + clase.getSimpleName()
+					+ " o WHERE " + pClausulaWhere + " ORDER BY " + pOrderBy;
+		q = em.createQuery(sentenciaSQL);
+		listado = q.getResultList();
+		// managerLog.MostrarLog(this.getClass(),"findWhere",sentenciaSQL);
+		return listado;
+	}
 }
