@@ -80,10 +80,11 @@
 							<p:panel header="Datos Empleado">
 								<p:panelGrid columns="3" styleClass="ui-noborder">
 									<p:outputLabel value="Ingrese Número de Cédula" />
-									<p:inputMask mask="9999999999"
-										value="#{controladorGestionCreditos.objSocio.cedulaSocio}" />
-									<p:commandButton value="Buscar Socio" update="@form"
-										actionListener="#{controladorGestionCreditos.buscarSocioMigracionPrestamo()}" />
+									<p:inputMask mask="9999999999" required="true"
+										value="#{controladorGestionCreditos.objSocio.cedulaSocio}">
+										<p:ajax update="@form"
+											listener="#{controladorGestionCreditos.buscarSocioMigracionPrestamo()}" />
+									</p:inputMask>
 								</p:panelGrid>
 								<p:panelGrid columns="4">
 									<p:outputLabel value="Apellidos" />
@@ -214,6 +215,11 @@
 										value="Estimado usuario, al aceptar y generar la solicitud esta de acuerdo con toda la información generarda en esta solicitud."
 										style="margin-left:10px;" />
 								</p:panel>
+								<p:panelGrid columns="2" styleClass="ui-noborder">
+									<p:outputLabel value="Observación" />
+									<p:inputTextarea
+										value="#{controladorGestionCreditos.objFinPrestamoSocio.observacion}" />
+								</p:panelGrid>
 								<p:commandButton value="Aceptar y Solicitar Credito"
 									action="#{controladorGestionCreditos.ingresarCreditoSocioMigracion()}"
 									update="@form">

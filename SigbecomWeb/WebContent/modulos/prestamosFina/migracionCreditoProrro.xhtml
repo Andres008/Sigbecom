@@ -80,7 +80,7 @@
 							<p:panel header="Datos Empleado">
 								<p:panelGrid columns="3" styleClass="ui-noborder">
 									<p:outputLabel value="Ingrese Número de Cédula" />
-									<p:inputMask mask="9999999999"
+									<p:inputMask mask="9999999999" required="true"
 										value="#{controladorGestionCreditos.objSocio.cedulaSocio}">
 										<p:ajax update="@form"
 											listener="#{controladorGestionCreditos.buscarSocioMigracionPrestamo()}" />
