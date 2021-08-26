@@ -63,6 +63,8 @@ public class ManagerGestionSistema {
 
 	public UsrSocio findByIdAutUsuario(String idUsuario) throws Exception {
 		UsrSocio usuario = (UsrSocio) managerDAOSegbecom.findById(UsrSocio.class, idUsuario);
+		if (usuario== null)
+			throw new Exception("Usuario no existe.");
 		return usuario;
 	}
 

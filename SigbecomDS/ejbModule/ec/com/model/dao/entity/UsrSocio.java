@@ -20,6 +20,12 @@ public class UsrSocio implements Serializable {
 	@Column(name = "cedula_socio")
 	private String cedulaSocio;
 
+	@Column(name = "caja_ahorro")
+	private BigDecimal cajaAhorro;
+
+	@Column(name = "fondo_cesantia")
+	private BigDecimal fondoCesantia;
+
 	private String clave;
 
 	private String direccion;
@@ -121,18 +127,18 @@ public class UsrSocio implements Serializable {
 	// bi-directional many-to-one association to SesvasSolicitud
 	@OneToMany(mappedBy = "usrSocio")
 	private List<SesvasSolicitud> sesvasSolicituds;
-	
-	//bi-directional many-to-one association to UsrTipoSocio
+
+	// bi-directional many-to-one association to UsrTipoSocio
 	@ManyToOne
-	@JoinColumn(name="id_tipo_socio")
+	@JoinColumn(name = "id_tipo_socio")
 	private UsrTipoSocio usrTipoSocio;
 
-	//bi-directional many-to-one association to UsrSocioDescuentoFijo
-	@OneToMany(mappedBy="usrSocio", cascade = CascadeType.ALL)
+	// bi-directional many-to-one association to UsrSocioDescuentoFijo
+	@OneToMany(mappedBy = "usrSocio", cascade = CascadeType.ALL)
 	private List<UsrSocioDescuentoFijo> usrSocioDescuentoFijos;
-	
-	//bi-directional many-to-one association to UsrSocioDescuentoFijo
-	@OneToMany(mappedBy="usrSocio")
+
+	// bi-directional many-to-one association to UsrSocioDescuentoFijo
+	@OneToMany(mappedBy = "usrSocio")
 	private List<PlanContratoComite> planContratoComites;
 
 	public UsrSocio() {
@@ -415,7 +421,7 @@ public class UsrSocio implements Serializable {
 	public void setUrlFoto(String urlFoto) {
 		this.urlFoto = urlFoto;
 	}
-	
+
 	public List<FinPrestamoSocio> getFinPrestamoSocios() {
 		return this.finPrestamoSocios;
 	}
@@ -461,6 +467,7 @@ public class UsrSocio implements Serializable {
 	public void setPlanContratoComites(List<PlanContratoComite> planContratoComites) {
 		this.planContratoComites = planContratoComites;
 	}
+
 	public PlanContratoComite addPlanContratoComite(PlanContratoComite planContratoComite) {
 		getPlanContratoComites().add(planContratoComite);
 		planContratoComite.setUsrSocio(this);
@@ -472,4 +479,21 @@ public class UsrSocio implements Serializable {
 		planContratoComite.setUsrSocio(null);
 		return planContratoComite;
 	}
+
+	public BigDecimal getCajaAhorro() {
+		return cajaAhorro;
+	}
+
+	public void setCajaAhorro(BigDecimal cajaAhorro) {
+		this.cajaAhorro = cajaAhorro;
+	}
+
+	public BigDecimal getFondoCesantia() {
+		return fondoCesantia;
+	}
+
+	public void setFondoCesantia(BigDecimal fondoCesantia) {
+		this.fondoCesantia = fondoCesantia;
+	}
+	
 }

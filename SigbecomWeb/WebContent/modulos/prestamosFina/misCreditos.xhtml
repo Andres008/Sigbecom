@@ -73,6 +73,9 @@
 						<p:column headerText="Saldo Capital">
 							<p:outputLabel value="#{solicitud.saldoCapital}" />
 						</p:column>
+						<p:column headerText="Observación">
+							<p:outputLabel value="#{solicitud.observacion}" />
+						</p:column>
 						<p:column headerText="Amortización">
 							<p:commandButton value="Tabla" update="@form" process="@this"
 								actionListener="#{controladorGestionCreditos.cargarFinPrestamoSocioAmortizacion(solicitud)}"
@@ -101,7 +104,7 @@
 						id="infRevision" modal="true" position="top" showEffect="fade"
 						hideEffect="fade" resizable="false" width="90%">
 						<p:dataTable emptyMessage="No existen datos." rows="10"
-							paginator="true"
+							paginator="true" sortBy="#{amortizacion.numeroCuota}"
 							value="#{controladorGestionCreditos.objFinPrestamoSocio.finTablaAmortizacions}"
 							var="amortizacion">
 							<p:column headerText="Número Cuota">

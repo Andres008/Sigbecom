@@ -483,6 +483,55 @@ public class ModelUtil {
 	}
 
 	@SuppressWarnings("deprecation")
+	public static List<FinTablaAmortizacion> calcularTablaAmortizacionMigracion(FinPrestamoSocio finPrestamoSocio,
+			Date fechaInicial) {
+		List<FinTablaAmortizacion> lstFinTablaAmortizacion = new ArrayList<FinTablaAmortizacion>();
+		double capitalTotal = 0;
+		boolean ultimaCuota = false;
+		BigDecimal cuotaMensual = finPrestamoSocio.getCuotaMensual();
+		fechaInicial.setDate(finPrestamoSocio.getFinTipoCredito().getDiaPagoMaximo().intValue());
+		Date fechaActual = fechaInicial;
+		if (fechaActual.getDate() < finPrestamoSocio.getFinTipoCredito().getDiaPagoMaximo().intValue())
+			fechaActual = sumarRestarMes(fechaActual, -1);
+		fechaActual.setDate(finPrestamoSocio.getFinTipoCredito().getDiaPagoMaximo().intValue());
+		double capital = finPrestamoSocio.getValorPrestamo().doubleValue();
+		finPrestamoSocio.setFechaPrimeraCouta(fechaActual);
+		for (int i = 1; i <= finPrestamoSocio.getPlazoMeses().intValue(); i++) {
+			FinTablaAmortizacion finTablaAmortizacion = new FinTablaAmortizacion();
+			finTablaAmortizacion.setNumeroCuota(new BigDecimal(i));
+			finTablaAmortizacion.setFechaPago(sumarRestarMes(fechaActual, i));
+			finTablaAmortizacion.setInteres(new BigDecimal(
+					(capital * (finPrestamoSocio.getFinTipoCredito().getTasaInteres().doubleValue() / 100)) / 12)
+							.setScale(2, RoundingMode.HALF_UP));
+			if (!ultimaCuota)
+				finTablaAmortizacion.setCapital(
+						(cuotaMensual.subtract(finTablaAmortizacion.getInteres())).setScale(2, RoundingMode.HALF_UP));
+			else
+				finTablaAmortizacion.setCapital(new BigDecimal(capital).setScale(2, RoundingMode.HALF_UP));
+			finTablaAmortizacion
+					.setValorCuota(finTablaAmortizacion.getCapital().add(finTablaAmortizacion.getInteres()));
+			finTablaAmortizacion
+					.setSaldoCapital(new BigDecimal(capital - finTablaAmortizacion.getCapital().doubleValue())
+							.setScale(2, RoundingMode.HALF_UP));
+			if (i == 1)
+				finTablaAmortizacion.setFinEstadoCuota(new FinEstadoCuota(1));
+			else
+				finTablaAmortizacion.setFinEstadoCuota(new FinEstadoCuota(2));
+			finTablaAmortizacion.setFinPrestamoSocio(finPrestamoSocio);
+			lstFinTablaAmortizacion.add(finTablaAmortizacion);
+			capitalTotal = capitalTotal + finTablaAmortizacion.getCapital().doubleValue();
+			if (i == (finPrestamoSocio.getPlazoMeses().intValue() - 1)) {
+				capital = finPrestamoSocio.getValorPrestamo().doubleValue() - capitalTotal;
+				cuotaMensual = new BigDecimal(capital);
+				ultimaCuota = true;
+			} else
+				capital = capital - finTablaAmortizacion.getCapital().doubleValue();
+		}
+		finPrestamoSocio.setFechaUltimaCuota(sumarRestarMes(fechaActual, finPrestamoSocio.getPlazoMeses().intValue()));
+		return lstFinTablaAmortizacion;
+	}
+
+	@SuppressWarnings("deprecation")
 	public static List<FinTablaAmortizacion> calcularTablaAmortizacion(FinPrestamoSocio finPrestamoSocio) {
 		List<FinTablaAmortizacion> lstFinTablaAmortizacion = new ArrayList<FinTablaAmortizacion>();
 		double capitalTotal = 0;

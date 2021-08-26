@@ -268,6 +268,20 @@ public class ControladorGestionSocios implements Serializable {
 		}
 	}
 
+	public void actualizarSocioFondos() {
+		try {
+			UsrSocio socioTemp = managerGestionSocios.buscarSocioById(objUsrSocio.getCedulaSocio());
+			managerLog.generarLogUsabilidad(beanLogin.getCredencial(), this.getClass(), "actualizarSocioFondos",
+					"Actualización ahoro: " + objUsrSocio.getGesPersona().getCedula() + ", Valores anteriores de ahorro: "
+							+ socioTemp.getCajaAhorro() + ", Cesantia: " + socioTemp.getFondoCesantia()+", Valores nuevos de ahorro: "
+									+ objUsrSocio.getCajaAhorro() + ", Cesantia: " + objUsrSocio.getFondoCesantia());
+			actualizarSocio();
+		} catch (Exception e) {
+			JSFUtil.crearMensajeERROR(e.getMessage());
+		}
+		
+	}
+
 	public void restablecerContraseña(UsrSocio objUsrSocioAux) {
 		try {
 			objUsrSocioAux.setClave(ModelUtil.md5(objUsrSocioAux.getCedulaSocio()));
@@ -334,9 +348,9 @@ public class ControladorGestionSocios implements Serializable {
 	public void actualizarSocio() {
 		try {
 			managerGestionSocios.actualizarUsrSocio(objUsrSocio);
-			inicializarActualizacionSocio();
 			managerLog.generarLogUsabilidad(beanLogin.getCredencial(), this.getClass(), "actualizarSocio",
 					"Actualización a socio: " + objUsrSocio.getGesPersona().getCedula());
+			inicializarActualizacionSocio();
 			JSFUtil.crearMensajeINFO("Datos actualizados Correctamente.");
 		} catch (Exception e) {
 			JSFUtil.crearMensajeERROR(e.getMessage());
@@ -453,16 +467,20 @@ public class ControladorGestionSocios implements Serializable {
 			objUsrSocio.setPrimerInicio("S");
 			objUsrSocio.setClave(ModelUtil.md5(clave));
 			objUsrSocio.getUsrEstadoSocio().setIdEstado(1);
-			if (managerGestionPersonas.buscarPersonaByCedula(objUsrSocio.getGesPersona().getCedula()) == null)
-				managerGestionPersonas.insertarPersona(objUsrSocio.getGesPersona());
-			objUsrSocio.setCedulaSocio(objUsrSocio.getGesPersona().getCedula());
-			managerGestionSocios.insertarSocio(objUsrSocio);
+			// if
+			// (managerGestionPersonas.buscarPersonaByCedula(objUsrSocio.getGesPersona().getCedula())
+			// == null)
+			// managerGestionPersonas.insertarPersona(objUsrSocio.getGesPersona());
+			// objUsrSocio.setCedulaSocio(objUsrSocio.getGesPersona().getCedula());
+			// managerGestionSocios.insertarSocio(objUsrSocio);
 			managerLog.generarLogUsabilidad(beanLogin.getCredencial(), this.getClass(), "inscribirUsuario",
 					"Crea usuario " + objUsrSocio.getGesPersona().getCedula());
-			/*correoUtil.enviarCorreoElectronico(objUsrSocio.getGesPersona().getEmail(),
-					"Creación Usuarios Socio Comite de Empresa",
-					"Se ha creado su usuario para utilizar SIGBECOM (), favor acceder al sistema con las siguentes credenciales, Usuario:"
-							+ objUsrSocio.getCedulaSocio() + " , Contraseña:" + clave);*/
+			/*
+			 * correoUtil.enviarCorreoElectronico(objUsrSocio.getGesPersona().getEmail(),
+			 * "Creación Usuarios Socio Comite de Empresa",
+			 * "Se ha creado su usuario para utilizar SIGBECOM (), favor acceder al sistema con las siguentes credenciales, Usuario:"
+			 * + objUsrSocio.getCedulaSocio() + " , Contraseña:" + clave);
+			 */
 			JSFUtil.crearMensajeINFO("Usuario creado correctamente.");
 			inicializarIngresoSocio();
 
