@@ -4,6 +4,7 @@ import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -24,7 +25,10 @@ import org.primefaces.event.RowEditEvent;
 import org.primefaces.model.file.UploadedFile;
 
 import ec.com.controlador.sesion.BeanLogin;
+import ec.com.model.dao.entity.DescEstadoDescuento;
+import ec.com.model.dao.entity.PlanAmortEquipmov;
 import ec.com.model.dao.entity.PlanContratoComite;
+import ec.com.model.dao.entity.PlanPago;
 import ec.com.model.dao.entity.PlanRegistroPago;
 import ec.com.model.modulos.util.JSFUtil;
 import ec.com.model.modulos.util.ModelUtil;
@@ -210,7 +214,71 @@ public class FrmPlanillaPagoPlan implements Serializable{
 		else
 			return false;
 	}
-	
+	public void generarPlanillaMes() {
+		
+		try {
+			List<String> lstCedulasContratoPlanActivos = managerPlanesMoviles.findAllCedulasContratoPlanActivosRenovados();
+			System.out.println("Tamaño: "+lstCedulasContratoPlanActivos.size());
+			PlanPago planPago = new PlanPago();
+			
+			if(lstCedulasContratoPlanActivos!=null && lstCedulasContratoPlanActivos.size()>0) {
+				
+				List<PlanAmortEquipmov> lstPlanAmortEquipmovs = new ArrayList<PlanAmortEquipmov>();
+				DescEstadoDescuento descEstadoDescuento = managerPlanesMoviles.findWhereEstadoDescEstadoDescuento("VIGENTE");
+				for (String cedula : lstCedulasContratoPlanActivos) {
+					// System.out.println("Cedula: "+cedula);
+					BigDecimal totalDescuento= new BigDecimal(0);
+					planPago = new PlanPago();
+					List<PlanRegistroPago> lstPlanRegistroPagos = new ArrayList<PlanRegistroPago>();
+					lstPlanRegistroPagos = managerPlanesMoviles.findRegistroPagoGeneradosByCedula(cedula);
+					
+					if(lstPlanRegistroPagos!=null) {
+						System.out.println("listaPagos: "+lstPlanRegistroPagos.size());
+						
+						List<PlanAmortEquipmov> lstAmortEquipmovs = new ArrayList<PlanAmortEquipmov>(); 
+						for (PlanRegistroPago planRegistroPago : lstPlanRegistroPagos) {
+							totalDescuento = totalDescuento.add(planRegistroPago.getTotal());
+							planPago.setAno(planRegistroPago.getAnio());
+							planPago.setMes(planRegistroPago.getMes());
+							planPago.setPlanContratoComite(planRegistroPago.getPlanContratoComite());
+							lstPlanAmortEquipmovs = managerPlanesMoviles.findAmortEquipmovByPlanContratoMes(planRegistroPago.getLineaTelefono(), mes);
+							if(lstPlanAmortEquipmovs!=null && lstPlanAmortEquipmovs.size()==1) {
+								PlanAmortEquipmov planAmortEquipmov = lstPlanAmortEquipmovs.get(0); 
+								totalDescuento = totalDescuento.add(planAmortEquipmov.getValorCuota());
+								lstAmortEquipmovs.add(planAmortEquipmov);
+							}
+						}
+						
+						planPago.setValorTotal(totalDescuento);
+						planPago.setDescEstadoDescuento(descEstadoDescuento);
+						managerPlanesMoviles.insertarPlanPago(planPago);
+						
+						for(PlanAmortEquipmov planAmortEquipmov:lstAmortEquipmovs) {
+														
+							PlanAmortEquipmov planAmortEquipmovTmp = new PlanAmortEquipmov();
+							planAmortEquipmovTmp = managerPlanesMoviles.findPlanAmortEquipmovById(planAmortEquipmov.getIdAmortEquipmov());
+							planAmortEquipmovTmp.setEstado("DESCUENTO A ROLL");
+							planAmortEquipmovTmp.setPlanPago(planPago);
+							managerPlanesMoviles.actualizarObjeto(planAmortEquipmov);
+						}
+						
+						for (PlanRegistroPago planRegistroPago : lstPlanRegistroPagos) {
+							planRegistroPago.setEstado("DESCUENTO A ROLL");
+							planRegistroPago.setPlanPago(planPago);
+							managerPlanesMoviles.actualizarObjeto(planRegistroPago);
+						}
+						
+					}
+				}
+			}
+			JSFUtil.crearMensajeINFO("Descuento a roll cargado correctamente ");
+		} catch (Exception e) {
+			 JSFUtil.crearMensajeERROR("No se cargo el descuento a roll correctamente.");
+			e.printStackTrace();
+		}
+		
+		
+	}
 	//GETTERS AND SETTERS
 	public BeanLogin getBeanLogin() {
 		return beanLogin;

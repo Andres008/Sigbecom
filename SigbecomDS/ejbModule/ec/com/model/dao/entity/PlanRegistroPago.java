@@ -50,6 +50,11 @@ public class PlanRegistroPago implements Serializable {
 	@ManyToOne
 	@JoinColumn(name="id_contrato")
 	private PlanContratoComite planContratoComite;
+	
+	//bi-directional many-to-one association to PlanContratoComite
+	@ManyToOne
+	@JoinColumn(name="id_plan_pagos")
+	private PlanPago planPago;
 
 	public PlanRegistroPago() {
 	}
@@ -142,4 +147,12 @@ public class PlanRegistroPago implements Serializable {
 		this.planContratoComite = planContratoComite;
 	}
 
+	public PlanPago getPlanPago() {
+		return planPago;
+	}
+
+	public void setPlanPago(PlanPago planPago) {
+		this.planPago = planPago;
+	}
+	
 }
