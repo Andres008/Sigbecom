@@ -223,7 +223,7 @@ public class FrmPlanillaPagoPlan implements Serializable{
 			
 			if(lstCedulasContratoPlanActivos!=null && lstCedulasContratoPlanActivos.size()>0) {
 				
-				List<PlanAmortEquipmov> lstPlanAmortEquipmovs = new ArrayList<PlanAmortEquipmov>();
+				
 				DescEstadoDescuento descEstadoDescuento = managerPlanesMoviles.findWhereEstadoDescEstadoDescuento("VIGENTE");
 				for (String cedula : lstCedulasContratoPlanActivos) {
 					// System.out.println("Cedula: "+cedula);
@@ -234,18 +234,28 @@ public class FrmPlanillaPagoPlan implements Serializable{
 					
 					if(lstPlanRegistroPagos!=null) {
 						System.out.println("listaPagos: "+lstPlanRegistroPagos.size());
-						
-						List<PlanAmortEquipmov> lstAmortEquipmovs = new ArrayList<PlanAmortEquipmov>(); 
+						Integer mesPlanilla=0;
+						//List<PlanAmortEquipmov> lstAmortEquipmovs = new ArrayList<PlanAmortEquipmov>(); 
 						for (PlanRegistroPago planRegistroPago : lstPlanRegistroPagos) {
+							mesPlanilla = planRegistroPago.getMes();
 							totalDescuento = totalDescuento.add(planRegistroPago.getTotal());
 							planPago.setAno(planRegistroPago.getAnio());
 							planPago.setMes(planRegistroPago.getMes());
 							planPago.setPlanContratoComite(planRegistroPago.getPlanContratoComite());
-							lstPlanAmortEquipmovs = managerPlanesMoviles.findAmortEquipmovByPlanContratoMes(planRegistroPago.getLineaTelefono(), mes);
-							if(lstPlanAmortEquipmovs!=null && lstPlanAmortEquipmovs.size()==1) {
-								PlanAmortEquipmov planAmortEquipmov = lstPlanAmortEquipmovs.get(0); 
+//							lstPlanAmortEquipmovs = managerPlanesMoviles.findAmortEquipmovByPlanContratoMes(planRegistroPago.getLineaTelefono(), mes);
+//							if(lstPlanAmortEquipmovs!=null && lstPlanAmortEquipmovs.size()>0) {
+//								System.out.println("Equipo Movil 1");
+//								PlanAmortEquipmov planAmortEquipmov = lstPlanAmortEquipmovs.get(0); 
+//								totalDescuento = totalDescuento.add(planAmortEquipmov.getValorCuota());
+//								lstAmortEquipmovs.add(planAmortEquipmov);
+//							}
+						}
+						List<PlanAmortEquipmov> lstPlanAmortEquipmovs = new ArrayList<PlanAmortEquipmov>();
+						lstPlanAmortEquipmovs = managerPlanesMoviles.findAllAmortEquipmovByCedulaMes(cedula,mesPlanilla);
+						if(lstPlanAmortEquipmovs!=null && lstPlanAmortEquipmovs.size()>0) {
+							System.out.println("Equipo Movil 1");
+							for (PlanAmortEquipmov planAmortEquipmov : lstPlanAmortEquipmovs) {
 								totalDescuento = totalDescuento.add(planAmortEquipmov.getValorCuota());
-								lstAmortEquipmovs.add(planAmortEquipmov);
 							}
 						}
 						
@@ -253,13 +263,13 @@ public class FrmPlanillaPagoPlan implements Serializable{
 						planPago.setDescEstadoDescuento(descEstadoDescuento);
 						managerPlanesMoviles.insertarPlanPago(planPago);
 						
-						for(PlanAmortEquipmov planAmortEquipmov:lstAmortEquipmovs) {
-														
-							PlanAmortEquipmov planAmortEquipmovTmp = new PlanAmortEquipmov();
-							planAmortEquipmovTmp = managerPlanesMoviles.findPlanAmortEquipmovById(planAmortEquipmov.getIdAmortEquipmov());
-							planAmortEquipmovTmp.setEstado("DESCUENTO A ROLL");
-							planAmortEquipmovTmp.setPlanPago(planPago);
-							managerPlanesMoviles.actualizarObjeto(planAmortEquipmov);
+						if(lstPlanAmortEquipmovs!=null && lstPlanAmortEquipmovs.size()>0) {
+							for(PlanAmortEquipmov planAmortEquipmov: lstPlanAmortEquipmovs) {
+								System.out.println("Equipo Movil 2");							
+								planAmortEquipmov.setEstado("DESCUENTO A ROLL");
+								planAmortEquipmov.setPlanPago(planPago);
+								managerPlanesMoviles.actualizarObjeto(planAmortEquipmov);
+							}
 						}
 						
 						for (PlanRegistroPago planRegistroPago : lstPlanRegistroPagos) {
