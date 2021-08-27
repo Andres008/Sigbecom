@@ -196,7 +196,7 @@ private static final long serialVersionUID = 1L;
 			try {
 				planContratoComite.setEstado("ACTIVO");
 				managerPlanesMoviles.insertarPlanContratoComite(planContratoComite);
-				JSFUtil.crearMensajeINFO("Cuotas Generadas correctamente");
+				JSFUtil.crearMensajeINFO("Plan cargado correctamente");
 				init();
 				PrimeFaces prime=PrimeFaces.current();
 				prime.ajax().update("form1");

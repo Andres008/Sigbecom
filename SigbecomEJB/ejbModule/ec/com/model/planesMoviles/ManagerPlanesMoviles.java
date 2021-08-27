@@ -206,7 +206,7 @@ public class ManagerPlanesMoviles {
     }
     @SuppressWarnings("unchecked")
 	public List<PlanRegistroPago> findAllPlanRegistroPago() throws Exception {
-    	List<PlanRegistroPago> lstPlanRegistroPago = managerDAOSegbecom.findAll(PlanRegistroPago.class);
+    	List<PlanRegistroPago> lstPlanRegistroPago = managerDAOSegbecom.findAll(PlanRegistroPago.class, "o.idRegistroPagos DESC");
     	return lstPlanRegistroPago;
     }
     
@@ -276,6 +276,16 @@ public class ManagerPlanesMoviles {
     	}
     }
     @SuppressWarnings("unchecked")
+	public List<PlanAmortEquipmov> findAllAmortEquipmovByCedulaMes(String cedula, Integer mes) throws Exception{
+    	List<PlanAmortEquipmov> lstPlanAmortEquipmov = managerDAOSegbecom.findWhere(PlanAmortEquipmov.class, "o.planContratoComite.usrSocio.cedulaSocio = '"+cedula+"' AND o.estado = 'GENERADO' AND o.mes = '"+mes+"'", null); 
+    	if(lstPlanAmortEquipmov!= null && lstPlanAmortEquipmov.size()>0) {
+    		return lstPlanAmortEquipmov;
+    	}
+    	else {
+    		return null;
+    	}
+    }
+    @SuppressWarnings("unchecked")
    	public List<PlanPago> findAllPlanPagoByCedula(String cedula) throws Exception{
        	List<PlanPago> lstPlanPago = managerDAOSegbecom.findWhere(PlanPago.class, "o.planContratoComite.usrSocio.cedulaSocio = '"+cedula+"'", "o.idPlanPagos DESC");
        	for (PlanPago planPago : lstPlanPago) {
@@ -294,4 +304,16 @@ public class ManagerPlanesMoviles {
     	PlanAmortEquipmov planAmortEquipmov = (PlanAmortEquipmov) managerDAOSegbecom.findById(PlanAmortEquipmov.class, idAmortEquipmov); 
     	return planAmortEquipmov;
     }
+	
+    @SuppressWarnings("unchecked")
+	public List<PlanAmortEquipmov> findAllPlanAmortEquipmov() throws Exception{
+    	List<PlanAmortEquipmov> lstPlanAmortEquipmov = managerDAOSegbecom.findAll(PlanAmortEquipmov.class, "o.idAmortEquipmov");
+    	if(lstPlanAmortEquipmov!= null && lstPlanAmortEquipmov.size()>0) {
+    		return lstPlanAmortEquipmov;
+    	}
+    	else {
+    		return null;
+    	}
+    }
+	
 }

@@ -32,7 +32,7 @@
 					<ui:include src="/affordances/route-bar-menu.xhtml" />
                 </div>
 				<div class="layout-main-content" align="center">
-                    <H1>Planes Móviles</H1>
+                    <H1>Planes Móviles - Descuentos</H1>
                     
 	                <h:form id="form1">
 	                	<p:growl id="growl" showDetail="true" sticky="true" />
@@ -47,32 +47,30 @@
 							id="tblEmp"  var="dato" paginator="true"
 							rows="10">
 							<f:facet name="header">
-								LISTADO DE SOCIOS
+								<p:outputLabel value="#{frmEquipoMovil.beanLogin.credencial.objUsrSocio.cedulaSocio} #{frmEquipoMovil.beanLogin.credencial.objUsrSocio.gesPersona.apellidos} #{frmEquipoMovil.beanLogin.credencial.objUsrSocio.gesPersona.nombres}"/>
 							</f:facet>
 							
-							<p:column headerText="CEDULA" filterBy="#{dato.planContratoComite.usrSocio.cedulaSocio}">
-								<h:outputText value="#{dato.planContratoComite.usrSocio.cedulaSocio}"/>
+							<p:column headerText="Plan">
+								<h:outputText value="#{dato.planContratoComite.planPlanMovil.plan} #{dato.planContratoComite.planPlanMovil.planOperadora.empresa}"/>
 							</p:column>
-							<p:column headerText="APELLIDOS" filterBy="#{dato.planContratoComite.usrSocio.gesPersona.apellidos}">
-								<h:outputText value="#{dato.planContratoComite.usrSocio.gesPersona.apellidos}"/>
+							<p:column headerText="Linea">
+								<h:outputText value="#{dato.planContratoComite.lineaTelefono}"/>
 							</p:column>
-							<p:column headerText="NOMBRES" filterBy="#{dato.planContratoComite.usrSocio.gesPersona.nombres}">
-								<h:outputText value="#{dato.planContratoComite.usrSocio.gesPersona.nombres}"/>
-							</p:column>
-							<p:column headerText="CUOTA TOTAL" filterBy="#{dato.valorTotal}">
+							<p:column headerText="CUOTA TOTAL">
 								<h:outputText value="#{dato.valorTotal}">
 									<f:convertNumber pattern="#0.00" />
 								</h:outputText>
 							</p:column>
-							<p:column headerText="MES" filterBy="#{dato.mes}">
-								<h:outputText value="#{dato.mes}"/>
+							<p:column headerText="MES" sortBy="#{dato.mes}" filterBy="#{frmMiPlanMovil.convertirMes(dato.mes)}">
+								<h:outputText value="#{frmMiPlanMovil.convertirMes(dato.mes)}"/>
 							</p:column>
-							<p:column headerText="AÑO" filterBy="#{dato.ano}">
+							<p:column headerText="AÑO" sortBy="#{dato.ano}" filterBy="#{dato.ano}">
 								<h:outputText value="#{dato.ano}"/>
 							</p:column>
 							<p:column headerText="ESTADO DESCUENTO" filterBy="#{dato.descEstadoDescuento.estado}">
 								<h:outputText value="#{dato.descEstadoDescuento.estado}"/>
 							</p:column>
+							
 						</p:dataTable>
 						<br/>
 						<br/>
