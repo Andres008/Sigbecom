@@ -11,13 +11,15 @@ import javax.inject.Inject;
 import javax.inject.Named;
 
 import ec.com.controlador.sesion.BeanLogin;
+import ec.com.model.dao.entity.PlanAmortEquipmov;
 import ec.com.model.dao.entity.PlanPago;
+import ec.com.model.dao.entity.PlanRegistroPago;
 import ec.com.model.modulos.util.JSFUtil;
 import ec.com.model.planesMoviles.ManagerPlanesMoviles;
 
-@Named("frmMiPlanMovil")
+@Named("frmDescuento")
 @SessionScoped
-public class frmMiPlanMovil implements Serializable{
+public class frmDescuento implements Serializable{
 	
 	private static final long serialVersionUID = 1L;
 		
@@ -28,16 +30,22 @@ public class frmMiPlanMovil implements Serializable{
 	private BeanLogin beanLogin;
 	
 	private List<PlanPago> lstPlanPago;
+	private List<PlanRegistroPago> lstRegistroPago;
+	private List<PlanAmortEquipmov> lstAmortizacion;
 
 	@PostConstruct
 	public void init() {
 		lstPlanPago = new ArrayList<PlanPago>();
-		cargarMisPlanesMoviles();
+		lstRegistroPago = new ArrayList<PlanRegistroPago>();
+		lstAmortizacion = new ArrayList<PlanAmortEquipmov>();
+		cargarPlanesMovilesDescuentos();
 	}
 	
-	public void cargarMisPlanesMoviles() {
+	public void cargarPlanesMovilesDescuentos() {
 		try {
-			lstPlanPago = managerPlanesMoviles.findAllPlanPagoByCedula(beanLogin.getCredencial().getObjUsrSocio().getCedulaSocio());
+			lstPlanPago = managerPlanesMoviles.findAllPlanPago();
+			lstRegistroPago = managerPlanesMoviles.findAllPlanRegistroPago();
+			lstAmortizacion = managerPlanesMoviles.findAllPlanAmortEquipmov();
 		} catch (Exception e) {
 			JSFUtil.crearMensajeERROR("No se cargo el listado correctamente");
 			e.printStackTrace();
@@ -101,6 +109,22 @@ public class frmMiPlanMovil implements Serializable{
 
 	public void setLstPlanPago(List<PlanPago> lstPlanPago) {
 		this.lstPlanPago = lstPlanPago;
+	}
+
+	public List<PlanRegistroPago> getLstRegistroPago() {
+		return lstRegistroPago;
+	}
+
+	public void setLstRegistroPago(List<PlanRegistroPago> lstRegistroPago) {
+		this.lstRegistroPago = lstRegistroPago;
+	}
+
+	public List<PlanAmortEquipmov> getLstAmortizacion() {
+		return lstAmortizacion;
+	}
+
+	public void setLstAmortizacion(List<PlanAmortEquipmov> lstAmortizacion) {
+		this.lstAmortizacion = lstAmortizacion;
 	}
 	
 }

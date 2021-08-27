@@ -206,7 +206,7 @@ public class ManagerPlanesMoviles {
     }
     @SuppressWarnings("unchecked")
 	public List<PlanRegistroPago> findAllPlanRegistroPago() throws Exception {
-    	List<PlanRegistroPago> lstPlanRegistroPago = managerDAOSegbecom.findAll(PlanRegistroPago.class);
+    	List<PlanRegistroPago> lstPlanRegistroPago = managerDAOSegbecom.findAll(PlanRegistroPago.class, "o.idRegistroPagos DESC");
     	return lstPlanRegistroPago;
     }
     
@@ -294,4 +294,16 @@ public class ManagerPlanesMoviles {
     	PlanAmortEquipmov planAmortEquipmov = (PlanAmortEquipmov) managerDAOSegbecom.findById(PlanAmortEquipmov.class, idAmortEquipmov); 
     	return planAmortEquipmov;
     }
+	
+    @SuppressWarnings("unchecked")
+	public List<PlanAmortEquipmov> findAllPlanAmortEquipmov() throws Exception{
+    	List<PlanAmortEquipmov> lstPlanAmortEquipmov = managerDAOSegbecom.findAll(PlanAmortEquipmov.class, "o.idAmortEquipmov");
+    	if(lstPlanAmortEquipmov!= null && lstPlanAmortEquipmov.size()>0) {
+    		return lstPlanAmortEquipmov;
+    	}
+    	else {
+    		return null;
+    	}
+    }
+	
 }
