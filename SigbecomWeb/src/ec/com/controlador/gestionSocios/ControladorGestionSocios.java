@@ -272,14 +272,15 @@ public class ControladorGestionSocios implements Serializable {
 		try {
 			UsrSocio socioTemp = managerGestionSocios.buscarSocioById(objUsrSocio.getCedulaSocio());
 			managerLog.generarLogUsabilidad(beanLogin.getCredencial(), this.getClass(), "actualizarSocioFondos",
-					"Actualización ahoro: " + objUsrSocio.getGesPersona().getCedula() + ", Valores anteriores de ahorro: "
-							+ socioTemp.getCajaAhorro() + ", Cesantia: " + socioTemp.getFondoCesantia()+", Valores nuevos de ahorro: "
-									+ objUsrSocio.getCajaAhorro() + ", Cesantia: " + objUsrSocio.getFondoCesantia());
+					"Actualización ahoro: " + objUsrSocio.getGesPersona().getCedula()
+							+ ", Valores anteriores de ahorro: " + socioTemp.getCajaAhorro() + ", Cesantia: "
+							+ socioTemp.getFondoCesantia() + ", Valores nuevos de ahorro: "
+							+ objUsrSocio.getCajaAhorro() + ", Cesantia: " + objUsrSocio.getFondoCesantia());
 			actualizarSocio();
 		} catch (Exception e) {
 			JSFUtil.crearMensajeERROR(e.getMessage());
 		}
-		
+
 	}
 
 	public void restablecerContraseña(UsrSocio objUsrSocioAux) {
@@ -460,19 +461,18 @@ public class ControladorGestionSocios implements Serializable {
 			// String clave = ModelUtil.randomAlphaNumeric();
 			String clave = objUsrSocio.getGesPersona().getCedula();
 			ModelUtil.verificarCedulaEcuador(objUsrSocio.getGesPersona().getCedula());
-			ModelUtil.esEmailCorrecto(objUsrSocio.getGesPersona().getEmail().trim());
+			if (!ModelUtil.isEmpty(objUsrSocio.getGesPersona().getEmail().trim()))
+				ModelUtil.esEmailCorrecto(objUsrSocio.getGesPersona().getEmail().trim());
 			objUsrSocio.getGesPersona().setApellidos(objUsrSocio.getGesPersona().getApellidos().toUpperCase());
 			objUsrSocio.getGesPersona().setNombres(objUsrSocio.getGesPersona().getNombres().toUpperCase());
 			objUsrSocio.getGesPersona().setEmail(objUsrSocio.getGesPersona().getEmail().toLowerCase());
 			objUsrSocio.setPrimerInicio("S");
 			objUsrSocio.setClave(ModelUtil.md5(clave));
 			objUsrSocio.getUsrEstadoSocio().setIdEstado(1);
-			// if
-			// (managerGestionPersonas.buscarPersonaByCedula(objUsrSocio.getGesPersona().getCedula())
-			// == null)
-			// managerGestionPersonas.insertarPersona(objUsrSocio.getGesPersona());
-			// objUsrSocio.setCedulaSocio(objUsrSocio.getGesPersona().getCedula());
-			// managerGestionSocios.insertarSocio(objUsrSocio);
+			if (managerGestionPersonas.buscarPersonaByCedula(objUsrSocio.getGesPersona().getCedula()) == null)
+				managerGestionPersonas.insertarPersona(objUsrSocio.getGesPersona());
+			objUsrSocio.setCedulaSocio(objUsrSocio.getGesPersona().getCedula());
+			managerGestionSocios.insertarSocio(objUsrSocio);
 			managerLog.generarLogUsabilidad(beanLogin.getCredencial(), this.getClass(), "inscribirUsuario",
 					"Crea usuario " + objUsrSocio.getGesPersona().getCedula());
 			/*
