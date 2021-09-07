@@ -49,7 +49,9 @@
 							<f:facet name="header">
 								<p:outputLabel value="#{frmEquipoMovil.beanLogin.credencial.objUsrSocio.cedulaSocio} #{frmEquipoMovil.beanLogin.credencial.objUsrSocio.gesPersona.apellidos} #{frmEquipoMovil.beanLogin.credencial.objUsrSocio.gesPersona.nombres}"/>
 							</f:facet>
-							
+							<p:column headerText="" style="width:2rem">
+								<p:rowToggler />
+							</p:column>
 							<p:column headerText="Plan">
 								<h:outputText value="#{dato.planContratoComite.planPlanMovil.plan} #{dato.planContratoComite.planPlanMovil.planOperadora.empresa}"/>
 							</p:column>
@@ -70,7 +72,64 @@
 							<p:column headerText="ESTADO DESCUENTO" filterBy="#{dato.descEstadoDescuento.estado}">
 								<h:outputText value="#{dato.descEstadoDescuento.estado}"/>
 							</p:column>
-							
+							<p:rowExpansion>
+								<p:panel>
+									<p:dataTable value="#{dato.planRegistroPagos}"  
+													id="tblCon" editable="true" var="con">
+										<f:facet name="header">
+								            LISTADO DE PLANES MOVILES 
+										</f:facet>
+										<p:column headerText="LINEA">
+											<h:outputText value="#{con.lineaTelefono}"/>
+										</p:column>
+										<p:column headerText="CONSUMO ADICIONAL">
+											<h:outputText value="#{con.valorAdicional}"/>
+										</p:column>
+										<p:column headerText="OBSERVACION">
+											<h:outputText value="#{con.observacion}" />
+										</p:column>
+										<p:column headerText="PLAN">
+											<h:outputText value="#{con.valorPlan.add(con.costoAdm)}">
+												<f:convertNumber pattern="#0.00" />
+											</h:outputText>
+										</p:column>
+										<p:column headerText="TOTAL">
+											<h:outputText value="#{con.total}">
+												<f:convertNumber pattern="#0.00" />
+											</h:outputText>
+										</p:column>
+									</p:dataTable>
+									<p:separator/>
+									<p:dataTable value="#{dato.planAmortEquipmovs}"  
+													id="tblEq" editable="true" var="mov">
+										<f:facet name="header">
+								            LISTADO EQUIPOS MOVILES 
+										</f:facet>
+										<p:column headerText="OPERADORA">
+											<h:outputText value="#{mov.planContratoComite.planPlanMovil.planOperadora.empresa}"/>
+										</p:column>
+										<p:column headerText="LINEA">
+											<h:outputText value="#{mov.planContratoComite.lineaTelefono}"/>
+										</p:column>
+										<p:column headerText="EQUIPO">
+											<h:outputText value="#{mov.planEquipo.equipo}"/>
+										</p:column>
+										<p:column headerText="CUOTA">
+											<h:outputText value="#{mov.numCuota} / #{mov.mesesPlazo}"/>
+										</p:column>
+										<p:column headerText="VALOR CUOTA">
+											<h:outputText value="#{mov.valorCuota}">
+												<f:convertNumber pattern="#0.00" />
+											</h:outputText>
+										</p:column>
+										<p:column headerText="SALDO">
+											<h:outputText value="#{mov.saldo}">
+												<f:convertNumber pattern="#0.00" />
+											</h:outputText>
+										</p:column>
+									</p:dataTable>
+								</p:panel>
+							</p:rowExpansion>
 						</p:dataTable>
 						<br/>
 						<br/>
