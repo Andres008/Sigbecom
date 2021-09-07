@@ -197,7 +197,21 @@ public class FrmPlanillaPagoPlan implements Serializable{
 	}
 	public void onRowEdit(RowEditEvent<Object> event) {
 		 try {
-			 managerPlanesMoviles.actualizarObjeto(event.getObject());
+			 PlanRegistroPago planRegistroPago = (PlanRegistroPago) event.getObject();
+			 BigDecimal costoAdic = new BigDecimal(0);
+			 if(planRegistroPago.getValorAdicional()!=null) {
+				 costoAdic=planRegistroPago.getValorAdicional();
+			 }
+			 BigDecimal total = new BigDecimal(0);
+			 BigDecimal valorPlan=planRegistroPago.getValorPlan();
+			 BigDecimal costoAdmi=planRegistroPago.getCostoAdm();
+			  
+			 total=total.add(valorPlan).add(costoAdmi).add(costoAdic);
+			 //System.out.println("total:"+planRegistroPago.getValorAdicional());
+			 planRegistroPago.setTotal(total);
+			 
+			 //System.out.println("total:"+planRegistroPago.getTotal());
+			 managerPlanesMoviles.actualizarObjeto(planRegistroPago);
 				JSFUtil.crearMensajeINFO("Se actualizó correctamente.");
 			} catch (Exception e) {
 				JSFUtil.crearMensajeERROR(e.getMessage());
