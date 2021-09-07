@@ -315,5 +315,24 @@ public class ManagerPlanesMoviles {
     		return null;
     	}
     }
-	
+    @SuppressWarnings("unchecked")
+	public List<PlanAmortEquipmov> findAllAmortEquipmovByIdPlanPagos(Long idPlanPagos) throws Exception{
+    	List<PlanAmortEquipmov> lstPlanAmortEquipmov = managerDAOSegbecom.findWhere(PlanAmortEquipmov.class, "o.planPago.idPlanPagos = '"+idPlanPagos+"'", null); 
+    	if(lstPlanAmortEquipmov!= null && lstPlanAmortEquipmov.size()>0) {
+    		return lstPlanAmortEquipmov;
+    	}
+    	else {
+    		return null;
+    	}
+    }
+    @SuppressWarnings("unchecked")
+	public List<PlanRegistroPago> findAllPlanRegistroPagoByIdPlanPagos(Long idPlanPagos) throws Exception{
+    	List<PlanRegistroPago> lstPlanRegistroPago = managerDAOSegbecom.findWhere(PlanRegistroPago.class, "o.planPago.idPlanPagos = '"+idPlanPagos+"'", null); 
+    	if(lstPlanRegistroPago!= null && lstPlanRegistroPago.size()>0) {
+    		return lstPlanRegistroPago;
+    	}
+    	else {
+    		return null;
+    	}
+    }
 }

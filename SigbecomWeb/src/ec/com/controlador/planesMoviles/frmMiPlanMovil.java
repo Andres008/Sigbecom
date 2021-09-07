@@ -11,7 +11,9 @@ import javax.inject.Inject;
 import javax.inject.Named;
 
 import ec.com.controlador.sesion.BeanLogin;
+import ec.com.model.dao.entity.PlanAmortEquipmov;
 import ec.com.model.dao.entity.PlanPago;
+import ec.com.model.dao.entity.PlanRegistroPago;
 import ec.com.model.modulos.util.JSFUtil;
 import ec.com.model.planesMoviles.ManagerPlanesMoviles;
 
@@ -38,6 +40,16 @@ public class frmMiPlanMovil implements Serializable{
 	public void cargarMisPlanesMoviles() {
 		try {
 			lstPlanPago = managerPlanesMoviles.findAllPlanPagoByCedula(beanLogin.getCredencial().getObjUsrSocio().getCedulaSocio());
+			for (PlanPago planPago : lstPlanPago) {
+				List<PlanAmortEquipmov> lstPlanEquipos = managerPlanesMoviles.findAllAmortEquipmovByIdPlanPagos(planPago.getIdPlanPagos());
+				if(lstPlanEquipos!=null) {
+					planPago.setPlanAmortEquipmovs(lstPlanEquipos);
+				}
+				List<PlanRegistroPago> lstPlanRegistro = managerPlanesMoviles.findAllPlanRegistroPagoByIdPlanPagos(planPago.getIdPlanPagos());
+				if(lstPlanRegistro!=null) {
+					planPago.setPlanRegistroPagos(lstPlanRegistro);
+				}
+			}
 		} catch (Exception e) {
 			JSFUtil.crearMensajeERROR("No se cargo el listado correctamente");
 			e.printStackTrace();

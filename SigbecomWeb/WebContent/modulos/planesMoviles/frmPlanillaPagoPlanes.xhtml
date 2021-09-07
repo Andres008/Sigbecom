@@ -116,8 +116,8 @@
 							<f:facet name="header">
 								PLANILLA DE PLANES MOVILES
 							</f:facet>
-							<p:ajax event="rowEdit" listener="#{frmRegistroEmpresa.onRowEdit}" update="form2:growl"/>
-            				<p:ajax event="rowEditCancel" listener="#{frmRegistroEmpresa.onRowCancel}" update="form2:growl"/>
+							<p:ajax event="rowEdit" listener="#{frmPlanillaPagoPlan.onRowEdit}" update="form2:growl"/>
+            				<p:ajax event="rowEditCancel" listener="#{frmPlanillaPagoPlan.onRowCancel}" update="form2:growl"/>
 							<p:column headerText="LINEA" filterBy="#{dato.lineaTelefono}">
 								<h:outputText value="#{dato.lineaTelefono}"/>
 							</p:column>
