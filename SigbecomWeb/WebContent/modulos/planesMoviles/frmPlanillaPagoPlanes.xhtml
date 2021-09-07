@@ -140,6 +140,28 @@
 									<f:convertNumber pattern="#0.00" />
 								</h:outputText>
 							</p:column>
+							<p:column headerText="CONSUMO ADICIONAL">
+								<p:cellEditor >
+				                    <f:facet name="output">
+				                        <h:outputText value="#{dato.valorAdicional}">
+											<f:convertNumber pattern="#0.00" />
+										</h:outputText>
+				                    </f:facet>
+				                    <f:facet name="input">
+				                        <p:inputText value="#{dato.valorAdicional}" style="width:100%"/>
+				                    </f:facet>
+				                </p:cellEditor>
+							</p:column>
+							<p:column headerText="OBSERVACION">
+								<p:cellEditor >
+				                    <f:facet name="output">
+				                        <h:outputText value="#{dato.observacion}" />
+				                    </f:facet>
+				                    <f:facet name="input">
+				                        <p:inputText value="#{dato.observacion}" style="width:100%"/>
+				                    </f:facet>
+				                </p:cellEditor>
+							</p:column>
 							<p:column headerText="TOTAL PLAN">
 								<h:outputText value="#{dato.total}">
 									<f:convertNumber pattern="#0.00" />
@@ -155,20 +177,11 @@
 								<h:outputText value="#{dato.anio}"/>
 							</p:column>
 							<p:column headerText="ESTADO" filterBy="#{dato.estado}">
-								<p:cellEditor >
-				                    <f:facet name="output">
-				                        <h:outputText value="#{dato.estado}"/>
-				                    </f:facet>
-				                    <f:facet name="input">
-				                        <h:selectOneMenu id="option" value="#{dato.estado}" style="width:100%">
-									      <f:selectItem itemLabel="PENDIENTE" itemValue="PENDIENTE"/>
-									    </h:selectOneMenu>
-				                    </f:facet>
-				                </p:cellEditor>
+								<h:outputText value="#{dato.estado}"/>
 							</p:column>
 							<p:column width="6" exportable="false">
-									<!-- <p:rowEditor rendered="#{frmPlanillaPagoPlan.activarEditEstado(dato.estado)}" -->
-									 <p:rowEditor rendered="false"
+									<!-- <p:rowEditor rendered="false" -->
+									<p:rowEditor rendered="#{frmPlanillaPagoPlan.activarEditEstado(dato.estado)}"
 									editTitle="Edit Row" cancelTitle="Cancel Edit" saveTitle="Save Row" 
 										/>
 				            </p:column>

@@ -208,7 +208,7 @@ public class FrmPlanillaPagoPlan implements Serializable{
       JSFUtil.crearMensajeINFO("Se canceló actualización.");
   }
 	public boolean activarEditEstado(String estado) {
-		if(estado.equalsIgnoreCase("GENERADO")) {
+		if(estado.equalsIgnoreCase("DESCUENTO A ROLL")) {
 			return true;
 		}
 		else
