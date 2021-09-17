@@ -13,6 +13,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -33,6 +34,7 @@ import ec.com.controlador.sesion.BeanLogin;
 import ec.com.model.auditoria.ManagerLog;
 import ec.com.model.dao.entity.DescEstadoDescuento;
 import ec.com.model.dao.entity.DescNovedade;
+import ec.com.model.dao.entity.DescValoresFijo;
 import ec.com.model.dao.entity.FinAccionPrestamo;
 import ec.com.model.dao.entity.FinAccionesCredito;
 import ec.com.model.dao.entity.FinCuotasDescontada;
@@ -48,7 +50,9 @@ import ec.com.model.dao.entity.FinTipcrediRequisito;
 import ec.com.model.dao.entity.FinTipoCredito;
 import ec.com.model.dao.entity.FinTipoSolicitud;
 import ec.com.model.dao.entity.UsrSocio;
+import ec.com.model.dao.entity.UsrSocioDescuentoFijo;
 import ec.com.model.dao.entity.UsrTipoDescuento;
+import ec.com.model.dao.entity.VDescuentoMensualSocio;
 import ec.com.model.gestionCreditos.ManagerGestionCredito;
 import ec.com.model.gestionDescuentos.ManagerGestionDescuentos;
 import ec.com.model.gestionSistema.ManagerGestionSistema;
@@ -90,15 +94,22 @@ public class ControladorGestionDescuentos implements Serializable {
 
 	private List<DescNovedade> lstDescNovedade;
 
+	private Long tipoNovedad;
+
+	private List<UsrSocioDescuentoFijo> lstUsrSocioDescuentoFijo;
+	
+	private List<VDescuentoMensualSocio> lstVDescuentoMensualSocio;
+
 	public ControladorGestionDescuentos() {
 
 	}
 
 	public void inicializarNovedadesEconomicas() {
-		objDescNovedade= new DescNovedade();
+		tipoNovedad = new Long(0);
+		objDescNovedade = new DescNovedade();
 		objDescNovedade.setUsrSocio1(beanLogin.getCredencial().getObjUsrSocio());
 		objDescNovedade.setUsrSocio2(new UsrSocio());
-		objDescNovedade.setDescEstadoDescuento(new DescEstadoDescuento(1));
+		objDescNovedade.setDescEstadoDescuento(new DescEstadoDescuento(2));
 		try {
 			lstDescNovedade = managerGestionDescuentos.buscarNovedades();
 		} catch (Exception e) {
@@ -111,6 +122,15 @@ public class ControladorGestionDescuentos implements Serializable {
 		objUsrTipoDescuento = new UsrTipoDescuento();
 		try {
 			lstUsrTipoDescuento = managerGestionDescuentos.buscarTodoDescuentos();
+		} catch (Exception e) {
+			JSFUtil.crearMensajeERROR(e.getMessage());
+			e.printStackTrace();
+		}
+	}
+	
+	public void inicializarResumenDescuento() {
+		try {
+			lstVDescuentoMensualSocio = managerGestionDescuentos.findDescuentoMensual();
 		} catch (Exception e) {
 			JSFUtil.crearMensajeERROR(e.getMessage());
 			e.printStackTrace();
@@ -131,10 +151,51 @@ public class ControladorGestionDescuentos implements Serializable {
 			e.printStackTrace();
 		}
 	}
-	
+
+	public void inicializarDescuentoFijos() {
+		try {
+			lstUsrSocioDescuentoFijo = managerGestionDescuentos.buscarDescuentosFijos();
+		} catch (Exception e) {
+			JSFUtil.crearMensajeERROR(e.getMessage());
+			e.printStackTrace();
+		}
+	}
+
+	public void ejecutarDescuentoFijos() {
+		inicializarDescuentoFijos();
+		try {
+			
+			List<DescValoresFijo> lstValoresFijos= managerGestionDescuentos.buscarDescuentosFijosPendientes();
+			for (DescValoresFijo descValoresFijo : lstValoresFijos) {
+				managerGestionDescuentos.eliminarDescuentoFijosPendientes(descValoresFijo);
+			}
+			for (UsrSocioDescuentoFijo descuentoSocio : lstUsrSocioDescuentoFijo) {
+				DescValoresFijo valorFijo = new DescValoresFijo();
+				valorFijo.setDescEstadoDescuento(new DescEstadoDescuento(2));
+				valorFijo.setFechaDescuento(new Timestamp(new Date().getTime()));
+				valorFijo.setUsrSocio(descuentoSocio.getUsrSocio());
+				valorFijo.setUsrSocioDescuentoFijo(descuentoSocio);
+					managerGestionDescuentos.ingresarDescuentoFijoSocio(valorFijo);
+			}	
+			managerLog.generarLogUsabilidad(beanLogin.getCredencial(), this.getClass(), "ejecutarDescuentoFijos",
+					"Se ingreso descuentos fijos");
+			JSFUtil.crearMensajeINFO("Se ingreso correctamente los valores a descontar.");
+		}catch (Exception e) {
+			JSFUtil.crearMensajeERROR(e.getMessage());
+			managerLog.generarLogErrorGeneral(beanLogin.getCredencial(), this.getClass(), "ingresarNovedadEconomica",
+					e.getMessage());
+			e.printStackTrace();
+		}
+		
+		
+		
+	}
+
 	public void ingresarNovedadEconomica() {
 		try {
 			objDescNovedade.setFechaRegistro(new Timestamp(new Date().getTime()));
+			if (tipoNovedad == 1)
+				objDescNovedade.setValor(objDescNovedade.getValor().multiply(new BigDecimal(-1)));
 			managerGestionDescuentos.ingresarNovedadEconomica(objDescNovedade);
 			managerLog.generarLogUsabilidad(beanLogin.getCredencial(), this.getClass(), "ingresarNovedadEconomica",
 					"Se ingreso tipo descuento id: " + objDescNovedade.getIdNovedad());
@@ -185,6 +246,30 @@ public class ControladorGestionDescuentos implements Serializable {
 
 	public void setLstDescNovedade(List<DescNovedade> lstDescNovedade) {
 		this.lstDescNovedade = lstDescNovedade;
+	}
+
+	public Long getTipoNovedad() {
+		return tipoNovedad;
+	}
+
+	public void setTipoNovedad(Long tipoNovedad) {
+		this.tipoNovedad = tipoNovedad;
+	}
+
+	public List<UsrSocioDescuentoFijo> getLstUsrSocioDescuentoFijo() {
+		return lstUsrSocioDescuentoFijo;
+	}
+
+	public void setLstUsrSocioDescuentoFijo(List<UsrSocioDescuentoFijo> lstUsrSocioDescuentoFijo) {
+		this.lstUsrSocioDescuentoFijo = lstUsrSocioDescuentoFijo;
+	}
+
+	public List<VDescuentoMensualSocio> getLstVDescuentoMensualSocio() {
+		return lstVDescuentoMensualSocio;
+	}
+
+	public void setLstVDescuentoMensualSocio(List<VDescuentoMensualSocio> lstVDescuentoMensualSocio) {
+		this.lstVDescuentoMensualSocio = lstVDescuentoMensualSocio;
 	}
 
 }

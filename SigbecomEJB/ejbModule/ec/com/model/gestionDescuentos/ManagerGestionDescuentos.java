@@ -7,6 +7,7 @@ import javax.ejb.LocalBean;
 import javax.ejb.Stateless;
 
 import ec.com.model.dao.entity.DescNovedade;
+import ec.com.model.dao.entity.DescValoresFijo;
 import ec.com.model.dao.entity.FinCuotasDescontada;
 import ec.com.model.dao.entity.FinPrestamoSocio;
 import ec.com.model.dao.entity.FinRequisito;
@@ -27,11 +28,13 @@ import ec.com.model.dao.entity.UsrLicenciaSocio;
 import ec.com.model.dao.entity.UsrParroquia;
 import ec.com.model.dao.entity.UsrProvincia;
 import ec.com.model.dao.entity.UsrSocio;
+import ec.com.model.dao.entity.UsrSocioDescuentoFijo;
 import ec.com.model.dao.entity.UsrTipoCuenta;
 import ec.com.model.dao.entity.UsrTipoDescuento;
 import ec.com.model.dao.entity.UsrTipoInstruccion;
 import ec.com.model.dao.entity.UsrTipoLicencia;
 import ec.com.model.dao.entity.UsrTipoVivienda;
+import ec.com.model.dao.entity.VDescuentoMensualSocio;
 import ec.com.model.dao.manager.ManagerDAOSegbecom;
 import ec.com.model.modulos.util.JSFUtil;
 
@@ -95,8 +98,54 @@ public class ManagerGestionDescuentos {
 		try {
 			managerDAOSegbecom.insertar(objDescNovedade);
 		} catch (Exception e) {
-			throw new Exception("Error al ingresar novedad económica. "+e.getMessage() );
-		}		
+			throw new Exception("Error al ingresar novedad económica. " + e.getMessage());
+		}
+	}
+
+	@SuppressWarnings("unchecked")
+	public List<UsrSocioDescuentoFijo> buscarDescuentosFijos() throws Exception {
+		try {
+			return managerDAOSegbecom.findWhere(UsrSocioDescuentoFijo.class, "o.estado='A'",
+					"o.usrSocio.gesPersona.apellidos ASC,o.usrSocio.gesPersona.nombres ASC, o.usrTipoDescuento.nombre ASC");
+		} catch (Exception e) {
+			throw new Exception("Error al buscar descuentos fijos. " + e.getMessage());
+		}
+
+	}
+
+	public void ingresarDescuentoFijoSocio(DescValoresFijo valorFijo) throws Exception {
+		try {
+			managerDAOSegbecom.insertar(valorFijo);
+		} catch (Exception e) {
+			throw new Exception("Error al ingresar descuento fijo. "+valorFijo.getUsrSocio().getCedulaSocio());
+		}
+		
+	}
+
+	@SuppressWarnings("unchecked")
+	public List<DescValoresFijo> buscarDescuentosFijosPendientes() throws Exception {
+		try {
+			return managerDAOSegbecom.findWhere(DescValoresFijo.class, "o.descEstadoDescuento.idEstadoDescuento=2", null);
+		} catch (Exception e) {
+			throw new Exception("Error al buscar descuentos pendientes.");
+		}
+	}
+
+	public void eliminarDescuentoFijosPendientes(DescValoresFijo valoresFijos) throws Exception {
+		try {
+			managerDAOSegbecom.eliminar(DescValoresFijo.class, valoresFijos.getIdVaorFijo());
+		} catch (Exception e) {
+			throw new Exception("Error al eleiminar");
+		}
+	}
+
+	@SuppressWarnings("unchecked")
+	public List<VDescuentoMensualSocio> findDescuentoMensual() throws Exception {
+		try {
+			return managerDAOSegbecom.findAll(VDescuentoMensualSocio.class,"o.nombreSocio");
+		} catch (Exception e) {
+			throw new Exception("Error al consular datos de descuento mensual.");
+		}
 	}
 
 }

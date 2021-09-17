@@ -204,6 +204,7 @@ public class ControladorGestionSocios implements Serializable {
 				objUsrSocio.getUsrParroquia().getUsrCanton().getUsrProvincia().setIdProvincia("0");
 				;
 			}
+			objUsrSocio.getGesPersona().setFechaNac(new Date());
 			if (objUsrSocio.getUsrCargo() == null)
 				objUsrSocio.setUsrCargo(new UsrCargo());
 			if (objUsrSocio.getUsrArea() == null)
@@ -222,6 +223,10 @@ public class ControladorGestionSocios implements Serializable {
 			e.printStackTrace();
 		}
 
+	}
+	
+	public void verFecha() {
+		System.out.println(objUsrSocio.getGesPersona().getFechaNac());
 	}
 
 	public void inicializarCuenta() {
@@ -866,6 +871,8 @@ public class ControladorGestionSocios implements Serializable {
 
 	public String finalizarActualizacionDatos() {
 		try {
+			if ( ModelUtil.isEmpty(objUsrSocio.getUsrParroquia().getIdParroquia()))
+				throw new Exception("Atención es requerido la informaci{on de la vivienda.");
 			if (objUsrSocio.getUsrEstadoSocio().getIdEstado() == 2) {
 				actualizarSocio();
 				return "/modulos/menuPrincipal.xhtml?faces-redirect=true";

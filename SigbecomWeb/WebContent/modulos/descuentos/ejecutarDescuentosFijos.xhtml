@@ -21,7 +21,7 @@
 </h:head>
 
 <h:body styleClass="main-body"
-	onload="#{controladorGestionCreditos.inicializarDescuentoPrestamo()}">
+	onload="#{controladorGestionDescuentos.inicializarDescuentoFijos()}">
 
 	<div
 		class="layout-wrapper #{guestPreferences.menuLayout != 'static' ? guestPreferences.menuLayout : null}">
@@ -43,9 +43,9 @@
 				<h:form id="solicitudes">
 					<p:growl id="growl" showDetail="true" sticky="true" />
 					<p:panel
-						header="Descuento de Prestamos del Mes de #{controladorGestionCreditos.mesAnioLetras()}">
+						header="Descuento Fijos del Mes de #{controladorGestionCreditos.mesAnioLetras()}">
 						<p:commandButton
-							actionListener="#{controladorGestionCreditos.ejecutarDescuento()}"
+							actionListener="#{controladorGestionDescuentos.ejecutarDescuentoFijos()}"
 							value="Ejecutar Descuento" update="@form">
 							<p:confirm header="Confirmación"
 								message="Desea ejecutar el proceso de descuentos?"
@@ -71,7 +71,7 @@
 						</div>
 						<p:dataTable paginator="true" rows="15" id="tblDescuentos"
 							emptyMessage="No tiene descuentos pendientes para este mes"
-							value="#{controladorGestionCreditos.lstFinPrestamoSocio}"
+							value="#{controladorGestionDescuentos.lstUsrSocioDescuentoFijo}"
 							var="credito">
 							<p:column headerText="Cédula Socio"
 								filterBy="#{credito.usrSocio.cedulaSocio}">
@@ -82,18 +82,11 @@
 								<p:outputLabel
 									value="#{credito.usrSocio.gesPersona.apellidos} #{credito.usrSocio.gesPersona.nombres}" />
 							</p:column>
-							<p:column headerText="Tipo de Credito">
-								<p:outputLabel value="#{credito.finTipoCredito.nombre}" />
-							</p:column>
-							<p:column headerText="Cuota a descontar">
-								<p:outputLabel value="#{credito.cuotasPagadas+1}" />
-							</p:column>
-							<p:column headerText="Total Cuotas">
-								<p:outputLabel value="#{credito.plazoMeses}" />
+							<p:column headerText="Tipo de Descuento">
+								<p:outputLabel value="#{credito.usrTipoDescuento.nombre}" />
 							</p:column>
 							<p:column headerText="Valor a descontar">
-								<p:outputLabel
-									value="#{controladorGestionCreditos.cuotaVigenteByPrestamo(credito).valorCuota}" />
+								<p:outputLabel value="#{credito.valor}" />
 							</p:column>
 						</p:dataTable>
 					</p:panel>
