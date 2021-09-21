@@ -32,6 +32,7 @@ import org.primefaces.model.file.UploadedFile;
 
 import ec.com.controlador.sesion.BeanLogin;
 import ec.com.model.auditoria.ManagerLog;
+import ec.com.model.dao.entity.DesDescuentoMensuale;
 import ec.com.model.dao.entity.DescEstadoDescuento;
 import ec.com.model.dao.entity.DescNovedade;
 import ec.com.model.dao.entity.DescValoresFijo;
@@ -56,6 +57,7 @@ import ec.com.model.dao.entity.VDescuentoMensualSocio;
 import ec.com.model.gestionCreditos.ManagerGestionCredito;
 import ec.com.model.gestionDescuentos.ManagerGestionDescuentos;
 import ec.com.model.gestionSistema.ManagerGestionSistema;
+import ec.com.model.gestionSocios.ManagerGestionSocios;
 import ec.com.model.modulos.util.CorreoUtil;
 import ec.com.model.modulos.util.JSFUtil;
 import ec.com.model.modulos.util.ModelUtil;
@@ -81,6 +83,9 @@ public class ControladorGestionDescuentos implements Serializable {
 	ManagerLog managerLog;
 
 	@EJB
+	ManagerGestionSocios managerGestionSocios;
+
+	@EJB
 	CorreoUtil correoUtil;
 
 	@EJB
@@ -97,8 +102,12 @@ public class ControladorGestionDescuentos implements Serializable {
 	private Long tipoNovedad;
 
 	private List<UsrSocioDescuentoFijo> lstUsrSocioDescuentoFijo;
-	
+
 	private List<VDescuentoMensualSocio> lstVDescuentoMensualSocio;
+
+	private List<DesDescuentoMensuale> lstDesDescuentoMensuale;
+
+	private Long mes, anio;
 
 	public ControladorGestionDescuentos() {
 
@@ -127,7 +136,21 @@ public class ControladorGestionDescuentos implements Serializable {
 			e.printStackTrace();
 		}
 	}
-	
+
+	public void inicializarMisDescuento() {
+		try {
+			lstDesDescuentoMensuale = managerGestionDescuentos
+					.buscarMisDescuentos(beanLogin.getCredencial().getObjUsrSocio().getCedulaSocio());
+		} catch (Exception e) {
+			JSFUtil.crearMensajeERROR(e.getMessage());
+			e.printStackTrace();
+		}
+	}
+
+	public void inicializarDescuentoMensuales() {
+		lstDesDescuentoMensuale = new ArrayList<DesDescuentoMensuale>();
+	}
+
 	public void inicializarResumenDescuento() {
 		try {
 			lstVDescuentoMensualSocio = managerGestionDescuentos.findDescuentoMensual();
@@ -161,11 +184,20 @@ public class ControladorGestionDescuentos implements Serializable {
 		}
 	}
 
+	public void buscarDescuentosMensuales() {
+		try {
+			lstDesDescuentoMensuale = managerGestionDescuentos.buscarDescuentosMensuales(anio, mes);
+		} catch (Exception e) {
+			JSFUtil.crearMensajeINFO(e.getMessage());
+			e.printStackTrace();
+		}
+	}
+
 	public void ejecutarDescuentoFijos() {
 		inicializarDescuentoFijos();
 		try {
-			
-			List<DescValoresFijo> lstValoresFijos= managerGestionDescuentos.buscarDescuentosFijosPendientes();
+
+			List<DescValoresFijo> lstValoresFijos = managerGestionDescuentos.buscarDescuentosFijosPendientes();
 			for (DescValoresFijo descValoresFijo : lstValoresFijos) {
 				managerGestionDescuentos.eliminarDescuentoFijosPendientes(descValoresFijo);
 			}
@@ -175,20 +207,53 @@ public class ControladorGestionDescuentos implements Serializable {
 				valorFijo.setFechaDescuento(new Timestamp(new Date().getTime()));
 				valorFijo.setUsrSocio(descuentoSocio.getUsrSocio());
 				valorFijo.setUsrSocioDescuentoFijo(descuentoSocio);
-					managerGestionDescuentos.ingresarDescuentoFijoSocio(valorFijo);
-			}	
+				managerGestionDescuentos.ingresarDescuentoFijoSocio(valorFijo);
+			}
 			managerLog.generarLogUsabilidad(beanLogin.getCredencial(), this.getClass(), "ejecutarDescuentoFijos",
 					"Se ingreso descuentos fijos");
 			JSFUtil.crearMensajeINFO("Se ingreso correctamente los valores a descontar.");
-		}catch (Exception e) {
+		} catch (Exception e) {
 			JSFUtil.crearMensajeERROR(e.getMessage());
 			managerLog.generarLogErrorGeneral(beanLogin.getCredencial(), this.getClass(), "ingresarNovedadEconomica",
 					e.getMessage());
 			e.printStackTrace();
 		}
-		
-		
-		
+
+	}
+
+	public void ejecutarDescuentoMensual() {
+		try {
+			lstVDescuentoMensualSocio = lstVDescuentoMensualSocio.stream()
+					.filter(c -> c.getValorAhorro().intValue() > 0).collect(Collectors.toList());
+			lstVDescuentoMensualSocio = lstVDescuentoMensualSocio.stream()
+					.filter(c -> c.getValorCesantia().intValue() > 0).collect(Collectors.toList());
+			for (VDescuentoMensualSocio descMensual : lstVDescuentoMensualSocio) {
+				UsrSocio socio = managerGestionSocios.buscarSocioById(descMensual.getCedulaSocio());
+				socio.setCajaAhorro(socio.getCajaAhorro().add(descMensual.getValorAhorro()));
+				socio.setFondoCesantia(socio.getFondoCesantia().add(descMensual.getValorCesantia()));
+				try {
+					managerGestionSocios.actualizarUsrSocio(socio);
+				} catch (Exception e) {
+					managerLog.generarLogAuditoria(beanLogin.getCredencial(), this.getClass(),
+							"ejecutarDescuentoMensual",
+							"Se produjo un error al actualizar los valores de caja de ahorro y cesantia de: "
+									+ socio.getCedulaSocio());
+					JSFUtil.crearMensajeERROR(
+							"Se produjo un error al actualizar los valores de caja de ahorro y cesantia de: "
+									+ socio.getCedulaSocio());
+				}
+			}
+			managerGestionDescuentos.ejecutarDescuentoMensual();
+			JSFUtil.crearMensajeINFO("Proceso Ejecutado correctamente.");
+			inicializarResumenDescuento();
+			managerLog.generarLogAuditoria(beanLogin.getCredencial(), this.getClass(), "ejecutarDescuentoMensual",
+					"Ejecución de descuentos mensuales.");
+		} catch (Exception e) {
+			JSFUtil.crearMensajeERROR(e.getMessage());
+			managerLog.generarLogGeneral(beanLogin.getCredencial(), this.getClass(), "ejecutarDescuentoMensual",
+					e.getMessage());
+			e.printStackTrace();
+		}
 	}
 
 	public void ingresarNovedadEconomica() {
@@ -270,6 +335,30 @@ public class ControladorGestionDescuentos implements Serializable {
 
 	public void setLstVDescuentoMensualSocio(List<VDescuentoMensualSocio> lstVDescuentoMensualSocio) {
 		this.lstVDescuentoMensualSocio = lstVDescuentoMensualSocio;
+	}
+
+	public List<DesDescuentoMensuale> getLstDesDescuentoMensuale() {
+		return lstDesDescuentoMensuale;
+	}
+
+	public void setLstDesDescuentoMensuale(List<DesDescuentoMensuale> lstDesDescuentoMensuale) {
+		this.lstDesDescuentoMensuale = lstDesDescuentoMensuale;
+	}
+
+	public Long getMes() {
+		return mes;
+	}
+
+	public void setMes(Long mes) {
+		this.mes = mes;
+	}
+
+	public Long getAnio() {
+		return anio;
+	}
+
+	public void setAnio(Long anio) {
+		this.anio = anio;
 	}
 
 }

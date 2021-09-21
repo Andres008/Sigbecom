@@ -6,6 +6,7 @@ import javax.ejb.EJB;
 import javax.ejb.LocalBean;
 import javax.ejb.Stateless;
 
+import ec.com.model.dao.entity.DesDescuentoMensuale;
 import ec.com.model.dao.entity.DescNovedade;
 import ec.com.model.dao.entity.DescValoresFijo;
 import ec.com.model.dao.entity.FinCuotasDescontada;
@@ -117,15 +118,16 @@ public class ManagerGestionDescuentos {
 		try {
 			managerDAOSegbecom.insertar(valorFijo);
 		} catch (Exception e) {
-			throw new Exception("Error al ingresar descuento fijo. "+valorFijo.getUsrSocio().getCedulaSocio());
+			throw new Exception("Error al ingresar descuento fijo. " + valorFijo.getUsrSocio().getCedulaSocio());
 		}
-		
+
 	}
 
 	@SuppressWarnings("unchecked")
 	public List<DescValoresFijo> buscarDescuentosFijosPendientes() throws Exception {
 		try {
-			return managerDAOSegbecom.findWhere(DescValoresFijo.class, "o.descEstadoDescuento.idEstadoDescuento=2", null);
+			return managerDAOSegbecom.findWhere(DescValoresFijo.class, "o.descEstadoDescuento.idEstadoDescuento=2",
+					null);
 		} catch (Exception e) {
 			throw new Exception("Error al buscar descuentos pendientes.");
 		}
@@ -142,9 +144,32 @@ public class ManagerGestionDescuentos {
 	@SuppressWarnings("unchecked")
 	public List<VDescuentoMensualSocio> findDescuentoMensual() throws Exception {
 		try {
-			return managerDAOSegbecom.findAll(VDescuentoMensualSocio.class,"o.nombreSocio");
+			return managerDAOSegbecom.findAll(VDescuentoMensualSocio.class, "o.nombreSocio");
 		} catch (Exception e) {
 			throw new Exception("Error al consular datos de descuento mensual.");
+		}
+	}
+
+	public void ejecutarDescuentoMensual() throws Exception {
+		try {
+			managerDAOSegbecom.ejecutarProcedimiento("pro_ejecutardescuentomens()");
+		} catch (Exception e) {
+			throw new Exception("Error al ejecutar procedimiento. " + e.getMessage());
+		}
+
+	}
+
+	@SuppressWarnings("unchecked")
+	public List<DesDescuentoMensuale> buscarMisDescuentos(String cedulaSocio) throws Exception {
+		return managerDAOSegbecom.findWhere(DesDescuentoMensuale.class, "o.usrSocio.cedulaSocio='"+cedulaSocio+"'","o.anio DESC, o.mes DESC");
+	}
+
+	@SuppressWarnings("unchecked")
+	public List<DesDescuentoMensuale> buscarDescuentosMensuales(Long anio, Long mes) throws Exception {
+		try {
+			return managerDAOSegbecom.findWhere(DesDescuentoMensuale.class,"o.anio="+anio+" and o.mes="+mes, "o.nombreSocio ASC");
+		} catch (Exception e) {
+			throw new Exception("Error al buscar descuentos.");
 		}
 	}
 

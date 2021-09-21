@@ -21,7 +21,7 @@
 </h:head>
 
 <h:body styleClass="main-body"
-	onload="#{controladorGestionDescuentos.inicializarResumenDescuento()}">
+	onload="#{controladorGestionDescuentos.inicializarDescuentoMensuales()}">
 
 	<div
 		class="layout-wrapper #{guestPreferences.menuLayout != 'static' ? guestPreferences.menuLayout : null}">
@@ -43,7 +43,7 @@
 				<h:form id="solicitudes">
 					<p:growl id="growl" showDetail="true" sticky="true" />
 					<p:panel
-						header="Descuento del Mes de #{controladorGestionCreditos.mesAnioLetras()}">
+						header="MIS DESCUENTOS">
 						<br />
 						<div class="p-d-flex p-jc-between">
 							<p:panelGrid columns="2" styleClass="ui-noborder">
@@ -51,36 +51,50 @@
 								<h:commandLink>
 									<p:graphicImage name="/images/excel.png" width="24" />
 									<p:dataExporter type="xls" target="@form:tblDescuentos"
-										fileName="descuentos" />
+										fileName="descuentos #{controladorGestionDescuentos.anio} #{controladorGestionDescuentos.mes}" />
 								</h:commandLink>
 							</p:panelGrid>
 						</div>
-						<p:commandButton value="Ejecutar Descuento Mensual" update="@form" actionListener="#{controladorGestionDescuentos.ejecutarDescuentoMensual()}" >
-							<p:confirm header="Confirmación"
-								message="Esta seguro de ingresar la información?"
-								icon="pi pi-exclamation-triangle" />
-						</p:commandButton>
-						<p:confirmDialog global="true" showEffect="fade" hideEffect="fade"
-							responsive="true" width="350">
-							<p:commandButton value="Si" type="button"
-								styleClass="ui-confirmdialog-yes" />
-							<p:commandButton value="No" type="button"
-								styleClass="ui-confirmdialog-no ui-button-flat" />
-						</p:confirmDialog>
+						
+						<p:panelGrid columns="5" >
+							<p:outputLabel value="Mes" />
+								<p:selectOneMenu value="#{controladorGestionDescuentos.mes}" required="true" >
+									<f:selectItem itemLabel="Seleccione Mes" noSelectionOption="true"/>
+									<f:selectItem itemLabel="Enero" itemValue="1"/>
+									<f:selectItem itemLabel="Febrero" itemValue="2"/>
+									<f:selectItem itemLabel="Marzo" itemValue="3"/>
+									<f:selectItem itemLabel="Abril" itemValue="4"/>
+									<f:selectItem itemLabel="Mayo" itemValue="5"/>
+									<f:selectItem itemLabel="Junio" itemValue="6"/>
+									<f:selectItem itemLabel="Julio" itemValue="7"/>
+									<f:selectItem itemLabel="Agosto" itemValue="8"/>
+									<f:selectItem itemLabel="Septiembre" itemValue="9"/>
+									<f:selectItem itemLabel="Octubre" itemValue="10"/>
+									<f:selectItem itemLabel="Noviembre" itemValue="11"/>
+									<f:selectItem itemLabel="Diciembre" itemValue="12"/>
+								</p:selectOneMenu>
+							<p:outputLabel value="Año" />
+							<p:spinner min="2021" value="#{controladorGestionDescuentos.anio}" />
+							<p:commandButton update="@form" value="Buscar" actionListener="#{controladorGestionDescuentos.buscarDescuentosMensuales()}" />
+						</p:panelGrid>
 						<p:dataTable paginator="true" rows="15" id="tblDescuentos"
-							emptyMessage="No tiene descuentos pendientes para este mes"
-							value="#{controladorGestionDescuentos.lstVDescuentoMensualSocio}"
+							emptyMessage="No tiene descuentos"
+							value="#{controladorGestionDescuentos.lstDesDescuentoMensuale}"
 							var="credito">
-							<p:column headerText="Cédula Socio"
-								filterBy="#{credito.cedulaSocio}">
-								<p:outputLabel value="#{credito.cedulaSocio}" />
+							<p:column headerText="Cédula Empleado">
+								<p:outputLabel value="#{credito.usrSocio.cedulaSocio}" />
 							</p:column>
-							<p:column headerText="Nombre Socio"
-								filterBy="#{credito.nombreSocio}">
+							<p:column headerText="Nombre Socio">
 								<p:outputLabel value="#{credito.nombreSocio}" />
 							</p:column>
 							<p:column headerText="Descuento Creditos">
 								<p:outputLabel value="#{credito.valorPrestamo}" />
+							</p:column>
+							<p:column headerText="Descuento Convenios">
+								<p:outputLabel value="#{credito.valorConvenio}" />
+							</p:column>
+							<p:column headerText="Descuento Planes Móviles">
+								<p:outputLabel value="#{credito.valorPlanMovil}" />
 							</p:column>
 							<p:column headerText="Descuento Ahorro">
 								<p:outputLabel value="#{credito.valorAhorro}" />
@@ -94,7 +108,7 @@
 							<p:column headerText="Novedades">
 								<p:outputLabel value="#{credito.novedades}" />
 							</p:column>
-							<p:column headerText="Total Descuento">
+							<p:column headerText="Total Descuento Mensual">
 								<p:outputLabel value="#{credito.totalDescuento}" />
 							</p:column>
 						</p:dataTable>

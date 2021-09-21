@@ -337,14 +337,14 @@ public class ManagerDAOSegbecom {
 	 * EJEMPLO CON PARAMETROS: THMCP_PRO_MARC_TO_ASIST2('01','2015');
 	 * OBSERVACION: EL PARAMETRO DEBE SER RECIBIDO INCLUYENDO EL ; 
 	 */
-	public String ejecutarFuncion(String procedimiento) throws Exception{
+	public String ejecutarProcedimiento(String procedimiento) throws Exception{
 		Query q;
 		String sentenciaSQL;
 		try {
-			sentenciaSQL="select "+ procedimiento+" from dual";
+			sentenciaSQL="call "+ procedimiento+";";
 			System.out.println(sentenciaSQL);
 			q = em.createNativeQuery(sentenciaSQL);
-			sentenciaSQL= (String) q.getResultList().get(0);
+			q.executeUpdate();
 		} catch (Exception e) {
 			e.printStackTrace();
 			throw new Exception("Error al ejecutar la sentencia");
