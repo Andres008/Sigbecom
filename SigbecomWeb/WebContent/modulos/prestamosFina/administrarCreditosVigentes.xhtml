@@ -20,7 +20,7 @@
 	<ui:insert name="head" />
 </h:head>
 
-<h:body styleClass="main-body"
+<h:body styleClass="main-body"  
 	onload="#{controladorGestionCreditos.inicializarAdministrarCreditos()}">
 
 	<div
@@ -42,61 +42,56 @@
 				<H1>ADMINISTRACIÓN DE PRESTAMOS</H1>
 				<h:form id="solicitudes">
 					<p:growl id="growl" showDetail="true" sticky="true" />
-					<p:dataTable id="tblSolicitud" var="solicitud"
+					<p:dataTable id="tblSolicitud" var="solicitud" paginator="true" rows="8" style="font-size:70%"
 						emptyMessage="No existe creditos."
 						value="#{controladorGestionCreditos.lstFinPrestamoSocio}">
-						<p:column headerText="Id Solicitud">
-							<p:outputLabel value="#{solicitud.idPrestamoSocio}" />
+						<p:column headerText="Cédula Socio" filterBy="#{solicitud.usrSocio.gesPersona.cedula}"  style="font-size:90%">
+							<p:outputLabel
+								value="#{solicitud.usrSocio.gesPersona.cedula}" />
 						</p:column>
-						<p:column headerText="Nombre Socio">
+						<p:column headerText="Nombre Socio" style="font-size:90%">
 							<p:outputLabel
 								value="#{solicitud.usrSocio.gesPersona.apellidos} #{solicitud.usrSocio.gesPersona.nombres}" />
 						</p:column>
-						<p:column headerText="Estado Credito">
-							<p:outputLabel value="#{solicitud.finEstadoCredito.descripcion}" />
-						</p:column>
-						<p:column headerText="Tipo Prestamo">
+						<p:column headerText="Tipo Prestamo" style="font-size:90%">
 							<p:outputLabel value="#{solicitud.finTipoCredito.nombre}" />
 						</p:column>
-						<p:column headerText="Tipo Solicitud">
+						<p:column headerText="Tipo Solicitud" style="font-size:90%">
 							<p:outputLabel
 								value="#{solicitud.finTipoSolicitud.tipoSolicitud}" />
 						</p:column>
-						<p:column headerText="Valor Solicitado">
+						<p:column headerText="Valor Solicitado" style="font-size:90%">
 							<p:outputLabel value="#{solicitud.valorPrestamo}" />
 						</p:column>
-						<p:column headerText="Valor Acreditado">
-							<p:outputLabel value="#{solicitud.valorRecibido}" />
-						</p:column>
-						<p:column headerText="Cuotas Pagadas">
+						<p:column headerText="Cuotas Pagadas" style="font-size:90%">
 							<p:outputLabel value="#{solicitud.cuotasPagadas}" />
 						</p:column>
-						<p:column headerText="Saldo Capital">
+						<p:column headerText="Saldo Capital" style="font-size:90%">
 							<p:outputLabel value="#{solicitud.saldoCapital}" />
 						</p:column>
-						<p:column headerText="Observación">
+						<p:column headerText="Observación" style="font-size:90%">
 							<p:outputLabel value="#{solicitud.observacion}" />
 						</p:column>
-						<p:column headerText="Amortización">
-							<p:commandButton value="Tabla" update="@form" process="@this"
+						<p:column headerText="Amortización" style="font-size:90%">
+							<p:commandButton value="Tabla" update="@form" process="@this" style="font-size:110%"
 								actionListener="#{controladorGestionCreditos.cargarFinPrestamoSocioAmortizacion(solicitud)}"
 								oncomplete="PF('infRevision').show()" />
 						</p:column>
-						<p:column headerText="Imprimir">
+						<p:column headerText="Imprimir" style="font-size:90%">
 							<p:panelGrid columns="1" styleClass="ui-noborder">
-								<p:commandButton value="solicitud" update="@form"
+								<p:commandButton value="solicitud" update="@form" style="font-size:110%"
 									process="@this"
 									actionListener="#{controladorGestionCreditos.imprimirSolicitudCredito(solicitud)}"
 									oncomplete="PF('infPDF').show()" />
 							</p:panelGrid>
 						</p:column>
-						<p:column headerText="Historial">
-							<p:commandButton value="Historial" update="@form" process="@this"
-								actionListener="#{controladorGestionCreditos.cargarFinPrestamoSocioAmortizacion(solicitud)}"
+						<p:column headerText="Historial" style="font-size:90%">
+							<p:commandButton value="Historial" update="@form" process="@this" 
+								actionListener="#{controladorGestionCreditos.cargarFinPrestamoSocioAmortizacion(solicitud)}" style="font-size:110%"
 								oncomplete="PF('infAccion').show()" />
 						</p:column>
-						<p:column headerText="Ingresar Acción">
-							<p:commandButton value="Acción" update="@form" process="@this"
+						<p:column headerText="Ingresar Acción" style="font-size:90%">
+							<p:commandButton value="Acción" update="@form" process="@this" style="font-size:110%"
 								actionListener="#{controladorGestionCreditos.cargarFinPrestamoSocioAccion(solicitud)}"
 								oncomplete="PF('ingAccion').show()" />
 						</p:column>
@@ -148,7 +143,7 @@
 								</p:panelGrid>
 								<p:commandButton value="Aplazar Cuota"
 									actionListener="#{controladorGestionCreditos.accionAplazarCuota()}"
-									update="@form">
+									update="@form @form">
 									<p:confirm header="Confirmación"
 										message="Esta a punto de aplazar cuotas a este credito, esta seguro de realizar esta acción?"
 										icon="pi pi-exclamation-triangle" />

@@ -716,7 +716,7 @@ public class ControladorGestionCreditos implements Serializable {
 			objFinPrestamoSocio.getFinEstadoCredito().setIdEstadoCredito(7);
 			managerGestionCredito.actualizarSolicitudCredito(objFinPrestamoSocio);
 			managerLog.generarLogAuditoria(beanLogin.getCredencial(), this.getClass(), "accionPrecancelarPrestamo",
-					"Precancelaci{on de prestamo: " + objFinPrestamoSocio.getIdPrestamoSocio());
+					"Precancelación de prestamo: " + objFinPrestamoSocio.getIdPrestamoSocio());
 			correoUtil.enviarCorreoElectronico(objFinPrestamoSocio.getUsrSocio().getGesPersona().getEmail(),
 					"Precancelación de Prestamo", "Atención se realizó la precancelacipon de su prestamo.");
 			inicializarAdministrarCreditos();

@@ -21,7 +21,7 @@
 </h:head>
 
 <h:body styleClass="main-body"
-	onload="#{controladorGestionCreditos.inicializarDescuentoPrestamo()}">
+	onload="#{controladorGestionDescuentos.inicializarResumenDescuento()}">
 
 	<div
 		class="layout-wrapper #{guestPreferences.menuLayout != 'static' ? guestPreferences.menuLayout : null}">
@@ -43,21 +43,7 @@
 				<h:form id="solicitudes">
 					<p:growl id="growl" showDetail="true" sticky="true" />
 					<p:panel
-						header="Descuento de Prestamos del Mes de #{controladorGestionCreditos.mesAnioLetras()}">
-						<p:commandButton
-							actionListener="#{controladorGestionCreditos.ejecutarDescuento()}"
-							value="Ejecutar Descuento" update="@form">
-							<p:confirm header="Confirmación"
-								message="Desea ejecutar el proceso de descuentos?"
-								icon="pi pi-exclamation-triangle" />
-						</p:commandButton>
-						<p:confirmDialog global="true" showEffect="fade" hideEffect="fade"
-							responsive="true" width="350">
-							<p:commandButton value="Si" type="button"
-								styleClass="ui-confirmdialog-yes" />
-							<p:commandButton value="No" type="button"
-								styleClass="ui-confirmdialog-no ui-button-flat" />
-						</p:confirmDialog>
+						header="Descuento del Mes de #{controladorGestionCreditos.mesAnioLetras()}">
 						<br />
 						<div class="p-d-flex p-jc-between">
 							<p:panelGrid columns="2" styleClass="ui-noborder">
@@ -69,31 +55,47 @@
 								</h:commandLink>
 							</p:panelGrid>
 						</div>
+						<p:commandButton value="Ejecutar Descuento Mensual" update="@form" actionListener="#{controladorGestionDescuentos.ejecutarDescuentoMensual()}" >
+							<p:confirm header="Confirmación"
+								message="Esta seguro de ingresar la información?"
+								icon="pi pi-exclamation-triangle" />
+						</p:commandButton>
+						<p:confirmDialog global="true" showEffect="fade" hideEffect="fade"
+							responsive="true" width="350">
+							<p:commandButton value="Si" type="button"
+								styleClass="ui-confirmdialog-yes" />
+							<p:commandButton value="No" type="button"
+								styleClass="ui-confirmdialog-no ui-button-flat" />
+						</p:confirmDialog>
 						<p:dataTable paginator="true" rows="15" id="tblDescuentos"
 							emptyMessage="No tiene descuentos pendientes para este mes"
-							value="#{controladorGestionCreditos.lstFinPrestamoSocio}"
+							value="#{controladorGestionDescuentos.lstVDescuentoMensualSocio}"
 							var="credito">
 							<p:column headerText="Cédula Socio"
-								filterBy="#{credito.usrSocio.cedulaSocio}">
-								<p:outputLabel value="#{credito.usrSocio.cedulaSocio}" />
+								filterBy="#{credito.cedulaSocio}">
+								<p:outputLabel value="#{credito.cedulaSocio}" />
 							</p:column>
 							<p:column headerText="Nombre Socio"
-								filterBy="#{credito.usrSocio.gesPersona.apellidos}">
-								<p:outputLabel
-									value="#{credito.usrSocio.gesPersona.apellidos} #{credito.usrSocio.gesPersona.nombres}" />
+								filterBy="#{credito.nombreSocio}">
+								<p:outputLabel value="#{credito.nombreSocio}" />
 							</p:column>
-							<p:column headerText="Tipo de Credito">
-								<p:outputLabel value="#{credito.finTipoCredito.nombre}" />
+							<p:column headerText="Descuento Creditos">
+								<p:outputLabel value="#{credito.valorPrestamo}" />
 							</p:column>
-							<p:column headerText="Cuota a descontar">
-								<p:outputLabel value="#{credito.cuotasPagadas+1}" />
+							<p:column headerText="Descuento Ahorro">
+								<p:outputLabel value="#{credito.valorAhorro}" />
 							</p:column>
-							<p:column headerText="Total Cuotas">
-								<p:outputLabel value="#{credito.plazoMeses}" />
+							<p:column headerText="Descuento Cesantía">
+								<p:outputLabel value="#{credito.valorCesantia}" />
 							</p:column>
-							<p:column headerText="Valor a descontar">
-								<p:outputLabel
-									value="#{controladorGestionCreditos.cuotaVigenteByPrestamo(credito).valorCuota}" />
+							<p:column headerText="Descuento Salud">
+								<p:outputLabel value="#{credito.valorSalud}" />
+							</p:column>
+							<p:column headerText="Novedades">
+								<p:outputLabel value="#{credito.novedades}" />
+							</p:column>
+							<p:column headerText="Total Descuento">
+								<p:outputLabel value="#{credito.totalDescuento}" />
 							</p:column>
 						</p:dataTable>
 					</p:panel>

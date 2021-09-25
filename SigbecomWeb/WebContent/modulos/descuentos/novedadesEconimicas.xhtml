@@ -46,10 +46,16 @@
 						toggleable="true" collapsed="true">
 						<p:panelGrid columns="2" styleClass="ui-noborder">
 							<p:outputLabel value="Socio" />
-							<p:selectOneMenu filter="true" filterMatchMode="contains"
+							<p:selectOneMenu filter="true" filterMatchMode="contains" required="true" requiredMessage="Empleado requerido"
 								value="#{controladorGestionDescuentos.objDescNovedade.usrSocio2.cedulaSocio}">
 								<f:selectItem itemLabel="Seleccione el Socio" />
 								<f:selectItems value="#{controladorGestionSocios.lstSiSocio()}" />
+							</p:selectOneMenu>
+							<p:outputLabel value="Tipo Novedad" />
+							<p:selectOneMenu value="#{controladorGestionDescuentos.tipoNovedad}" required="true" requiredMessage="Tipo Novedada Requerido">
+								<f:selectItem noSelectionOption="true" itemLabel="Tipo Novedad"/>
+								<f:selectItem itemLabel="A Favor" itemValue="1"/>
+								<f:selectItem itemLabel="En Contra" itemValue="2"/>
 							</p:selectOneMenu>
 							<p:outputLabel value="Descripción Novedad" />
 							<p:inputTextarea rows="1" autoResize="true"
@@ -58,7 +64,7 @@
 								requiredMessage="La descripción es novedad."
 								style="text-transform: uppercase" />
 							<p:outputLabel value="Valor" />
-							<p:inputNumber
+							<p:inputNumber required="true" requiredMessage="VAlor de la novedad requerido"
 								value="#{controladorGestionDescuentos.objDescNovedade.valor}"
 								placeholder="Valor" />
 						</p:panelGrid>

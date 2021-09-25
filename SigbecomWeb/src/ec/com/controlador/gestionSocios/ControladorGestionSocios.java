@@ -7,6 +7,7 @@ import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -204,6 +205,7 @@ public class ControladorGestionSocios implements Serializable {
 				objUsrSocio.getUsrParroquia().getUsrCanton().getUsrProvincia().setIdProvincia("0");
 				;
 			}
+			objUsrSocio.getGesPersona().setFechaNac(new Date());
 			if (objUsrSocio.getUsrCargo() == null)
 				objUsrSocio.setUsrCargo(new UsrCargo());
 			if (objUsrSocio.getUsrArea() == null)
@@ -222,6 +224,10 @@ public class ControladorGestionSocios implements Serializable {
 			e.printStackTrace();
 		}
 
+	}
+	
+	public void verFecha() {
+		System.out.println(objUsrSocio.getGesPersona().getFechaNac());
 	}
 
 	public void inicializarCuenta() {
@@ -467,6 +473,8 @@ public class ControladorGestionSocios implements Serializable {
 			objUsrSocio.getGesPersona().setNombres(objUsrSocio.getGesPersona().getNombres().toUpperCase());
 			objUsrSocio.getGesPersona().setEmail(objUsrSocio.getGesPersona().getEmail().toLowerCase());
 			objUsrSocio.setPrimerInicio("S");
+			objUsrSocio.setCajaAhorro(new BigDecimal(0));
+			objUsrSocio.setFondoCesantia(new BigDecimal(0));
 			objUsrSocio.setClave(ModelUtil.md5(clave));
 			objUsrSocio.getUsrEstadoSocio().setIdEstado(1);
 			if (managerGestionPersonas.buscarPersonaByCedula(objUsrSocio.getGesPersona().getCedula()) == null)
@@ -866,6 +874,8 @@ public class ControladorGestionSocios implements Serializable {
 
 	public String finalizarActualizacionDatos() {
 		try {
+			if ( ModelUtil.isEmpty(objUsrSocio.getUsrParroquia().getIdParroquia()))
+				throw new Exception("Atención es requerido la informaci{on de la vivienda.");
 			if (objUsrSocio.getUsrEstadoSocio().getIdEstado() == 2) {
 				actualizarSocio();
 				return "/modulos/menuPrincipal.xhtml?faces-redirect=true";
