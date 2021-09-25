@@ -27,7 +27,7 @@ public class ConvServicio implements Serializable {
 	private BigDecimal interes;
 
 	@Column(name="monto_max")
-	private BigDecimal montoMax;
+	private String montoMax;
 
 	@Column(name="servicio_producto")
 	private String servicioProducto;
@@ -70,15 +70,7 @@ public class ConvServicio implements Serializable {
 	public void setInteres(BigDecimal interes) {
 		this.interes = interes;
 	}
-
-	public BigDecimal getMontoMax() {
-		return this.montoMax;
-	}
-
-	public void setMontoMax(BigDecimal montoMax) {
-		this.montoMax = montoMax;
-	}
-
+	
 	public String getServicioProducto() {
 		return this.servicioProducto;
 	}
@@ -123,6 +115,14 @@ public class ConvServicio implements Serializable {
 
 	public void setEstado(String estado) {
 		this.estado = estado;
+	}
+
+	public String getMontoMax() {
+		return montoMax;
+	}
+
+	public void setMontoMax(String montoMax) {
+		this.montoMax = montoMax;
 	}
 	
 }

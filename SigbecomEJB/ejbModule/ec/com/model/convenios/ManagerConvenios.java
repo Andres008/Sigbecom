@@ -13,8 +13,10 @@ import ec.com.model.dao.entity.ConvAmortizacion;
 import ec.com.model.dao.entity.ConvContacto;
 import ec.com.model.dao.entity.ConvEmpresa;
 import ec.com.model.dao.entity.ConvServicio;
+import ec.com.model.dao.entity.ConvValorMax;
 import ec.com.model.dao.entity.DescEstadoDescuento;
 import ec.com.model.dao.entity.GesPersona;
+import ec.com.model.dao.entity.UsrSocio;
 import ec.com.model.dao.manager.ManagerDAOSegbecom;
 
 /**
@@ -64,14 +66,40 @@ public class ManagerConvenios {
 		
 	}
     @SuppressWarnings("unchecked")
-	public List<ConvServicio> findAllConvServicioActivos() throws Exception{
-    	List<ConvServicio> lstConvServicio = managerDAOSegbecom.findWhere(ConvServicio.class, "o.estado = 'ACTIVO'", null);
-    	for (ConvServicio convServicio : lstConvServicio) {
-			for (ConvAdquirido convAdquirido : convServicio.getConvAdquiridos()) {
-				convAdquirido.getIdConvAdquiridos();
+	public List<ConvContacto> findAllContactosByCedulaAndIdConvEmpresa(String cedulaSocio, Long idConvEmpresa) throws Exception{
+    	List<ConvContacto> lstConvContacto = managerDAOSegbecom.findWhere(ConvContacto.class, "o.usrSocio.cedulaSocio ='"+cedulaSocio+"' AND o.convEmpresa.idConvEmpresa ="+idConvEmpresa, null);
+    	if(lstConvContacto!= null && lstConvContacto.size()>0) {
+    		return lstConvContacto;
+    	}
+    	return null;
+    }
+    
+    @SuppressWarnings("unchecked")
+	public List<ConvContacto> findAllContactosByCedula(String cedulaSocio) throws Exception{
+    	List<ConvContacto> lstConvContacto = managerDAOSegbecom.findWhere(ConvContacto.class, "o.usrSocio.cedulaSocio = '"+cedulaSocio+"'", null);
+    	if(lstConvContacto!= null && lstConvContacto.size()>0) {
+    		return lstConvContacto;
+    	}
+    	return null;
+    }
+    
+    
+    @SuppressWarnings("unchecked")
+	public List<ConvServicio> findAllServicioActivosByCedula(String cedulaSocio) throws Exception{
+    	
+    	List<ConvContacto> lstConvContacto = findAllContactosByCedula(cedulaSocio);
+    	List<ConvServicio> lstConvServicioTmp = new ArrayList<ConvServicio>();
+    	if(lstConvContacto!=null) {
+    		for (ConvContacto convContacto : lstConvContacto) {
+				Long idEmpresa = convContacto.getConvEmpresa().getIdConvEmpresa();
+				List<ConvServicio> lstConvServicio = managerDAOSegbecom.findWhere(ConvServicio.class, "o.estado = 'ACTIVO' AND o.convEmpresa.idConvEmpresa="+idEmpresa, "o.idConvServicio ASC");
+				if(lstConvServicio!=null && lstConvServicio.size()>0) {
+					lstConvServicioTmp.addAll(lstConvServicio);
+				}
 			}
-		}
-    	return lstConvServicio;
+    	}
+    	
+    	return lstConvServicioTmp;
     }
     public ConvServicio findByIdConvServicio(Long idServicio) throws Exception {
     	return (ConvServicio) managerDAOSegbecom.findById(ConvServicio.class, idServicio);
@@ -84,8 +112,8 @@ public class ManagerConvenios {
     	managerDAOSegbecom.insertar(convAmortizacion);
     }
 	@SuppressWarnings("unchecked")
-	public List<ConvAdquirido> findByCedConvAdquirido(String cedulaSocio) throws Exception{
-    	List<ConvAdquirido> lstConvAdquiridos = managerDAOSegbecom.findWhere(ConvAdquirido.class, "o.cedulaSocio = '"+cedulaSocio+"'", "o.idConvAdquiridos DESC");
+	public List<ConvAdquirido> findConvAdquiridoByIdEmpresa(Long idConvEmpresa) throws Exception{
+    	List<ConvAdquirido> lstConvAdquiridos = managerDAOSegbecom.findWhere(ConvAdquirido.class, "o.convServicio.convEmpresa.idConvEmpresa = '"+idConvEmpresa+"'", "o.idConvAdquiridos DESC");
     	for (ConvAdquirido convAdquirido : lstConvAdquiridos) {
 			for (ConvAmortizacion convAmortizacion : convAdquirido.getConvAmortizacions()) {
 				convAmortizacion.getIdConvAmortizacion();
@@ -156,5 +184,41 @@ public class ManagerConvenios {
 		if (lstEstadoDes.size() > 1)
 			throw new Exception("Más de un parametro encontrado.");
 		return lstEstadoDes.get(0);
+	}
+	@SuppressWarnings("unchecked")
+	public List<UsrSocio> findAllUsrSocios() throws Exception{
+		List<UsrSocio> lstUsrSocio = managerDAOSegbecom.findAll(UsrSocio.class);
+		return lstUsrSocio;
+	}
+	
+	public UsrSocio findUsrSociosByCedulaSocio(String cedulaSocio) throws Exception {
+		UsrSocio usrSocio = (UsrSocio) managerDAOSegbecom.findById(UsrSocio.class, cedulaSocio);
+		return usrSocio;
+	}
+	public void insertarConvValorMax(ConvValorMax convValorMax) throws Exception {
+    	managerDAOSegbecom.insertar(convValorMax);
+    }
+	@SuppressWarnings("unchecked")
+	public List<ConvValorMax> findAllConvValorMax() throws Exception{
+		List<ConvValorMax> lstConvValorMax = managerDAOSegbecom.findAll(ConvValorMax.class);
+		return lstConvValorMax;
+	}
+	@SuppressWarnings("unchecked")
+	public List<ConvValorMax> findConvValorMaxByCedula(String cedulaSocio) throws Exception{
+		List<ConvValorMax> lstConvValorMax = managerDAOSegbecom.findWhere(ConvValorMax.class, "o.usrSocio.cedulaSocio = '"+cedulaSocio+"'", null);
+		if(lstConvValorMax!=null && lstConvValorMax.size()==1) {
+			return lstConvValorMax;
+		}
+		else if (lstConvValorMax.size()>1) {
+			throw new Exception("Exite mas de un registro en la tabla");
+		}
+		else {
+			return null;
+		}
+	}
+	@SuppressWarnings("unchecked")
+	public List<ConvValorMax> findAllConvValorMaxEstadoActivo() throws Exception{
+		List<ConvValorMax> lstConvValorMax = managerDAOSegbecom.findWhere(ConvValorMax.class, "o.estado = 'ACTIVO'", null);
+		return lstConvValorMax;
 	}
 }

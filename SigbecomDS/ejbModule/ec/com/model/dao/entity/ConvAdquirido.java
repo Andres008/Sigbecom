@@ -28,8 +28,15 @@ public class ConvAdquirido implements Serializable {
 	@JoinColumn(name="id_conv_servicio")
 	private ConvServicio convServicio;
 
-	@Column(name="cedula_socio")
-	private String cedulaSocio;
+	@ManyToOne
+	@JoinColumn(name="id_valor_max")
+	private ConvValorMax convValorMax;
+	
+	@Column(name="aplica_valor_max")
+	private String aplicaValorMax;
+	
+	@Column(name="valor_max")
+	private BigDecimal valorMax;
 	
 	@Column(name="valor_total")
 	private BigDecimal valorTotal;
@@ -66,7 +73,13 @@ public class ConvAdquirido implements Serializable {
 	
 	@Column(name="deuda_total")
 	private BigDecimal deudaTotal;
-
+	
+	@Column(name="hoja_ruta")
+	private String hojaRuta;
+	
+	@Column(name="observacion")
+	private String observacion;
+	
 	//bi-directional many-to-one association to ConvAmortizacion
 	@OneToMany(mappedBy="convAdquirido")
 	private List<ConvAmortizacion> convAmortizacions;
@@ -80,14 +93,6 @@ public class ConvAdquirido implements Serializable {
 
 	public void setIdConvAdquiridos(long idConvAdquiridos) {
 		this.idConvAdquiridos = idConvAdquiridos;
-	}
-
-	public String getCedulaSocio() {
-		return this.cedulaSocio;
-	}
-
-	public void setCedulaSocio(String cedulaSocio) {
-		this.cedulaSocio = cedulaSocio;
 	}
 
 	public BigDecimal getValorTotal() {
@@ -206,6 +211,46 @@ public class ConvAdquirido implements Serializable {
 
 	public void setPlazo(Integer plazo) {
 		this.plazo = plazo;
+	}
+
+	public ConvValorMax getConvValorMax() {
+		return convValorMax;
+	}
+
+	public void setConvValorMax(ConvValorMax convValorMax) {
+		this.convValorMax = convValorMax;
+	}
+
+	public String getAplicaValorMax() {
+		return aplicaValorMax;
+	}
+
+	public void setAplicaValorMax(String aplicaValorMax) {
+		this.aplicaValorMax = aplicaValorMax;
+	}
+
+	public BigDecimal getValorMax() {
+		return valorMax;
+	}
+
+	public void setValorMax(BigDecimal valorMax) {
+		this.valorMax = valorMax;
+	}
+
+	public String getHojaRuta() {
+		return hojaRuta;
+	}
+
+	public void setHojaRuta(String hojaRuta) {
+		this.hojaRuta = hojaRuta;
+	}
+
+	public String getObservacion() {
+		return observacion;
+	}
+
+	public void setObservacion(String observacion) {
+		this.observacion = observacion;
 	}
 	
 }

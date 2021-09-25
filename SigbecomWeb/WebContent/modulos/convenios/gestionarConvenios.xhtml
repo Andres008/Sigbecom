@@ -44,10 +44,10 @@
                     	 value="#{frmGestionarConvenios.lstConvAdquirido}" var="sol">
                     		
 							<p:column headerText="Cedula" style="width:4rem">
-						        	<p:outputLabel value="#{sol.cedulaSocio}"/>
+						        	<p:outputLabel value="#{sol.convValorMax.usrSocio.cedulaSocio}"/>
 						    </p:column>
 						    <p:column headerText="Nombres Socio">
-						        	<p:outputLabel value="#{frmGestionarConvenios.nombres(sol.cedulaSocio)}"/>
+						        	<p:outputLabel value="#{sol.convValorMax.usrSocio.gesPersona.apellidos} #{sol.convValorMax.usrSocio.gesPersona.nombres}"/>
 						    </p:column>
 						    <p:column headerText="Empresa">
 						        	<p:outputLabel value="#{sol.convServicio.convEmpresa.empresa}"/>
@@ -58,12 +58,35 @@
 						    <p:column headerText="Fecha Solicitud">
 						        	<p:outputLabel value="#{sol.fechaSol}"/>
 						    </p:column>
+						    <p:column headerText="Fecha Revision">
+						        	<p:outputLabel value="#{sol.fechaRevision}"/>
+						    </p:column>
+						    <p:column headerText="Observacion">
+						        	<p:outputLabel value="#{sol.observacion}"/>
+						    </p:column>
+						    <p:column headerText="APLICA VALOR MAXIMO">
+						        	<p:outputLabel value="#{sol.aplicaValorMax}"/>
+						    </p:column>
+						    <p:column headerText="MAXIMO PERMITIDO">
+								<h:outputText value="#{sol.valorMax}">
+									<f:convertNumber pattern="#0.00" />
+								</h:outputText>
+				            </p:column>
+				            <p:column headerText="VALOR TOTAL">
+								<h:outputText value="#{sol.deudaTotal}">
+									<f:convertNumber pattern="#0.00" />
+								</h:outputText>
+				            </p:column>
 						    <p:column headerText="Estado Tramite">
 						        	<p:outputLabel value="#{sol.estado}"/>
 						    </p:column>
-						    <p:column headerText="documento">
+						    <p:column headerText="Proforma">
 						        	<p:commandButton icon="fa fa-search" value="ver" update=":frmPDFT :frmIMAGET"
-						    					action="#{frmGestionarConvenios.cargarDocumento(sol.adjunto, sol.cedulaSocio)}"/>
+						    					action="#{frmGestionarConvenios.cargarDocumento(sol.adjunto, sol.convValorMax.usrSocio.cedulaSocio)}"/>
+						    </p:column>
+						    <p:column headerText="Hoja de Ruta">
+						        	<p:commandButton icon="fa fa-search" value="ver" update=":frmPDFT :frmIMAGET"
+						    					action="#{frmGestionarConvenios.cargarDocumento(sol.hojaRuta, sol.convValorMax.usrSocio.cedulaSocio)}"/>
 						    </p:column>
 						    <p:column headerText="tramitar">
 						        	<p:commandButton  value="Tramitar" onclick="PF('dlgTramite').show();" update="frmTramite"
@@ -75,8 +98,13 @@
                     	
                     </p:panel>
                     <br/>
-                    	<br/>
-                    	<p:separator/>
+                    <div class="card" align="right">
+						    <h:commandLink >
+						    	<p:graphicImage name="images/logo_excel.png" library="california-layout" />
+						    	<p:dataExporter type="xls" target="lstSolTrm" fileName="ListConvenios" ></p:dataExporter>
+						    </h:commandLink>
+					</div>
+					<p:separator/>
                     <p:panel header="SOLICITUDES TRAMITADOS">
                     	<p:dataTable id="lstSolTrm" 
                     	 value="#{frmGestionarConvenios.lstConvAdquiridoTrm}" var="sol"
@@ -85,10 +113,10 @@
 								<p:rowToggler />
 							</p:column>
 							<p:column headerText="Cedula" style="width:4rem">
-						        	<p:outputLabel value="#{sol.cedulaSocio}"/>
+						        	<p:outputLabel value="#{sol.convValorMax.usrSocio.cedulaSocio}"/>
 						    </p:column>
 						    <p:column headerText="Nombres Socio">
-						        	<p:outputLabel value="#{frmGestionarConvenios.nombres(sol.cedulaSocio)}"/>
+						        	<p:outputLabel value="#{sol.convValorMax.usrSocio.gesPersona.apellidos} #{sol.convValorMax.usrSocio.gesPersona.nombres}"/>
 						    </p:column>
 						    <p:column headerText="Empresa">
 						        	<p:outputLabel value="#{sol.convServicio.convEmpresa.empresa}"/>
@@ -99,15 +127,68 @@
 						    <p:column headerText="Fecha Solicitud">
 						        	<p:outputLabel value="#{sol.fechaSol}"/>
 						    </p:column>
+						    <p:column headerText="Fecha Revision">
+						        	<p:outputLabel value="#{sol.fechaRevision}"/>
+						    </p:column>
+						    <p:column headerText="Observacion">
+						        	<p:outputLabel value="#{sol.observacion}"/>
+						    </p:column>
+						    <p:column headerText="Fecha Aprobacion">
+						        	<p:outputLabel value="#{sol.fechaAprob}"/>
+						    </p:column>
+						    <p:column headerText="Observacion Aprob">
+						        	<p:outputLabel value="#{sol.resolucion}"/>
+						    </p:column>
+						    <p:column headerText="Aplica Valor Maximo">
+						        	<p:outputLabel value="#{sol.aplicaValorMax}"/>
+						    </p:column>
+						    <p:column headerText="Maximo Permitido">
+								<h:outputText value="#{sol.valorMax}">
+									<f:convertNumber pattern="#0.00" />
+								</h:outputText>
+				            </p:column>
+				            <p:column headerText="% Comision">
+								<h:outputText value="#{sol.interes}">
+									<f:convertNumber pattern="#0.00" />
+								</h:outputText>
+				            </p:column>
+				            <p:column headerText="Comision">
+								<h:outputText value="#{sol.interesTotal}">
+									<f:convertNumber pattern="#0.00" />
+								</h:outputText>
+				            </p:column>
+				            <p:column headerText="Valor Sin Comision">
+								<h:outputText value="#{sol.valorTotal}">
+									<f:convertNumber pattern="#0.00" />
+								</h:outputText>
+				            </p:column>
+						    <p:column headerText="Valor Total">
+								<h:outputText value="#{sol.deudaTotal}">
+									<f:convertNumber pattern="#0.00" />
+								</h:outputText>
+				            </p:column>
+				            <p:column headerText="Plazo">
+						        	<p:outputLabel value="#{sol.plazo}"/>
+						    </p:column>
 						    <p:column headerText="Estado Tramite">
 						        	<p:outputLabel value="#{sol.estado}"/>
 						    </p:column>
-						    <p:column headerText="documento">
+						    <p:column headerText="Proforma" exportable="false">
 						        	<p:commandButton icon="fa fa-search" value="ver" update=":frmPDFT :frmIMAGET"
-						    					action="#{frmGestionarConvenios.cargarDocumento(sol.adjunto, sol.cedulaSocio)}"/>
+						    					action="#{frmGestionarConvenios.cargarDocumento(sol.adjunto, sol.convValorMax.usrSocio.cedulaSocio)}"/>
+						    </p:column>
+						    <p:column headerText="Hoja de Ruta" exportable="false">
+						        	<p:commandButton icon="fa fa-search" value="ver" update=":frmPDFT :frmIMAGET"
+						    					action="#{frmGestionarConvenios.cargarDocumento(sol.hojaRuta, sol.convValorMax.usrSocio.cedulaSocio)}"/>
 						    </p:column>
 º							<p:rowExpansion>
-							
+								<div class="card" align="right">
+									    <h:commandLink >
+									    	<p:graphicImage name="images/logo_excel.png" library="california-layout" />
+									    	<p:dataExporter type="xls" target="tblCon" fileName="TablaAmortizacion" ></p:dataExporter>
+									    </h:commandLink>
+								</div>
+								<p:separator/>
 								<p:dataTable value="#{sol.convAmortizacions}" rendered="#{frmGestionarConvenios.activarTablaAmortizacion(dato.estado)}"
 													id="tblCon" var="con">
 										<f:facet name="header">
@@ -169,14 +250,14 @@
 								<p:messages id="msg" showDetail="true" closable="true"/>
 								<p:panelGrid columns="2">
 									<p:outputLabel value="Cedula de Identidad:"/>
-									<p:outputLabel value="#{frmGestionarConvenios.convAdquirido.cedulaSocio}"/>
+									<p:outputLabel value="#{frmGestionarConvenios.convAdquirido.convValorMax.usrSocio.cedulaSocio}"/>
 									<p:outputLabel value="Solicitante:"/>
 									<p:outputLabel value="#{frmGestionarConvenios.nombres}"/>
 									<p:outputLabel value="Fecha que solicita:"/>
 									<p:outputLabel value="#{frmGestionarConvenios.convAdquirido.fechaSol}"/>
 									<p:outputLabel value="Fecha revisión:"/>
 									<p:outputLabel value="#{frmGestionarConvenios.convAdquirido.fechaRevision}"/>
-									<p:outputLabel value="Interés:"/>
+									<p:outputLabel value="% Comision:"/>
 									<p:outputLabel value="#{frmGestionarConvenios.convAdquirido.convServicio.interes}">
 										<f:convertNumber pattern="#0.00" />
 									</p:outputLabel>
@@ -184,12 +265,11 @@
 									<p:selectOneRadio id="console" value="#{frmGestionarConvenios.estado}">
 							            <f:selectItem itemLabel="NO APROBADO" itemValue="NO APROBADO"/>
 							            <f:selectItem itemLabel="APROBADO" itemValue="APROBADO"/>
-							            <p:ajax event="click" listener="#{frmGestionarConvenios.renderValor()}" update="frmTramite:val frmTramite:meses"/>
+							            <p:ajax event="click" listener="#{frmGestionarConvenios.renderValor()}" update="@form"/>
 							        </p:selectOneRadio>
 								
 							        <p:outputLabel for="val" value="Ingrese Valor Asignado:"/>
-							        <p:inputNumber id="val" disabled="#{frmGestionarConvenios.inputVal}" value="#{frmGestionarConvenios.valor}" symbol=" $"
-                               						symbolPosition="s" decimalSeparator="." thousandSeparator="," />
+							        <p:outputLabel value="#{frmGestionarConvenios.convAdquirido.deudaTotal}"/>
                                		<p:outputLabel for="meses" value="Ingrese plazo:"/>
 							        <p:inputNumber id="meses" disabled="#{frmGestionarConvenios.inputVal}" 
 							        	value="#{frmGestionarConvenios.meses}"/>

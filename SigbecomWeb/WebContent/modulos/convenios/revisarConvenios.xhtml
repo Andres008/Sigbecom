@@ -44,10 +44,10 @@
                     	 value="#{frmRevisarConvenios.lstConvAdquirido}" var="sol">
                     		
 							<p:column headerText="Cedula" style="width:4rem">
-						        	<p:outputLabel value="#{sol.cedulaSocio}"/>
+						        	<p:outputLabel value="#{sol.convValorMax.usrSocio.cedulaSocio}"/>
 						    </p:column>
 						    <p:column headerText="Nombres Socio">
-						        	<p:outputLabel value="#{frmRevisarConvenios.nombres(sol.cedulaSocio)}"/>
+						        	<p:outputLabel value="#{sol.convValorMax.usrSocio.gesPersona.apellidos} #{sol.convValorMax.usrSocio.gesPersona.nombres}"/>
 						    </p:column>
 						    <p:column headerText="Empresa">
 						        	<p:outputLabel value="#{sol.convServicio.convEmpresa.empresa}"/>
@@ -58,12 +58,25 @@
 						    <p:column headerText="Fecha Solicitud">
 						        	<p:outputLabel value="#{sol.fechaSol}"/>
 						    </p:column>
+						    <p:column headerText="APLICA VALOR MAXIMO">
+						        	<p:outputLabel value="#{sol.aplicaValorMax}"/>
+						    </p:column>
+						    <p:column headerText="MAXIMO PERMITIDO">
+								<h:outputText value="#{sol.valorMax}">
+									<f:convertNumber pattern="#0.00" />
+								</h:outputText>
+				            </p:column>
+						    <p:column headerText="VALOR TOTAL">
+								<h:outputText value="#{sol.deudaTotal}">
+									<f:convertNumber pattern="#0.00" />
+								</h:outputText>
+				            </p:column>
 						    <p:column headerText="Estado Tramite">
 						        	<p:outputLabel value="#{sol.estado}"/>
 						    </p:column>
 						    <p:column headerText="documento">
 						        	<p:commandButton icon="fa fa-search" value="ver" update=":frmPDFT :frmIMAGET"
-						    					action="#{frmRevisarConvenios.cargarDocumento(sol.adjunto, sol.cedulaSocio)}"/>
+						    					action="#{frmRevisarConvenios.cargarDocumento(sol.adjunto, sol.convValorMax.usrSocio.cedulaSocio)}"/>
 						    </p:column>
 						    <p:column headerText="tramitar">
 						        	<p:commandButton  value="Tramitar" onclick="PF('dlgTramite').show();" update="frmTramite"
@@ -85,10 +98,10 @@
 								<p:rowToggler />
 							</p:column>
 							<p:column headerText="Cedula" style="width:4rem">
-						        	<p:outputLabel value="#{sol.cedulaSocio}"/>
+						        	<p:outputLabel value="#{sol.convValorMax.usrSocio.cedulaSocio}"/>
 						    </p:column>
 						    <p:column headerText="Nombres Socio">
-						        	<p:outputLabel value="#{frmRevisarConvenios.nombres(sol.cedulaSocio)}"/>
+						        	<p:outputLabel value="#{sol.convValorMax.usrSocio.gesPersona.apellidos} #{sol.convValorMax.usrSocio.gesPersona.nombres}"/>
 						    </p:column>
 						    <p:column headerText="Empresa">
 						        	<p:outputLabel value="#{sol.convServicio.convEmpresa.empresa}"/>
@@ -99,12 +112,29 @@
 						    <p:column headerText="Fecha Solicitud">
 						        	<p:outputLabel value="#{sol.fechaSol}"/>
 						    </p:column>
+						    <p:column headerText="APLICA VALOR MAXIMO">
+						        	<p:outputLabel value="#{sol.aplicaValorMax}"/>
+						    </p:column>
+						    <p:column headerText="MAXIMO PERMITIDO">
+								<h:outputText value="#{sol.valorMax}">
+									<f:convertNumber pattern="#0.00" />
+								</h:outputText>
+				            </p:column>
+						    <p:column headerText="VALOR TOTAL">
+								<h:outputText value="#{sol.deudaTotal}">
+									<f:convertNumber pattern="#0.00" />
+								</h:outputText>
+				            </p:column>
 						    <p:column headerText="Estado Tramite">
 						        	<p:outputLabel value="#{sol.estado}"/>
 						    </p:column>
-						    <p:column headerText="documento">
+						    <p:column headerText="Proforma" exportable="false">
 						        	<p:commandButton icon="fa fa-search" value="ver" update=":frmPDFT :frmIMAGET"
-						    					action="#{frmRevisarConvenios.cargarDocumento(sol.adjunto, sol.cedulaSocio)}"/>
+						    					action="#{frmRevisarConvenios.cargarDocumento(sol.adjunto, sol.convValorMax.usrSocio.cedulaSocio)}"/>
+						    </p:column>
+						    <p:column headerText="Hoja de Ruta" exportable="false">
+						        	<p:commandButton icon="fa fa-search" value="ver" update=":frmPDFT :frmIMAGET"
+						    					action="#{frmRevisarConvenios.cargarDocumento(sol.hojaRuta, sol.convValorMax.usrSocio.cedulaSocio)}"/>
 						    </p:column>
 º							<p:rowExpansion>
 							
@@ -166,7 +196,7 @@
 								<p:messages id="msg" showDetail="true" closable="true"/>
 								<p:panelGrid columns="2">
 									<p:outputLabel value="Cedula de Identidad:"/>
-									<p:outputLabel value="#{frmRevisarConvenios.convAdquirido.cedulaSocio}"/>
+									<p:outputLabel value="#{frmRevisarConvenios.convAdquirido.convValorMax.usrSocio.cedulaSocio}"/>
 									<p:outputLabel value="Solicitante:"/>
 									<p:outputLabel value="#{frmRevisarConvenios.nombres}"/>
 									<p:outputLabel value="Fecha que solicita:"/>
@@ -176,6 +206,24 @@
 							            <f:selectItem itemLabel="REVISADO" itemValue="REVISADO"/>
 							            <f:selectItem itemLabel="NO CALIFICA" itemValue="NO CALIFICA"/>
 							        </p:selectOneRadio>
+							        <p:outputLabel value="Observación:"/>
+							        <p:inputText value="#{frmRevisarConvenios.convAdquirido.observacion}"/>
+								</p:panelGrid>
+								<p:panelGrid id="adjunto" columns="2">
+									<p:outputLabel value="Hoja de Ruta en pdf - png - jpg:"/>
+									<p:fileUpload styleClass="ui-fileupload-buttonbar"  
+						        				  label="Seleccionar Archivo"
+						        				  listener="#{frmRevisarConvenios.handleFileUpload}"
+						        				  multiple="false"
+						        				  mode="advanced"
+						        				  auto="true"
+						        				  allowTypes="/(\.|\/)(pdf|png|jpg)$/"
+						        				  immediate="#{frmRevisarConvenios.precargarArchivo()}"
+						        				  update="frmTramite" 
+				                      			  process="@this" 
+				                      			  skinSimple="true"/>
+				                    <p:outputLabel value="Archivo Cargado:"/>
+				                    <p:outputLabel value="#{frmRevisarConvenios.convAdquirido.hojaRuta}"/>
 								</p:panelGrid>
 							    <p:panel style="text-align:center">
 							    	<h:panelGrid columns="2" cellpadding="10">

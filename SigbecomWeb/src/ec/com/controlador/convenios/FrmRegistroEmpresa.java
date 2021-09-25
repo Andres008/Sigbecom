@@ -20,6 +20,7 @@ import ec.com.model.convenios.ManagerConvenios;
 import ec.com.model.dao.entity.ConvContacto;
 import ec.com.model.dao.entity.ConvEmpresa;
 import ec.com.model.dao.entity.ConvServicio;
+import ec.com.model.dao.entity.UsrSocio;
 import ec.com.model.modulos.util.JSFUtil;
 
 @Named("frmRegistroEmpresa")
@@ -31,8 +32,10 @@ public class FrmRegistroEmpresa implements Serializable{
 	
 	private ConvEmpresa convEmpresa;
 	private List<ConvEmpresa> lstConvEmpresa;
+	private List<UsrSocio> lstUsrSocio;
 	private ConvContacto convContacto;
 	private ConvServicio convServicio;
+	private String cedulaSocio;
 	
 	@Inject
 	private BeanLogin beanLogin;
@@ -44,8 +47,10 @@ public class FrmRegistroEmpresa implements Serializable{
 	public void init() {
 		convEmpresa = new ConvEmpresa();
 		lstConvEmpresa = new ArrayList<ConvEmpresa>();
+		lstUsrSocio = new ArrayList<UsrSocio>();
 		convContacto = new ConvContacto();
 		convServicio = new ConvServicio();
+		cedulaSocio = "0";
 		cargarListaEmpresasConvenio();
 	}
 	public void registrarEmpresa() {
@@ -67,6 +72,7 @@ public class FrmRegistroEmpresa implements Serializable{
 	public void cargarListaEmpresasConvenio() {
 		try {
 			lstConvEmpresa = managerConvenios.findAllEmpresas();
+			lstUsrSocio = managerConvenios.findAllUsrSocios();
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			JSFUtil.crearMensajeERROR("No se cargo el listado correctamente");
@@ -89,23 +95,40 @@ public class FrmRegistroEmpresa implements Serializable{
 		convContacto.setConvEmpresa(convEmpresa);
 	}
 	public void registrarContacto() {
-		System.out.println("Regsitro Contacto:"+convContacto.getApellidos());
-		if(!convContacto.getNombres().isEmpty()&&!convContacto.getApellidos().isEmpty()&&!convContacto.getCargo().isEmpty()&&
-		   !convContacto.getCelular().isEmpty()&&!convContacto.getEmail().isEmpty()){
+		System.out.println("Regsitro Contacto:"+convContacto.getCargo());
+		if(!convContacto.getCargo().isEmpty() && !cedulaSocio.equalsIgnoreCase("0")){
 			try {
-				managerConvenios.insertarConvContacto(convContacto);
-				JSFUtil.crearMensajeINFO("Contacto Registrado correctamente");
-				init();
-				cargarListaEmpresasConvenio();
-				PrimeFaces prime=PrimeFaces.current();
-				prime.executeScript("PF('dlgReg').hide();");
-				prime.ajax().update("form1");
-				prime.ajax().update("form2");
+				Long idConvEmpresa = convContacto.getConvEmpresa().getIdConvEmpresa();
+				
+				List<ConvContacto> lstConvContactoTmp = managerConvenios.findAllContactosByCedulaAndIdConvEmpresa(cedulaSocio, idConvEmpresa);
+				if(lstConvContactoTmp==null) {
+					UsrSocio usrSocio = lstUsrSocio.stream().filter(p -> p.getCedulaSocio().equalsIgnoreCase(cedulaSocio)).findAny().orElse(null);
+					if(usrSocio!=null) {
+						convContacto.setUsrSocio(usrSocio);
+					}
+					managerConvenios.insertarConvContacto(convContacto);
+					JSFUtil.crearMensajeINFO("Contacto Registrado correctamente");
+					init();
+					cargarListaEmpresasConvenio();
+					PrimeFaces prime=PrimeFaces.current();
+					prime.executeScript("PF('dlgReg').hide();");
+					prime.ajax().update("form1");
+					prime.ajax().update("form2");
+				}
+				else {
+					JSFUtil.crearMensajeWARN("El contacto con cedula "+cedulaSocio+" ya se encuentra registrado");
+					init();
+					cargarListaEmpresasConvenio();
+					PrimeFaces prime=PrimeFaces.current();
+					prime.ajax().update("form1");
+				}
+				
 			} catch (Exception e) {
 				JSFUtil.crearMensajeERROR("No se registro correctamente");
 				e.printStackTrace();
 			}
 		}
+		
 	}
 	public void cargarEmpresaServ(ConvEmpresa convEmpresa) {
 		convServicio.setConvEmpresa(convEmpresa);
@@ -115,10 +138,10 @@ public class FrmRegistroEmpresa implements Serializable{
 		if(!convServicio.getDetalle().isEmpty()&&!convServicio.getServicioProducto().isEmpty()){
 			try {
 				convServicio.setEstado("ACTIVO");
-				BigDecimal montoMax= convServicio.getMontoMax().setScale(2, RoundingMode.HALF_EVEN);
-				BigDecimal interes= convServicio.getInteres().setScale(2, RoundingMode.HALF_EVEN);
-				convServicio.setMontoMax(montoMax);
-				convServicio.setInteres(interes);
+				//BigDecimal montoMax= convServicio.getMontoMax().setScale(2, RoundingMode.HALF_EVEN);
+				//BigDecimal interes= convServicio.getInteres().setScale(2, RoundingMode.HALF_EVEN);
+				//convServicio.setMontoMax(montoMax);
+				//convServicio.setInteres(interes);
 				managerConvenios.insertarConvServicio(convServicio);
 				JSFUtil.crearMensajeINFO("Servicio Registrado correctamente");
 				init();
@@ -163,6 +186,18 @@ public class FrmRegistroEmpresa implements Serializable{
 	}
 	public void setConvServicio(ConvServicio convServicio) {
 		this.convServicio = convServicio;
+	}
+	public List<UsrSocio> getLstUsrSocio() {
+		return lstUsrSocio;
+	}
+	public void setLstUsrSocio(List<UsrSocio> lstUsrSocio) {
+		this.lstUsrSocio = lstUsrSocio;
+	}
+	public String getCedulaSocio() {
+		return cedulaSocio;
+	}
+	public void setCedulaSocio(String cedulaSocio) {
+		this.cedulaSocio = cedulaSocio;
 	}
 	
 }

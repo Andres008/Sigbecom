@@ -78,6 +78,14 @@ public class UsrSocio implements Serializable {
 	// bi-directional many-to-one association to FinPrestamoSocio
 	@OneToMany(mappedBy = "usrSocio")
 	private List<FinPrestamoSocio> finPrestamoSocios;
+	
+	// bi-directional many-to-one association to FinPrestamoSocio
+	@OneToMany(mappedBy = "usrSocio")
+	private List<ConvValorMax> convValorMaxs;
+	
+	// bi-directional many-to-one association to FinPrestamoSocio
+	@OneToMany(mappedBy = "usrSocio")
+	private List<AporteCliente> aporteClientes;
 
 	// bi-directional many-to-one association to AutRol
 	@ManyToOne
@@ -140,6 +148,10 @@ public class UsrSocio implements Serializable {
 	// bi-directional many-to-one association to UsrSocioDescuentoFijo
 	@OneToMany(mappedBy = "usrSocio")
 	private List<PlanContratoComite> planContratoComites;
+	
+	// bi-directional many-to-one association to UsrCuentaSocio
+	@OneToMany(mappedBy = "usrSocio", cascade = CascadeType.ALL)
+	private List<ConvContacto> convContactos;
 
 	public UsrSocio() {
 	}
@@ -480,6 +492,7 @@ public class UsrSocio implements Serializable {
 		return planContratoComite;
 	}
 
+<<<<<<< HEAD
 	public BigDecimal getCajaAhorro() {
 		return cajaAhorro;
 	}
@@ -496,4 +509,62 @@ public class UsrSocio implements Serializable {
 		this.fondoCesantia = fondoCesantia;
 	}
 	
+=======
+	public List<ConvContacto> getConvContactos() {
+		return convContactos;
+	}
+
+	public void setConvContactos(List<ConvContacto> convContactos) {
+		this.convContactos = convContactos;
+	}
+	public ConvContacto addConvContacto(ConvContacto convContacto) {
+		getConvContactos().add(convContacto);
+		convContacto.setUsrSocio(this);
+		return convContacto;
+	}
+
+	public ConvContacto removeConvContacto(ConvContacto convContacto) {
+		getConvContactos().remove(convContacto);
+		convContacto.setUsrSocio(null);
+		return convContacto;
+	}
+
+	public List<ConvValorMax> getConvValorMaxs() {
+		return convValorMaxs;
+	}
+
+	public void setConvValorMaxs(List<ConvValorMax> convValorMaxs) {
+		this.convValorMaxs = convValorMaxs;
+	}
+	public ConvValorMax addConvValorMax(ConvValorMax convValorMax) {
+		getConvValorMaxs().add(convValorMax);
+		convValorMax.setUsrSocio(this);
+		return convValorMax;
+	}
+
+	public ConvValorMax removeConvValorMax(ConvValorMax convValorMax) {
+		getConvValorMaxs().remove(convValorMax);
+		convValorMax.setUsrSocio(null);
+		return convValorMax;
+	}
+
+	public List<AporteCliente> getAporteClientes() {
+		return aporteClientes;
+	}
+
+	public void setAporteClientes(List<AporteCliente> aporteClientes) {
+		this.aporteClientes = aporteClientes;
+	}
+	public AporteCliente addAporteCliente(AporteCliente aporteCliente) {
+		getAporteClientes().add(aporteCliente);
+		aporteCliente.setUsrSocio(this);
+		return aporteCliente;
+	}
+
+	public AporteCliente removeAporteCliente(AporteCliente aporteCliente) {
+		getAporteClientes().remove(aporteCliente);
+		aporteCliente.setUsrSocio(null);
+		return aporteCliente;
+	}
+>>>>>>> refs/heads/desarrollo_edu
 }
