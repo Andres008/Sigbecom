@@ -492,7 +492,6 @@ public class UsrSocio implements Serializable {
 		return planContratoComite;
 	}
 
-<<<<<<< HEAD
 	public BigDecimal getCajaAhorro() {
 		return cajaAhorro;
 	}
@@ -508,8 +507,7 @@ public class UsrSocio implements Serializable {
 	public void setFondoCesantia(BigDecimal fondoCesantia) {
 		this.fondoCesantia = fondoCesantia;
 	}
-	
-=======
+
 	public List<ConvContacto> getConvContactos() {
 		return convContactos;
 	}
@@ -566,5 +564,4 @@ public class UsrSocio implements Serializable {
 		aporteCliente.setUsrSocio(null);
 		return aporteCliente;
 	}
->>>>>>> refs/heads/desarrollo_edu
 }
