@@ -1,5 +1,6 @@
 package ec.com.controlador.convenios;
 
+import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -16,14 +17,17 @@ import javax.inject.Inject;
 import javax.inject.Named;
 
 import org.primefaces.PrimeFaces;
+import org.primefaces.event.FileUploadEvent;
 import org.primefaces.model.DefaultStreamedContent;
 import org.primefaces.model.StreamedContent;
+import org.primefaces.model.file.UploadedFile;
 
 import ec.com.controlador.sesion.BeanLogin;
 import ec.com.model.convenios.ManagerConvenios;
 import ec.com.model.dao.entity.ConvAdquirido;
 import ec.com.model.dao.entity.GesPersona;
 import ec.com.model.modulos.util.JSFUtil;
+import ec.com.model.modulos.util.ModelUtil;
 
 @Named("frmRevisarConvenios")
 @SessionScoped
@@ -44,11 +48,16 @@ public class FrmRevisarConvenios implements Serializable{
 	private String nombres;
 	private String estado;
 	
+	
+	private UploadedFile file;
+	byte[] archivo;
+	
 	@PostConstruct
 	public void init() {
 		extension="";
 		nombres = "";
 		estado = "";
+		archivo = null;
 		lstConvAdquirido = new ArrayList<ConvAdquirido>();
 		lstConvAdquiridoTrm = new ArrayList<ConvAdquirido>();
 		convAdquirido = new ConvAdquirido();
@@ -95,7 +104,7 @@ public class FrmRevisarConvenios implements Serializable{
 		String path;
 		try {
 			path = managerConvenios.buscarValorParametroNombre("PATH_REPORTES");
-			String url = path+"convenios\\"+cedula+"\\"+adjunto;
+			String url = path+"convenios/"+cedula+"/"+adjunto;
 			System.out.println(url);
 			File file = new File(url);
 			nombreArchivoTmp = adjunto;
@@ -165,7 +174,7 @@ public class FrmRevisarConvenios implements Serializable{
 		convAdquirido = lstConvAdquirido.stream().filter(p->p.getIdConvAdquiridos()==idConvAdquiridos).findAny().orElse(null);
 		GesPersona gespersona;
 		try {
-			gespersona = managerConvenios.findNombresByCedula(convAdquirido.getCedulaSocio());
+			gespersona = managerConvenios.findNombresByCedula(convAdquirido.getConvValorMax().getUsrSocio().getCedulaSocio());
 			nombres = gespersona.getApellidos()+" "+gespersona.getNombres();
 			estado = "";
 		} catch (Exception e) {
@@ -177,9 +186,18 @@ public class FrmRevisarConvenios implements Serializable{
 	public void tramitar() {
 		System.out.println("estado:" + estado);
 		if(!estado.isEmpty()) {
-			convAdquirido.setEstado(estado);
-			convAdquirido.setFechaRevision(new Date());
 			try {
+				String path=managerConvenios.buscarValorParametroNombre("PATH_REPORTES");
+				//String cedulaSocio = beanLogin.getCredencial().getObjUsrSocio().getCedulaSocio();
+				String url = path+"/convenios/"+convAdquirido.getConvValorMax().getUsrSocio().getCedulaSocio()+"/";
+				String str = convAdquirido.getAdjunto();
+				String ext = str.substring(str.lastIndexOf('.'), str.length());
+				
+				convAdquirido.setEstado(estado);
+				convAdquirido.setFechaRevision(new Date());
+				InputStream fis = new ByteArrayInputStream(archivo);
+				ModelUtil.guardarArchivo(fis, convAdquirido.getIdConvAdquiridos()+"_hoja_de_ruta", url, ext);
+				convAdquirido.setHojaRuta(convAdquirido.getIdConvAdquiridos()+"_hoja_de_ruta"+ext);
 				managerConvenios.actualizarObjeto(convAdquirido);
 				cargarListaConvAdquiridos();
 				cargarListaConvAdquiridosTramitados();
@@ -205,6 +223,23 @@ public class FrmRevisarConvenios implements Serializable{
 		}
 		return false;
 	}
+	
+	public void handleFileUpload(FileUploadEvent event) {
+        System.out.println("Archivo subido: "+ event.getFile().getFileName());
+        this.file = event.getFile();
+        JSFUtil.crearMensajeINFO("Documento cargado correctamente");
+        convAdquirido.setHojaRuta(event.getFile().getFileName());
+    }
+	
+	public void precargarArchivo() {
+		if(file!=null) {
+			System.out.println("Tipo AAAAA archivo:"+file.getContentType());
+			archivo = file.getContent();
+			//file=null;
+		}
+	}
+	
+
 	//GETTERS AND SETTERS
 	public BeanLogin getBeanLogin() {
 		return beanLogin;

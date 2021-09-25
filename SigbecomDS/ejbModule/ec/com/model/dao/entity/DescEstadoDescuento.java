@@ -42,6 +42,10 @@ public class DescEstadoDescuento implements Serializable {
 	//bi-directional many-to-one association to PlanPago
 	@OneToMany(mappedBy="descEstadoDescuento")
 	private List<PlanPago> planPagos;
+	
+	//bi-directional many-to-one association to PlanPago
+	@OneToMany(mappedBy="descEstadoDescuento")
+	private List<AporteDescuento> aporteDescuentos;
 
 	public DescEstadoDescuento() {
 	}
@@ -181,4 +185,22 @@ public class DescEstadoDescuento implements Serializable {
 		return planPago;
 	}
 
+	public List<AporteDescuento> getAporteDescuentos() {
+		return aporteDescuentos;
+	}
+
+	public void setAporteDescuentos(List<AporteDescuento> aporteDescuentos) {
+		this.aporteDescuentos = aporteDescuentos;
+	}
+	public AporteDescuento addAporteDescuento(AporteDescuento aporteDescuento) {
+		getAporteDescuentos().add(aporteDescuento);
+		aporteDescuento.setDescEstadoDescuento(this);
+		return aporteDescuento;
+	}
+
+	public AporteDescuento removeAporteDescuento(AporteDescuento aporteDescuento) {
+		getAporteDescuentos().remove(aporteDescuento);
+		aporteDescuento.setDescEstadoDescuento(null);
+		return aporteDescuento;
+	}
 }
