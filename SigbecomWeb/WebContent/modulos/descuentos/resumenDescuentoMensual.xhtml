@@ -55,7 +55,8 @@
 								</h:commandLink>
 							</p:panelGrid>
 						</div>
-						<p:commandButton value="Ejecutar Descuento Mensual" update="@form" actionListener="#{controladorGestionDescuentos.ejecutarDescuentoMensual()}" >
+						<p:commandButton value="Ejecutar Descuento Mensual" update="@form"
+							actionListener="#{controladorGestionDescuentos.ejecutarDescuentoMensual()}">
 							<p:confirm header="Confirmación"
 								message="Esta seguro de ingresar la información?"
 								icon="pi pi-exclamation-triangle" />
@@ -80,28 +81,52 @@
 								<p:outputLabel value="#{credito.nombreSocio}" />
 							</p:column>
 							<p:column headerText="Descuento Creditos">
-								<p:outputLabel value="#{credito.valorPrestamo}" />
+								<p:outputLabel value="#{credito.valorPrestamo}">
+									<f:convertNumber maxFractionDigits="2" minFractionDigits="2"
+										currencySymbol="$" />
+								</p:outputLabel>
 							</p:column>
 							<p:column headerText="Planes Moviles">
-								<p:outputLabel value="#{credito.valorPlanMovil}" />
+								<p:outputLabel value="#{credito.valorPlanMovil}">
+									<f:convertNumber maxFractionDigits="2" minFractionDigits="2"
+										currencySymbol="$" />
+								</p:outputLabel>
 							</p:column>
 							<p:column headerText="Convenios">
-								<p:outputLabel value="#{credito.valorConvenio}" />
+								<p:outputLabel value="#{credito.valorConvenio}">
+									<f:convertNumber maxFractionDigits="2" minFractionDigits="2"
+										currencySymbol="$" />
+								</p:outputLabel>
 							</p:column>
 							<p:column headerText="Descuento Ahorro">
-								<p:outputLabel value="#{credito.valorAhorro}" />
+								<p:outputLabel value="#{credito.valorAhorro}">
+									<f:convertNumber maxFractionDigits="2" minFractionDigits="2"
+										currencySymbol="$" />
+								</p:outputLabel>
 							</p:column>
 							<p:column headerText="Descuento Cesantía">
-								<p:outputLabel value="#{credito.valorCesantia}" />
+								<p:outputLabel value="#{credito.valorCesantia}">
+									<f:convertNumber maxFractionDigits="2" minFractionDigits="2"
+										currencySymbol="$" />
+								</p:outputLabel>
 							</p:column>
 							<p:column headerText="Descuento Salud">
-								<p:outputLabel value="#{credito.valorSalud}" />
+								<p:outputLabel value="#{credito.valorSalud}">
+									<f:convertNumber maxFractionDigits="2" minFractionDigits="2"
+										currencySymbol="$" />
+								</p:outputLabel>
 							</p:column>
 							<p:column headerText="Novedades">
-								<p:outputLabel value="#{credito.novedades}" />
+								<p:outputLabel value="#{credito.novedades}">
+									<f:convertNumber maxFractionDigits="2" minFractionDigits="2"
+										currencySymbol="$" />
+								</p:outputLabel>
 							</p:column>
 							<p:column headerText="Total Descuento">
-								<p:outputLabel value="#{credito.totalDescuento}" />
+								<p:outputLabel value="#{credito.totalDescuento}">
+									<f:convertNumber maxFractionDigits="2" minFractionDigits="2"
+										currencySymbol="$" currencySymbol="$" />
+								</p:outputLabel>
 							</p:column>
 						</p:dataTable>
 					</p:panel>
