@@ -38,6 +38,12 @@ public class VDescuentoMensualSocio implements Serializable {
 	@Column(name="valor_cesantia")
 	private BigDecimal valorCesantia;
 
+	@Column(name="valor_convenio")
+	private BigDecimal valorConvenio;
+
+	@Column(name="valor_plan_movil")
+	private BigDecimal valorPlanMovil;
+
 	@Column(name="valor_prestamo")
 	private BigDecimal valorPrestamo;
 
@@ -109,6 +115,22 @@ public class VDescuentoMensualSocio implements Serializable {
 
 	public void setValorCesantia(BigDecimal valorCesantia) {
 		this.valorCesantia = valorCesantia;
+	}
+
+	public BigDecimal getValorConvenio() {
+		return this.valorConvenio;
+	}
+
+	public void setValorConvenio(BigDecimal valorConvenio) {
+		this.valorConvenio = valorConvenio;
+	}
+
+	public BigDecimal getValorPlanMovil() {
+		return this.valorPlanMovil;
+	}
+
+	public void setValorPlanMovil(BigDecimal valorPlanMovil) {
+		this.valorPlanMovil = valorPlanMovil;
 	}
 
 	public BigDecimal getValorPrestamo() {
