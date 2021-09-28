@@ -43,19 +43,19 @@ public class frmMiPlanMovil implements Serializable{
 	public void cargarMisPlanesMoviles() {
 		try {
 			String cedula = beanLogin.getCredencial().getObjUsrSocio().getCedulaSocio();
-			//lstPlanPago = managerPlanesMoviles.findAllPlanPagoByCedula(cedula);
+			lstPlanPago = managerPlanesMoviles.findAllPlanPagoByCedula(cedula);
 			lstPlanContratoCom = managerPlanesMoviles.findPlanContratoComiteByCedula(cedula);
 			
-//			for (PlanPago planPago : lstPlanPago) {
-//				List<PlanAmortEquipmov> lstPlanEquipos = managerPlanesMoviles.findAllAmortEquipmovByIdPlanPagos(planPago.getIdPlanPagos());
-//				if(lstPlanEquipos!=null) {
-//					planPago.setPlanAmortEquipmovs(lstPlanEquipos);
-//				}
-//				List<PlanRegistroPago> lstPlanRegistro = managerPlanesMoviles.findAllPlanRegistroPagoByIdPlanPagos(planPago.getIdPlanPagos());
-//				if(lstPlanRegistro!=null) {
-//					planPago.setPlanRegistroPagos(lstPlanRegistro);
-//				}
-//			}
+			for (PlanPago planPago : lstPlanPago) {
+				List<PlanAmortEquipmov> lstPlanEquipos = managerPlanesMoviles.findAllAmortEquipmovByIdPlanPagos(planPago.getIdPlanPagos());
+				if(lstPlanEquipos!=null) {
+					planPago.setPlanAmortEquipmovs(lstPlanEquipos);
+				}
+				List<PlanRegistroPago> lstPlanRegistro = managerPlanesMoviles.findAllPlanRegistroPagoByIdPlanPagos(planPago.getIdPlanPagos());
+				if(lstPlanRegistro!=null) {
+					planPago.setPlanRegistroPagos(lstPlanRegistro);
+				}
+			}
 		} catch (Exception e) {
 			JSFUtil.crearMensajeERROR("No se cargo el listado correctamente");
 			e.printStackTrace();

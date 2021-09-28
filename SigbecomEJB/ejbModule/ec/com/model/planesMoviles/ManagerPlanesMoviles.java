@@ -230,6 +230,18 @@ public class ManagerPlanesMoviles {
     	for (PlanContratoComite planContratoComite : lstPlanContratoComite) {
 			for (PlanPago planPago : planContratoComite.getPlanPagos()) {
 				planPago.getIdPlanPagos();
+				for (PlanAmortEquipmov planAmortEquipmov : planPago.getPlanAmortEquipmovs()) {
+					planAmortEquipmov.getIdAmortEquipmov();
+				}
+				for (PlanRegistroPago planRegistroPago : planPago.getPlanRegistroPagos()) {
+					planRegistroPago.getIdRegistroPagos();
+				}
+			}
+			for (PlanAmortEquipmov planAmortEquipmov : planContratoComite.getPlanAmortEquipmovs()) {
+				planAmortEquipmov.getIdAmortEquipmov();
+			}
+			for (PlanRegistroPago planRegistroPago : planContratoComite.getPlanRegistroPagos()) {
+				planRegistroPago.getIdRegistroPagos();
 			}
 		}
     	return lstPlanContratoComite;
