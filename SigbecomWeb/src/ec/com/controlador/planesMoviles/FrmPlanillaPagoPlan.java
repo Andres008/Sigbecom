@@ -63,7 +63,7 @@ public class FrmPlanillaPagoPlan implements Serializable{
 	
 	public void cargarRegistroPagos() {
 		try {
-			lstPlanRegistroPago = managerPlanesMoviles.findAllPlanRegistroPago();
+			lstPlanRegistroPago = managerPlanesMoviles.findAllPlanRegistroPagoByEstado("GENERADO");
 		} catch (Exception e) {
 			JSFUtil.crearMensajeERROR("No se cargo correctamente el listado");
 			e.printStackTrace();
@@ -131,7 +131,9 @@ public class FrmPlanillaPagoPlan implements Serializable{
 		System.out.println("Archivo: "+file.getFileName());
 		Date fechaIngreso = new Date();
 		InputStream fis = new ByteArrayInputStream(archivo);
+		int fila=0;
 		try {
+			List<PlanRegistroPago> lstPlanRegistroPagos = new ArrayList<PlanRegistroPago>();
 			OPCPackage pkg = OPCPackage.open(fis);
 			//InputStream pkg = event.getFile().getInputStream();
 			//InputStream pkg = TikaInputStream.get(event.getFile().getInputStream()); //event.getFile().getInputStream();
@@ -143,13 +145,13 @@ public class FrmPlanillaPagoPlan implements Serializable{
 	        for (int i = 2; i <= rows; ++i) {
 	            
 	        	XSSFRow row = sheet.getRow(i);
-	            
+	            fila=i;//
 	            XSSFCell lineaTelefono = 	row.getCell(0);//
 	            XSSFCell nombreRef = 	row.getCell(1);//
 	            XSSFCell valorPlan = row.getCell(2);//
-	            System.out.println("Telefono: "+lineaTelefono.getRawValue());
-	            System.out.println("nombre Ref: "+nombreRef.getStringCellValue());
-	            System.out.println("Valor Plan: "+valorPlan.getRawValue());
+	            //System.out.println("Telefono: "+lineaTelefono.getRawValue());
+	            //System.out.println("nombre Ref: "+nombreRef.getStringCellValue());
+	            //System.out.println("Valor Plan: "+valorPlan.getRawValue());
 	            
 	            if((lineaTelefono!=null && lineaTelefono.getRawValue()!=null && !lineaTelefono.getRawValue().isEmpty() && 
 	            	!lineaTelefono.getRawValue().toString().equalsIgnoreCase("null")) &&
@@ -157,7 +159,7 @@ public class FrmPlanillaPagoPlan implements Serializable{
 	            	!nombreRef.getRawValue().toString().equalsIgnoreCase("null")) &&
 	               (valorPlan!=null && valorPlan.getRawValue()!=null && !valorPlan.getRawValue().isEmpty() && 
            			!valorPlan.getRawValue().toString().equalsIgnoreCase("null"))) {
-	            	 System.out.println("Dentro");
+	            	 //System.out.println("Dentro");
 	            	//Obtener datos del contrato
 	            	PlanContratoComite planContratoComite = managerPlanesMoviles.findContratoComite("0"+lineaTelefono.getRawValue());
 	            	if(planContratoComite!=null) {
@@ -174,26 +176,38 @@ public class FrmPlanillaPagoPlan implements Serializable{
 		            	planRegistroPago.setEstado("GENERADO");
 		            	planRegistroPago.setFechaIngreso(fechaIngreso);
 		            	
-		            	managerPlanesMoviles.insertarPlanRegistroPagos(planRegistroPago);
+		            	lstPlanRegistroPagos.add(planRegistroPago);
+		            	planRegistroPago = new PlanRegistroPago();
 	            	}
-	            	else {
-	            		//
+	            	else if(planContratoComite==null) {
+	            		JSFUtil.crearMensajeERROR("No se encuentra registrado el numero: "+lineaTelefono.getRawValue()+" en la fila: "+i);
+	            		lstPlanRegistroPagos=null;
+	            		init();
+	            		PrimeFaces prime=PrimeFaces.current();
+	     	           	prime.ajax().update("form1");
+	     	           	prime.ajax().update("form2");
+	     	           	break;
 	            	}
-	            	
-	            }
-	            
-	            planRegistroPago = new PlanRegistroPago();
+	           }
+	           planRegistroPago = new PlanRegistroPago();
 	        }
 	        wb.close();
-	        JSFUtil.crearMensajeINFO("Registro de Plantilla Finalizado");
+	        if(lstPlanRegistroPagos!=null) {
+		        System.out.println("lista: "+lstPlanRegistroPagos.size());
+		        for (PlanRegistroPago planRegistroPago2 : lstPlanRegistroPagos) {
+		        	managerPlanesMoviles.insertarPlanRegistroPagos(planRegistroPago2);
+				}
+		        JSFUtil.crearMensajeINFO("Planilla cargada correctamente");
+		        init();
+				PrimeFaces prime=PrimeFaces.current();
+				prime.ajax().update("form1");
+				prime.ajax().update("form2");
+	        }
 		} catch (Exception e) {
-			JSFUtil.crearMensajeERROR("No se registró correctamente");
+			JSFUtil.crearMensajeERROR("Se produjo un error en la carga del archivo, revisa en la fila:"+fila+" valores, espacios");
 			e.printStackTrace();
 		}
-		init();
-		PrimeFaces prime=PrimeFaces.current();
-		prime.ajax().update("form1");
-		prime.ajax().update("form2");
+		//return "frmPlanillaPagoPlan.xhtml?faces-redirect=true";
 	}
 	public void onRowEdit(RowEditEvent<Object> event) {
 		 try {
@@ -222,7 +236,7 @@ public class FrmPlanillaPagoPlan implements Serializable{
       JSFUtil.crearMensajeINFO("Se canceló actualización.");
   }
 	public boolean activarEditEstado(String estado) {
-		if(estado.equalsIgnoreCase("DESCUENTO A ROLL")) {
+		if(estado.equalsIgnoreCase("GENERADO")) {
 			return true;
 		}
 		else
@@ -232,13 +246,13 @@ public class FrmPlanillaPagoPlan implements Serializable{
 		
 		try {
 			List<String> lstCedulasContratoPlanActivos = managerPlanesMoviles.findAllCedulasContratoPlanActivosRenovados();
-			System.out.println("Tamaño: "+lstCedulasContratoPlanActivos.size());
+			System.out.println("Tamaño ContratoComite: "+lstCedulasContratoPlanActivos.size());
 			PlanPago planPago = new PlanPago();
 			
 			if(lstCedulasContratoPlanActivos!=null && lstCedulasContratoPlanActivos.size()>0) {
 				
-				
 				DescEstadoDescuento descEstadoDescuento = managerPlanesMoviles.findWhereEstadoDescEstadoDescuento("VIGENTE");
+				
 				for (String cedula : lstCedulasContratoPlanActivos) {
 					// System.out.println("Cedula: "+cedula);
 					BigDecimal totalDescuento= new BigDecimal(0);

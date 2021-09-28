@@ -39,7 +39,8 @@ public class frmMiPlanMovil implements Serializable{
 	
 	public void cargarMisPlanesMoviles() {
 		try {
-			lstPlanPago = managerPlanesMoviles.findAllPlanPagoByCedula(beanLogin.getCredencial().getObjUsrSocio().getCedulaSocio());
+			String cedula = beanLogin.getCredencial().getObjUsrSocio().getCedulaSocio();
+			lstPlanPago = managerPlanesMoviles.findAllPlanPagoByCedula(cedula);
 			for (PlanPago planPago : lstPlanPago) {
 				List<PlanAmortEquipmov> lstPlanEquipos = managerPlanesMoviles.findAllAmortEquipmovByIdPlanPagos(planPago.getIdPlanPagos());
 				if(lstPlanEquipos!=null) {
