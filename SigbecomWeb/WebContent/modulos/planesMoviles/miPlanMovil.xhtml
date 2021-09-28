@@ -44,95 +44,79 @@
 						    </h:commandLink>
 					    </div>	
 						<p:dataTable value="#{frmMiPlanMovil.lstPlanContratoCom}"
-							id="tblEmp"  var="dato" paginator="true"
+							id="tblEmp"  var="con" paginator="true"
 							rows="10">
 							<f:facet name="header">
 								<p:outputLabel value="#{frmMiPlanMovil.beanLogin.credencial.objUsrSocio.cedulaSocio} #{frmMiPlanMovil.beanLogin.credencial.objUsrSocio.gesPersona.apellidos} #{frmMiPlanMovil.beanLogin.credencial.objUsrSocio.gesPersona.nombres}"/>
 							</f:facet>
+							<p:column headerText="OPERADORA" >
+								<h:outputText value="#{con.planPlanMovil.planOperadora.empresa}" />
+							</p:column>										
+							<p:column headerText="PLAN MOVIL" >
+								<h:outputText value="#{con.planPlanMovil.plan}" />
+							</p:column>
+							<p:column headerText="FECHA CONTRATO" >
+								<h:outputText value="#{con.fechaContrato}" />
+							</p:column>
+							<p:column headerText="FECHA FIN" >
+								<h:outputText value="#{con.fechaFinContrato}" />
+							</p:column>
+							<p:column headerText="LINEA" >
+								<h:outputText value="#{con.lineaTelefono}" />
+							</p:column>
+							
+						</p:dataTable>
+						<br/>
+						<br/>
+						<p:separator/>
+						<p:dataTable value="#{frmMiPlanMovil.lstPlanPago}"  
+									id="tblCon" var="pag">
+							<f:facet name="header">
+								            PAGOS PLANES MOVILES
+							</f:facet>
 							<p:column headerText="" style="width:2rem">
 								<p:rowToggler />
 							</p:column>
-							<p:column headerText="OPERADORA" >
-											<h:outputText value="#{con.planPlanMovil.planOperadora.empresa}" />
+							<p:column headerText="PERIODO">
+								<h:outputText value="#{pag.ano}"/>
+							</p:column>
+							<p:column headerText="MES">
+								<h:outputText value="#{pag.mes}" />
+							</p:column>
+							<p:column headerText="VALOR TOTAL">
+								<h:outputText value="#{pag.valorTotal}" />
+							</p:column>
+							<p:column headerText="ESTADO">
+								<h:outputText value="#{pag.descEstadoDescuento.estado}" />
+							</p:column>
+							<p:rowExpansion>
+								<p:panel>
+									<p:dataTable value="#{pag.planRegistroPagos}"  
+													id="tblCon" var="con">
+										<f:facet name="header">
+								            DETALLE PLANES MOVILES 
+										</f:facet>
+										<p:column headerText="OPERADORA" >
+											<h:outputText value="#{con.planContratoComite.planPlanMovil.planOperadora.empresa}" />
 										</p:column>										
 										<p:column headerText="PLAN MOVIL" >
-											<h:outputText value="#{con.planPlanMovil.plan}" />
-										</p:column>
-										<p:column headerText="DETALLE" >
-											<h:outputText value="#{con.fechaContrato}" />
-										</p:column>
-										<p:column headerText="FECHA CONTRATO" >
-											<h:outputText value="#{con.fechaContrato}" />
-										</p:column>
-										<p:column headerText="FECHA FIN" >
-											<h:outputText value="#{con.fechaFinContrato}" />
+											<h:outputText value="#{con.planContratoComite.planPlanMovil.plan}" />
 										</p:column>
 										<p:column headerText="LINEA" >
 											<h:outputText value="#{con.lineaTelefono}" />
 										</p:column>
-							<p:rowExpansion>
-								<p:panel>
-									<p:dataTable value="#{dato.planRegistroPagos}"  
-													id="tblCon" var="con">
-										<f:facet name="header">
-								            LISTADO DE PLANES MOVILES 
-										</f:facet>
-										<p:column headerText="LINEA">
-											<h:outputText value="#{con.lineaTelefono}"/>
-										</p:column>
-										<p:column headerText="CONSUMO ADICIONAL">
-											<h:outputText value="#{con.valorAdicional}"/>
-										</p:column>
-										<p:column headerText="OBSERVACION">
-											<h:outputText value="#{con.observacion}" />
-										</p:column>
-										<p:column headerText="PLAN">
-											<h:outputText value="#{con.valorPlan.add(con.costoAdm)}">
+										<p:column headerText="VALOR PLAN" >
+											<h:outputText value="#{con.total}" >
 												<f:convertNumber pattern="#0.00" />
 											</h:outputText>
 										</p:column>
-										<p:column headerText="TOTAL">
-											<h:outputText value="#{con.total}">
-												<f:convertNumber pattern="#0.00" />
-											</h:outputText>
-										</p:column>
-									</p:dataTable>
-									<p:separator/>
-									<p:dataTable value="#{dato.planAmortEquipmovs}"  
-													id="tblEq" editable="true" var="mov">
-										<f:facet name="header">
-								            LISTADO EQUIPOS MOVILES 
-										</f:facet>
-										<p:column headerText="OPERADORA">
-											<h:outputText value="#{mov.planContratoComite.planPlanMovil.planOperadora.empresa}"/>
-										</p:column>
-										<p:column headerText="LINEA">
-											<h:outputText value="#{mov.planContratoComite.lineaTelefono}"/>
-										</p:column>
-										<p:column headerText="EQUIPO">
-											<h:outputText value="#{mov.planEquipo.equipo}"/>
-										</p:column>
-										<p:column headerText="CUOTA">
-											<h:outputText value="#{mov.numCuota} / #{mov.mesesPlazo}"/>
-										</p:column>
-										<p:column headerText="VALOR CUOTA">
-											<h:outputText value="#{mov.valorCuota}">
-												<f:convertNumber pattern="#0.00" />
-											</h:outputText>
-										</p:column>
-										<p:column headerText="SALDO">
-											<h:outputText value="#{mov.saldo}">
-												<f:convertNumber pattern="#0.00" />
-											</h:outputText>
+										<p:column headerText="ESTADO PLAN">
+											<h:outputText value="#{con.estado}"/>
 										</p:column>
 									</p:dataTable>
 								</p:panel>
 							</p:rowExpansion>
 						</p:dataTable>
-						<br/>
-						<br/>
-						<p:separator/>
-						
 					</p:panel>
 	         </h:form>
 <!-- Inicio de Dialogs -->
