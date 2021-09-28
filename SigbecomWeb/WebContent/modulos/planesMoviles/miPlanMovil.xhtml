@@ -43,7 +43,7 @@
 						    	<p:dataExporter type="xls" target="tblEmp" fileName="ListPlanMovil"></p:dataExporter>
 						    </h:commandLink>
 					    </div>	
-						<p:dataTable value="#{frmMiPlanMovil.lstPlanPago}"
+						<p:dataTable value="#{frmMiPlanMovil.lstPlanContratoCom}"
 							id="tblEmp"  var="dato" paginator="true"
 							rows="10">
 							<f:facet name="header">
@@ -52,26 +52,24 @@
 							<p:column headerText="" style="width:2rem">
 								<p:rowToggler />
 							</p:column>
-							<p:column headerText="Plan">
-								<h:outputText value="#{dato.planContratoComite.planPlanMovil.plan} #{dato.planContratoComite.planPlanMovil.planOperadora.empresa}"/>
-							</p:column>
-							<p:column headerText="Linea">
-								<h:outputText value="#{dato.planContratoComite.lineaTelefono}"/>
-							</p:column>
-							<p:column headerText="CUOTA TOTAL">
-								<h:outputText value="#{dato.valorTotal}">
-									<f:convertNumber pattern="#0.00" />
-								</h:outputText>
-							</p:column>
-							<p:column headerText="MES" sortBy="#{dato.mes}" filterBy="#{frmMiPlanMovil.convertirMes(dato.mes)}">
-								<h:outputText value="#{frmMiPlanMovil.convertirMes(dato.mes)}"/>
-							</p:column>
-							<p:column headerText="AÑO" sortBy="#{dato.ano}" filterBy="#{dato.ano}">
-								<h:outputText value="#{dato.ano}"/>
-							</p:column>
-							<p:column headerText="ESTADO DESCUENTO" filterBy="#{dato.descEstadoDescuento.estado}">
-								<h:outputText value="#{dato.descEstadoDescuento.estado}"/>
-							</p:column>
+							<p:column headerText="OPERADORA" >
+											<h:outputText value="#{con.planPlanMovil.planOperadora.empresa}" />
+										</p:column>										
+										<p:column headerText="PLAN MOVIL" >
+											<h:outputText value="#{con.planPlanMovil.plan}" />
+										</p:column>
+										<p:column headerText="DETALLE" >
+											<h:outputText value="#{con.fechaContrato}" />
+										</p:column>
+										<p:column headerText="FECHA CONTRATO" >
+											<h:outputText value="#{con.fechaContrato}" />
+										</p:column>
+										<p:column headerText="FECHA FIN" >
+											<h:outputText value="#{con.fechaFinContrato}" />
+										</p:column>
+										<p:column headerText="LINEA" >
+											<h:outputText value="#{con.lineaTelefono}" />
+										</p:column>
 							<p:rowExpansion>
 								<p:panel>
 									<p:dataTable value="#{dato.planRegistroPagos}"  
