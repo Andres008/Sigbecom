@@ -104,15 +104,15 @@
 	                	<p:growl id="growl" showDetail="true" sticky="true" />
 	                	<p:panel id="pnl"  header="PLANILLAS DE USUARIOS ">
 	                	<div class="card" align="right">
-						    <h:commandLink >
-						    	<p:graphicImage name="images/logo_excel.png" library="california-layout" />
-						    	<p:dataExporter type="xls" target="tblEmp" fileName="ListPlanilla" ></p:dataExporter>
-						    </h:commandLink>
+						    <p:panelGrid columns="2">
+						    	<p:commandButton value="Eliminar Datos Precargados" />
+						    </p:panelGrid>
+						    
 					    </div>
 					    <p:separator/>
 						<p:dataTable value="#{frmPlanillaPagoPlan.lstPlanRegistroPago}"
-							id="tblEmp"  var="dato" paginator="true" editable="true"
-							rows="10">
+							id="tblEmp"  var="dato" editable="true" 
+							>
 							<f:facet name="header">
 								PLANILLA DE PLANES MOVILES
 							</f:facet>
@@ -130,15 +130,29 @@
 							<p:column headerText="NOMBRE REFENCIAL">
 								<h:outputText value="#{dato.nombreRef}"/>
 							</p:column>
-							<p:column headerText="VALOR PLAN">
-								<h:outputText value="#{dato.valorPlan}">
-									<f:convertNumber pattern="#0.00" />
-								</h:outputText>
+							<p:column headerText="VALOR PLAN" >
+								<p:cellEditor >
+				                    <f:facet name="output">
+				                        <h:outputText value="#{dato.valorPlan}">
+											<f:convertNumber pattern="#0.00" />
+										</h:outputText>
+				                    </f:facet>
+				                    <f:facet name="input">
+				                        <p:inputText value="#{dato.valorPlan}" style="width:100%"/>
+				                    </f:facet>
+				                </p:cellEditor>
 							</p:column>
 							<p:column headerText="COSTO ADMISNITRATIVO">
-								<h:outputText value="#{dato.costoAdm}">
-									<f:convertNumber pattern="#0.00" />
-								</h:outputText>
+								<p:cellEditor >
+				                    <f:facet name="output">
+				                        <h:outputText value="#{dato.costoAdm}">
+											<f:convertNumber pattern="#0.00" />
+										</h:outputText>
+				                    </f:facet>
+				                    <f:facet name="input">
+				                        <p:inputText value="#{dato.costoAdm}" style="width:100%"/>
+				                    </f:facet>
+				                </p:cellEditor>
 							</p:column>
 							<p:column headerText="CONSUMO ADICIONAL">
 								<p:cellEditor >
@@ -181,8 +195,7 @@
 							</p:column>
 							<p:column width="6" exportable="false">
 									<!-- <p:rowEditor rendered="false" -->
-									<p:rowEditor rendered="#{frmPlanillaPagoPlan.activarEditEstado(dato.estado)}"
-									editTitle="Edit Row" cancelTitle="Cancel Edit" saveTitle="Save Row" 
+									<p:rowEditor editTitle="Edit Row" cancelTitle="Cancel Edit" saveTitle="Save Row" 
 										/>
 				            </p:column>
 						</p:dataTable>

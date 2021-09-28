@@ -16,7 +16,7 @@
         <h:outputStylesheet library="css" name="theme.css"/>
 </h:head>
 
-<h:body styleClass="main-body">
+<h:body styleClass="main-body" onload="init()">
 
         <div class="layout-wrapper #{guestPreferences.menuLayout != 'static' ? guestPreferences.menuLayout : null}">
             <ui:include src="/affordances/megamenu.xhtml" />
@@ -47,7 +47,7 @@
 							id="tblEmp"  var="dato" paginator="true"
 							rows="10">
 							<f:facet name="header">
-								<p:outputLabel value="#{frmEquipoMovil.beanLogin.credencial.objUsrSocio.cedulaSocio} #{frmEquipoMovil.beanLogin.credencial.objUsrSocio.gesPersona.apellidos} #{frmEquipoMovil.beanLogin.credencial.objUsrSocio.gesPersona.nombres}"/>
+								<p:outputLabel value="#{frmMiPlanMovil.beanLogin.credencial.objUsrSocio.cedulaSocio} #{frmMiPlanMovil.beanLogin.credencial.objUsrSocio.gesPersona.apellidos} #{frmMiPlanMovil.beanLogin.credencial.objUsrSocio.gesPersona.nombres}"/>
 							</f:facet>
 							<p:column headerText="" style="width:2rem">
 								<p:rowToggler />

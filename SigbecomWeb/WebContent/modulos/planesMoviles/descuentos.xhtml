@@ -36,7 +36,7 @@
                     
 	                <h:form id="form1">
 	                	<p:growl id="growl" showDetail="true" sticky="true" />
-	                	<p:panel id="pnl"  header="LISTADO - CUOTAS">
+	                	<p:panel id="pnl"  header="LISTADO - DESCUENTOS">
 	                	<div class="card" align="right">
 						    <h:commandLink >
 						    	<p:graphicImage name="images/logo_excel.png" library="california-layout" />
@@ -47,7 +47,7 @@
 							id="tblEmp"  var="dato" paginator="true"
 							rows="10">
 							<f:facet name="header">
-								LISTADO DE SOCIOS
+								LISTADO DE SOCIOS - DESCUENTOS TOTALES
 							</f:facet>
 							
 							<p:column headerText="CEDULA" filterBy="#{dato.planContratoComite.usrSocio.cedulaSocio}">
@@ -157,7 +157,7 @@
 							id="tblEmp2"  var="dato" paginator="true"
 							rows="10">
 							<f:facet name="header">
-								LISTADO DE SOCIOS - DESCUENTOS EQUIPOS
+								LISTADO DE SOCIOS - DESCUENTOS POR EQUIPOS
 							</f:facet>
 							
 							<p:column headerText="CEDULA" filterBy="#{dato.planContratoComite.usrSocio.cedulaSocio}">
