@@ -225,6 +225,16 @@ public class ManagerPlanesMoviles {
     	return lstPlanContratoComite;
     }
     @SuppressWarnings("unchecked")
+	public List<PlanContratoComite> findPlanContratoComiteByCedula(String cedulaSocio) throws Exception {
+    	List<PlanContratoComite> lstPlanContratoComite = managerDAOSegbecom.findWhere(PlanContratoComite.class, "o.usrSocio.cedulaSocio = '"+cedulaSocio+"'", null);
+    	for (PlanContratoComite planContratoComite : lstPlanContratoComite) {
+			for (PlanAmortEquipmov planAmortEquipmov : planContratoComite.getPlanAmortEquipmovs()) {
+				planAmortEquipmov.getIdAmortEquipmov();
+			}
+		}
+    	return lstPlanContratoComite;
+    }
+    @SuppressWarnings("unchecked")
 	public List<PlanEquipo> findPlanEquipoByIdOperadora(long idPlanEmpresa) throws Exception {
     	List<PlanEquipo> lstPlanEquipo = managerDAOSegbecom.findWhere(PlanEquipo.class, "o.planOperadora.idPlanEmpresa = '"+idPlanEmpresa+"'", null);
     	return lstPlanEquipo;

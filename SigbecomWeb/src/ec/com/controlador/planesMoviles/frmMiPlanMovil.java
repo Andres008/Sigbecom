@@ -12,6 +12,7 @@ import javax.inject.Named;
 
 import ec.com.controlador.sesion.BeanLogin;
 import ec.com.model.dao.entity.PlanAmortEquipmov;
+import ec.com.model.dao.entity.PlanContratoComite;
 import ec.com.model.dao.entity.PlanPago;
 import ec.com.model.dao.entity.PlanRegistroPago;
 import ec.com.model.modulos.util.JSFUtil;
@@ -30,10 +31,12 @@ public class frmMiPlanMovil implements Serializable{
 	private BeanLogin beanLogin;
 	
 	private List<PlanPago> lstPlanPago;
+	private List<PlanContratoComite> lstPlanContratoCom;
 
 	@PostConstruct
 	public void init() {
 		lstPlanPago = new ArrayList<PlanPago>();
+		lstPlanContratoCom = new ArrayList<PlanContratoComite>();
 		cargarMisPlanesMoviles();
 	}
 	
@@ -41,16 +44,18 @@ public class frmMiPlanMovil implements Serializable{
 		try {
 			String cedula = beanLogin.getCredencial().getObjUsrSocio().getCedulaSocio();
 			lstPlanPago = managerPlanesMoviles.findAllPlanPagoByCedula(cedula);
-			for (PlanPago planPago : lstPlanPago) {
-				List<PlanAmortEquipmov> lstPlanEquipos = managerPlanesMoviles.findAllAmortEquipmovByIdPlanPagos(planPago.getIdPlanPagos());
-				if(lstPlanEquipos!=null) {
-					planPago.setPlanAmortEquipmovs(lstPlanEquipos);
-				}
-				List<PlanRegistroPago> lstPlanRegistro = managerPlanesMoviles.findAllPlanRegistroPagoByIdPlanPagos(planPago.getIdPlanPagos());
-				if(lstPlanRegistro!=null) {
-					planPago.setPlanRegistroPagos(lstPlanRegistro);
-				}
-			}
+			lstPlanContratoCom = managerPlanesMoviles.findPlanContratoComiteByCedula(cedula);
+			
+//			for (PlanPago planPago : lstPlanPago) {
+//				List<PlanAmortEquipmov> lstPlanEquipos = managerPlanesMoviles.findAllAmortEquipmovByIdPlanPagos(planPago.getIdPlanPagos());
+//				if(lstPlanEquipos!=null) {
+//					planPago.setPlanAmortEquipmovs(lstPlanEquipos);
+//				}
+//				List<PlanRegistroPago> lstPlanRegistro = managerPlanesMoviles.findAllPlanRegistroPagoByIdPlanPagos(planPago.getIdPlanPagos());
+//				if(lstPlanRegistro!=null) {
+//					planPago.setPlanRegistroPagos(lstPlanRegistro);
+//				}
+//			}
 		} catch (Exception e) {
 			JSFUtil.crearMensajeERROR("No se cargo el listado correctamente");
 			e.printStackTrace();
@@ -114,6 +119,14 @@ public class frmMiPlanMovil implements Serializable{
 
 	public void setLstPlanPago(List<PlanPago> lstPlanPago) {
 		this.lstPlanPago = lstPlanPago;
+	}
+
+	public List<PlanContratoComite> getLstPlanContratoCom() {
+		return lstPlanContratoCom;
+	}
+
+	public void setLstPlanContratoCom(List<PlanContratoComite> lstPlanContratoCom) {
+		this.lstPlanContratoCom = lstPlanContratoCom;
 	}
 	
 }
