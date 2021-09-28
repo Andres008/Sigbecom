@@ -78,10 +78,20 @@
 				<ui:include src="/affordances/route-bar-menu.xhtml" />
 			</div>
 			<div class="layout-main-content" align="center">
-				<H1>ACTUALIZACIÓN DATOS</H1>
+				<H1>Datos Personales</H1>
 				<h:form id="principal">
 					<p:growl id="growl" showDetail="true" sticky="true" />
-					<p:panel header="Fotografia">
+					<p:panel header="Datos Económicos">
+						<p:panelGrid columns="4" styleClass="ui-noborder" >
+							<p:outputLabel value="Ahorros" />
+							<p:outputLabel
+								value="#{controladorGestionSocios.objUsrSocio.cajaAhorro}" />
+							<p:outputLabel value="Fondo de Cesantía" />
+							<p:outputLabel
+								value="#{controladorGestionSocios.objUsrSocio.fondoCesantia}" />
+						</p:panelGrid>
+					</p:panel>
+					<p:panel header="Actualización de Datos">
 						<p:wizard flowListener="#{controladorGestionSocios.onFlowProcess}"
 							backLabel="Regresar" nextLabel="Siguiente">
 							<p:tab id="datosPersonales" title="Fotografia">
@@ -100,7 +110,8 @@
 							<p:tab id="datosPersonales2" title="Datos Personales">
 								<p:panelGrid columns="6" styleClass="ui-noborder">
 									<p:outputLabel value="Código Rol" />
-									<p:inputNumber minValue="1" maxValue="3000" decimalPlaces="0" decimalSeparator=""
+									<p:inputNumber minValue="1" maxValue="3000" decimalPlaces="0"
+										decimalSeparator=""
 										value="#{controladorGestionSocios.objUsrSocio.idSocio}">
 										<p:ajax update="@form" process="@this" />
 									</p:inputNumber>
@@ -121,7 +132,8 @@
 										<p:ajax update="@form" process="@this" />
 									</p:inputText>
 									<p:outputLabel value="Fecha Nacimiento" />
-									<p:calendar required="true" locale="es" id="feNac" pattern="dd/MM/yyyy"
+									<p:calendar required="true" locale="es" id="feNac"
+										pattern="dd/MM/yyyy"
 										value="#{controladorGestionSocios.objUsrSocio.gesPersona.fechaNac}">
 									</p:calendar>
 									<p:outputLabel value="Estado Civil" />
