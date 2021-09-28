@@ -228,8 +228,8 @@ public class ManagerPlanesMoviles {
 	public List<PlanContratoComite> findPlanContratoComiteByCedula(String cedulaSocio) throws Exception {
     	List<PlanContratoComite> lstPlanContratoComite = managerDAOSegbecom.findWhere(PlanContratoComite.class, "o.usrSocio.cedulaSocio = '"+cedulaSocio+"'", null);
     	for (PlanContratoComite planContratoComite : lstPlanContratoComite) {
-			for (PlanAmortEquipmov planAmortEquipmov : planContratoComite.getPlanAmortEquipmovs()) {
-				planAmortEquipmov.getIdAmortEquipmov();
+			for (PlanPago planPago : planContratoComite.getPlanPagos()) {
+				planPago.getIdPlanPagos();
 			}
 		}
     	return lstPlanContratoComite;
