@@ -180,7 +180,7 @@ public class FrmPlanillaPagoPlan implements Serializable{
 		            	planRegistroPago = new PlanRegistroPago();
 	            	}
 	            	else if(planContratoComite==null) {
-	            		JSFUtil.crearMensajeERROR("No se encuentra registrado el numero: "+lineaTelefono.getRawValue()+" en la fila: "+i);
+	            		JSFUtil.crearMensajeERROR("No se encuentra registrado el numero: "+lineaTelefono.getRawValue()+" en la fila: "+i+1);
 	            		lstPlanRegistroPagos=null;
 	            		init();
 	            		PrimeFaces prime=PrimeFaces.current();
