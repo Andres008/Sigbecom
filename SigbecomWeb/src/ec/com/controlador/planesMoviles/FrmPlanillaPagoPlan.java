@@ -310,11 +310,32 @@ public class FrmPlanillaPagoPlan implements Serializable{
 				}
 			}
 			JSFUtil.crearMensajeINFO("Descuento a roll cargado correctamente ");
+			init();
+			PrimeFaces prime=PrimeFaces.current();
+			prime.ajax().update("form1");
+			prime.ajax().update("form2");
+			
 		} catch (Exception e) {
 			 JSFUtil.crearMensajeERROR("No se cargo el descuento a roll correctamente.");
 			e.printStackTrace();
 		}
 		
+		
+	}
+	public void borrarGenerados() {
+		try {
+			List<PlanRegistroPago> lstPlanRegistroPago=managerPlanesMoviles.findAllPlanRegistroPagoByEstado("GENERADO");
+			for (PlanRegistroPago planRegistroPago : lstPlanRegistroPago) {
+				managerPlanesMoviles.removePlanRegistro(planRegistroPago.getIdRegistroPagos());
+			}
+			init();
+			PrimeFaces prime=PrimeFaces.current();
+			prime.ajax().update("form1");
+			prime.ajax().update("form2");
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		
 	}
 	//GETTERS AND SETTERS

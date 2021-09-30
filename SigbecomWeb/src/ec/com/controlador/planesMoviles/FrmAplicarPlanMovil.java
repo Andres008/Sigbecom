@@ -44,6 +44,8 @@ private static final long serialVersionUID = 1L;
 	private List<UsrSocio> lstUsrNoSocios;
 	private List<PlanOperadora> lstPlanOperadoras;
 	
+	private List<PlanContratoComite> lstPlanContratoComiteDt;
+	
 	private String cedulaSocio;
 	
 	private PlanContratoComite planContratoComite;
@@ -65,6 +67,7 @@ private static final long serialVersionUID = 1L;
 		lstUsersSocios = new ArrayList<UsrSocio>();
 		lstUsrNoSocios = new ArrayList<UsrSocio>();
 		lstPlanOperadoras = new ArrayList<PlanOperadora>();
+		lstPlanContratoComiteDt = new ArrayList<PlanContratoComite>();
 		//panelgrid
 		panelCliente = false;
 		panelEquipo = false;
@@ -88,6 +91,15 @@ private static final long serialVersionUID = 1L;
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			JSFUtil.crearMensajeERROR("No se cargo el listado correctamente");
+			e.printStackTrace();
+		}
+	}
+	
+	public void cargarPlanContratoComite() {
+		try {
+			lstPlanContratoComiteDt = managerPlanesMoviles.findAllPlanContratoComite();
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
@@ -202,7 +214,7 @@ private static final long serialVersionUID = 1L;
 				prime.ajax().update("form1");
 				prime.ajax().update("form2");
 			} catch (Exception e) {
-				JSFUtil.crearMensajeERROR("Seleccione Plan Móvil requerido");
+				JSFUtil.crearMensajeERROR("No se registro el plan requerido");
 				e.printStackTrace();
 			}
 		}
@@ -353,4 +365,12 @@ private static final long serialVersionUID = 1L;
 		this.idOperadora = idOperadora;
 	}
 
+	public List<PlanContratoComite> getLstPlanContratoComiteDt() {
+		return lstPlanContratoComiteDt;
+	}
+
+	public void setLstPlanContratoComiteDt(List<PlanContratoComite> lstPlanContratoComiteDt) {
+		this.lstPlanContratoComiteDt = lstPlanContratoComiteDt;
+	}
+	
 }

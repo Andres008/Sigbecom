@@ -104,9 +104,22 @@
 	                	<p:growl id="growl" showDetail="true" sticky="true" />
 	                	<p:panel id="pnl"  header="PLANILLAS DE USUARIOS ">
 	                	<div class="card" align="right">
-						    <p:panelGrid columns="2">
-						    	<p:commandButton value="Eliminar Datos Precargados" />
-						    </p:panelGrid>
+						    <p:panelGrid columns="2" styleClass="ui-noborder">
+								<p:commandButton value="Eliminar Datos Cargados"
+									action="#{frmPlanillaPagoPlan.borrarGenerados()}" update="@form">
+									<p:confirm header="Confirmación"
+									message="Esta seguro de borrar la información?"
+									icon="pi pi-exclamation-triangle" />
+								</p:commandButton>
+							
+								<p:confirmDialog global="true" showEffect="fade" hideEffect="fade"
+									responsive="true" width="350">
+									<p:commandButton value="Si" type="button"
+										styleClass="ui-confirmdialog-yes" />
+									<p:commandButton value="No" type="button"
+										styleClass="ui-confirmdialog-no ui-button-flat" />
+								</p:confirmDialog>
+							</p:panelGrid>	
 						    
 					    </div>
 					    <p:separator/>

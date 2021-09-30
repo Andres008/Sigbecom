@@ -213,7 +213,10 @@ public class ManagerPlanesMoviles {
 	public List<PlanRegistroPago> findAllPlanRegistroPagoByEstado(String estado) throws Exception {
     	List<PlanRegistroPago> lstPlanRegistroPago = managerDAOSegbecom.findWhere(PlanRegistroPago.class, "o.estado = '"+estado+"'", "o.idRegistroPagos DESC");
     	return lstPlanRegistroPago;
-    }    
+    }
+    public void removePlanRegistro(long idRegistroPagos) throws Exception {
+    	managerDAOSegbecom.eliminar(PlanRegistroPago.class, idRegistroPagos);
+    }
     @SuppressWarnings("unchecked")
 	public List<PlanContratoComite> findAllPlanContratoComite() throws Exception {
     	List<PlanContratoComite> lstPlanContratoComite = managerDAOSegbecom.findAll(PlanContratoComite.class);
