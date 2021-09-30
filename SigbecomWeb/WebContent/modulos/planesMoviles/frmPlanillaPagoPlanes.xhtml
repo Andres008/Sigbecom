@@ -103,6 +103,8 @@
 	                <h:form id="form2">
 	                	<p:growl id="growl" showDetail="true" sticky="true" />
 	                	<p:panel id="pnl"  header="PLANILLAS DE USUARIOS ">
+	                	 
+	                	
 	                	<div class="card" align="right">
 						    <p:panelGrid columns="2" styleClass="ui-noborder">
 								<p:commandButton value="Eliminar Datos Cargados"
@@ -122,7 +124,14 @@
 							</p:panelGrid>	
 						    
 					    </div>
+					   
 					    <p:separator/>
+					    <div class="card" align="right">
+						    <h:commandLink >
+						    	<p:graphicImage name="images/logo_excel.png" library="california-layout" />
+						    	<p:dataExporter type="xls" target="tblEmp" fileName="ListPlanMovil"></p:dataExporter>
+						    </h:commandLink>
+					    </div>	
 						<p:dataTable value="#{frmPlanillaPagoPlan.lstPlanRegistroPago}"
 							id="tblEmp"  var="dato" editable="true" 
 							>

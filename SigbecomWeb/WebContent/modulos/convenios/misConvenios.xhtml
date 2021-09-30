@@ -89,6 +89,13 @@
 								<h:outputText value="#{con.estado}" />
 							</p:column>
 							<p:rowExpansion>
+								<div class="card" align="right">
+								    <h:commandLink >
+								    	<p:graphicImage name="images/logo_excel.png" library="california-layout" />
+								    	<p:dataExporter type="xls" target="tblCon" fileName="ListPlanMovil"></p:dataExporter>
+								    </h:commandLink>
+							    </div>
+							    <p:separator/>	
 								<p:panel>
 									<p:dataTable value="#{con.convAmortizacions}"  
 													id="tblCon" var="am">

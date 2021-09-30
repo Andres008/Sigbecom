@@ -164,9 +164,16 @@
 											<h:outputText value="#{con.lineaTelefono}" />
 										</p:column>
 										<p:column headerText="VALOR PLAN" >
-											<h:outputText value="#{con.valorPlan}" >
-												<f:convertNumber pattern="#0.00" />
-											</h:outputText>
+											<p:cellEditor>
+							                    <f:facet name="output">
+							                        <h:outputText value="#{con.valorPlan}" >
+														<f:convertNumber pattern="#0.00" />
+													</h:outputText>
+							                    </f:facet>
+							                    <f:facet name="input">
+							                        <p:inputNumber value="#{con.valorPlan}" style="width:100%"/>
+							                    </f:facet>
+							                </p:cellEditor>
 										</p:column>
 										<p:column headerText="COSTO ADMINISTRATIVO" >
 											<h:outputText value="#{con.planCostosAdm.administracion.add(con.planCostosAdm.cargo).add(con.planCostosAdm.costoLinea)}" />
@@ -178,7 +185,8 @@
 							                    </f:facet>
 							                    <f:facet name="input">
 							                        <h:selectOneMenu id="option" value="#{con.estado}" style="width:100%">
-												       <f:selectItem itemLabel="INACTIVO" itemValue="INACTIVO"/>
+												       <f:selectItem itemLabel="ACTIVAR" itemValue="ACTIVO"/>
+												       <f:selectItem itemLabel="INACTIVAR" itemValue="INACTIVO"/>
 												    </h:selectOneMenu>
 							                    </f:facet>
 							                </p:cellEditor>
