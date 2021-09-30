@@ -147,6 +147,16 @@ public class ManagerConvenios {
     	return lstConvAdquiridos;
     }
 	@SuppressWarnings("unchecked")
+	public List<ConvAdquirido> findConvAdquiridoByCedula(String cedulaSocio) throws Exception{
+    	List<ConvAdquirido> lstConvAdquiridos = managerDAOSegbecom.findWhere(ConvAdquirido.class, "o.convValorMax.usrSocio.cedulaSocio = '"+cedulaSocio+"'", "o.idConvAdquiridos DESC");
+    	for (ConvAdquirido convAdquirido : lstConvAdquiridos) {
+			for (ConvAmortizacion convAmortizacion : convAdquirido.getConvAmortizacions()) {
+				convAmortizacion.getIdConvAmortizacion();
+			}
+		}
+    	return lstConvAdquiridos;
+    }
+	@SuppressWarnings("unchecked")
 	public List<ConvAdquirido> findConvAdquiridoTramitados() throws Exception{
     	List<ConvAdquirido> lstConvAdquiridos = managerDAOSegbecom.findWhere(ConvAdquirido.class, "o.estado != 'SOLICITADO'", "o.idConvAdquiridos DESC");
     	for (ConvAdquirido convAdquirido : lstConvAdquiridos) {
