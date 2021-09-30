@@ -53,12 +53,15 @@ public class FrmPlanillaPagoPlan implements Serializable{
 	private byte[] archivo;
 	private List<PlanRegistroPago> lstPlanRegistroPago;
 	
+	private int filaTmp;
+	
 	@PostConstruct
 	public void init() {
 		anio = ModelUtil.getAnio(new Date());
 		mes = new Integer(0);
 		file = null;
 		cargarRegistroPagos();
+		filaTmp = 0;
 	}
 	
 	public void cargarRegistroPagos() {
@@ -180,7 +183,8 @@ public class FrmPlanillaPagoPlan implements Serializable{
 		            	planRegistroPago = new PlanRegistroPago();
 	            	}
 	            	else if(planContratoComite==null) {
-	            		JSFUtil.crearMensajeERROR("No se encuentra registrado el numero: "+lineaTelefono.getRawValue()+" en la fila: "+i+1);
+	            		filaTmp = i+1;
+	            		JSFUtil.crearMensajeERROR("No se encuentra registrado el numero: "+lineaTelefono.getRawValue()+" en la fila: "+filaTmp);
 	            		lstPlanRegistroPagos=null;
 	            		init();
 	            		PrimeFaces prime=PrimeFaces.current();
