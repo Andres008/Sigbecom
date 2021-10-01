@@ -201,6 +201,18 @@ public class ManagerPlanesMoviles {
     	else
     		return null;
     }
+    @SuppressWarnings("unchecked")
+	public List<PlanContratoComite> findContratoComiteByLineaAndEstado(String lineaTelefono, String estado) throws Exception {
+    	List<PlanContratoComite> lstPlanContratoComite = managerDAOSegbecom.findWhere(PlanContratoComite.class, "o.lineaTelefono ='"+lineaTelefono+"' AND o.estado = '"+estado+"'", null);
+    	if(lstPlanContratoComite!=null && lstPlanContratoComite.size()==1) {
+    		return lstPlanContratoComite;
+    	}
+    	if(lstPlanContratoComite!=null && lstPlanContratoComite.size()>1) {
+    		throw new Exception("Más de un numero encontrado: "+lineaTelefono);
+    	}
+    	else
+    		return null;
+    }
     public void insertarPlanRegistroPagos(PlanRegistroPago planRegistroPago) throws Exception {
     	managerDAOSegbecom.insertar(planRegistroPago);
     }
@@ -216,6 +228,9 @@ public class ManagerPlanesMoviles {
     }
     public void removePlanRegistro(long idRegistroPagos) throws Exception {
     	managerDAOSegbecom.eliminar(PlanRegistroPago.class, idRegistroPagos);
+    }
+    public void removePlanContratoComite(long idcontrato) throws Exception {
+    	managerDAOSegbecom.eliminar(PlanContratoComite.class, idcontrato);
     }
     @SuppressWarnings("unchecked")
 	public List<PlanContratoComite> findAllPlanContratoComite() throws Exception {
@@ -328,7 +343,16 @@ public class ManagerPlanesMoviles {
        	return lstPlanPago;
     }
     
-    
+    @SuppressWarnings("unchecked")
+   	public List<PlanPago> findAllPlanPagoByIdContrato(long idContrato) throws Exception{
+       	List<PlanPago> lstPlanPago = managerDAOSegbecom.findWhere(PlanPago.class, "o.planContratoComite.idContrato= '"+idContrato+"'", "o.idPlanPagos DESC");
+       	if(lstPlanPago!=null && lstPlanPago.size()>0) {
+       		return lstPlanPago;
+       	}
+       	else {
+       		return null;
+       	}
+    } 
 	public PlanAmortEquipmov findPlanAmortEquipmovById(long idAmortEquipmov) throws Exception{
     	PlanAmortEquipmov planAmortEquipmov = (PlanAmortEquipmov) managerDAOSegbecom.findById(PlanAmortEquipmov.class, idAmortEquipmov); 
     	return planAmortEquipmov;

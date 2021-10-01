@@ -192,6 +192,10 @@
 							                </p:cellEditor>
 										</p:column>
 										<p:column width="6">
+											<p:commandButton icon="fa fa-times-circle" action="#{frmAplicarPlanMovil.eliminarContratoComite(con)}"
+													update="@form"/>
+							            </p:column>
+										<p:column width="6">
 												<p:rowEditor editTitle="Edit Row" cancelTitle="Cancel Edit" saveTitle="Save Row"/>
 							            </p:column>
 									</p:dataTable>

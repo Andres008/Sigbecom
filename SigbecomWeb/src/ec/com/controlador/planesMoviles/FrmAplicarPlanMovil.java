@@ -20,6 +20,7 @@ import ec.com.model.dao.entity.PlanContratoComite;
 import ec.com.model.dao.entity.PlanCostosAdm;
 import ec.com.model.dao.entity.PlanEquipo;
 import ec.com.model.dao.entity.PlanOperadora;
+import ec.com.model.dao.entity.PlanPago;
 import ec.com.model.dao.entity.PlanPlanMovil;
 import ec.com.model.dao.entity.UsrSocio;
 import ec.com.model.modulos.util.JSFUtil;
@@ -206,13 +207,25 @@ private static final long serialVersionUID = 1L;
 		if(planContratoComite.getUsrSocio()!=null && planContratoComite.getPlanPlanMovil()!=null && 
 		   planContratoComite.getLineaTelefono()!=null && planContratoComite.getFechaContrato()!=null) {
 			try {
-				planContratoComite.setEstado("ACTIVO");
-				managerPlanesMoviles.insertarPlanContratoComite(planContratoComite);
-				JSFUtil.crearMensajeINFO("Plan cargado correctamente");
-				init();
-				PrimeFaces prime=PrimeFaces.current();
-				prime.ajax().update("form1");
-				prime.ajax().update("form2");
+				
+				List<PlanContratoComite> lstPlanContratoCom = managerPlanesMoviles.findContratoComiteByLineaAndEstado(planContratoComite.getLineaTelefono(),"ACTIVO");
+				
+				if(lstPlanContratoCom==null) {
+					planContratoComite.setEstado("ACTIVO");
+					managerPlanesMoviles.insertarPlanContratoComite(planContratoComite);
+					JSFUtil.crearMensajeINFO("Plan cargado correctamente");
+					init();
+					PrimeFaces prime=PrimeFaces.current();
+					prime.ajax().update("form1");
+					prime.ajax().update("form2");
+				}
+				else if(lstPlanContratoCom.size()==1) {
+					JSFUtil.crearMensajeWARN("El numero ya se encuentra registrado");
+					init();
+					PrimeFaces prime=PrimeFaces.current();
+					prime.ajax().update("form1");
+					prime.ajax().update("form2");
+				}
 			} catch (Exception e) {
 				JSFUtil.crearMensajeERROR("No se registro el plan requerido");
 				e.printStackTrace();
@@ -220,8 +233,37 @@ private static final long serialVersionUID = 1L;
 		}
 		else {
 			JSFUtil.crearMensajeERROR("Datos requerido, Seleccione Plan Móvil");
+			init();
+			PrimeFaces prime=PrimeFaces.current();
+			prime.ajax().update("form1");
+			prime.ajax().update("form2");
 		}
-	} 
+	}
+	public void eliminarContratoComite(PlanContratoComite planContratoComite) {
+		try {
+			List<PlanPago> lstPlanPago = managerPlanesMoviles.findAllPlanPagoByIdContrato(planContratoComite.getIdContrato());
+			String linea = planContratoComite.getLineaTelefono();
+			if(lstPlanPago==null) {
+				managerPlanesMoviles.removePlanContratoComite(planContratoComite.getIdContrato());
+				JSFUtil.crearMensajeINFO("Numero :"+linea+" eliminado correctamente");
+				init();
+				PrimeFaces prime=PrimeFaces.current();
+				prime.ajax().update("form1");
+				prime.ajax().update("form2");
+			}
+			else {
+				JSFUtil.crearMensajeERROR("El registro no puede ser eliminado, contiene varios registros de pagos historicos");
+				init();
+				PrimeFaces prime=PrimeFaces.current();
+				prime.ajax().update("form1");
+				prime.ajax().update("form2");
+			}
+		} catch (Exception e) {
+			JSFUtil.crearMensajeERROR(e.getMessage());
+			e.printStackTrace();
+		}
+		
+	}
 	public void onRowEdit(RowEditEvent<Object> event) {
 		 try {
 			 	managerPlanesMoviles.actualizarObjeto(event.getObject());
