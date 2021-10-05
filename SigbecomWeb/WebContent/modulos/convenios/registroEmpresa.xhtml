@@ -140,6 +140,8 @@
 								<p:panel>
 									<p:dataTable value="#{dato.convServicios}"
 													id="tblSer" editable="true" var="ser">
+										<p:ajax event="rowEdit" listener="#{frmRegistroEmpresa.onRowEdit}" update="form2:growl"/>
+            							<p:ajax event="rowEditCancel" listener="#{frmRegistroEmpresa.onRowCancel}" update="form2:growl"/>
 										<f:facet name="header">
 								            LISTA DE SERVICIOS
 										</f:facet>
