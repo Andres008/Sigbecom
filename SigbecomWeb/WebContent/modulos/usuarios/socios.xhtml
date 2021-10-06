@@ -64,19 +64,7 @@
 									value="#{socio.gesPersona.apellidos} #{socio.gesPersona.nombres}" />
 							</p:column>
 							<p:column headerText="Rol">
-								<p:cellEditor>
-									<f:facet name="output">
-										<p:outputLabel value="#{socio.autRol.nombre}" />
-									</f:facet>
-									<f:facet name="input">
-										<p:selectOneMenu value="#{socio.autRol.idRol}" required="true"
-											style="color : black">
-											<f:selectItem itemLabel="Seleccione Rol"
-												noSelectionOption="true" />
-											<f:selectItems value="#{controladorMenuPerfiles.siAutRol()}" />
-										</p:selectOneMenu>
-									</f:facet>
-								</p:cellEditor>
+								<p:outputLabel value="#{socio.autRol.nombre}" />
 							</p:column>
 							<p:column headerText="Estado">
 								<p:cellEditor>
@@ -93,11 +81,12 @@
 										</p:selectOneMenu>
 									</f:facet>
 								</p:cellEditor>
-
 							</p:column>
 							<p:column headerText="Editar">
-								<p:rowEditor editTitle="Edit Row" cancelTitle="Cancel Edit"
-									saveTitle="Save Row" />
+								<p:commandButton value="Tipo Socio"
+									oncomplete="PF('infTipoSocio').show()"
+									actionListener="#{controladorGestionSocios.cargarUsrSocio(socio)}"
+									update="@form:infTipoSocio" />
 							</p:column>
 							<p:column headerText="Ver Datos Personales">
 								<p:commandButton icon="ui-icon-search"
@@ -128,6 +117,52 @@
 							</p:column>
 						</p:dataTable>
 					</p:panel>
+
+					<p:dialog header="Tipo Socio" widgetVar="infTipoSocio"
+						id="infTipoSocio" modal="false" position="top" showEffect="fade"
+						hideEffect="fade" resizable="false" width="90%">
+						<p:messages id="messageinfTipoSocio" showDetail="true"
+							closable="true">
+							<p:autoUpdate />
+						</p:messages>
+						<h1>Actualización Tipo Socio</h1>
+						<p:panelGrid columns="2" styleClass="ui-noborder"
+							id="pnlDescuentosG">
+							<p:outputLabel value="Tipo Usuario" />
+							<p:selectOneMenu
+								value="#{controladorGestionSocios.objUsrSocio.usrTipoSocio.idTipoSocio}"
+								requiredMessage="Es obligatorio el tipo de socio.">
+								<f:selectItems
+									value="#{controladorGestionSocios.lstSiTipoSocio()}" />
+								<p:ajax
+									listener="#{controladorGestionSocios.cargarDescuentosSocio()}"
+									update="@form:infTipoSocio:lstRol @form:infTipoSocio:pnlDescuentos" />
+							</p:selectOneMenu>
+							<p:outputLabel value="Rol" />
+							<p:selectOneMenu id="lstRol"
+								value="#{controladorGestionSocios.objUsrSocio.autRol.idRol}">
+								<f:selectItems value="#{controladorGestionSocios.siAutRol()}" />
+							</p:selectOneMenu>
+						</p:panelGrid>
+						<p:commandButton value="Actualizar"
+							actionListener="#{controladorGestionSocios.actualizarTipoUsuario()}"
+							update="@form" />
+						<p:panel header="Descuentos" id="pnlDescuentos">
+							<p:dataTable var="descuento" id="tblDescuentos"
+								value="#{controladorGestionSocios.objUsrSocio.usrSocioDescuentoFijos}"
+								emptyMessage="No tiene descuentos ">
+								<p:column headerText="Descuento">
+									<p:outputLabel value="#{descuento.usrTipoDescuento.nombre}" />
+								</p:column>
+								<p:column headerText="Valor">
+									<p:inputNumber
+										value="#{descuento.usrTipoDescuento.valorDefecto}">
+										<p:ajax update="@form:tblDescuentos" />
+									</p:inputNumber>
+								</p:column>
+							</p:dataTable>
+						</p:panel>
+					</p:dialog>
 
 
 					<p:dialog header="Datos Ahorros" widgetVar="infAhorro"

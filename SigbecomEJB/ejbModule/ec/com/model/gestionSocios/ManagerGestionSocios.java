@@ -1,6 +1,7 @@
 package ec.com.model.gestionSocios;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.ejb.EJB;
 import javax.ejb.LocalBean;
@@ -83,6 +84,8 @@ public class ManagerGestionSocios {
 			cuenta.getUsrInstitucionBancaria().getInstitucionBancaria();
 		});
 		objSocio.getUsrSocioDescuentoFijos().forEach(descuento -> descuento.getUsrTipoDescuento().getNombre());
+		objSocio.setUsrSocioDescuentoFijos(objSocio.getUsrSocioDescuentoFijos().stream()
+				.filter(estado -> estado.getEstado().equals("A")).collect(Collectors.toList()));
 		return objSocio;
 	}
 

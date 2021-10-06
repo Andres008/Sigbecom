@@ -225,7 +225,7 @@ public class ControladorGestionSocios implements Serializable {
 		}
 
 	}
-	
+
 	public void verFecha() {
 		System.out.println(objUsrSocio.getGesPersona().getFechaNac());
 	}
@@ -264,6 +264,27 @@ public class ControladorGestionSocios implements Serializable {
 		if (fechaNac != null)
 			return ModelUtil.calcularEdad(fechaNac).toString();
 		return "Sin fecha Nacimiento";
+	}
+
+	public void actualizarTipoUsuario() {
+		try {
+			UsrSocio temUsrSocio = managerGestionSocios.buscarSocioById(objUsrSocio.getCedulaSocio());
+			temUsrSocio.getUsrSocioDescuentoFijos().forEach(descuento -> {
+				descuento.setEstado("I");
+				descuento.setFechaFinal(new Date());
+			});
+			managerGestionSocios.actualizarUsrSocio(temUsrSocio);
+			managerGestionSocios.actualizarUsrSocio(objUsrSocio);
+			managerLog.generarLogAuditoria(beanLogin.getCredencial(), this.getClass(), "actualizarTipoUsuario",
+					"Se actualizo usuario, " + objUsrSocio.getCedulaSocio());
+			JSFUtil.crearMensajeINFO("Actualización correcta");
+			inicializarConsultaSocio();
+		} catch (Exception e) {
+			managerLog.generarLogErrorGeneral(beanLogin.getCredencial(), this.getClass(), "actualizarTipoUsuario",
+					e.getMessage());
+			JSFUtil.crearMensajeERROR(e.getMessage());
+			e.printStackTrace();
+		}
 	}
 
 	public void cargarUsrSocio(UsrSocio objUsrSocioAux) {
@@ -874,7 +895,7 @@ public class ControladorGestionSocios implements Serializable {
 
 	public String finalizarActualizacionDatos() {
 		try {
-			if ( ModelUtil.isEmpty(objUsrSocio.getUsrParroquia().getIdParroquia()))
+			if (ModelUtil.isEmpty(objUsrSocio.getUsrParroquia().getIdParroquia()))
 				throw new Exception("Atención es requerido la informaci{on de la vivienda.");
 			if (objUsrSocio.getUsrEstadoSocio().getIdEstado() == 2) {
 				actualizarSocio();
