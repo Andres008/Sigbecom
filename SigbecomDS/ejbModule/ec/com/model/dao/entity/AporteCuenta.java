@@ -27,6 +27,8 @@ public class AporteCuenta implements Serializable {
 	private String detalle;
 
 	private BigDecimal valor;
+	
+	private BigDecimal comision;
 
 	//bi-directional many-to-one association to AporteCliente
 	@OneToMany(mappedBy="aporteCuenta")
@@ -89,4 +91,12 @@ public class AporteCuenta implements Serializable {
 		return aporteCliente;
 	}
 
+	public BigDecimal getComision() {
+		return comision;
+	}
+
+	public void setComision(BigDecimal comision) {
+		this.comision = comision;
+	}
+	
 }

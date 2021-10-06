@@ -48,6 +48,9 @@
 								<p:outputLabel for="val" value="Valor del Aporte:" />
 								<p:inputNumber id="val" size="100" required="true" 
 									value="#{frmCuenta.aporteCuenta.valor}"/>
+								<p:outputLabel for="com" value="% Comision:" />
+								<p:inputNumber id="com" size="100" required="true" 
+									value="#{frmCuenta.aporteCuenta.comision}"/>
 							</p:panelGrid>
 							<p:commandButton value="Registrar"
 								action="#{frmCuenta.registrarCuenta()}" update="@form">

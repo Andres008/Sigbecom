@@ -31,6 +31,11 @@ public class AporteDescuento implements Serializable {
 	private Integer mes;
 
 	private BigDecimal valor;
+	
+	private BigDecimal comision;
+	
+	@Column(name="valor_total")
+	private BigDecimal valorTotal;
 
 	//bi-directional many-to-one association to AporteCliente
 	@ManyToOne
@@ -98,6 +103,22 @@ public class AporteDescuento implements Serializable {
 
 	public void setMes(Integer mes) {
 		this.mes = mes;
+	}
+
+	public BigDecimal getComision() {
+		return comision;
+	}
+
+	public void setComision(BigDecimal comision) {
+		this.comision = comision;
+	}
+
+	public BigDecimal getValorTotal() {
+		return valorTotal;
+	}
+
+	public void setValorTotal(BigDecimal valorTotal) {
+		this.valorTotal = valorTotal;
 	}
 	
 }

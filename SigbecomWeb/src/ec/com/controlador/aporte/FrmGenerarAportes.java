@@ -1,6 +1,7 @@
 package ec.com.controlador.aporte;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -53,7 +54,7 @@ public class FrmGenerarAportes implements Serializable{
 	public void generarDescuento() {
 		if(anio>0 && mes>0) {
 			try {
-				DescEstadoDescuento descEstadoDescuento = managerAporte.findWhereEstadoDescEstadoDescuento("INGRESADA");
+				DescEstadoDescuento descEstadoDescuento = managerAporte.findWhereEstadoDescEstadoDescuento("VIGENTE");
 				List<AporteCliente> lstAporteClientes = managerAporte.findAllAporteClienteEstadoActivo();
 				for (AporteCliente aporteCliente : lstAporteClientes) {
 					AporteDescuento aporteDescuento = new AporteDescuento();
@@ -62,7 +63,21 @@ public class FrmGenerarAportes implements Serializable{
 					aporteDescuento.setAnio(anio);
 					aporteDescuento.setMes(mes);
 					aporteDescuento.setFechaAporte(new Date());
-					aporteDescuento.setValor(aporteCliente.getAporteCuenta().getValor());
+					BigDecimal porcentaje = new BigDecimal(0);
+					BigDecimal comision = new BigDecimal(0);
+					BigDecimal valor = new BigDecimal(0);
+					if(aporteCliente.getAporteCuenta().getComision().compareTo(BigDecimal.ZERO)==1) {
+						porcentaje = (aporteCliente.getAporteCuenta().getComision().divide(new BigDecimal(100))).add(new BigDecimal(1));
+						comision = aporteCliente.getAporteCuenta().getValor().subtract(aporteCliente.getAporteCuenta().getValor().divide(porcentaje));
+						valor = aporteCliente.getAporteCuenta().getValor().divide(porcentaje);
+					}
+					else {
+						comision = aporteCliente.getAporteCuenta().getValor().subtract(aporteCliente.getAporteCuenta().getValor().divide(porcentaje));
+						valor = aporteCliente.getAporteCuenta().getValor();
+					}
+					aporteDescuento.setValor(valor);
+					aporteDescuento.setComision(comision);//revisar la formula
+					aporteDescuento.setValorTotal(aporteCliente.getAporteCuenta().getValor());
 					managerAporte.insertarAportDescuento(aporteDescuento);
 					
 				}

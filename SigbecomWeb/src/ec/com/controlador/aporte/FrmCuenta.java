@@ -38,7 +38,8 @@ public class FrmCuenta implements Serializable{
 		cargarListaAporteCuentas();
 	}
 	public void registrarCuenta() {
-		if(aporteCuenta.getCuenta()!=null && aporteCuenta.getDetalle()!=null && aporteCuenta.getValor()!=null) {
+		if(aporteCuenta.getCuenta()!=null && aporteCuenta.getDetalle()!=null && aporteCuenta.getValor()!=null &&
+		   aporteCuenta.getComision()!=null) {
 			try {
 				managerAporte.insertarAportCuenta(aporteCuenta);
 				JSFUtil.crearMensajeINFO("Cuenta Registrada correctamente");
