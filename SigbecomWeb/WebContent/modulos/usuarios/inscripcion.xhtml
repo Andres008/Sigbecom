@@ -4,7 +4,7 @@
 	xmlns:f="http://java.sun.com/jsf/core"
 	xmlns:ui="http://java.sun.com/jsf/facelets"
 	xmlns:p="http://primefaces.org/ui"
-	xmlns:pc="http://primefaces.org/california"> 
+	xmlns:pc="http://primefaces.org/california">
 
 <h:head>
 	<f:event type="preRenderView"
@@ -120,12 +120,12 @@
 							<p:outputLabel value="Correo Electronico" />
 							<p:inputText
 								value="#{controladorGestionSocios.objUsrSocio.gesPersona.email}"
-								placeholder="Correo Electronico" 
+								placeholder="Correo Electronico"
 								style="text-transform: lowercase" />
 							<p:outputLabel value="Telefono" />
 							<p:inputText
 								value="#{controladorGestionSocios.objUsrSocio.gesPersona.telefono}"
-								placeholder="Telefono"  />
+								placeholder="Telefono" />
 							<p:outputLabel value="Fecha Ingreso" />
 							<p:calendar id="restricted"
 								requiredMessage="Es obligatorio fecha de ingreso"
@@ -142,10 +142,10 @@
 									<p:outputLabel value="#{descuento.usrTipoDescuento.nombre}" />
 								</p:column>
 								<p:column headerText="Valor">
-									<p:inputNumber
-										value="#{descuento.usrTipoDescuento.valorDefecto}">
+									<p:inputNumber value="#{descuento.valor}"
+										minValue="#{descuento.usrTipoDescuento.valorDefecto}">
 										<p:ajax update="@form:tblDescuentos" />
-										</p:inputNumber>
+									</p:inputNumber>
 								</p:column>
 							</p:dataTable>
 						</p:panel>
