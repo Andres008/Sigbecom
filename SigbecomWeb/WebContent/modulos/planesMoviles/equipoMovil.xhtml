@@ -36,7 +36,7 @@
                     <h:form id="form1">
 	                    <p:growl id="growl" showDetail="true" sticky="true" />
 						<p:panel header="Registro de Ventas Dispositivos Móviles" toggleable="true" collapsed="true">
-							<p:panelGrid columns="2" styleClass="ui-noborder">
+							<p:panelGrid id="pnlg" columns="2" styleClass="ui-noborder">
 								<p:outputLabel for="tip" value="Seleccionar Línea Telefónica:" />
 								<p:selectOneMenu id="tip" required="true" filter="true"
 									value="#{frmEquipoMovil.idContratoComite}" filterMatchMode="contains">
@@ -60,21 +60,39 @@
 									<f:convertNumber pattern="#0.00" />
 								</h:outputText>
 								<p:outputLabel for="adm" value="Valor Comisión: " />
-								<p:inputText id="adm" required="true" 
+								<p:inputText id="adm" required="true" proccess="@this, tot"
 									value="#{frmEquipoMovil.planAmortEquipmov.comision}">
-									<p:keyFilter mask="num" />
 									<p:ajax event="keyup" update="tot" oncomplete="#{frmEquipoMovil.calcularTotalEquipoMovil()}"/>
 								</p:inputText>
 								<p:outputLabel for="tot" value="Valor Total: " />
-								<h:outputText id="tot" value="#{frmEquipoMovil.planAmortEquipmov.total}" >
+								<p:inputNumber id="tot" value="#{frmEquipoMovil.planAmortEquipmov.total}" >
 									<f:convertNumber pattern="#0.00" />
-								</h:outputText>
+								</p:inputNumber>
 								<p:outputLabel for="plazo" value="Meses Plazo: " />
-								<p:inputText id="plazo" required="true" onkeyup=""
+								<p:inputNumber id="plazo" required="true" 
 									value="#{frmEquipoMovil.planAmortEquipmov.mesesPlazo}">
 									<p:keyFilter mask="num" />
-								</p:inputText>
-								
+								</p:inputNumber>
+								<p:outputLabel for="mes" value="Meses Inicial: " />
+								<p:selectOneMenu id="mes" value="#{frmEquipoMovil.mes}">
+				                    <f:selectItem itemLabel="Enero" itemValue="1"/>
+				                    <f:selectItem itemLabel="Febrero" itemValue="2"/>
+				                    <f:selectItem itemLabel="Marzo" itemValue="3"/>
+				                    <f:selectItem itemLabel="Abril" itemValue="4"/>
+				                    <f:selectItem itemLabel="Mayo" itemValue="5"/>
+				                    <f:selectItem itemLabel="Junio" itemValue="6"/>
+				                    <f:selectItem itemLabel="Julio" itemValue="7"/>
+				                    <f:selectItem itemLabel="Agosto" itemValue="8"/>
+				                    <f:selectItem itemLabel="Septiembre" itemValue="9"/>
+				                    <f:selectItem itemLabel="Octubre" itemValue="10"/>
+				                    <f:selectItem itemLabel="Noviembre" itemValue="11"/>
+				                    <f:selectItem itemLabel="Diciembre" itemValue="12"/>
+				                </p:selectOneMenu>
+								<p:outputLabel for="anio" value="Periodo: " />
+								<p:inputNumber id="anio" required="true" 
+									value="#{frmEquipoMovil.anio}">
+									<p:keyFilter mask="num" />
+								</p:inputNumber>
 							</p:panelGrid>
 							<p:commandButton value="Generar Tabla Amortizacion"
 								action="#{frmEquipoMovil.generarTablaAmortizacion()}" update="@form">

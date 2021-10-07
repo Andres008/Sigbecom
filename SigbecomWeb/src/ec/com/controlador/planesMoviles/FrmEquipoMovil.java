@@ -43,6 +43,9 @@ public class FrmEquipoMovil implements Serializable{
 	
 	private PlanAmortEquipmov planAmortEquipmov;
 	
+	private int anio;
+	private int mes;
+	
 	@PostConstruct
 	public void init() {
 		lstPlanContratoComite = new ArrayList<PlanContratoComite>();
@@ -50,6 +53,8 @@ public class FrmEquipoMovil implements Serializable{
 		idContratoComite = new Long(0);
 		idEquipoMovil = new Long(0);
 		planAmortEquipmov = new PlanAmortEquipmov();
+		anio = ModelUtil.getAnio(new Date());
+		mes = ModelUtil.getMes(new Date());
 		//cargarEquiposMoviles();
 		cargarContratosComite();
 	}
@@ -121,8 +126,8 @@ public class FrmEquipoMovil implements Serializable{
 	}
 	
 	public void generarTablaAmortizacion() {
-		int anio = ModelUtil.getAnio(new Date());
-		int mes = ModelUtil.getMes(new Date());
+		//int anio = ModelUtil.getAnio(new Date());
+		//int mes = ModelUtil.getMes(new Date());
 		if(mes==12) {
 			anio++;
 			mes=1;
@@ -310,6 +315,18 @@ public class FrmEquipoMovil implements Serializable{
 	}
 	public void setPlanAmortEquipmov(PlanAmortEquipmov planAmortEquipmov) {
 		this.planAmortEquipmov = planAmortEquipmov;
+	}
+	public int getAnio() {
+		return anio;
+	}
+	public void setAnio(int anio) {
+		this.anio = anio;
+	}
+	public int getMes() {
+		return mes;
+	}
+	public void setMes(int mes) {
+		this.mes = mes;
 	}
 	
 }
