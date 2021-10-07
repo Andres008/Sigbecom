@@ -39,16 +39,23 @@
 				<ui:include src="/affordances/route-bar-menu.xhtml" />
 			</div>
 			<div class="layout-main-content" align="center">
-				<H1>REVISIÓN DE SOLICITUDES DE PRESTAMO</H1>
+				<H1>HISTORIAL DE CREDITOS</H1>
 				<h:form id="solicitudes">
 					<p:growl id="growl" showDetail="true" sticky="true" />
-					<p:dataTable id="tblSolicitud" var="solicitud"
+					<p:dataTable id="tblSolicitud" var="solicitud" paginator="true" rows="8"
 						emptyMessage="No existe creditos."
 						value="#{controladorGestionCreditos.lstFinPrestamoSocio}">
 						<p:column headerText="Id Solicitud">
 							<p:outputLabel value="#{solicitud.idPrestamoSocio}" />
 						</p:column>
-						<p:column headerText="Nombre Socio">
+						<p:column headerText="Cédula"
+							filterBy="#{solicitud.usrSocio.cedulaSocio}"
+							filterMatchMode="contains">
+							<p:outputLabel value="#{solicitud.usrSocio.cedulaSocio}" />
+						</p:column>
+						<p:column headerText="Nombre Socio"
+							filterBy="#{solicitud.usrSocio.gesPersona.apellidos}"
+							filterMatchMode="contains">
 							<p:outputLabel
 								value="#{solicitud.usrSocio.gesPersona.apellidos} #{solicitud.usrSocio.gesPersona.nombres}" />
 						</p:column>
