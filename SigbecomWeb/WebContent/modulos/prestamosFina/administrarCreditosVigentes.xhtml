@@ -20,7 +20,7 @@
 	<ui:insert name="head" />
 </h:head>
 
-<h:body styleClass="main-body"  
+<h:body styleClass="main-body"
 	onload="#{controladorGestionCreditos.inicializarAdministrarCreditos()}">
 
 	<div
@@ -39,15 +39,21 @@
 				<ui:include src="/affordances/route-bar-menu.xhtml" />
 			</div>
 			<div class="layout-main-content" align="center">
-				<H1>ADMINISTRACIÓN DE PRESTAMOS</H1>
+				<H1>ADMINISTRACIÓN DE PRESTAMOS ACTIVOS</H1>
 				<h:form id="solicitudes">
 					<p:growl id="growl" showDetail="true" sticky="true" />
-					<p:dataTable id="tblSolicitud" var="solicitud" paginator="true" rows="8" style="font-size:70%"
-						emptyMessage="No existe creditos."
+					<h:commandLink value="Exportar Excel">
+						<p:graphicImage name="/images/excel.png" width="24" />
+						<p:dataExporter type="xls" target="@form:tblSolicitud"
+							fileName="tablaPrestamos" />
+					</h:commandLink>
+					<p:dataTable id="tblSolicitud" var="solicitud" paginator="true"
+						rows="8" style="font-size:70%" emptyMessage="No existe creditos."
 						value="#{controladorGestionCreditos.lstFinPrestamoSocio}">
-						<p:column headerText="Cédula Socio" filterBy="#{solicitud.usrSocio.gesPersona.cedula}"  style="font-size:90%">
-							<p:outputLabel
-								value="#{solicitud.usrSocio.gesPersona.cedula}" />
+						<p:column headerText="Cédula Socio"
+							filterBy="#{solicitud.usrSocio.gesPersona.cedula}"
+							style="font-size:90%">
+							<p:outputLabel value="#{solicitud.usrSocio.gesPersona.cedula}" />
 						</p:column>
 						<p:column headerText="Nombre Socio" style="font-size:90%">
 							<p:outputLabel
@@ -72,26 +78,28 @@
 						<p:column headerText="Observación" style="font-size:90%">
 							<p:outputLabel value="#{solicitud.observacion}" />
 						</p:column>
-						<p:column headerText="Amortización" style="font-size:90%">
-							<p:commandButton value="Tabla" update="@form" process="@this" style="font-size:110%"
+						<p:column headerText="Amortización" style="font-size:90%" exportable="false" >
+							<p:commandButton value="Tabla" update="@form" process="@this"
+								style="font-size:110%"
 								actionListener="#{controladorGestionCreditos.cargarFinPrestamoSocioAmortizacion(solicitud)}"
 								oncomplete="PF('infRevision').show()" />
 						</p:column>
-						<p:column headerText="Imprimir" style="font-size:90%">
+						<p:column headerText="Imprimir" style="font-size:90%" exportable="false">
 							<p:panelGrid columns="1" styleClass="ui-noborder">
-								<p:commandButton value="solicitud" update="@form" style="font-size:110%"
-									process="@this"
+								<p:commandButton value="solicitud" update="@form"
+									style="font-size:110%" process="@this"
 									actionListener="#{controladorGestionCreditos.imprimirSolicitudCredito(solicitud)}"
 									oncomplete="PF('infPDF').show()" />
 							</p:panelGrid>
 						</p:column>
-						<p:column headerText="Historial" style="font-size:90%">
-							<p:commandButton value="Historial" update="@form" process="@this" 
-								actionListener="#{controladorGestionCreditos.cargarFinPrestamoSocioAmortizacion(solicitud)}" style="font-size:110%"
-								oncomplete="PF('infAccion').show()" />
+						<p:column headerText="Historial" style="font-size:90%" exportable="false">
+							<p:commandButton value="Historial" update="@form" process="@this"
+								actionListener="#{controladorGestionCreditos.cargarFinPrestamoSocioAmortizacion(solicitud)}"
+								style="font-size:110%" oncomplete="PF('infAccion').show()" />
 						</p:column>
-						<p:column headerText="Ingresar Acción" style="font-size:90%">
-							<p:commandButton value="Acción" update="@form" process="@this" style="font-size:110%"
+						<p:column headerText="Ingresar Acción" style="font-size:90%" exportable="false">
+							<p:commandButton value="Acción" update="@form" process="@this"
+								style="font-size:110%"
 								actionListener="#{controladorGestionCreditos.cargarFinPrestamoSocioAccion(solicitud)}"
 								oncomplete="PF('ingAccion').show()" />
 						</p:column>
@@ -138,8 +146,9 @@
 									<p:inputTextarea cols="25" rows="1"
 										value="#{controladorGestionCreditos.accionCredito.observacion}"
 										autoResize="true" />
-										<p:outputLabel value="Meses Aplazamiento" />
-										<p:spinner min="0" value="#{controladorGestionCreditos.mesesAplazados}"/>
+									<p:outputLabel value="Meses Aplazamiento" />
+									<p:spinner min="0"
+										value="#{controladorGestionCreditos.mesesAplazados}" />
 								</p:panelGrid>
 								<p:commandButton value="Aplazar Cuota"
 									actionListener="#{controladorGestionCreditos.accionAplazarCuota()}"
@@ -197,12 +206,13 @@
 						id="infRevision" modal="true" position="top" showEffect="fade"
 						hideEffect="fade" resizable="false" width="90%">
 						<h:commandLink value="Exportar Excel">
-								<p:graphicImage name="/images/excel.png" width="24" />
-								<p:dataExporter type="xls" target="@form:tblAmorti"
-									fileName="tablaAmortizacion" />
-							</h:commandLink>
-						<p:dataTable emptyMessage="No existen datos." rows="10" id="tblAmorti"
-							paginator="true" sortBy="#{amortizacion.numeroCuota}"
+							<p:graphicImage name="/images/excel.png" width="24" />
+							<p:dataExporter type="xls" target="@form:tblAmorti"
+								fileName="tablaAmortizacion" />
+						</h:commandLink>
+						<p:dataTable emptyMessage="No existen datos." rows="10"
+							id="tblAmorti" paginator="true"
+							sortBy="#{amortizacion.numeroCuota}"
 							value="#{controladorGestionCreditos.objFinPrestamoSocio.finTablaAmortizacions}"
 							var="amortizacion">
 							<p:column headerText="Número Cuota">
