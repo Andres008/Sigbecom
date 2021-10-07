@@ -50,9 +50,6 @@
 					<p:dataTable id="tblSolicitud" var="solicitud" paginator="true" rows="8"
 						emptyMessage="No existe creditos."
 						value="#{controladorGestionCreditos.lstFinPrestamoSocio}">
-						<p:column headerText="Id Solicitud">
-							<p:outputLabel value="#{solicitud.idPrestamoSocio}" />
-						</p:column>
 						<p:column headerText="Cédula"
 							filterBy="#{solicitud.usrSocio.cedulaSocio}"
 							filterMatchMode="contains">
@@ -85,6 +82,9 @@
 						</p:column>
 						<p:column headerText="Saldo Capital">
 							<p:outputLabel value="#{solicitud.saldoCapital}" />
+						</p:column>
+						<p:column headerText="Cuota Mensual">
+							<p:outputLabel value="#{solicitud.cuotaMensual}" />
 						</p:column>
 						<p:column headerText="Amortización" exportable="false" >
 							<p:commandButton value="Tabla" update="@form" process="@this"

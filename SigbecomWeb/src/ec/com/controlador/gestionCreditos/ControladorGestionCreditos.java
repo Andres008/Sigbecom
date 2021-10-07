@@ -157,10 +157,14 @@ public class ControladorGestionCreditos implements Serializable {
 			objFinPrestamoSocio = new FinPrestamoSocio();
 			objFinPrestamoSocio.setFinTablaAmortizacions(new ArrayList<FinTablaAmortizacion>());
 			lstFinPrestamoSocio = managerGestionCredito.buscarPrestamosVigentes();
+			
+			lstFinPrestamoSocio.forEach(prestamo->System.out.println(prestamo.getIdPrestamoSocio()));
 			lstFinPrestamoSocio = lstFinPrestamoSocio.stream()
 					.filter(fecha -> fecha.getFechaPrimeraCouta().before(new Date())).collect(Collectors.toList());
+			lstFinPrestamoSocio.forEach(prestamo->System.out.println(prestamo.getIdPrestamoSocio()));
 			lstFinPrestamoSocio = lstFinPrestamoSocio.stream()
-					.filter(fecha -> fecha.getFechaUltimaCuota().after(new Date())).collect(Collectors.toList());
+					.filter(fecha -> fecha.getFechaUltimaCuota().before(new Date())).collect(Collectors.toList());
+			lstFinPrestamoSocio.forEach(prestamo->System.out.println(prestamo.getIdPrestamoSocio()));
 			lstFinPrestamoSocio = lstFinPrestamoSocio.stream()
 					.filter(prestamo -> cuotaVigenteByPrestamo(prestamo) != null).collect(Collectors.toList());
 		} catch (Exception e) {
@@ -1008,15 +1012,16 @@ public class ControladorGestionCreditos implements Serializable {
 				int aux = 0;
 				SimpleDateFormat anio = new SimpleDateFormat("yyyy");
 				SimpleDateFormat mes = new SimpleDateFormat("MM");
-				SimpleDateFormat formato= new SimpleDateFormat("dd/MM/yyyy");
-				objFinPrestamoSocio.setObservacion("Prorroga de "+mesesAplazados+" meses, desde "+formato.format(fechaInicialProrroga)+".");
+				SimpleDateFormat formato = new SimpleDateFormat("dd/MM/yyyy");
+				objFinPrestamoSocio.setObservacion("Prorroga de " + mesesAplazados + " meses, desde "
+						+ formato.format(fechaInicialProrroga) + ".");
 				for (FinTablaAmortizacion amortiza : objFinPrestamoSocio.getFinTablaAmortizacions()) {
 					if (mes.format(fechaInicialProrroga).equals(mes.format(amortiza.getFechaPago()))
 							&& anio.format(fechaInicialProrroga).equals(anio.format(amortiza.getFechaPago()))) {
-						aux=1;
+						aux = 1;
 					}
-					if (aux==1) {
-						amortiza.setFechaPago(ModelUtil.sumarRestarMes(amortiza.getFechaPago(),mesesAplazados));
+					if (aux == 1) {
+						amortiza.setFechaPago(ModelUtil.sumarRestarMes(amortiza.getFechaPago(), mesesAplazados));
 					}
 
 				}
