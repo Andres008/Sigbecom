@@ -78,20 +78,20 @@
 	                	<p:panel id="pnl"  header="LISTADO DE CLIENTES">
 						<p:dataTable value="#{frmRegistroAportante.lstAporteClientes}"
 							id="tblEmp" editable="true" var="dato" paginator="true"
-							rows="10">
+							rows="10" >
 							<p:ajax event="rowEdit" listener="#{frmCuenta.onRowEdit}" update="form2:growl"/>
             				<p:ajax event="rowEditCancel" listener="#{frmCuenta.onRowCancel}" update="form2:growl"/>
 							
 							<p:column headerText="CEDULA" filterBy="dato.usrSocio.cedulaSocio">
 								<h:outputText value="#{dato.usrSocio.cedulaSocio}"/>
 							</p:column>
-							<p:column headerText="APELLIDOS">
+							<p:column headerText="APELLIDOS" filterBy="#{dato.usrSocio.gesPersona.apellidos}">
 								<h:outputText value="#{dato.usrSocio.gesPersona.apellidos}"/>
 							</p:column>
-							<p:column headerText="NOMBRES">
+							<p:column headerText="NOMBRES" filterBy="#{dato.usrSocio.gesPersona.nombres}">
 								<h:outputText value="#{dato.usrSocio.gesPersona.nombres}"/>
 							</p:column>
-							<p:column headerText="CUENTA DE APORTE">
+							<p:column headerText="CUENTA DE APORTE" filterBy="#{dato.aporteCuenta.cuenta}">
 								<h:outputText value="#{dato.aporteCuenta.cuenta}"/>
 							</p:column>
 							<p:column headerText="SALDO INICIAL">
