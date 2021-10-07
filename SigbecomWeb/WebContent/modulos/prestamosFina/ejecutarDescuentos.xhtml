@@ -41,6 +41,8 @@
 			<div class="layout-main-content" align="center">
 				<H1>EJECUTAR DESCUENTO PRESTAMOS</H1>
 				<h:form id="solicitudes">
+					<h5>Hora Actual</h5>
+					<p:clock pattern="HH:mm:ss dd.MM.yyyy" mode="server" />
 					<p:growl id="growl" showDetail="true" sticky="true" />
 					<p:panel
 						header="Descuento de Prestamos del Mes de #{controladorGestionCreditos.mesAnioLetras()}">
