@@ -15,7 +15,7 @@
         <h:outputStylesheet library="css" name="theme.css"/>
 </h:head>
 
-<h:body styleClass="main-body">
+<h:body styleClass="main-body" onload="#{frmAplicarPlanMovil.init()}">
 
         <div class="layout-wrapper #{guestPreferences.menuLayout != 'static' ? guestPreferences.menuLayout : null}">
             <ui:include src="/affordances/megamenu.xhtml" />
@@ -191,7 +191,7 @@
 							                    </f:facet>
 							                </p:cellEditor>
 										</p:column>
-										<p:column width="6">
+										<p:column width="17">
 											<p:commandButton icon="fa fa-times-circle" action="#{frmAplicarPlanMovil.eliminarContratoComite(con)}"
 													update="@form"/>
 							            </p:column>

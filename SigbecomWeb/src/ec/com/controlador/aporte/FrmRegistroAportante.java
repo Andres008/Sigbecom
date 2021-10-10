@@ -18,6 +18,7 @@ import ec.com.controlador.sesion.BeanLogin;
 import ec.com.model.aporte.ManagerAporte;
 import ec.com.model.dao.entity.AporteCliente;
 import ec.com.model.dao.entity.AporteCuenta;
+import ec.com.model.dao.entity.AporteDescuento;
 import ec.com.model.dao.entity.UsrSocio;
 import ec.com.model.modulos.util.JSFUtil;
 
@@ -77,7 +78,7 @@ public class FrmRegistroAportante implements Serializable{
 		}
 	}
 	public void registrarAportanteAunaCuenta() {
-		if(!cedulaSocio.isEmpty() && idCuenta.intValue()>0 && saldoInicial.compareTo(BigDecimal.ZERO)==1 && !detalle.isEmpty()) {
+		if(!cedulaSocio.isEmpty() && idCuenta.intValue()>0 && (saldoInicial.compareTo(BigDecimal.ZERO)==0 || saldoInicial.compareTo(BigDecimal.ZERO)==1) && !detalle.isEmpty()) {
 			try {
 				List<AporteCliente> lstAporteCliTmp = managerAporte.findAllClientesByCedulaIdCuenta(cedulaSocio,idCuenta);
 				
@@ -126,6 +127,26 @@ public class FrmRegistroAportante implements Serializable{
      JSFUtil.crearMensajeINFO("Se canceló actualización.");
 	}
 	
+	public void eliminarRegistro(AporteCliente aporteCliente) {
+		try {
+			List<AporteDescuento> lstAporteCliente=managerAporte.findAllAporteDescuentosByIdCliente(aporteCliente.getIdCliente());
+			if(lstAporteCliente==null) {
+				managerAporte.eliminarAporteClienteByIdCliente(aporteCliente.getIdCliente());
+				JSFUtil.crearMensajeINFO("Registro eliminado correctamente.");
+				init();
+				PrimeFaces prime=PrimeFaces.current();
+				prime.ajax().update("form1");
+				prime.ajax().update("form2");
+			}
+			else {
+				JSFUtil.crearMensajeWARN("No se puede eliminar: Exiten uno o varios registro de pagos historicos relacionados a esta cuenta");
+			}
+			
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
 	//GETTERS AND SETTERS
 
 	public BeanLogin getBeanLogin() {
