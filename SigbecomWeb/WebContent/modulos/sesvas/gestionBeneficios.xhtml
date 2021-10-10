@@ -14,7 +14,7 @@
         <h:outputStylesheet library="css" name="theme.css"/>
 </h:head>
 
-<h:body styleClass="main-body">
+<h:body styleClass="main-body" onload="#{frmGestionBeneficios.init()}">
 
         <div class="layout-wrapper #{guestPreferences.menuLayout != 'static' ? guestPreferences.menuLayout : null}">
             <ui:include src="/affordances/megamenu.xhtml" />

@@ -125,4 +125,17 @@ public class ManagerAporte {
 	public List<AporteDescuento> findAllAporteDescuentos() throws Exception{
     	return managerDAOSegbecom.findAll(AporteDescuento.class, "o.idDescuento DESC");
     }
+    public void eliminarAporteClienteByIdCliente(long idCliente) throws Exception {
+    	managerDAOSegbecom.eliminar(AporteCliente.class, idCliente);
+    }
+    @SuppressWarnings("unchecked")
+	public List<AporteDescuento> findAllAporteDescuentosByIdCliente(long idCliente) throws Exception{
+    	List<AporteDescuento> lsAporteDescuentos = managerDAOSegbecom.findWhere(AporteDescuento.class, "o.aporteCliente.idCliente="+idCliente, null);
+    	if(lsAporteDescuentos !=null && lsAporteDescuentos.size()>0) {
+    		return lsAporteDescuentos;
+    	}
+    	else {
+    		return null;
+    	}
+    }
 }

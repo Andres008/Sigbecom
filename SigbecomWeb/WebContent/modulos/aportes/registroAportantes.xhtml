@@ -16,7 +16,7 @@
         <h:outputStylesheet library="css" name="theme.css"/>
 </h:head>
 
-<h:body styleClass="main-body">
+<h:body styleClass="main-body" onload="#{frmRegistroAportante.init()}">
 
         <div class="layout-wrapper #{guestPreferences.menuLayout != 'static' ? guestPreferences.menuLayout : null}">
             <ui:include src="/affordances/megamenu.xhtml" />
@@ -82,7 +82,7 @@
 							<p:ajax event="rowEdit" listener="#{frmCuenta.onRowEdit}" update="form2:growl"/>
             				<p:ajax event="rowEditCancel" listener="#{frmCuenta.onRowCancel}" update="form2:growl"/>
 							
-							<p:column headerText="CEDULA" filterBy="dato.usrSocio.cedulaSocio">
+							<p:column headerText="CEDULA" filterBy="#{dato.usrSocio.cedulaSocio}">
 								<h:outputText value="#{dato.usrSocio.cedulaSocio}"/>
 							</p:column>
 							<p:column headerText="APELLIDOS" filterBy="#{dato.usrSocio.gesPersona.apellidos}">
@@ -134,7 +134,9 @@
 									<p:rowEditor editTitle="Edit Row" cancelTitle="Cancel Edit" saveTitle="Save Row" 
 										/>
 				            </p:column>
-							
+							<p:column width="17">
+								<p:commandButton icon="fa fa-times" action="#{frmRegistroAportante.eliminarRegistro(dato)}"  update="form2:tblEmp"/>
+				            </p:column>
 						</p:dataTable>
 					</p:panel>
 	                </h:form>

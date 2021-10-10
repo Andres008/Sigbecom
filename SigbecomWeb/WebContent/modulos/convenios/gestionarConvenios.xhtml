@@ -16,7 +16,7 @@
         <ui:insert name="head"/>
 </h:head>
 
-<h:body styleClass="main-body" onload="init()">
+<h:body styleClass="main-body" onload="#{frmGestionarConvenios.init()}">
 
         <div class="layout-wrapper #{guestPreferences.menuLayout != 'static' ? guestPreferences.menuLayout : null}">
             <ui:include src="/affordances/megamenu.xhtml" />
