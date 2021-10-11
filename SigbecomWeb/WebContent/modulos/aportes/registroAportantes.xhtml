@@ -76,6 +76,13 @@
 	                <h:form id="form2">
 	                	<p:growl id="growl" showDetail="true" sticky="true" />
 	                	<p:panel id="pnl"  header="LISTADO DE CLIENTES">
+	                	<div class="card" align="right">
+						    <h:commandLink >
+						    	<p:graphicImage name="images/logo_excel.png" library="california-layout" />
+						    	<p:dataExporter type="xls" target="tblEmp" fileName="ListAporteClientes"></p:dataExporter>
+						    </h:commandLink>
+					    </div>
+					    <p:separator/>
 						<p:dataTable value="#{frmRegistroAportante.lstAporteClientes}"
 							id="tblEmp" editable="true" var="dato" paginator="true"
 							rows="10" >
@@ -130,11 +137,11 @@
 				                    </f:facet>
 				                </p:cellEditor>
 							</p:column>
-							<p:column width="6">
+							<p:column width="6" exportable="false">
 									<p:rowEditor editTitle="Edit Row" cancelTitle="Cancel Edit" saveTitle="Save Row" 
 										/>
 				            </p:column>
-							<p:column width="17">
+							<p:column width="17" exportable="false">
 								<p:commandButton icon="fa fa-times" action="#{frmRegistroAportante.eliminarRegistro(dato)}"  update="form2:tblEmp"/>
 				            </p:column>
 						</p:dataTable>
