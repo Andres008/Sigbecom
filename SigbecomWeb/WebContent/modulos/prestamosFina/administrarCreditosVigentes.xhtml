@@ -55,11 +55,15 @@
 							style="font-size:90%">
 							<p:outputLabel value="#{solicitud.usrSocio.gesPersona.cedula}" />
 						</p:column>
-						<p:column headerText="Nombre Socio" style="font-size:90%">
+						<p:column headerText="Nombre Socio"
+							filterBy="#{solicitud.usrSocio.gesPersona.apellidos}"
+							style="font-size:90%" filterMatchMode="contains">
 							<p:outputLabel
 								value="#{solicitud.usrSocio.gesPersona.apellidos} #{solicitud.usrSocio.gesPersona.nombres}" />
 						</p:column>
-						<p:column headerText="Tipo Prestamo" style="font-size:90%">
+						<p:column headerText="Tipo Prestamo" style="font-size:90%"
+							filterBy="#{solicitud.finTipoCredito.nombre}"
+							filterMatchMode="contains">
 							<p:outputLabel value="#{solicitud.finTipoCredito.nombre}" />
 						</p:column>
 						<p:column headerText="Tipo Solicitud" style="font-size:90%">
@@ -81,13 +85,15 @@
 						<p:column headerText="Observación" style="font-size:90%">
 							<p:outputLabel value="#{solicitud.observacion}" />
 						</p:column>
-						<p:column headerText="Amortización" style="font-size:90%" exportable="false" >
+						<p:column headerText="Amortización" style="font-size:90%"
+							exportable="false">
 							<p:commandButton value="Tabla" update="@form" process="@this"
 								style="font-size:110%"
 								actionListener="#{controladorGestionCreditos.cargarFinPrestamoSocioAmortizacion(solicitud)}"
 								oncomplete="PF('infRevision').show()" />
 						</p:column>
-						<p:column headerText="Imprimir" style="font-size:90%" exportable="false">
+						<p:column headerText="Imprimir" style="font-size:90%"
+							exportable="false">
 							<p:panelGrid columns="1" styleClass="ui-noborder">
 								<p:commandButton value="solicitud" update="@form"
 									style="font-size:110%" process="@this"
@@ -95,12 +101,14 @@
 									oncomplete="PF('infPDF').show()" />
 							</p:panelGrid>
 						</p:column>
-						<p:column headerText="Historial" style="font-size:90%" exportable="false">
+						<p:column headerText="Historial" style="font-size:90%"
+							exportable="false">
 							<p:commandButton value="Historial" update="@form" process="@this"
 								actionListener="#{controladorGestionCreditos.cargarFinPrestamoSocioAmortizacion(solicitud)}"
 								style="font-size:110%" oncomplete="PF('infAccion').show()" />
 						</p:column>
-						<p:column headerText="Ingresar Acción" style="font-size:90%" exportable="false">
+						<p:column headerText="Ingresar Acción" style="font-size:90%"
+							exportable="false">
 							<p:commandButton value="Acción" update="@form" process="@this"
 								style="font-size:110%"
 								actionListener="#{controladorGestionCreditos.cargarFinPrestamoSocioAccion(solicitud)}"
@@ -207,17 +215,29 @@
 					</p:dialog>
 					<p:dialog header="Tabla de Amortizacion" widgetVar="infRevision"
 						id="infRevision" modal="true" position="top" showEffect="fade"
-						hideEffect="fade" resizable="false" width="90%">
+						hideEffect="fade" resizable="false" width="95%">
 						<h:commandLink value="Exportar Excel">
 							<p:graphicImage name="/images/excel.png" width="24" />
 							<p:dataExporter type="xls" target="@form:tblAmorti"
-								fileName="tablaAmortizacion" />
+								fileName="#{controladorGestionCreditos.objFinPrestamoSocio.usrSocio.gesPersona.apellidos}" />
 						</h:commandLink>
 						<p:dataTable emptyMessage="No existen datos." rows="10"
 							id="tblAmorti" paginator="true"
 							sortBy="#{amortizacion.numeroCuota}"
 							value="#{controladorGestionCreditos.objFinPrestamoSocio.finTablaAmortizacions}"
 							var="amortizacion">
+							<p:column headerText="Nombre Socio">
+								<p:outputLabel
+									value="#{amortizacion.finPrestamoSocio.usrSocio.gesPersona.apellidos} #{amortizacion.finPrestamoSocio.usrSocio.gesPersona.nombres}" />
+							</p:column>
+							<p:column headerText="Tipo Credito">
+								<p:outputLabel
+									value="#{amortizacion.finPrestamoSocio.finTipoCredito.nombre}" />
+							</p:column>
+							<p:column headerText="Interes">
+								<p:outputLabel
+									value="#{amortizacion.finPrestamoSocio.finTipoCredito.tasaInteres} %"/>
+							</p:column>
 							<p:column headerText="Número Cuota">
 								<p:outputLabel value="#{amortizacion.numeroCuota}" />
 							</p:column>
