@@ -21,6 +21,7 @@ import ec.com.model.dao.entity.UsrLicenciaSocio;
 import ec.com.model.dao.entity.UsrParroquia;
 import ec.com.model.dao.entity.UsrProvincia;
 import ec.com.model.dao.entity.UsrSocio;
+import ec.com.model.dao.entity.UsrSocioDescuentoFijo;
 import ec.com.model.dao.entity.UsrTipoCuenta;
 import ec.com.model.dao.entity.UsrTipoInstruccion;
 import ec.com.model.dao.entity.UsrTipoLicencia;
@@ -341,6 +342,15 @@ public class ManagerGestionSocios {
 			throw new Exception("Error al buscar tipo de socio.");
 		}
 
+	}
+
+	public UsrSocioDescuentoFijo buscarUsrSocioDescuentoFijoById(long id) throws Exception {
+		return (UsrSocioDescuentoFijo) managerDAOSegbecom.findById(UsrSocioDescuentoFijo.class, id);
+	}
+
+	public void actualizarUsrSocioDescuentoFijo(UsrSocioDescuentoFijo descuento) throws Exception {
+		managerDAOSegbecom.actualizar(descuento);
+		
 	}
 
 }

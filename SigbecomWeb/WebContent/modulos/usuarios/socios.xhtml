@@ -171,6 +171,7 @@
 							<p:autoUpdate />
 						</p:messages>
 						<p:panel header="Total Ahorros">
+							<h1>Valores totales de ahorros</h1>
 							<p:panelGrid columns="2" styleClass="ui-noborder">
 								<p:outputLabel value="Caja de Ahorro" />
 								<p:inputNumber
@@ -198,15 +199,34 @@
 
 
 						</p:panel>
-						<p:panel header="Descuentos Mensuales" collapsed="true"
-							toggleable="true">
-							<p:dataTable var="descuento"
+						<p:panel header="Valores Descuentos Mensuales" collapsed="true"
+							id="pnlDescuento" toggleable="true">
+							<p:dataTable var="descuento" editable="true" id="tblDescuento"
 								value="#{controladorGestionSocios.objUsrSocio.usrSocioDescuentoFijos}">
+
+								<p:ajax event="rowEdit"
+									listener="#{controladorGestionSocios.onRowEditAhorros}"
+									update="@form:tblDescuento @form:growl" />
+								<p:ajax event="rowEditCancel"
+									listener="#{dtEditView.onRowCancel}"
+									update="@form:pnlDescuento @form:growl" />
 								<p:column headerText="Descuento">
 									<p:outputLabel value="#{descuento.usrTipoDescuento.nombre}" />
 								</p:column>
 								<p:column headerText="Valor">
-									<p:outputLabel value="#{descuento.valor}" />
+									<p:cellEditor>
+										<f:facet name="output">
+											<p:outputLabel value="#{descuento.valor}" />
+										</f:facet>
+										<f:facet name="input">
+											<p:inputText id="modelInput" value="#{descuento.valor}"
+												style="width:100%" />
+										</f:facet>
+									</p:cellEditor>
+								</p:column>
+								<p:column style="width:6rem">
+									<p:rowEditor editTitle="Edit Row" cancelTitle="Cancel Edit"
+										saveTitle="Save Row" />
 								</p:column>
 							</p:dataTable>
 						</p:panel>

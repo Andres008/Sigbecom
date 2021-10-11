@@ -173,4 +173,9 @@ public class ManagerGestionDescuentos {
 		}
 	}
 
+	public void ingresarUsrSocioDescuentoFijo(UsrSocioDescuentoFijo descuentoNuevo) throws Exception {
+		managerDAOSegbecom.insertar(descuentoNuevo);
+		
+	}
+
 }

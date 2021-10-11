@@ -27,6 +27,7 @@ import javax.inject.Named;
 import org.primefaces.PrimeFaces;
 import org.primefaces.event.FileUploadEvent;
 import org.primefaces.event.FlowEvent;
+import org.primefaces.event.RowEditEvent;
 import org.primefaces.model.DefaultStreamedContent;
 import org.primefaces.model.file.UploadedFile;
 
@@ -371,6 +372,33 @@ public class ControladorGestionSocios implements Serializable {
 			JSFUtil.crearMensajeERROR(e.getMessage());
 			e.printStackTrace();
 		}
+	}
+
+	public void onRowEditAhorros(RowEditEvent<UsrSocioDescuentoFijo> event) {
+		try {
+			UsrSocioDescuentoFijo descuento = managerGestionSocios
+					.buscarUsrSocioDescuentoFijoById(event.getObject().getId());
+			descuento.setFechaFinal(new Date());
+			descuento.setEstado("I");
+			managerGestionSocios.actualizarUsrSocioDescuentoFijo(descuento);
+			UsrSocioDescuentoFijo descuentoNuevo = event.getObject();
+			descuentoNuevo.setId(new Long(0));
+			descuentoNuevo.setFechaInicial(new Date());
+			managerGestionDescuentos.ingresarUsrSocioDescuentoFijo(descuentoNuevo);
+			managerLog.generarLogAuditoria(beanLogin.getCredencial(), this.getClass(), "onRowEditAhorros",
+					"Modificacion de valores de ahorro socio: " + descuento.getUsrSocio().getCedulaSocio()
+							+ ", Valor Antiguo: " + descuento.getValor() + " , valor nuevo: "
+							+ event.getObject().getValor());
+			JSFUtil.crearMensajeINFO("Actualización Correcta");
+		} catch (Exception e) {
+			managerLog.generarLogErrorGeneral(beanLogin.getCredencial(), this.getClass(), "onRowEditAhorros",
+					e.getMessage());
+			e.printStackTrace();
+		}
+	}
+
+	public void onRowCancelAhorros(RowEditEvent<UsrSocioDescuentoFijo> event) {
+		JSFUtil.crearMensajeWARN("Actualización Cancelada");
 	}
 
 	public void actualizarSocio() {
