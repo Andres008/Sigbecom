@@ -154,22 +154,28 @@ public class FrmAplicarConvenio implements Serializable{
 	
 	public void aplicarConvenio() {
 		//if(archivo!=null && convServicio!= null && convAdquirido.getAdjunto() != null && idValorMax>0 && valorProformado.compareTo(new BigDecimal(0))==1) {
-		if(convServicio!= null && convAdquirido.getAdjunto() != null && idValorMax>0 && valorProformado.compareTo(new BigDecimal(0))==1) {	
+		if(convServicio!= null && idValorMax>0 && valorProformado.compareTo(new BigDecimal(0))==1) {	
 			if(convServicio.getMontoMax().equalsIgnoreCase("SI")) {
 				if(valorProformado.compareTo(convValorMax.getValorMax())==-1 || valorProformado.compareTo(convValorMax.getValorMax())==0) {
 					try {
-						String path=managerConvenios.buscarValorParametroNombre("PATH_REPORTES");
-						//String cedulaSocio = beanLogin.getCredencial().getObjUsrSocio().getCedulaSocio();
-						String url = path+"/convenios/"+convValorMax.getUsrSocio().getCedulaSocio()+"/";
-						String str = convAdquirido.getAdjunto();
-						String ext = str.substring(str.lastIndexOf('.'), str.length());
-						Date fechaActual = new Date();
-						SimpleDateFormat formato = new SimpleDateFormat("dd");
-						int diaActual = Integer.parseInt(formato.format(fechaActual));
-						String nombreArchivo = ModelUtil.getAnioActual()+"-"+
-								   ModelUtil.getMesActual()+"-"+
-								   diaActual+"-proforma";
-						convAdquirido.setAdjunto(nombreArchivo+ext);
+						String nombreArchivo="";
+						String ext="";
+						String url="";
+						if(archivo!=null) {
+							String path=managerConvenios.buscarValorParametroNombre("PATH_REPORTES");
+							//String cedulaSocio = beanLogin.getCredencial().getObjUsrSocio().getCedulaSocio();
+							url = path+"/convenios/"+convValorMax.getUsrSocio().getCedulaSocio()+"/";
+							String str = convAdquirido.getAdjunto();
+							ext = str.substring(str.lastIndexOf('.'), str.length());
+							Date fechaActual = new Date();
+							SimpleDateFormat formato = new SimpleDateFormat("dd");
+							int diaActual = Integer.parseInt(formato.format(fechaActual));
+							nombreArchivo = ModelUtil.getAnioActual()+"-"+
+									   ModelUtil.getMesActual()+"-"+
+									   diaActual+"-proforma";
+							convAdquirido.setAdjunto(nombreArchivo+ext);
+						}
+						
 						convAdquirido.setConvServicio(convServicio);
 						convAdquirido.setConvValorMax(convValorMax);
 						convAdquirido.setEstado("SOLICITADO");
@@ -185,6 +191,7 @@ public class FrmAplicarConvenio implements Serializable{
 						BigDecimal interesTotal = convServicio.getInteres().multiply(convAdquirido.getValorTotal()).divide(new BigDecimal(100),2, RoundingMode.HALF_EVEN);
 						convAdquirido.setInteresTotal(interesTotal);
 						managerConvenios.insertarConvAdquirido(convAdquirido);
+						System.out.println("METODO 1");
 						if(archivo!=null) {
 							InputStream fis = new ByteArrayInputStream(archivo);
 							ModelUtil.guardarArchivo(fis, nombreArchivo, url, ext);
@@ -207,18 +214,24 @@ public class FrmAplicarConvenio implements Serializable{
 			}
 			else {
 				try {
-					String path=managerConvenios.buscarValorParametroNombre("PATH_REPORTES");
-					//String cedulaSocio = beanLogin.getCredencial().getObjUsrSocio().getCedulaSocio();
-					String url = path+"convenios/"+convValorMax.getUsrSocio().getCedulaSocio()+"/";
-					String str = convAdquirido.getAdjunto();
-					String ext = str.substring(str.lastIndexOf('.'), str.length());
-					Date fechaActual = new Date();
-					SimpleDateFormat formato = new SimpleDateFormat("dd");
-					int diaActual = Integer.parseInt(formato.format(fechaActual));
-					String nombreArchivo = ModelUtil.getAnioActual()+"-"+
-							   ModelUtil.getMesActual()+"-"+
-							   diaActual+"-proforma";
-					convAdquirido.setAdjunto(nombreArchivo+ext);
+					String nombreArchivo ="";
+					String ext="";
+					String url="";
+					if(archivo!=null) {
+						String path=managerConvenios.buscarValorParametroNombre("PATH_REPORTES");
+						//String cedulaSocio = beanLogin.getCredencial().getObjUsrSocio().getCedulaSocio();
+						url = path+"convenios/"+convValorMax.getUsrSocio().getCedulaSocio()+"/";
+						String str = convAdquirido.getAdjunto();
+						ext = str.substring(str.lastIndexOf('.'), str.length());
+						Date fechaActual = new Date();
+						SimpleDateFormat formato = new SimpleDateFormat("dd");
+						int diaActual = Integer.parseInt(formato.format(fechaActual));
+						nombreArchivo = ModelUtil.getAnioActual()+"-"+
+								   ModelUtil.getMesActual()+"-"+
+								   diaActual+"-proforma";
+						convAdquirido.setAdjunto(nombreArchivo+ext);
+					}
+					
 					convAdquirido.setConvServicio(convServicio);
 					convAdquirido.setConvValorMax(convValorMax);
 					convAdquirido.setEstado("SOLICITADO");
@@ -228,13 +241,17 @@ public class FrmAplicarConvenio implements Serializable{
 					convAdquirido.setInteres(convServicio.getInteres());//interes de Comision
 					convAdquirido.setDeudaTotal(valorProformado);//valor total proformado incluye la comisión
 					BigDecimal interes = (convServicio.getInteres().divide(new BigDecimal(100))).add(new BigDecimal(1));
-					BigDecimal valorTotal = valorProformado.divide(interes).setScale(2, RoundingMode.HALF_EVEN);
+					BigDecimal valorTotal = valorProformado.divide(interes,2, RoundingMode.HALF_EVEN);
 					convAdquirido.setValorTotal(valorTotal);
 					BigDecimal interesTotal = convServicio.getInteres().multiply(convAdquirido.getValorTotal()).divide(new BigDecimal(100)).setScale(2, RoundingMode.HALF_EVEN);
 					convAdquirido.setInteresTotal(interesTotal);
 					managerConvenios.insertarConvAdquirido(convAdquirido);
-					InputStream fis = new ByteArrayInputStream(archivo);
-					ModelUtil.guardarArchivo(fis, nombreArchivo, url, ext);
+					System.out.println("METODO 2");
+					if(archivo!=null) {
+						InputStream fis = new ByteArrayInputStream(archivo);
+						ModelUtil.guardarArchivo(fis, nombreArchivo, url, ext);
+					}
+					
 					JSFUtil.crearMensajeINFO("* Solicitud Realizada Correctamente");
 					init();
 					PrimeFaces prime=PrimeFaces.current();
@@ -251,11 +268,11 @@ public class FrmAplicarConvenio implements Serializable{
 			PrimeFaces prime=PrimeFaces.current();
 			prime.ajax().update("form2");
 		}
-//		else if(archivo==null) {
-//			JSFUtil.crearMensajeWARN("No ha seleccionado un archivo proforma");
-//			PrimeFaces prime=PrimeFaces.current();
-//			prime.ajax().update("form2");
-//		}
+		else if(archivo==null) {
+			JSFUtil.crearMensajeWARN("No ha seleccionado un archivo proforma");
+			PrimeFaces prime=PrimeFaces.current();
+			prime.ajax().update("form2");
+		}
 	}
 	public boolean activarTablaAmortizacion(String estado) {
 		if(!estado.equalsIgnoreCase("SOLICITADO") && !estado.equalsIgnoreCase("NO APROBADO")) {
