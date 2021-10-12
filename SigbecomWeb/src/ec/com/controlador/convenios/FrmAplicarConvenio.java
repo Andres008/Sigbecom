@@ -185,8 +185,11 @@ public class FrmAplicarConvenio implements Serializable{
 						BigDecimal interesTotal = convServicio.getInteres().multiply(convAdquirido.getValorTotal()).divide(new BigDecimal(100),2, RoundingMode.HALF_EVEN);
 						convAdquirido.setInteresTotal(interesTotal);
 						managerConvenios.insertarConvAdquirido(convAdquirido);
-						InputStream fis = new ByteArrayInputStream(archivo);
-						ModelUtil.guardarArchivo(fis, nombreArchivo, url, ext);
+						if(archivo!=null) {
+							InputStream fis = new ByteArrayInputStream(archivo);
+							ModelUtil.guardarArchivo(fis, nombreArchivo, url, ext);
+						}
+						
 						JSFUtil.crearMensajeINFO("Solicitud Realizada Correctamente");
 						init();
 						PrimeFaces prime=PrimeFaces.current();
