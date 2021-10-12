@@ -157,14 +157,14 @@ public class ControladorGestionCreditos implements Serializable {
 			objFinPrestamoSocio = new FinPrestamoSocio();
 			objFinPrestamoSocio.setFinTablaAmortizacions(new ArrayList<FinTablaAmortizacion>());
 			lstFinPrestamoSocio = managerGestionCredito.buscarPrestamosVigentes();
-			
-			lstFinPrestamoSocio.forEach(prestamo->System.out.println(prestamo.getIdPrestamoSocio()));
+
+			lstFinPrestamoSocio.forEach(prestamo -> System.out.println(prestamo.getIdPrestamoSocio()));
 			lstFinPrestamoSocio = lstFinPrestamoSocio.stream()
 					.filter(fecha -> fecha.getFechaPrimeraCouta().before(new Date())).collect(Collectors.toList());
-			lstFinPrestamoSocio.forEach(prestamo->System.out.println(prestamo.getIdPrestamoSocio()));
+			lstFinPrestamoSocio.forEach(prestamo -> System.out.println(prestamo.getIdPrestamoSocio()));
 			lstFinPrestamoSocio = lstFinPrestamoSocio.stream()
 					.filter(fecha -> fecha.getFechaUltimaCuota().before(new Date())).collect(Collectors.toList());
-			lstFinPrestamoSocio.forEach(prestamo->System.out.println(prestamo.getIdPrestamoSocio()));
+			lstFinPrestamoSocio.forEach(prestamo -> System.out.println(prestamo.getIdPrestamoSocio()));
 			lstFinPrestamoSocio = lstFinPrestamoSocio.stream()
 					.filter(prestamo -> cuotaVigenteByPrestamo(prestamo) != null).collect(Collectors.toList());
 		} catch (Exception e) {
@@ -342,6 +342,38 @@ public class ControladorGestionCreditos implements Serializable {
 			JasperPrint jasperPrint;
 			try {
 				jasperPrint = JasperFillManager.fillReport(jasper.getPath(), parametros, beanCollectionDataSource);
+				archivo = JasperExportManager.exportReportToPdf(jasperPrint);
+			} catch (JRException e) {
+				JSFUtil.crearMensajeERROR("Error al generar el reporte de solicitud. " + e.getMessage());
+				e.printStackTrace();
+			}
+		} catch (Exception e) {
+			JSFUtil.crearMensajeERROR("Error al generar el reporte de solicitud. " + e.getMessage());
+			e.printStackTrace();
+		}
+
+	}
+
+	public void imprimirTablaAmortizacion(FinPrestamoSocio prestamoSocio) {
+		try {
+			SimpleDateFormat formato = new SimpleDateFormat("dd/MM/yyyy");
+			prestamoSocio = managerGestionCredito.buscarSolicitudPrestamoById(prestamoSocio.getIdPrestamoSocio());
+			Map<String, Object> parametros = new HashMap<String, Object>();
+			parametros.put("nombreSocio", prestamoSocio.getUsrSocio().getGesPersona().getApellidos() + " "
+					+ prestamoSocio.getUsrSocio().getGesPersona().getNombres());
+			parametros.put("cedulaSocio", prestamoSocio.getUsrSocio().getCedulaSocio());
+			parametros.put("codEmpelado", prestamoSocio.getUsrSocio().getIdSocio());
+			parametros.put("fecha", formato.format(prestamoSocio.getFechaPrimeraCouta()));
+			parametros.put("tasa", prestamoSocio.getFinTipoCredito().getTasaInteres().toString());
+			parametros.put("capital", prestamoSocio.getValorPrestamo().toString());
+			parametros.put("numeroCuota", prestamoSocio.getPlazoMeses().toString());
+			parametros.put("capitalDeuda", prestamoSocio.getSaldoCapital().toString());
+			parametros.put("tipoCredito", prestamoSocio.getFinTipoCredito().getNombre());
+			File jasper = new File(beanLogin.getPathReporte() + "creditos/fin_tabla_amortizacion.jasper");
+			JasperPrint jasperPrint;
+			try {
+				jasperPrint = JasperFillManager.fillReport(jasper.getPath(), parametros,
+						new JRBeanCollectionDataSource(prestamoSocio.getFinTablaAmortizacions()));
 				archivo = JasperExportManager.exportReportToPdf(jasperPrint);
 			} catch (JRException e) {
 				JSFUtil.crearMensajeERROR("Error al generar el reporte de solicitud. " + e.getMessage());
@@ -691,6 +723,7 @@ public class ControladorGestionCreditos implements Serializable {
 			objFinPrestamoSocio = managerGestionCredito.buscarSolicitudPrestamoById(prestamoSocio.getIdPrestamoSocio());
 			if (objFinPrestamoSocio.getFinTablaAmortizacions().size() == 0)
 				objFinPrestamoSocio.setFinTablaAmortizacions(ModelUtil.calcularTablaAmortizacion(objFinPrestamoSocio));
+			imprimirTablaAmortizacion(prestamoSocio);
 		} catch (Exception e) {
 			JSFUtil.crearMensajeERROR("Error al cargar solicitud credito.");
 		}

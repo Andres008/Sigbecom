@@ -216,57 +216,66 @@
 					<p:dialog header="Tabla de Amortizacion" widgetVar="infRevision"
 						id="infRevision" modal="true" position="top" showEffect="fade"
 						hideEffect="fade" resizable="false" width="95%">
-						<h:commandLink value="Exportar Excel">
-							<p:graphicImage name="/images/excel.png" width="24" />
-							<p:dataExporter type="xls" target="@form:tblAmorti"
-								fileName="#{controladorGestionCreditos.objFinPrestamoSocio.usrSocio.gesPersona.apellidos}" />
-						</h:commandLink>
-						<p:dataTable emptyMessage="No existen datos." rows="10"
-							id="tblAmorti" paginator="true"
-							sortBy="#{amortizacion.numeroCuota}"
-							value="#{controladorGestionCreditos.objFinPrestamoSocio.finTablaAmortizacions}"
-							var="amortizacion">
-							<p:column headerText="Nombre Socio">
-								<p:outputLabel
-									value="#{amortizacion.finPrestamoSocio.usrSocio.gesPersona.apellidos} #{amortizacion.finPrestamoSocio.usrSocio.gesPersona.nombres}" />
-							</p:column>
-							<p:column headerText="Tipo Credito">
-								<p:outputLabel
-									value="#{amortizacion.finPrestamoSocio.finTipoCredito.nombre}" />
-							</p:column>
-							<p:column headerText="Interes">
-								<p:outputLabel
-									value="#{amortizacion.finPrestamoSocio.finTipoCredito.tasaInteres} %"/>
-							</p:column>
-							<p:column headerText="Valor Solicitado">
-								<p:outputLabel
-									value="#{amortizacion.finPrestamoSocio.valorPrestamo}"/>
-							</p:column>
-							<p:column headerText="Número Cuota">
-								<p:outputLabel value="#{amortizacion.numeroCuota}" />
-							</p:column>
-							<p:column headerText="Fecha de Pago">
-								<p:outputLabel value="#{amortizacion.fechaPago}">
-									<f:convertDateTime pattern="dd/MM/yyyy" />
-								</p:outputLabel>
-							</p:column>
-							<p:column headerText="Estado Cuota">
-								<p:outputLabel
-									value="#{amortizacion.finEstadoCuota.descripcion}" />
-							</p:column>
-							<p:column headerText="Pago Capital">
-								<p:outputLabel value="#{amortizacion.capital}" />
-							</p:column>
-							<p:column headerText="Pago Interes">
-								<p:outputLabel value="#{amortizacion.interes}" />
-							</p:column>
-							<p:column headerText="Cuota Mensual">
-								<p:outputLabel value="#{amortizacion.valorCuota}" />
-							</p:column>
-							<p:column headerText="Saldo Capital">
-								<p:outputLabel value="#{amortizacion.saldoCapital}" />
-							</p:column>
-						</p:dataTable>
+						<p:tabView>
+							<p:tab title="Excel">
+								<h:commandLink value="Exportar Excel">
+									<p:graphicImage name="/images/excel.png" width="24" />
+									<p:dataExporter type="xls" target="@form:tblAmorti"
+										fileName="#{controladorGestionCreditos.objFinPrestamoSocio.usrSocio.gesPersona.apellidos}" />
+								</h:commandLink>
+								<p:dataTable emptyMessage="No existen datos." rows="5"
+									id="tblAmorti" paginator="true"
+									sortBy="#{amortizacion.numeroCuota}"
+									value="#{controladorGestionCreditos.objFinPrestamoSocio.finTablaAmortizacions}"
+									var="amortizacion">
+									<p:column headerText="Nombre Socio">
+										<p:outputLabel
+											value="#{amortizacion.finPrestamoSocio.usrSocio.gesPersona.apellidos} #{amortizacion.finPrestamoSocio.usrSocio.gesPersona.nombres}" />
+									</p:column>
+									<p:column headerText="Tipo Credito">
+										<p:outputLabel
+											value="#{amortizacion.finPrestamoSocio.finTipoCredito.nombre}" />
+									</p:column>
+									<p:column headerText="Interes">
+										<p:outputLabel
+											value="#{amortizacion.finPrestamoSocio.finTipoCredito.tasaInteres} %" />
+									</p:column>
+									<p:column headerText="Valor Solicitado">
+										<p:outputLabel
+											value="#{amortizacion.finPrestamoSocio.valorPrestamo}" />
+									</p:column>
+									<p:column headerText="Número Cuota">
+										<p:outputLabel value="#{amortizacion.numeroCuota}" />
+									</p:column>
+									<p:column headerText="Fecha de Pago">
+										<p:outputLabel value="#{amortizacion.fechaPago}">
+											<f:convertDateTime pattern="dd/MM/yyyy" />
+										</p:outputLabel>
+									</p:column>
+									<p:column headerText="Estado Cuota">
+										<p:outputLabel
+											value="#{amortizacion.finEstadoCuota.descripcion}" />
+									</p:column>
+									<p:column headerText="Pago Capital">
+										<p:outputLabel value="#{amortizacion.capital}" />
+									</p:column>
+									<p:column headerText="Pago Interes">
+										<p:outputLabel value="#{amortizacion.interes}" />
+									</p:column>
+									<p:column headerText="Cuota Mensual">
+										<p:outputLabel value="#{amortizacion.valorCuota}" />
+									</p:column>
+									<p:column headerText="Saldo Capital">
+										<p:outputLabel value="#{amortizacion.saldoCapital}" />
+									</p:column>
+								</p:dataTable>
+							</p:tab>
+							<p:tab title="PDF">
+								<p:media cache="false"
+									value="#{controladorGestionCreditos.reportePDF()}" width="100%"
+									height="400" player="pdf"></p:media>
+							</p:tab>
+						</p:tabView>
 					</p:dialog>
 				</h:form>
 
