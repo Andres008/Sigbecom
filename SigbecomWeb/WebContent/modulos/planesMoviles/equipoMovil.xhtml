@@ -65,8 +65,8 @@
 									<p:ajax event="keyup" update="tot" oncomplete="#{frmEquipoMovil.calcularTotalEquipoMovil()}"/>
 								</p:inputText>
 								<p:outputLabel for="tot" value="Valor Total: " />
-								<p:inputNumber id="tot" value="#{frmEquipoMovil.planAmortEquipmov.total}" >
-									<f:convertNumber pattern="#0.00" />
+								<p:inputNumber id="tot" value="#{frmEquipoMovil.planAmortEquipmov.total}" 
+								decimalPlaces="2" decimalSeparator="." >
 								</p:inputNumber>
 								<p:outputLabel for="plazo" value="Meses Plazo: " />
 								<p:inputNumber id="plazo" required="true" 
@@ -89,10 +89,10 @@
 				                    <f:selectItem itemLabel="Diciembre" itemValue="12"/>
 				                </p:selectOneMenu>
 								<p:outputLabel for="anio" value="Periodo: " />
-								<p:inputNumber id="anio" required="true" 
+								<p:inputText id="anio" required="true" 
 									value="#{frmEquipoMovil.anio}">
 									<p:keyFilter mask="num" />
-								</p:inputNumber>
+								</p:inputText>
 							</p:panelGrid>
 							<p:commandButton value="Generar Tabla Amortizacion"
 								action="#{frmEquipoMovil.generarTablaAmortizacion()}" update="@form">
