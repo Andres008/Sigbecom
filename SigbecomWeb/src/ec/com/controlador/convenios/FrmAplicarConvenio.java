@@ -153,7 +153,8 @@ public class FrmAplicarConvenio implements Serializable{
 	}
 	
 	public void aplicarConvenio() {
-		if(archivo!=null && convServicio!= null && convAdquirido.getAdjunto() != null && idValorMax>0 && valorProformado.compareTo(new BigDecimal(0))==1) {
+		//if(archivo!=null && convServicio!= null && convAdquirido.getAdjunto() != null && idValorMax>0 && valorProformado.compareTo(new BigDecimal(0))==1) {
+		if(convServicio!= null && convAdquirido.getAdjunto() != null && idValorMax>0 && valorProformado.compareTo(new BigDecimal(0))==1) {	
 			if(convServicio.getMontoMax().equalsIgnoreCase("SI")) {
 				if(valorProformado.compareTo(convValorMax.getValorMax())==-1 || valorProformado.compareTo(convValorMax.getValorMax())==0) {
 					try {
@@ -247,11 +248,11 @@ public class FrmAplicarConvenio implements Serializable{
 			PrimeFaces prime=PrimeFaces.current();
 			prime.ajax().update("form2");
 		}
-		else if(archivo==null) {
-			JSFUtil.crearMensajeWARN("No ha seleccionado un archivo proforma");
-			PrimeFaces prime=PrimeFaces.current();
-			prime.ajax().update("form2");
-		}
+//		else if(archivo==null) {
+//			JSFUtil.crearMensajeWARN("No ha seleccionado un archivo proforma");
+//			PrimeFaces prime=PrimeFaces.current();
+//			prime.ajax().update("form2");
+//		}
 	}
 	public boolean activarTablaAmortizacion(String estado) {
 		if(!estado.equalsIgnoreCase("SOLICITADO") && !estado.equalsIgnoreCase("NO APROBADO")) {
