@@ -46,6 +46,9 @@ public class FrmEquipoMovil implements Serializable{
 	private int anio;
 	private int mes;
 	
+	private BigDecimal comision;
+	private BigDecimal total;
+	
 	@PostConstruct
 	public void init() {
 		lstPlanContratoComite = new ArrayList<PlanContratoComite>();
@@ -55,6 +58,10 @@ public class FrmEquipoMovil implements Serializable{
 		planAmortEquipmov = new PlanAmortEquipmov();
 		anio = ModelUtil.getAnio(new Date());
 		mes = ModelUtil.getMes(new Date());
+		
+		comision = null;
+		total = null;
+		
 		//cargarEquiposMoviles();
 		cargarContratosComite();
 	}
@@ -110,20 +117,16 @@ public class FrmEquipoMovil implements Serializable{
 			} 
 		}
 	}
-	
-	public void calcularTotalEquipoMovil() {
-		if(idContratoComite!= 0 && idEquipoMovil !=0){
-			//System.out.println("Capital: "+ planAmortEquipmov.getValorCapital());
-			//System.out.println("Comision: "+ planAmortEquipmov.getComision());
-			BigDecimal total = planAmortEquipmov.getValorCapital().add(planAmortEquipmov.getComision());
-			planAmortEquipmov.setTotal(total);
-		}
-		else {
-			planAmortEquipmov.setTotal(null);
-		}
-		PrimeFaces prime=PrimeFaces.current();
-		prime.ajax().update("form1");
-	}
+	//<p:ajax event="keyup" update="tot" oncomplete="#{frmEquipoMovil.calcularTotalEquipoMovil()}"/>
+	/*
+	 * public void calcularTotalEquipoMovil() { if(idContratoComite!= 0 &&
+	 * idEquipoMovil !=0){ System.out.println("Capital: "+
+	 * planAmortEquipmov.getValorCapital()); System.out.println("Comision: "+
+	 * planAmortEquipmov.getComision()); BigDecimal total =
+	 * planAmortEquipmov.getValorCapital().add(planAmortEquipmov.getComision());
+	 * planAmortEquipmov.setTotal(total); } else { planAmortEquipmov.setTotal(null);
+	 * } PrimeFaces prime=PrimeFaces.current(); prime.ajax().update("form1"); }
+	 */
 	
 	public void generarTablaAmortizacion() {
 		//int anio = ModelUtil.getAnio(new Date());
@@ -135,7 +138,10 @@ public class FrmEquipoMovil implements Serializable{
 		else {
 			mes++;
 		}
-		
+		System.out.println("comision: "+comision);
+		System.out.println("Total: "+total);
+		planAmortEquipmov.setComision(comision);
+		planAmortEquipmov.setTotal(total);
 		//System.out.println("Fecha Suma: "+ModelUtil.getSumarMeses(fecha, 1));
 		
 		if(planAmortEquipmov.getComision()!=null && planAmortEquipmov.getMesesPlazo()!=null && 
@@ -165,7 +171,8 @@ public class FrmEquipoMovil implements Serializable{
 					amortEquipmov.setComision(planAmortEquipmov.getComision());
 					amortEquipmov.setTotal(planAmortEquipmov.getTotal());
 				}
-				
+				System.out.println("Total: "+ planAmortEquipmov.getTotal());
+				System.out.println("MesesPlazo: "+ planAmortEquipmov.getMesesPlazo());
 				BigDecimal valorCuota = planAmortEquipmov.getTotal().divide(planAmortEquipmov.getMesesPlazo(),2, RoundingMode.HALF_EVEN);
 				
 				
@@ -327,6 +334,18 @@ public class FrmEquipoMovil implements Serializable{
 	}
 	public void setMes(int mes) {
 		this.mes = mes;
+	}
+	public BigDecimal getComision() {
+		return comision;
+	}
+	public void setComision(BigDecimal comision) {
+		this.comision = comision;
+	}
+	public BigDecimal getTotal() {
+		return total;
+	}
+	public void setTotal(BigDecimal total) {
+		this.total = total;
 	}
 	
 }

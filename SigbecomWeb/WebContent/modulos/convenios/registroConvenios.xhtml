@@ -15,7 +15,7 @@
         <h:outputStylesheet library="css" name="theme.css"/>
 </h:head>
 
-<h:body styleClass="main-body" onload="#{frmAplicarConvenio.init()}">
+<h:body styleClass="main-body" onload="#{frmRegistroConvenio.init()}">
 
         <div class="layout-wrapper #{guestPreferences.menuLayout != 'static' ? guestPreferences.menuLayout : null}">
             <ui:include src="/affordances/megamenu.xhtml" />
@@ -25,81 +25,81 @@
 			<div class="layout-main">
                 <div class="route-bar">
                     <div class="route-bar-breadcrumb">
-                        <i class="fa fa-home"></i> <span>/CONVENIOS/Aplicar Convenios</span>
+                        <i class="fa fa-home"></i> <span>/CONVENIOS/Registro de Convenios</span>
                         <ui:insert name="viewname" />
                     </div>
 					<ui:include src="/affordances/route-bar-menu.xhtml" />
                 </div>
 				<div class="layout-main-content" align="center">
-                    <H1>APLICAR CONVENIOS</H1>
+                    <H1>REGISTRAR CONVENIOS EXISTENTES</H1>
                     <h:form id="form1">
 	                    <p:growl id="growl" showDetail="true" sticky="true" />
 						<p:panel header="Seleccionar Convenio" toggleable="true" collapsed="true">
 							<p:panelGrid columns="3" styleClass="ui-noborder">
-								<p:outputLabel value="Selecionar Servicio:" />
-								<p:selectOneMenu required="true" value="#{frmAplicarConvenio.idServicio}">
+								<p:outputLabel value="Seleccione Servicio:" />
+								<p:selectOneMenu required="true" value="#{frmRegistroConvenio.idServicio}">
 									<f:selectItem itemLabel="Selecione Servicio" itemValue="0"/>
-                    				<f:selectItems value="#{frmAplicarConvenio.lstConvServicio}" var="ser"
+                    				<f:selectItems value="#{frmRegistroConvenio.lstConvServicio}" var="ser"
                     								   itemLabel="#{ser.convEmpresa.empresa} #{ser.servicioProducto}" itemValue="#{ser.idConvServicio}"/>
 									<p:ajax event="change" update="form1:pnl"
-	        								listener="#{frmAplicarConvenio.cargarConvServicio()}" />
+	        								listener="#{frmRegistroConvenio.cargarConvServicio()}" />
 								</p:selectOneMenu>
 							</p:panelGrid>
 							<p:panel id="pnl">
-								<p:panelGrid id="datEmp" columns="3" styleClass="ui-noborder" rendered="#{frmAplicarConvenio.pnlRender}">
+								<p:panelGrid id="datEmp" columns="3" styleClass="ui-noborder" rendered="#{frmRegistroConvenio.pnlRender}">
 									<p:outputLabel value="Empresa:"/>
-									<p:outputLabel value="#{frmAplicarConvenio.convServicio.convEmpresa.empresa}"/>
+									<p:outputLabel value="#{frmRegistroConvenio.convServicio.convEmpresa.empresa}"/>
 									<p:outputLabel value=""/>
 									<p:outputLabel value="Servicio seleccionado:"/>
-									<p:outputLabel value="#{frmAplicarConvenio.convServicio.servicioProducto}" />
+									<p:outputLabel value="#{frmRegistroConvenio.convServicio.servicioProducto}" />
 									<p:outputLabel value=""/>
 									<p:outputLabel value="Detalle del Servicio :"/>
-									<p:outputLabel value="#{frmAplicarConvenio.convServicio.detalle}" />
+									<p:outputLabel value="#{frmRegistroConvenio.convServicio.detalle}" />
 									<p:outputLabel value=""/>
 									<p:outputLabel value="Aplica Monto Maximo:"/>
-									<p:outputLabel value="#{frmAplicarConvenio.convServicio.montoMax}"/>
+									<p:outputLabel value="#{frmRegistroConvenio.convServicio.montoMax}"/>
 									<p:outputLabel value=""/>
 									<p:outputLabel value="Comision (%):"/>
-									<p:outputLabel value="#{frmAplicarConvenio.convServicio.interes}">
+									<p:outputLabel value="#{frmRegistroConvenio.convServicio.interes}">
 										<f:convertNumber pattern="#0.00"/>
 									</p:outputLabel>
 									<p:outputLabel value=""/>
 									<p:outputLabel for="nom" value="Seleccione Cliente:"/>
-									<p:selectOneMenu id="nom" required="true" value="#{frmAplicarConvenio.idValorMax}"
+									<p:selectOneMenu id="nom" required="true" value="#{frmRegistroConvenio.idValorMax}"
 												 filter="true" filterMatchMode="contains">
 				                    	<f:selectItem itemLabel="Seleccione Cliente"
 											noSelectionOption="true" />
-				                    	<f:selectItems value="#{frmAplicarConvenio.lstConvValorMax}" var="dat"
+				                    	<f:selectItems value="#{frmRegistroConvenio.lstConvValorMax}" var="dat"
 				                    			itemLabel="#{dat.usrSocio.cedulaSocio} #{dat.usrSocio.gesPersona.apellidos} #{dat.usrSocio.gesPersona.nombres}" 
 				                    			itemValue="#{dat.idValorMax}"/>
 				                    	<p:ajax event="change" update="datEmp"
-	        								listener="#{frmAplicarConvenio.cargarConvValorMax()}" />
+	        								listener="#{frmRegistroConvenio.cargarConvValorMax()}" />
 				                    </p:selectOneMenu>
 				                    <p:outputLabel value=""/>
 				                    <p:outputLabel value="Monto maximo permitido del Cliente:"/>
-				                    <p:outputLabel value="#{frmAplicarConvenio.valorMaximo}"/>
+				                    <p:outputLabel value="#{frmRegistroConvenio.valorMaximo}"/>
 				                    <p:outputLabel value=""/>
 				                    <p:outputLabel value="Valor total proformado:"/>
-				                    <p:inputNumber value="#{frmAplicarConvenio.valorProformado}"/>
+				                    <p:inputNumber value="#{frmRegistroConvenio.valorProformado}"/>
 				                    <p:outputLabel value=""/>
 									<p:outputLabel value="Proforma pdf - png - jpg:"/>
 									<p:fileUpload styleClass="ui-fileupload-buttonbar"  
 						        				  label="Seleccionar Archivo"
-						        				  listener="#{frmAplicarConvenio.handleFileUpload}"
+						        				  listener="#{frmRegistroConvenio.handleFileUpload}"
 						        				  multiple="false"
 						        				  mode="advanced"
 						        				  auto="true"
 						        				  allowTypes="/(\.|\/)(pdf|png|jpg)$/"
-						        				  immediate="#{frmAplicarConvenio.precargarArchivo()}"
+						        				  immediate="#{frmRegistroConvenio.precargarArchivo()}"
 						        				  update="datEmp" 
 				                      			  process="@this" 
 				                      			  skinSimple="true"
 				                    />
-				                    <p:outputLabel value="#{frmAplicarConvenio.convAdquirido.adjunto}"/>
+				                    <p:outputLabel value="#{frmRegistroConvenio.convAdquirido.adjunto}"/>
 								</p:panelGrid>
 								<p:panelGrid>
 									<p:commandButton value="Aplicar Convenio"
-										action="#{frmAplicarConvenio.aplicarConvenio()}" update="@form">
+										action="#{frmRegistroConvenio.aplicarConvenio()}" update="@form">
 										<p:confirm header="Confirmación"
 										message="Esta seguro de ingresar la información?"
 										icon="pi pi-exclamation-triangle" />
@@ -120,7 +120,7 @@
 	                <h:form id="form2">
 	                	<p:growl id="growl" showDetail="true" sticky="true" />
 	                	<p:panel id="pnl"  header="CONVENIOS SOLICITADOS">
-						<p:dataTable value="#{frmAplicarConvenio.lstConvAdquirido}"
+						<p:dataTable value="#{frmRegistroConvenio.lstConvAdquirido}"
 							id="tblEmp" editable="true" var="dato" paginator="true"
 							rows="10">
 							<p:column headerText="" style="width:2rem">
@@ -151,7 +151,7 @@
 				            </p:column>
 							<p:rowExpansion>
 							
-								<p:dataTable value="#{dato.convAmortizacions}" rendered="#{frmAplicarConvenio.activarTablaAmortizacion(dato.estado)}"
+								<p:dataTable value="#{dato.convAmortizacions}" rendered="#{frmRegistroConvenio.activarTablaAmortizacion(dato.estado)}"
 													id="tblCon" var="con">
 										<f:facet name="header">
 								            TABLA DE AMORTIZACION

@@ -134,12 +134,15 @@
 					    </div>	
 						<p:dataTable value="#{frmPlanillaPagoPlan.lstPlanRegistroPago}"
 							id="tblEmp"  var="dato" editable="true" 
-							>
+							rowIndexVar="index">
 							<f:facet name="header">
 								PLANILLA DE PLANES MOVILES
 							</f:facet>
 							<p:ajax event="rowEdit" listener="#{frmPlanillaPagoPlan.onRowEdit}" update="form2:growl"/>
             				<p:ajax event="rowEditCancel" listener="#{frmPlanillaPagoPlan.onRowCancel}" update="form2:growl"/>
+							<p:column headerText="No">
+						        #{index + 1}
+						    </p:column>
 							<p:column headerText="LINEA" filterBy="#{dato.lineaTelefono}">
 								<h:outputText value="#{dato.lineaTelefono}"/>
 							</p:column>
@@ -151,6 +154,9 @@
 							</p:column>
 							<p:column headerText="NOMBRE REFENCIAL">
 								<h:outputText value="#{dato.nombreRef}"/>
+							</p:column>
+							<p:column headerText="PLAN" filterBy="#{dato.planContratoComite.planPlanMovil.plan}">
+								<h:outputText value="#{dato.planContratoComite.planPlanMovil.plan}"/>
 							</p:column>
 							<p:column headerText="VALOR PLAN" >
 								<p:cellEditor >

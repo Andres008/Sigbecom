@@ -1,5 +1,10 @@
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://java.sun.com/jsf/html" xmlns:f="http://java.sun.com/jsf/core" xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:p="http://primefaces.org/ui">
+<html xmlns="http://www.w3.org/1999/xhtml" 
+	  xmlns:h="http://java.sun.com/jsf/html" 
+	  xmlns:f="http://java.sun.com/jsf/core" 
+	  xmlns:ui="http://java.sun.com/jsf/facelets" 
+	  xmlns:p="http://primefaces.org/ui"
+	  >
 
 
 <h:head>
@@ -59,20 +64,23 @@
 								<h:outputText id="car" value="#{frmEquipoMovil.planAmortEquipmov.valorCapital}" >
 									<f:convertNumber pattern="#0.00" />
 								</h:outputText>
+								
 								<p:outputLabel for="adm" value="Valor Comisión: " />
-								<p:inputText id="adm" required="true" proccess="@this, tot"
-									value="#{frmEquipoMovil.planAmortEquipmov.comision}">
-									<p:ajax event="keyup" update="tot" oncomplete="#{frmEquipoMovil.calcularTotalEquipoMovil()}"/>
-								</p:inputText>
-								<p:outputLabel for="tot" value="Valor Total: " />
-								<p:inputNumber id="tot" value="#{frmEquipoMovil.planAmortEquipmov.total}" 
-								decimalPlaces="2" decimalSeparator="." >
+								<p:inputNumber id="adm" required="true"
+									value="#{frmEquipoMovil.comision}">
+									<p:ajax update="adm"/>
 								</p:inputNumber>
-								<p:outputLabel for="plazo" value="Meses Plazo: " />
-								<p:inputNumber id="plazo" required="true" 
+								<p:outputLabel for="tot" value="Valor Total: " />
+								<p:inputNumber id="tot" required="true"
+								 	value="#{frmEquipoMovil.total}">
+									<p:ajax update="tot"/>
+								</p:inputNumber>
+								
+								<p:outputLabel for="plazo" value="Meses Plazo: "/>
+								<p:inputText id="plazo" required="true" 
 									value="#{frmEquipoMovil.planAmortEquipmov.mesesPlazo}">
 									<p:keyFilter mask="num" />
-								</p:inputNumber>
+								</p:inputText>
 								<p:outputLabel for="mes" value="Meses Inicial: " />
 								<p:selectOneMenu id="mes" value="#{frmEquipoMovil.mes}">
 				                    <f:selectItem itemLabel="Enero" itemValue="1"/>
@@ -95,7 +103,7 @@
 								</p:inputText>
 							</p:panelGrid>
 							<p:commandButton value="Generar Tabla Amortizacion"
-								action="#{frmEquipoMovil.generarTablaAmortizacion()}" update="@form">
+								action="#{frmEquipoMovil.generarTablaAmortizacion()}" update="form1">
 								<p:confirm header="Confirmación"
 								message="Esta seguro de ingresar la información?"
 								icon="pi pi-exclamation-triangle" />
