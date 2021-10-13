@@ -101,6 +101,13 @@ public class ManagerConvenios {
     	
     	return lstConvServicioTmp;
     }
+    
+    @SuppressWarnings("unchecked")
+	public List<ConvServicio> findAllConvServicioActivos() throws Exception{
+    	List<ConvServicio> lstConvServicio = managerDAOSegbecom.findWhere(ConvServicio.class, "o.estado = 'ACTIVO'", "o.idConvServicio ASC");
+		return lstConvServicio;
+    }
+    
     public ConvServicio findByIdConvServicio(Long idServicio) throws Exception {
     	return (ConvServicio) managerDAOSegbecom.findById(ConvServicio.class, idServicio);
     } 
