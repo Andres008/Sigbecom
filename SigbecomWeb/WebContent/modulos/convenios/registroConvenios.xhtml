@@ -35,7 +35,8 @@
                     <h:form id="form1">
 	                    <p:growl id="growl" showDetail="true" sticky="true" />
 						<p:panel header="Seleccionar Convenio" toggleable="true" collapsed="true">
-							<p:panelGrid columns="3" styleClass="ui-noborder">
+							<p:panel id="pnl">
+							<p:panelGrid columns="2" styleClass="ui-noborder">
 								<p:outputLabel value="Seleccione Servicio:" />
 								<p:selectOneMenu required="true" value="#{frmRegistroConvenio.idServicio}">
 									<f:selectItem itemLabel="Selecione Servicio" itemValue="0"/>
@@ -44,74 +45,55 @@
 									<p:ajax event="change" update="form1:pnl"
 	        								listener="#{frmRegistroConvenio.cargarConvServicio()}" />
 								</p:selectOneMenu>
-							</p:panelGrid>
-							<p:panel id="pnl">
-								<p:panelGrid id="datEmp" columns="3" styleClass="ui-noborder" rendered="#{frmRegistroConvenio.pnlRender}">
-									<p:outputLabel value="Empresa:"/>
-									<p:outputLabel value="#{frmRegistroConvenio.convServicio.convEmpresa.empresa}"/>
-									<p:outputLabel value=""/>
-									<p:outputLabel value="Servicio seleccionado:"/>
-									<p:outputLabel value="#{frmRegistroConvenio.convServicio.servicioProducto}" />
-									<p:outputLabel value=""/>
-									<p:outputLabel value="Detalle del Servicio :"/>
-									<p:outputLabel value="#{frmRegistroConvenio.convServicio.detalle}" />
-									<p:outputLabel value=""/>
-									<p:outputLabel value="Aplica Monto Maximo:"/>
-									<p:outputLabel value="#{frmRegistroConvenio.convServicio.montoMax}"/>
-									<p:outputLabel value=""/>
-									<p:outputLabel value="Comision (%):"/>
-									<p:outputLabel value="#{frmRegistroConvenio.convServicio.interes}">
+								<p:outputLabel value="Aplica Monto Maximo:" />
+								<p:outputLabel value="#{frmRegistroConvenio.convServicio.montoMax}"/>
+				                <p:outputLabel value="Comision (%):" />
+				                <p:outputLabel value="#{frmRegistroConvenio.convServicio.interes}">
 										<f:convertNumber pattern="#0.00"/>
-									</p:outputLabel>
-									<p:outputLabel value=""/>
-									<p:outputLabel for="nom" value="Seleccione Cliente:"/>
-									<p:selectOneMenu id="nom" required="true" value="#{frmRegistroConvenio.idValorMax}"
+								</p:outputLabel>
+							
+								<p:outputLabel for="nom" value="Seleccione Cliente:"/>
+								<p:selectOneMenu id="nom" required="true" value="#{frmRegistroConvenio.idValorMax}"
 												 filter="true" filterMatchMode="contains">
 				                    	<f:selectItem itemLabel="Seleccione Cliente"
 											noSelectionOption="true" />
 				                    	<f:selectItems value="#{frmRegistroConvenio.lstConvValorMax}" var="dat"
 				                    			itemLabel="#{dat.usrSocio.cedulaSocio} #{dat.usrSocio.gesPersona.apellidos} #{dat.usrSocio.gesPersona.nombres}" 
 				                    			itemValue="#{dat.idValorMax}"/>
-				                    	<p:ajax event="change" update="datEmp"
+				                    	<p:ajax event="change" update="form1:pnl"
 	        								listener="#{frmRegistroConvenio.cargarConvValorMax()}" />
-				                    </p:selectOneMenu>
-				                    <p:outputLabel value=""/>
-				                    <p:outputLabel value="Monto maximo permitido del Cliente:"/>
-				                    <p:outputLabel value="#{frmRegistroConvenio.valorMaximo}"/>
-				                    <p:outputLabel value=""/>
-				                    <p:outputLabel value="Valor total proformado:"/>
-				                    <p:inputNumber value="#{frmRegistroConvenio.valorProformado}"/>
-				                    <p:outputLabel value=""/>
-									<p:outputLabel value="Proforma pdf - png - jpg:"/>
-									<p:fileUpload styleClass="ui-fileupload-buttonbar"  
-						        				  label="Seleccionar Archivo"
-						        				  listener="#{frmRegistroConvenio.handleFileUpload}"
-						        				  multiple="false"
-						        				  mode="advanced"
-						        				  auto="true"
-						        				  allowTypes="/(\.|\/)(pdf|png|jpg)$/"
-						        				  immediate="#{frmRegistroConvenio.precargarArchivo()}"
-						        				  update="datEmp" 
-				                      			  process="@this" 
-				                      			  skinSimple="true"
-				                    />
-				                    <p:outputLabel value="#{frmRegistroConvenio.convAdquirido.adjunto}"/>
-								</p:panelGrid>
-								<p:panelGrid>
-									<p:commandButton value="Aplicar Convenio"
+				                </p:selectOneMenu>
+				                <p:outputLabel value="Monto maximo permitido del Cliente:"/>
+				                    <p:outputLabel value="#{frmAplicarConvenio.valorMaximo}"/>
+							
+								<p:outputLabel for="total" value="Valor total proformado:"/>
+				                <p:inputNumber id="total" value="#{frmRegistroConvenio.valorProformado}"/>
+				                <p:outputLabel for="plazo" value="Meses Plazo: "/>
+								<p:inputText id="plazo" required="true" 
+									value="#{frmRegistroConvenio.plazo}">
+									<p:keyFilter mask="num" />
+								</p:inputText>
+							</p:panelGrid>
+							<br/>
+							<br/>
+							<h:panelGrid cellspacing="10" columns="2">
+								<p:commandButton value="Cancelar" 
+									action="#{frmRegistroConvenio.cancelar()}" >
+								</p:commandButton>
+								<p:commandButton value="Aplicar Convenio"
 										action="#{frmRegistroConvenio.aplicarConvenio()}" update="@form">
 										<p:confirm header="Confirmación"
 										message="Esta seguro de ingresar la información?"
 										icon="pi pi-exclamation-triangle" />
-									</p:commandButton>
-									<p:confirmDialog global="true" showEffect="fade" hideEffect="fade"
+								</p:commandButton>
+								<p:confirmDialog global="true" showEffect="fade" hideEffect="fade"
 											responsive="true" width="350">
-											<p:commandButton value="Si" type="button"
+										<p:commandButton value="Si" type="button"
 												styleClass="ui-confirmdialog-yes" />
-											<p:commandButton value="No" type="button"
+										<p:commandButton value="No" type="button"
 												styleClass="ui-confirmdialog-no ui-button-flat" />
-									</p:confirmDialog>
-								</p:panelGrid>
+								</p:confirmDialog>
+							</h:panelGrid>
 								
 							</p:panel>
 						</p:panel>

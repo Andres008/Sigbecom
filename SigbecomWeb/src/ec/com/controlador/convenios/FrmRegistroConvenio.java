@@ -5,8 +5,10 @@ import java.io.InputStream;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
@@ -23,9 +25,11 @@ import org.primefaces.model.file.UploadedFile;
 import ec.com.controlador.sesion.BeanLogin;
 import ec.com.model.convenios.ManagerConvenios;
 import ec.com.model.dao.entity.ConvAdquirido;
+import ec.com.model.dao.entity.ConvAmortizacion;
 import ec.com.model.dao.entity.ConvContacto;
 import ec.com.model.dao.entity.ConvServicio;
 import ec.com.model.dao.entity.ConvValorMax;
+import ec.com.model.dao.entity.DescEstadoDescuento;
 import ec.com.model.modulos.util.JSFUtil;
 import ec.com.model.modulos.util.ModelUtil;
 
@@ -47,9 +51,10 @@ public class FrmRegistroConvenio implements Serializable{
 	private ConvValorMax convValorMax;
 	private String valorMaximo;
 	private BigDecimal valorProformado;
+	private int plazo;
 	private boolean pnlRender;
-	private UploadedFile file;
-	byte[] archivo;
+	
+	private List<ConvAdquirido> lstConvAdquiridoTrm;
 	
 	@Inject
 	private BeanLogin beanLogin;
@@ -66,11 +71,19 @@ public class FrmRegistroConvenio implements Serializable{
 		convValorMax = new ConvValorMax();
 		valorMaximo = "N/A";
 		valorProformado = new BigDecimal(0);
+		lstConvAdquiridoTrm = new ArrayList<ConvAdquirido>();
+		plazo = 0;
 		pnlRender = false;
-		archivo = null;
 		cargarListaConvServicio();
 		cargarListaConvAdquiridos();
 		cargarListaRegistroValoresMax();
+	}
+	public String cancelar() {
+		System.out.println("cancelado");
+		init();
+		PrimeFaces prime=PrimeFaces.current();
+		prime.ajax().update("form1");
+		return "/modulos/convenios/registroConvenios.xhtml?faces-redirect=true";
 	}
 	public void cargarListaConvServicio() {
 		try {
@@ -109,7 +122,7 @@ public class FrmRegistroConvenio implements Serializable{
 	public void cargarConvServicio() {
 		if(idServicio!=0) {
 			try {
-				pnlRender=true;
+				//pnlRender=true;
 				convServicio=managerConvenios.findByIdConvServicio(idServicio);
 				PrimeFaces prime=PrimeFaces.current();
 				prime.ajax().update("form1:datEmp");
@@ -123,155 +136,260 @@ public class FrmRegistroConvenio implements Serializable{
 		}
 	}
 	public void cargarConvValorMax() {
-		if(idValorMax>0) {
+		if(idValorMax!=0) {
 			convValorMax = lstConvValorMax.stream().filter(p->p.getIdValorMax()==idValorMax).findAny().orElse(null);
+			System.out.println("VALAMAX"+convValorMax.getValorMax());
 			if(convServicio.getMontoMax()!=null && convServicio.getMontoMax().equalsIgnoreCase("SI")) {
 				valorMaximo = convValorMax.getValorMax()+"";
+				PrimeFaces prime=PrimeFaces.current();
+				prime.ajax().update("form1");
+				prime.ajax().update("form2");
 			}
 			else {
 				JSFUtil.crearMensajeWARN("No ha seleccionado un servicio");
 			}
 		}
 	}
-	
-	
-	public void handleFileUpload(FileUploadEvent event) {
-        System.out.println("Archivo subido: "+ event.getFile().getFileName());
-        this.file = event.getFile();
-        JSFUtil.crearMensajeINFO("Documento cargado correctamente");
-        convAdquirido.setAdjunto(event.getFile().getFileName());
-    }
-	
-	public void precargarArchivo() {
-		if(file!=null) {
-			System.out.println("Tipo AAAAA archivo:"+file.getContentType());
-			archivo = file.getContent();
-			//file=null;
+	public void cargarListaConvAdquiridosTramitados() {
+		
+		try {
+			lstConvAdquiridoTrm = managerConvenios.findConvAdquiridoRevisados();
+		} catch (Exception e) {
+			JSFUtil.crearMensajeERROR("No se cargo el listado correctamente");
+			e.printStackTrace();
 		}
 	}
 	
 	public void aplicarConvenio() {
 		//if(archivo!=null && convServicio!= null && convAdquirido.getAdjunto() != null && idValorMax>0 && valorProformado.compareTo(new BigDecimal(0))==1) {
-		if(convServicio!= null && idValorMax>0 && valorProformado.compareTo(new BigDecimal(0))==1) {	
-			if(convServicio.getMontoMax().equalsIgnoreCase("SI")) {
-				if(valorProformado.compareTo(convValorMax.getValorMax())==-1 || valorProformado.compareTo(convValorMax.getValorMax())==0) {
-					try {
-						String nombreArchivo="";
-						String ext="";
-						String url="";
-						if(archivo!=null) {
-							String path=managerConvenios.buscarValorParametroNombre("PATH_REPORTES");
-							//String cedulaSocio = beanLogin.getCredencial().getObjUsrSocio().getCedulaSocio();
-							url = path+"/convenios/"+convValorMax.getUsrSocio().getCedulaSocio()+"/";
-							String str = convAdquirido.getAdjunto();
-							ext = str.substring(str.lastIndexOf('.'), str.length());
-							Date fechaActual = new Date();
-							SimpleDateFormat formato = new SimpleDateFormat("dd");
-							int diaActual = Integer.parseInt(formato.format(fechaActual));
-							nombreArchivo = ModelUtil.getAnioActual()+"-"+
-									   ModelUtil.getMesActual()+"-"+
-									   diaActual+"-proforma";
-							convAdquirido.setAdjunto(nombreArchivo+ext);
-						}
-						
-						convAdquirido.setConvServicio(convServicio);
-						convAdquirido.setConvValorMax(convValorMax);
-						convAdquirido.setEstado("SOLICITADO");
-						convAdquirido.setFechaSol(new Date());
-						convAdquirido.setAplicaValorMax("SI");
-						convAdquirido.setValorMax(convValorMax.getValorMax());
-						convAdquirido.setInteres(convServicio.getInteres());//interes de Comision
-						convAdquirido.setDeudaTotal(valorProformado);//valor total proformado incluye la comisión
-						BigDecimal interes = (convServicio.getInteres().divide(new BigDecimal(100))).add(new BigDecimal(1));
-						System.out.println("interes:"+ interes);
-						BigDecimal valorTotal = valorProformado.divide(interes,2, RoundingMode.HALF_EVEN);
-						convAdquirido.setValorTotal(valorTotal);
-						BigDecimal interesTotal = convServicio.getInteres().multiply(convAdquirido.getValorTotal()).divide(new BigDecimal(100),2, RoundingMode.HALF_EVEN);
-						convAdquirido.setInteresTotal(interesTotal);
-						managerConvenios.insertarConvAdquirido(convAdquirido);
-						System.out.println("METODO 1");
-						if(archivo!=null) {
-							InputStream fis = new ByteArrayInputStream(archivo);
-							ModelUtil.guardarArchivo(fis, nombreArchivo, url, ext);
-						}
-						
-						JSFUtil.crearMensajeINFO("Solicitud Realizada Correctamente");
-						init();
-						PrimeFaces prime=PrimeFaces.current();
-						prime.ajax().update("form2");
-					} catch (Exception e) {
-						JSFUtil.crearMensajeERROR("No se ha registrado correctamente");
-						e.printStackTrace();
-					}
-				}
-				else {
-					JSFUtil.crearMensajeWARN("Valor Proformado no debe ser mayor que el valor maximo permitido");
-					PrimeFaces prime=PrimeFaces.current();
-					prime.ajax().update("form2");
-				}
-			}
-			else {
+		if(convServicio!= null && idValorMax>0 && valorProformado.compareTo(new BigDecimal(0))==1 && plazo>0) {	
+			if(convServicio.getMontoMax().equalsIgnoreCase("NO")) {
+				//if(valorProformado.compareTo(convValorMax.getValorMax())==-1 || valorProformado.compareTo(convValorMax.getValorMax())==0) {
+				calcularRegitrarConvenio();
 				try {
-					String nombreArchivo ="";
-					String ext="";
-					String url="";
-					if(archivo!=null) {
-						String path=managerConvenios.buscarValorParametroNombre("PATH_REPORTES");
-						//String cedulaSocio = beanLogin.getCredencial().getObjUsrSocio().getCedulaSocio();
-						url = path+"convenios/"+convValorMax.getUsrSocio().getCedulaSocio()+"/";
-						String str = convAdquirido.getAdjunto();
-						ext = str.substring(str.lastIndexOf('.'), str.length());
-						Date fechaActual = new Date();
-						SimpleDateFormat formato = new SimpleDateFormat("dd");
-						int diaActual = Integer.parseInt(formato.format(fechaActual));
-						nombreArchivo = ModelUtil.getAnioActual()+"-"+
-								   ModelUtil.getMesActual()+"-"+
-								   diaActual+"-proforma";
-						convAdquirido.setAdjunto(nombreArchivo+ext);
-					}
-					
-					convAdquirido.setConvServicio(convServicio);
-					convAdquirido.setConvValorMax(convValorMax);
-					convAdquirido.setEstado("SOLICITADO");
-					convAdquirido.setFechaSol(new Date());
-					convAdquirido.setAplicaValorMax("NO");
-					convAdquirido.setValorMax(new BigDecimal(0));
-					convAdquirido.setInteres(convServicio.getInteres());//interes de Comision
-					convAdquirido.setDeudaTotal(valorProformado);//valor total proformado incluye la comisión
-					BigDecimal interes = (convServicio.getInteres().divide(new BigDecimal(100))).add(new BigDecimal(1));
-					BigDecimal valorTotal = valorProformado.divide(interes,2, RoundingMode.HALF_EVEN);
-					convAdquirido.setValorTotal(valorTotal);
-					BigDecimal interesTotal = convServicio.getInteres().multiply(convAdquirido.getValorTotal()).divide(new BigDecimal(100)).setScale(2, RoundingMode.HALF_EVEN);
-					convAdquirido.setInteresTotal(interesTotal);
-					managerConvenios.insertarConvAdquirido(convAdquirido);
-					System.out.println("METODO 2");
-					if(archivo!=null) {
-						InputStream fis = new ByteArrayInputStream(archivo);
-						ModelUtil.guardarArchivo(fis, nombreArchivo, url, ext);
-					}
-					
-					JSFUtil.crearMensajeINFO("* Solicitud Realizada Correctamente");
-					init();
+					DescEstadoDescuento descEstadoDescuento = managerConvenios.findWhereEstadoDescEstadoDescuento("VIGENTE");
+					//managerConvenios.actualizarObjeto(convAdquirido);
+					//lstConvAmortizacion = new ArrayList<ConvAmortizacion>();
+					//generarTablaAmortizacion(valor, interesTotal,deudaTotal, meses,descEstadoDescuento);
+					generarTablaAmortizacion(convAdquirido.getInteres(),convAdquirido.getValorTotal(), convAdquirido.getInteresTotal(),convAdquirido.getDeudaTotal(), plazo,descEstadoDescuento);
+					cargarListaConvAdquiridos();
+					cargarListaConvAdquiridosTramitados();
 					PrimeFaces prime=PrimeFaces.current();
+					prime.ajax().update("form1");
 					prime.ajax().update("form2");
+					prime.executeScript("PF('dlgTramite').hide();");
+					JSFUtil.crearMensajeINFO("Se genero la tabla correctamente");
 				} catch (Exception e) {
-					JSFUtil.crearMensajeERROR("* No se ha registrado correctamente");
+					JSFUtil.crearMensajeERROR("No se actualizo las cuotas correctamente");
+					e.printStackTrace();
+				}	
+			}
+			else if(convServicio.getMontoMax().equalsIgnoreCase("SI") && (valorProformado.compareTo(convValorMax.getValorMax())==-1 || valorProformado.compareTo(convValorMax.getValorMax())==0)){
+				calcularRegitrarConvenio();
+				try {
+					DescEstadoDescuento descEstadoDescuento = managerConvenios.findWhereEstadoDescEstadoDescuento("VIGENTE");
+					//managerConvenios.actualizarObjeto(convAdquirido);
+					//lstConvAmortizacion = new ArrayList<ConvAmortizacion>();
+					//generarTablaAmortizacion(valor, interesTotal,deudaTotal, meses,descEstadoDescuento);
+					generarTablaAmortizacion(convAdquirido.getInteres(),convAdquirido.getValorTotal(), convAdquirido.getInteresTotal(),convAdquirido.getDeudaTotal(), plazo,descEstadoDescuento);
+					cargarListaConvAdquiridos();
+					cargarListaConvAdquiridosTramitados();
+					PrimeFaces prime=PrimeFaces.current();
+					prime.ajax().update("form1");
+					prime.ajax().update("form2");
+					prime.executeScript("PF('dlgTramite').hide();");
+					JSFUtil.crearMensajeINFO("Se genero la tabla correctamente");
+				} catch (Exception e) {
+					JSFUtil.crearMensajeERROR("No se actualizo las cuotas correctamente");
 					e.printStackTrace();
 				}
 			}
-			
+			else {
+				JSFUtil.crearMensajeWARN("Valor Proformado no debe ser mayor que el valor maximo permitido");
+				PrimeFaces prime=PrimeFaces.current();
+				prime.ajax().update("form2");
+			}
 		}
 		else if(valorProformado.compareTo(new BigDecimal(0))==0) {
 			JSFUtil.crearMensajeWARN("Ingrese el valor proformado distinto de 0.00");
 			PrimeFaces prime=PrimeFaces.current();
 			prime.ajax().update("form2");
 		}
-		else if(archivo==null) {
-			JSFUtil.crearMensajeWARN("No ha seleccionado un archivo proforma");
+		else if(plazo==0){
+			JSFUtil.crearMensajeWARN("Ingrese plazo mayor que 0");
 			PrimeFaces prime=PrimeFaces.current();
 			prime.ajax().update("form2");
 		}
 	}
+	
+	private void calcularRegitrarConvenio() {
+		try {
+			
+			convAdquirido.setResolucion("Registro administrativo Historicos");
+			convAdquirido.setAdjunto("N/A");
+			convAdquirido.setHojaRuta("N/A");
+			convAdquirido.setPlazo(plazo);
+			convAdquirido.setObservacion("Registro inicial de deudas pendientes");
+			convAdquirido.setConvServicio(convServicio);
+			convAdquirido.setConvValorMax(convValorMax);
+			convAdquirido.setEstado("APROBADO");
+			convAdquirido.setFechaSol(new Date());
+			convAdquirido.setFechaRevision(new Date());
+			convAdquirido.setFechaAprob(new Date());
+			convAdquirido.setAplicaValorMax("NO");
+			convAdquirido.setValorMax(convValorMax.getValorMax());
+			convAdquirido.setInteres(convServicio.getInteres());//interes de Comision
+			convAdquirido.setDeudaTotal(valorProformado);//valor total proformado incluye la comisión
+			BigDecimal interes = (convServicio.getInteres().divide(new BigDecimal(100))).add(new BigDecimal(1));
+			//System.out.println("interes:"+ interes);
+			BigDecimal valorTotal = valorProformado.divide(interes,2, RoundingMode.HALF_EVEN);
+			convAdquirido.setValorTotal(valorTotal);
+			BigDecimal interesTotal = convServicio.getInteres().multiply(convAdquirido.getValorTotal()).divide(new BigDecimal(100),2, RoundingMode.HALF_EVEN);
+			convAdquirido.setInteresTotal(interesTotal);
+			managerConvenios.insertarConvAdquirido(convAdquirido);
+			
+			
+//			JSFUtil.crearMensajeINFO("Solicitud Realizada Correctamente");
+//			init();
+//			PrimeFaces prime=PrimeFaces.current();
+//			prime.ajax().update("form2");
+		} catch (Exception e) {
+			JSFUtil.crearMensajeERROR("No se ha registrado correctamente");
+			e.printStackTrace();
+		}
+	}
+	
+private void generarTablaAmortizacion(BigDecimal interes, BigDecimal valorTotal,BigDecimal interesTotal, BigDecimal deudaTotal, int plazo, DescEstadoDescuento descEstadoDescuento) {
+		
+		ConvAmortizacion convAmortizacion;
+		int anio = ModelUtil.getAnio(new Date());
+		int mes = ModelUtil.getMes(new Date());
+		Date fecha = new Date();
+		
+		//System.out.println("Fecha Suma: "+ModelUtil.getSumarMeses(fecha, 1));
+//		if(mes==12) {
+//			anio++;
+//			mes=1;
+//		}
+//		else {
+//			mes++;
+//		}
+		
+		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy"); 
+		Calendar calendar = Calendar.getInstance(); 
+		//System.out.println("Fecha Actual:" + sdf.format(calendar.getTime()));
+		calendar.set(Calendar.DAY_OF_MONTH,1);
+		//System.out.println("Primer día del mes actual:" + sdf.format(calendar.getTime()));
+		
+		
+		if(plazo>1) {
+			
+			BigDecimal interesTmp = (interes.divide(new BigDecimal(100),2, RoundingMode.HALF_EVEN)).add(new BigDecimal(1));
+			
+			BigDecimal cuotaTotalCapital = new BigDecimal(0);
+			BigDecimal cuotaTotalInteres = new BigDecimal(0);
+			
+			BigDecimal cuotaCapital = valorTotal.divide(new BigDecimal(plazo),2,RoundingMode.HALF_EVEN);
+			System.out.println("Cuota Capital:"+cuotaCapital);
+			BigDecimal cuotaInteres = interesTotal.divide(new BigDecimal(plazo),2,RoundingMode.HALF_EVEN);
+			System.out.println("Cuota Capital:"+cuotaInteres);
+			BigDecimal saldo = deudaTotal;
+			for (int i = 1 ; i<=plazo;i++) {
+				try {
+					
+					fecha =  sdf.parse(sdf.format(calendar.getTime()));
+					convAmortizacion = new ConvAmortizacion();
+					convAmortizacion.setConvAdquirido(convAdquirido);
+					convAmortizacion.setDescEstadoDescuento(descEstadoDescuento);
+					convAmortizacion.setNumeroCuota(i);
+					convAmortizacion.setFechaPago(fecha);
+					
+					cuotaTotalCapital = cuotaTotalCapital.add(cuotaCapital);
+					cuotaTotalInteres = cuotaTotalInteres.add(cuotaInteres);
+					
+					if(i==plazo) {
+						/*
+						 * if(valorTotal.compareTo(cuotaTotalCapital)==1) { BigDecimal tmp =
+						 * valorTotal.subtract(cuotaTotalCapital);
+						 * convAmortizacion.setCapital(cuotaCapital.add(tmp)); } else
+						 * if(cuotaTotalCapital.compareTo(valorTotal)==1) { BigDecimal tmp =
+						 * cuotaTotalCapital.subtract(valorTotal);
+						 * convAmortizacion.setCapital(cuotaCapital.subtract(tmp)); } else {
+						 * convAmortizacion.setCapital(cuotaCapital); }
+						 * 
+						 * if(interesTotal.compareTo(cuotaTotalInteres)==1) { BigDecimal tmp =
+						 * interesTotal.subtract(cuotaTotalInteres);
+						 * convAmortizacion.setInteres(cuotaInteres.add(tmp)); } else
+						 * if(cuotaTotalInteres.compareTo(interesTotal)==1){ BigDecimal tmp =
+						 * cuotaTotalInteres.subtract(interesTotal);
+						 * convAmortizacion.setInteres(cuotaInteres.subtract(tmp)); } else {
+						 * convAmortizacion.setInteres(cuotaInteres); }
+						 */
+						convAmortizacion.setCapital(saldo.divide(interesTmp,2, RoundingMode.HALF_EVEN));
+						convAmortizacion.setInteres(saldo.subtract(convAmortizacion.getCapital()));
+						convAmortizacion.setValorCuota(saldo);
+						
+						BigDecimal tmp =convAmortizacion.getCapital().add(convAmortizacion.getInteres());
+						convAmortizacion.setValorCuota(tmp);
+						saldo = saldo.subtract(convAmortizacion.getValorCuota());
+						convAmortizacion.setSaldo(saldo.setScale(2, RoundingMode.HALF_EVEN));
+					}
+					else {
+						convAmortizacion.setCapital(cuotaCapital);
+						convAmortizacion.setInteres(cuotaInteres);
+						convAmortizacion.setValorCuota(cuotaCapital.add(cuotaInteres).setScale(2, RoundingMode.HALF_EVEN));
+						saldo =  saldo.subtract(convAmortizacion.getValorCuota());
+						convAmortizacion.setSaldo(saldo.setScale(2, RoundingMode.HALF_EVEN));
+					}
+					convAmortizacion.setAnio(anio);
+					convAmortizacion.setMes(mes);
+					
+					
+					
+					managerConvenios.insertarConvAmortizacion(convAmortizacion);
+				} catch (ParseException e) {
+					//JSFUtil.crearMensajeERROR("No se genero correctamente");
+					e.printStackTrace();
+				} catch (Exception e) {
+					JSFUtil.crearMensajeERROR("No se registro la cuota correctamente");
+					e.printStackTrace();
+				}
+				calendar.set(Calendar.MONTH, calendar.get(Calendar.MONTH)+1);
+				if(mes==12) {
+					anio++;
+					mes=1;
+				}
+				else {
+					mes++;
+				}
+			}
+		}
+		else{
+			try {
+				//calendar.set(Calendar.MONTH, calendar.get(Calendar.MONTH)+1);
+				//System.out.println("Fecha del del siguiente mes:" + sdf.format(calendar.getTime()));
+				fecha =  sdf.parse(sdf.format(calendar.getTime()));
+				//System.out.println("fecha:"+fecha);
+				convAmortizacion = new ConvAmortizacion();
+				convAmortizacion.setConvAdquirido(convAdquirido);
+				convAmortizacion.setDescEstadoDescuento(descEstadoDescuento);
+				convAmortizacion.setNumeroCuota(plazo);
+				convAmortizacion.setFechaPago(fecha);
+				convAmortizacion.setCapital(convAdquirido.getValorTotal());
+				convAmortizacion.setInteres(interesTotal);
+				convAmortizacion.setValorCuota(convAdquirido.getDeudaTotal());
+				convAmortizacion.setSaldo(new BigDecimal(0));
+				convAmortizacion.setAnio(anio);
+				convAmortizacion.setMes(mes);
+				managerConvenios.insertarConvAmortizacion(convAmortizacion);
+				
+			} catch (Exception e) {
+				JSFUtil.crearMensajeERROR("No se registro la cuota correctamente");
+				e.printStackTrace();
+			}
+		}
+	}
+	
 	public boolean activarTablaAmortizacion(String estado) {
 		if(!estado.equalsIgnoreCase("SOLICITADO") && !estado.equalsIgnoreCase("NO APROBADO")) {
 			return true;
@@ -346,6 +464,12 @@ public class FrmRegistroConvenio implements Serializable{
 	}
 	public void setPnlRender(boolean pnlRender) {
 		this.pnlRender = pnlRender;
+	}
+	public int getPlazo() {
+		return plazo;
+	}
+	public void setPlazo(int plazo) {
+		this.plazo = plazo;
 	}
 	
 }

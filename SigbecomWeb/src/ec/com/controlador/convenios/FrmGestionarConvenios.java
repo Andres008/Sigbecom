@@ -156,8 +156,6 @@ public class FrmGestionarConvenios implements Serializable{
 			JSFUtil.crearMensajeERROR("No se cargo el archivo correctamente");
 			e1.printStackTrace();
 		}
-		
-
 	}
 	@SuppressWarnings("static-access")
 	public StreamedContent getPdf() {
