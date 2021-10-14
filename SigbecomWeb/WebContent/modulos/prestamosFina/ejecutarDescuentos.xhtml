@@ -72,9 +72,13 @@
 							</p:panelGrid>
 						</div>
 						<p:dataTable paginator="true" rows="15" id="tblDescuentos"
+							sortBy="#{credito.usrSocio.gesPersona.apellidos}"
 							emptyMessage="No tiene descuentos pendientes para este mes"
 							value="#{controladorGestionCreditos.lstFinPrestamoSocio}"
-							var="credito">
+							var="credito" rowIndexVar="index">
+							<p:column headerText="N°" width="15">
+								<p:outputLabel value="#{index + 1}" />
+							</p:column>
 							<p:column headerText="Cédula Socio"
 								filterBy="#{credito.usrSocio.cedulaSocio}">
 								<p:outputLabel value="#{credito.usrSocio.cedulaSocio}" />
@@ -84,7 +88,9 @@
 								<p:outputLabel
 									value="#{credito.usrSocio.gesPersona.apellidos} #{credito.usrSocio.gesPersona.nombres}" />
 							</p:column>
-							<p:column headerText="Tipo de Credito">
+							<p:column headerText="Tipo de Credito"
+								filterBy="#{credito.finTipoCredito.nombre}"
+								filterMatchMode="contains">
 								<p:outputLabel value="#{credito.finTipoCredito.nombre}" />
 							</p:column>
 							<p:column headerText="Cuota a descontar">
