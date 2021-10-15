@@ -57,7 +57,7 @@ public class FrmEquipoMovil implements Serializable{
 		idEquipoMovil = new Long(0);
 		planAmortEquipmov = new PlanAmortEquipmov();
 		anio = ModelUtil.getAnio(new Date());
-		mes = 0;
+		mes = ModelUtil.getMes(new Date());
 		
 		comision = null;
 		total = null;
@@ -131,14 +131,10 @@ public class FrmEquipoMovil implements Serializable{
 	public void generarTablaAmortizacion() {
 		//int anio = ModelUtil.getAnio(new Date());
 		//int mes = ModelUtil.getMes(new Date());
-		if(mes==0) {
-			if(mes==12) {
-				anio++;
-				mes=1;
-			}
-			else {
-				mes++;
-			}
+		if(mes>0) {
+			/*
+			 * if(mes==12) { anio++; mes=1; } else { mes++; }
+			 */
 			System.out.println("comision: "+comision);
 			System.out.println("Total: "+total);
 			planAmortEquipmov.setComision(comision);

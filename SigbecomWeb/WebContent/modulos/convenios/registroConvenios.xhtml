@@ -108,11 +108,20 @@
 							<p:column headerText="" style="width:2rem">
 								<p:rowToggler />
 							</p:column>
-							<p:column headerText="EMPRESA">
+							<p:column headerText="EMPRESA" filterBy="#{dato.convServicio.convEmpresa.empresa}">
 								<h:outputText value="#{dato.convServicio.convEmpresa.empresa}"/>
 							</p:column>
-							<p:column headerText="SERVICIO">
+							<p:column headerText="SERVICIO" filterBy="#{dato.convServicio.servicioProducto}">
 								<h:outputText value="#{dato.convServicio.servicioProducto}"/>
+							</p:column>
+							<p:column headerText="CEDULA" filterBy="#{dato.convValorMax.usrSocio.cedulaSocio}">
+								<h:outputText value="#{dato.convValorMax.usrSocio.cedulaSocio}"/>
+							</p:column>
+							<p:column headerText="APELLIDOS" filterBy="#{dato.convValorMax.usrSocio.gesPersona.apellidos}">
+								<h:outputText value="#{dato.convValorMax.usrSocio.gesPersona.apellidos}"/>
+							</p:column>
+							<p:column headerText="NOMBRES" filterBy="#{dato.convValorMax.usrSocio.gesPersona.nombres}">
+								<h:outputText value="#{dato.convValorMax.usrSocio.gesPersona.nombres}"/>
 							</p:column>
 							<p:column headerText="VALOR">
 								<h:outputText value="#{dato.deudaTotal}">
