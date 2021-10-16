@@ -142,8 +142,7 @@
 									<p:outputLabel value="#{descuento.usrTipoDescuento.nombre}" />
 								</p:column>
 								<p:column headerText="Valor">
-									<p:inputNumber value="#{descuento.valor}"
-										minValue="#{descuento.usrTipoDescuento.valorDefecto}">
+									<p:inputNumber value="#{descuento.valor}" >
 										<p:ajax update="@form:tblDescuentos" />
 									</p:inputNumber>
 								</p:column>
