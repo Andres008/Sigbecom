@@ -143,9 +143,10 @@ public class FrmPlanillaPagoPlan implements Serializable{
 			XSSFWorkbook wb = new XSSFWorkbook(pkg);
 			XSSFSheet sheet = wb.getSheetAt(0);
 			int rows = sheet.getLastRowNum();
+			//int rows = sheet.get
 			//AtecSectorizacion atecSectorizacion = new AtecSectorizacion();
 			PlanRegistroPago planRegistroPago = new PlanRegistroPago();
-	        for (int i = 2; i < rows; ++i) {
+	        for (int i = 2; i <= rows-1; ++i) {
 	            
 	        	XSSFRow row = sheet.getRow(i);
 	            fila=i;//
