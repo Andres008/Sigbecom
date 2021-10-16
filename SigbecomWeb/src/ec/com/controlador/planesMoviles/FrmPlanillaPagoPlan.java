@@ -148,6 +148,7 @@ public class FrmPlanillaPagoPlan implements Serializable{
 			PlanRegistroPago planRegistroPago = new PlanRegistroPago();
 	        for (int i = 2; i <= rows-1; ++i) {
 	            
+	        	
 	        	XSSFRow row = sheet.getRow(i);
 	            fila=i;//
 	            System.out.println("FILA: "+fila);
