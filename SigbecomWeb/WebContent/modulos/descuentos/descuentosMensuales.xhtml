@@ -84,6 +84,9 @@
 							<p:column headerText="Cédula Empleado">
 								<p:outputLabel value="#{credito.usrSocio.cedulaSocio}" />
 							</p:column>
+							<p:column headerText="Código Empleado" filterBy="#{credito.usrSocio.idSocio}">
+								<p:outputLabel value="#{credito.usrSocio.idSocio}" />
+							</p:column>
 							<p:column headerText="Nombre Socio">
 								<p:outputLabel value="#{credito.nombreSocio}" />
 							</p:column>
