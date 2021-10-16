@@ -145,16 +145,19 @@ public class FrmPlanillaPagoPlan implements Serializable{
 			int rows = sheet.getLastRowNum();
 			//AtecSectorizacion atecSectorizacion = new AtecSectorizacion();
 			PlanRegistroPago planRegistroPago = new PlanRegistroPago();
-	        for (int i = 2; i <= rows; ++i) {
+	        for (int i = 2; i < rows; ++i) {
 	            
 	        	XSSFRow row = sheet.getRow(i);
 	            fila=i;//
+	            System.out.println("FILA: "+fila);
 	            XSSFCell lineaTelefono = 	row.getCell(0);//
 	            XSSFCell nombreRef = 	row.getCell(1);//
 	            XSSFCell valorPlan = row.getCell(2);//
-	            //System.out.println("Telefono: "+lineaTelefono.getRawValue());
-	            //System.out.println("nombre Ref: "+nombreRef.getStringCellValue());
-	            //System.out.println("Valor Plan: "+valorPlan.getRawValue());
+	            
+	            System.out.println("Telefono: "+lineaTelefono.getRawValue());
+	            System.out.println("nombre Ref: "+nombreRef.getStringCellValue());
+	            System.out.println("Valor Plan: "+valorPlan.getRawValue());
+	            System.out.println("--------------------------------------------------");
 	            
 	            if((lineaTelefono!=null && lineaTelefono.getRawValue()!=null && !lineaTelefono.getRawValue().isEmpty() && 
 	            	!lineaTelefono.getRawValue().toString().equalsIgnoreCase("null")) &&
@@ -208,7 +211,9 @@ public class FrmPlanillaPagoPlan implements Serializable{
 				prime.ajax().update("form2");
 	        }
 		} catch (Exception e) {
+			fila++;
 			JSFUtil.crearMensajeERROR("Se produjo un error en la carga del archivo, revisa en la fila:"+fila+" valores, espacios");
+			System.out.println(e.getCause());
 			e.printStackTrace();
 		}
 		//return "frmPlanillaPagoPlan.xhtml?faces-redirect=true";
