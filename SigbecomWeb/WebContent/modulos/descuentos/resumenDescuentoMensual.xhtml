@@ -80,49 +80,55 @@
 								filterBy="#{credito.nombreSocio}">
 								<p:outputLabel value="#{credito.nombreSocio}" />
 							</p:column>
-							<p:column headerText="Descuento Creditos">
+							<p:column headerText="Descuento Creditos" sortBy="#{credito.valorPrestamo}" >
 								<p:outputLabel value="#{credito.valorPrestamo}">
 									<f:convertNumber maxFractionDigits="2" minFractionDigits="2"
 										currencySymbol="$" />
 								</p:outputLabel>
 							</p:column>
-							<p:column headerText="Planes Moviles">
+							<p:column headerText="Planes Moviles" sortBy="#{credito.valorPlanMovil}" >
 								<p:outputLabel value="#{credito.valorPlanMovil}">
 									<f:convertNumber maxFractionDigits="2" minFractionDigits="2"
 										currencySymbol="$" />
 								</p:outputLabel>
 							</p:column>
-							<p:column headerText="Convenios">
+							<p:column headerText="Convenios" sortBy="#{credito.valorConvenio}">
 								<p:outputLabel value="#{credito.valorConvenio}">
 									<f:convertNumber maxFractionDigits="2" minFractionDigits="2"
 										currencySymbol="$" />
 								</p:outputLabel>
 							</p:column>
-							<p:column headerText="Descuento Ahorro">
+							<p:column headerText="Descuento Ahorro" sortBy="#{credito.valorAhorro}">
 								<p:outputLabel value="#{credito.valorAhorro}">
 									<f:convertNumber maxFractionDigits="2" minFractionDigits="2"
 										currencySymbol="$" />
 								</p:outputLabel>
 							</p:column>
-							<p:column headerText="Descuento Cesantía">
+							<p:column headerText="Descuento Cesantía" sortBy="#{credito.valorCesantia}" >
 								<p:outputLabel value="#{credito.valorCesantia}">
 									<f:convertNumber maxFractionDigits="2" minFractionDigits="2"
 										currencySymbol="$" />
 								</p:outputLabel>
 							</p:column>
-							<p:column headerText="Descuento Salud">
+							<p:column headerText="Descuento Salud" sortBy="#{credito.valorSalud}" >
 								<p:outputLabel value="#{credito.valorSalud}">
 									<f:convertNumber maxFractionDigits="2" minFractionDigits="2"
 										currencySymbol="$" />
 								</p:outputLabel>
 							</p:column>
-							<p:column headerText="Novedades">
+							<p:column headerText="Descuento Externos" sortBy="#{credito.aportesExternos}" >
+								<p:outputLabel value="#{credito.aportesExternos}">
+									<f:convertNumber maxFractionDigits="2" minFractionDigits="2"
+										currencySymbol="$" />
+								</p:outputLabel>
+							</p:column>
+							<p:column headerText="Novedades" sortBy="#{credito.novedades}">
 								<p:outputLabel value="#{credito.novedades}">
 									<f:convertNumber maxFractionDigits="2" minFractionDigits="2"
 										currencySymbol="$" />
 								</p:outputLabel>
 							</p:column>
-							<p:column headerText="Total Descuento">
+							<p:column headerText="Total Descuento" sortBy="#{credito.totalDescuento}" >
 								<p:outputLabel value="#{credito.totalDescuento}">
 									<f:convertNumber maxFractionDigits="2" minFractionDigits="2"
 										currencySymbol="$" />

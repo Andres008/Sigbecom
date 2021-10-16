@@ -19,6 +19,9 @@ public class DesDescuentoMensuale implements Serializable {
 
 	@Id
 	private Long id;
+	
+	@Column(name="aportes_externos")
+	private BigDecimal aportesExternos;
 
 	@Column(name="id_socio")
 	private BigDecimal idSocio;
@@ -169,6 +172,14 @@ public class DesDescuentoMensuale implements Serializable {
 
 	public void setUsrSocio(UsrSocio usrSocio) {
 		this.usrSocio = usrSocio;
+	}
+
+	public BigDecimal getAportesExternos() {
+		return aportesExternos;
+	}
+
+	public void setAportesExternos(BigDecimal aportesExternos) {
+		this.aportesExternos = aportesExternos;
 	}
 
 }

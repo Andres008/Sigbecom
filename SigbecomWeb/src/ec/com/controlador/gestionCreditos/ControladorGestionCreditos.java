@@ -159,8 +159,10 @@ public class ControladorGestionCreditos implements Serializable {
 			lstFinPrestamoSocio = managerGestionCredito.buscarPrestamosVigentes();
 			lstFinPrestamoSocio = lstFinPrestamoSocio.stream()
 					.filter(fecha -> fecha.getFechaPrimeraCouta().before(new Date())).collect(Collectors.toList());
-			/*lstFinPrestamoSocio = lstFinPrestamoSocio.stream()
-					.filter(fecha -> fecha.getFechaUltimaCuota().before(new Date())).collect(Collectors.toList());*/
+			/*
+			 * lstFinPrestamoSocio = lstFinPrestamoSocio.stream() .filter(fecha ->
+			 * fecha.getFechaUltimaCuota().before(new Date())).collect(Collectors.toList());
+			 */
 			lstFinPrestamoSocio = lstFinPrestamoSocio.stream()
 					.filter(prestamo -> cuotaVigenteByPrestamo(prestamo) != null).collect(Collectors.toList());
 		} catch (Exception e) {
@@ -862,7 +864,10 @@ public class ControladorGestionCreditos implements Serializable {
 		lstFinPrestamoSocio.forEach(prestamo -> {
 			FinTablaAmortizacion amortizacionActual = cuotaVigenteByPrestamo(prestamo);
 			prestamo.setSaldoCapital(amortizacionActual.getSaldoCapital());
-			prestamo.setCuotasPagadas(prestamo.getCuotasPagadas().add(new BigDecimal(1)));
+			if (prestamo.getCuotasPagadas() == null)
+				prestamo.setCuotasPagadas(new BigDecimal(1));
+			else
+				prestamo.setCuotasPagadas(prestamo.getCuotasPagadas().add(new BigDecimal(1)));
 			prestamo.getFinTablaAmortizacions().forEach(amortizacion -> {
 				if (amortizacion.getNumeroCuota().intValue() == prestamo.getCuotasPagadas().intValue()) {
 					amortizacion.setFinEstadoCuota(new FinEstadoCuota(3));
