@@ -157,14 +157,10 @@ public class ControladorGestionCreditos implements Serializable {
 			objFinPrestamoSocio = new FinPrestamoSocio();
 			objFinPrestamoSocio.setFinTablaAmortizacions(new ArrayList<FinTablaAmortizacion>());
 			lstFinPrestamoSocio = managerGestionCredito.buscarPrestamosVigentes();
-
-			lstFinPrestamoSocio.forEach(prestamo -> System.out.println(prestamo.getIdPrestamoSocio()));
 			lstFinPrestamoSocio = lstFinPrestamoSocio.stream()
 					.filter(fecha -> fecha.getFechaPrimeraCouta().before(new Date())).collect(Collectors.toList());
-			lstFinPrestamoSocio.forEach(prestamo -> System.out.println(prestamo.getIdPrestamoSocio()));
-			lstFinPrestamoSocio = lstFinPrestamoSocio.stream()
-					.filter(fecha -> fecha.getFechaUltimaCuota().before(new Date())).collect(Collectors.toList());
-			lstFinPrestamoSocio.forEach(prestamo -> System.out.println(prestamo.getIdPrestamoSocio()));
+			/*lstFinPrestamoSocio = lstFinPrestamoSocio.stream()
+					.filter(fecha -> fecha.getFechaUltimaCuota().before(new Date())).collect(Collectors.toList());*/
 			lstFinPrestamoSocio = lstFinPrestamoSocio.stream()
 					.filter(prestamo -> cuotaVigenteByPrestamo(prestamo) != null).collect(Collectors.toList());
 		} catch (Exception e) {
@@ -590,9 +586,12 @@ public class ControladorGestionCreditos implements Serializable {
 	}
 
 	public FinTablaAmortizacion cuotaVigenteByPrestamo(FinPrestamoSocio objPrestamo) {
+		SimpleDateFormat formatoFecha = new SimpleDateFormat("MMyyyy");
 		List<FinTablaAmortizacion> lstAmortiza = objPrestamo.getFinTablaAmortizacions().stream()
 				.filter(amortiza -> amortiza.getFinEstadoCuota().getIdEstadoCuota() == 1).collect(Collectors.toList());
-		lstAmortiza = lstAmortiza.stream().filter(anio -> anio.getFechaPago().before(new Date()))
+		lstAmortiza = lstAmortiza.stream()
+				.filter(anio -> (anio.getFechaPago().before(new Date())
+						&& formatoFecha.format(anio.getFechaPago()).equals(formatoFecha.format(new Date()))))
 				.collect(Collectors.toList());
 		if (lstAmortiza.size() == 1)
 			return lstAmortiza.get(0);
@@ -883,7 +882,6 @@ public class ControladorGestionCreditos implements Serializable {
 				if (amortizacion.getNumeroCuota().intValue() == prestamo.getCuotasPagadas().add(new BigDecimal(1))
 						.intValue())
 					amortizacion.setFinEstadoCuota(new FinEstadoCuota(1));
-
 			});
 			try {
 				managerGestionCredito.actualizarSolicitudCredito(prestamo);
