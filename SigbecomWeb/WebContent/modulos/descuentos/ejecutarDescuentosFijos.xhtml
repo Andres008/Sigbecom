@@ -77,6 +77,10 @@
 								filterBy="#{credito.usrSocio.cedulaSocio}">
 								<p:outputLabel value="#{credito.usrSocio.cedulaSocio}" />
 							</p:column>
+							<p:column headerText="Tipo Socio"
+								filterBy="#{credito.usrSocio.usrTipoSocio.descripcion}">
+								<p:outputLabel value="#{credito.usrSocio.usrTipoSocio.descripcion}" />
+							</p:column>
 							<p:column headerText="Nombre Socio"
 								filterBy="#{credito.usrSocio.gesPersona.apellidos}">
 								<p:outputLabel

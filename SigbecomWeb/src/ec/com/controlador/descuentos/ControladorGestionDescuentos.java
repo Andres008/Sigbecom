@@ -229,8 +229,14 @@ public class ControladorGestionDescuentos implements Serializable {
 					.filter(c -> c.getValorCesantia().intValue() > 0).collect(Collectors.toList());
 			for (VDescuentoMensualSocio descMensual : lstVDescuentoMensualSocio) {
 				UsrSocio socio = managerGestionSocios.buscarSocioById(descMensual.getCedulaSocio());
-				socio.setCajaAhorro(socio.getCajaAhorro().add(descMensual.getValorAhorro()));
-				socio.setFondoCesantia(socio.getFondoCesantia().add(descMensual.getValorCesantia()));
+				if (socio.getCajaAhorro() == null)
+					socio.setCajaAhorro(descMensual.getValorAhorro());
+				else
+					socio.setCajaAhorro(socio.getCajaAhorro().add(descMensual.getValorAhorro()));
+				if (socio.getFondoCesantia()==null)
+					socio.setFondoCesantia(descMensual.getValorCesantia());
+				else
+					socio.setFondoCesantia(socio.getFondoCesantia().add(descMensual.getValorCesantia()));
 				try {
 					managerGestionSocios.actualizarUsrSocio(socio);
 				} catch (Exception e) {

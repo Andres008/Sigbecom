@@ -15,6 +15,9 @@ import java.math.BigDecimal;
 public class VDescuentoMensualSocio implements Serializable {
 	private static final long serialVersionUID = 1L;
 
+	@Column(name="aportes_externos")
+	private BigDecimal aportesExternos;
+
 	@Column(name="cedula_socio")
 	private String cedulaSocio;
 
@@ -51,6 +54,14 @@ public class VDescuentoMensualSocio implements Serializable {
 	private BigDecimal valorSalud;
 
 	public VDescuentoMensualSocio() {
+	}
+
+	public BigDecimal getAportesExternos() {
+		return this.aportesExternos;
+	}
+
+	public void setAportesExternos(BigDecimal aportesExternos) {
+		this.aportesExternos = aportesExternos;
 	}
 
 	public String getCedulaSocio() {
