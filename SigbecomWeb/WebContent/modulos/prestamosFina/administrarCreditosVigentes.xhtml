@@ -49,7 +49,11 @@
 					</h:commandLink>
 					<p:dataTable id="tblSolicitud" var="solicitud" paginator="true"
 						rows="8" style="font-size:70%" emptyMessage="No existe creditos."
-						value="#{controladorGestionCreditos.lstFinPrestamoSocio}">
+						value="#{controladorGestionCreditos.lstFinPrestamoSocio}"
+						rowIndexVar="index">
+						<p:column headerText="N°" width="15">
+							<p:outputLabel value="#{index + 1}" />
+						</p:column>
 						<p:column headerText="Cédula Socio"
 							filterBy="#{solicitud.usrSocio.gesPersona.cedula}"
 							style="font-size:90%">
