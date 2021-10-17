@@ -2,6 +2,7 @@ package ec.com.controlador.aporte;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -68,11 +69,16 @@ public class FrmGenerarAportes implements Serializable{
 					BigDecimal valor = new BigDecimal(0);
 					if(aporteCliente.getAporteCuenta().getComision().compareTo(BigDecimal.ZERO)==1) {
 						porcentaje = (aporteCliente.getAporteCuenta().getComision().divide(new BigDecimal(100))).add(new BigDecimal(1));
-						comision = aporteCliente.getAporteCuenta().getValor().subtract(aporteCliente.getAporteCuenta().getValor().divide(porcentaje));
-						valor = aporteCliente.getAporteCuenta().getValor().divide(porcentaje);
+						comision = aporteCliente.getAporteCuenta().getValor().subtract(aporteCliente.getAporteCuenta().getValor().divide(porcentaje,2,RoundingMode.HALF_EVEN));
+						valor = aporteCliente.getAporteCuenta().getValor().divide(porcentaje,2,RoundingMode.HALF_EVEN);
 					}
 					else {
+						if(porcentaje.compareTo(BigDecimal.ZERO)==1) {
 						comision = aporteCliente.getAporteCuenta().getValor().subtract(aporteCliente.getAporteCuenta().getValor().divide(porcentaje));
+						}
+						else {
+							comision = new BigDecimal(0);
+						}
 						valor = aporteCliente.getAporteCuenta().getValor();
 					}
 					aporteDescuento.setValor(valor);
