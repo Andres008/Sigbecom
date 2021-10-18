@@ -299,6 +299,12 @@ public class ManagerPlanesMoviles {
 			return null;
 		}	
     }
+    
+    public List<PlanContratoComite> findAllContratosComiteEstadoActivo() throws Exception{
+    	List<PlanContratoComite> lstPlanContratoComite = managerDAOSegbecom.findWhere(PlanContratoComite.class, "o.estado='ACTIVO'","o.idContrato ASC");
+    	return lstPlanContratoComite;
+    }
+    
     @SuppressWarnings("unchecked")
 	public List<PlanRegistroPago> findRegistroPagoGeneradosByCedula(String cedula) throws Exception {
     	List<PlanRegistroPago> lstPlanRegistroPago = managerDAOSegbecom.findWhere(PlanRegistroPago.class, "o.planContratoComite.usrSocio.cedulaSocio = '"+cedula+"' AND o.estado = 'GENERADO'",null);

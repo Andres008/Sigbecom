@@ -7,6 +7,11 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.function.Function;
+import java.util.function.Predicate;
+import java.util.stream.Collectors;
 
 import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
@@ -253,10 +258,25 @@ public class FrmPlanillaPagoPlan implements Serializable{
 		else
 			return false;
 	}
+	
+	public static <T> Predicate<T> distinctByKey(Function<? super T, ?> keyExtractor) {
+	    Set<Object> seen = ConcurrentHashMap.newKeySet();
+	    return t -> seen.add(keyExtractor.apply(t));
+	}
+	
 	public void generarPlanillaMes() {
 		
 		try {
-			List<String> lstCedulasContratoPlanActivos = managerPlanesMoviles.findAllCedulasContratoPlanActivosRenovados();
+			//List<String> lstCedulasContratoPlanActivos = managerPlanesMoviles.findAllCedulasContratoPlanActivosRenovados();
+			List<String> lstCedulasContratoPlanActivos = new ArrayList<String>();
+			List<PlanContratoComite> lstContratos = managerPlanesMoviles.findAllContratosComiteEstadoActivo();
+			
+			for (PlanContratoComite planContratoComite : lstContratos) {
+				lstCedulasContratoPlanActivos.add(planContratoComite.getUsrSocio().getCedulaSocio());
+			}
+			//persons.stream().filter(distinctByKey(Person::getName))
+			lstCedulasContratoPlanActivos=lstCedulasContratoPlanActivos.stream().distinct().collect(Collectors.toList());
+		
 			System.out.println("Tamaño ContratoComite: "+lstCedulasContratoPlanActivos.size());
 			PlanPago planPago = new PlanPago();
 			

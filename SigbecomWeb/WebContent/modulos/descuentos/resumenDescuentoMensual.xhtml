@@ -76,51 +76,57 @@
 								filterBy="#{credito.cedulaSocio}">
 								<p:outputLabel value="#{credito.cedulaSocio}" />
 							</p:column>
-							<p:column headerText="Código Socio"
-								filterBy="#{credito.idSocio}">
+							<p:column headerText="Código Socio" filterBy="#{credito.idSocio}">
 								<p:outputLabel value="#{credito.idSocio}" />
 							</p:column>
 							<p:column headerText="Nombre Socio"
 								filterBy="#{credito.nombreSocio}">
 								<p:outputLabel value="#{credito.nombreSocio}" />
 							</p:column>
-							<p:column headerText="Descuento Creditos" sortBy="#{credito.valorPrestamo}" >
+							<p:column headerText="Descuento Creditos"
+								sortBy="#{credito.valorPrestamo}">
 								<p:outputLabel value="#{credito.valorPrestamo}">
 									<f:convertNumber maxFractionDigits="2" minFractionDigits="2"
 										currencySymbol="$" />
 								</p:outputLabel>
 							</p:column>
-							<p:column headerText="Planes Moviles" sortBy="#{credito.valorPlanMovil}" >
+							<p:column headerText="Planes Moviles"
+								sortBy="#{credito.valorPlanMovil}">
 								<p:outputLabel value="#{credito.valorPlanMovil}">
 									<f:convertNumber maxFractionDigits="2" minFractionDigits="2"
 										currencySymbol="$" />
 								</p:outputLabel>
 							</p:column>
-							<p:column headerText="Convenios" sortBy="#{credito.valorConvenio}">
+							<p:column headerText="Convenios"
+								sortBy="#{credito.valorConvenio}">
 								<p:outputLabel value="#{credito.valorConvenio}">
 									<f:convertNumber maxFractionDigits="2" minFractionDigits="2"
 										currencySymbol="$" />
 								</p:outputLabel>
 							</p:column>
-							<p:column headerText="Descuento Ahorro" sortBy="#{credito.valorAhorro}">
+							<p:column headerText="Descuento Ahorro"
+								sortBy="#{credito.valorAhorro}">
 								<p:outputLabel value="#{credito.valorAhorro}">
 									<f:convertNumber maxFractionDigits="2" minFractionDigits="2"
 										currencySymbol="$" />
 								</p:outputLabel>
 							</p:column>
-							<p:column headerText="Descuento Cesantía" sortBy="#{credito.valorCesantia}" >
+							<p:column headerText="Descuento Cesantía"
+								sortBy="#{credito.valorCesantia}">
 								<p:outputLabel value="#{credito.valorCesantia}">
 									<f:convertNumber maxFractionDigits="2" minFractionDigits="2"
 										currencySymbol="$" />
 								</p:outputLabel>
 							</p:column>
-							<p:column headerText="Descuento Salud" sortBy="#{credito.valorSalud}" >
+							<p:column headerText="Descuento Salud"
+								sortBy="#{credito.valorSalud}">
 								<p:outputLabel value="#{credito.valorSalud}">
 									<f:convertNumber maxFractionDigits="2" minFractionDigits="2"
 										currencySymbol="$" />
 								</p:outputLabel>
 							</p:column>
-							<p:column headerText="Descuento Externos" sortBy="#{credito.aportesExternos}" >
+							<p:column headerText="Descuento Externos"
+								sortBy="#{credito.aportesExternos}">
 								<p:outputLabel value="#{credito.aportesExternos}">
 									<f:convertNumber maxFractionDigits="2" minFractionDigits="2"
 										currencySymbol="$" />
@@ -132,12 +138,91 @@
 										currencySymbol="$" />
 								</p:outputLabel>
 							</p:column>
-							<p:column headerText="Total Descuento" sortBy="#{credito.totalDescuento}" >
+							<p:column headerText="Total Descuento"
+								sortBy="#{credito.totalDescuento}">
 								<p:outputLabel value="#{credito.totalDescuento}">
 									<f:convertNumber maxFractionDigits="2" minFractionDigits="2"
 										currencySymbol="$" />
 								</p:outputLabel>
 							</p:column>
+							<p:columnGroup type="footer">
+								<p:row>
+									<p:column colspan="3" style="text-align:right"
+										footerText="Total:" />
+									<p:column>
+										<f:facet name="footer">
+											<h:outputText
+												value="#{controladorGestionDescuentos.valorTotalPrestamo()}">
+												<f:convertNumber type="currency" currencySymbol="$" />
+											</h:outputText>
+										</f:facet>
+									</p:column>
+									<p:column>
+										<f:facet name="footer">
+											<h:outputText
+												value="#{controladorGestionDescuentos.valorTotalPlanes()}">
+												<f:convertNumber type="currency" currencySymbol="$" />
+											</h:outputText>
+										</f:facet>
+									</p:column>
+									<p:column>
+										<f:facet name="footer">
+											<h:outputText
+												value="#{controladorGestionDescuentos.valorTotalConvenio()}">
+												<f:convertNumber type="currency" currencySymbol="$" />
+											</h:outputText>
+										</f:facet>
+									</p:column>
+									<p:column>
+										<f:facet name="footer">
+											<h:outputText
+												value="#{controladorGestionDescuentos.valorTotalAhorro()}">
+												<f:convertNumber type="currency" currencySymbol="$" />
+											</h:outputText>
+										</f:facet>
+									</p:column>
+									<p:column>
+										<f:facet name="footer">
+											<h:outputText
+												value="#{controladorGestionDescuentos.valorTotalCesantia()}">
+												<f:convertNumber type="currency" currencySymbol="$" />
+											</h:outputText>
+										</f:facet>
+									</p:column>
+									<p:column>
+										<f:facet name="footer">
+											<h:outputText
+												value="#{controladorGestionDescuentos.valorTotalSalud()}">
+												<f:convertNumber type="currency" currencySymbol="$" />
+											</h:outputText>
+										</f:facet>
+									</p:column>
+									<p:column>
+										<f:facet name="footer">
+											<h:outputText
+												value="#{controladorGestionDescuentos.valorTotalExternos()}">
+												<f:convertNumber type="currency" currencySymbol="$" />
+											</h:outputText>
+										</f:facet>
+									</p:column>
+									<p:column>
+										<f:facet name="footer">
+											<h:outputText
+												value="#{controladorGestionDescuentos.valorTotalNovedades()}">
+												<f:convertNumber type="currency" currencySymbol="$" />
+											</h:outputText>
+										</f:facet>
+									</p:column>
+									<p:column>
+										<f:facet name="footer">
+											<h:outputText
+												value="#{controladorGestionDescuentos.valorTotalDescuento()}">
+												<f:convertNumber type="currency" currencySymbol="$" />
+											</h:outputText>
+										</f:facet>
+									</p:column>
+								</p:row>
+							</p:columnGroup>
 						</p:dataTable>
 					</p:panel>
 				</h:form>

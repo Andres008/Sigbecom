@@ -159,6 +159,78 @@ public class ControladorGestionDescuentos implements Serializable {
 			e.printStackTrace();
 		}
 	}
+	
+	public BigDecimal valorTotalPrestamo() {
+		BigDecimal total = new BigDecimal(0);
+		for (VDescuentoMensualSocio desDescuentoMensuale : lstVDescuentoMensualSocio) {
+			total= total.add(desDescuentoMensuale.getValorPrestamo());
+		}
+		return total;
+	}
+	
+	public BigDecimal valorTotalPlanes() {
+		BigDecimal total = new BigDecimal(0);
+		for (VDescuentoMensualSocio desDescuentoMensuale : lstVDescuentoMensualSocio) {
+			total= total.add(desDescuentoMensuale.getValorPlanMovil());
+		}
+		return total;
+	}
+	
+	public BigDecimal valorTotalConvenio() {
+		BigDecimal total = new BigDecimal(0);
+		for (VDescuentoMensualSocio desDescuentoMensuale : lstVDescuentoMensualSocio) {
+			total= total.add(desDescuentoMensuale.getValorConvenio());
+		}
+		return total;
+	}
+	
+	public BigDecimal valorTotalAhorro() {
+		BigDecimal total = new BigDecimal(0);
+		for (VDescuentoMensualSocio desDescuentoMensuale : lstVDescuentoMensualSocio) {
+			total= total.add(desDescuentoMensuale.getValorAhorro());
+		}
+		return total;
+	}
+	
+	public BigDecimal valorTotalCesantia() {
+		BigDecimal total = new BigDecimal(0);
+		for (VDescuentoMensualSocio desDescuentoMensuale : lstVDescuentoMensualSocio) {
+			total= total.add(desDescuentoMensuale.getValorCesantia());
+		}
+		return total;
+	}
+	
+	public BigDecimal valorTotalSalud() {
+		BigDecimal total = new BigDecimal(0);
+		for (VDescuentoMensualSocio desDescuentoMensuale : lstVDescuentoMensualSocio) {
+			total= total.add(desDescuentoMensuale.getValorSalud());
+		}
+		return total;
+	}
+	
+	public BigDecimal valorTotalExternos() {
+		BigDecimal total = new BigDecimal(0);
+		for (VDescuentoMensualSocio desDescuentoMensuale : lstVDescuentoMensualSocio) {
+			total= total.add(desDescuentoMensuale.getAportesExternos());
+		}
+		return total;
+	}
+	
+	public BigDecimal valorTotalNovedades() {
+		BigDecimal total = new BigDecimal(0);
+		for (VDescuentoMensualSocio desDescuentoMensuale : lstVDescuentoMensualSocio) {
+			total= total.add(desDescuentoMensuale.getNovedades());
+		}
+		return total;
+	}
+	
+	public BigDecimal valorTotalDescuento() {
+		BigDecimal total = new BigDecimal(0);
+		for (VDescuentoMensualSocio desDescuentoMensuale : lstVDescuentoMensualSocio) {
+			total= total.add(desDescuentoMensuale.getTotalDescuento());
+		}
+		return total;
+	}
 
 	public void ingresarTipoDescuento() {
 		objUsrTipoDescuento.setEstado("A");
