@@ -129,7 +129,7 @@
 								filterMatchMode="contains">
 								<p:outputLabel value="#{novedad.usrSocio2.cedulaSocio}" />
 							</p:column>
-							<p:column headerText="Socio">
+							<p:column headerText="Socio" filterBy="#{novedad.usrSocio2.gesPersona.apellidos}" filterMatchMode="contains" >
 								<p:outputLabel
 									value="#{novedad.usrSocio2.gesPersona.apellidos} #{novedad.usrSocio2.gesPersona.nombres}" />
 							</p:column>

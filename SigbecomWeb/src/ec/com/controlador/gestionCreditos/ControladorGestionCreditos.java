@@ -360,7 +360,7 @@ public class ControladorGestionCreditos implements Serializable {
 			parametros.put("nombreSocio", prestamoSocio.getUsrSocio().getGesPersona().getApellidos() + " "
 					+ prestamoSocio.getUsrSocio().getGesPersona().getNombres());
 			parametros.put("cedulaSocio", prestamoSocio.getUsrSocio().getCedulaSocio());
-			parametros.put("codEmpelado", prestamoSocio.getUsrSocio().getIdSocio());
+			parametros.put("codEmpelado", prestamoSocio.getUsrSocio().getIdSocio().toString());
 			parametros.put("fecha", formato.format(prestamoSocio.getFechaPrimeraCouta()));
 			parametros.put("tasa", prestamoSocio.getFinTipoCredito().getTasaInteres().toString());
 			parametros.put("capital", prestamoSocio.getValorPrestamo().toString());
