@@ -26,6 +26,7 @@ import javax.inject.Named;
 
 import org.primefaces.event.FileUploadEvent;
 import org.primefaces.event.FlowEvent;
+import org.primefaces.event.RowEditEvent;
 import org.primefaces.model.DefaultStreamedContent;
 import org.primefaces.model.StreamedContent;
 import org.primefaces.model.file.UploadedFile;
@@ -33,6 +34,7 @@ import org.primefaces.model.file.UploadedFile;
 import ec.com.controlador.sesion.BeanLogin;
 import ec.com.model.auditoria.ManagerLog;
 import ec.com.model.dao.entity.DesDescuentoMensuale;
+import ec.com.model.dao.entity.DesTipoNovedad;
 import ec.com.model.dao.entity.DescEstadoDescuento;
 import ec.com.model.dao.entity.DescNovedade;
 import ec.com.model.dao.entity.DescValoresFijo;
@@ -119,6 +121,7 @@ public class ControladorGestionDescuentos implements Serializable {
 		objDescNovedade.setUsrSocio1(beanLogin.getCredencial().getObjUsrSocio());
 		objDescNovedade.setUsrSocio2(new UsrSocio());
 		objDescNovedade.setDescEstadoDescuento(new DescEstadoDescuento(2));
+		objDescNovedade.setDesTipoNovedad(new DesTipoNovedad());
 		try {
 			lstDescNovedade = managerGestionDescuentos.buscarNovedades();
 		} catch (Exception e) {
@@ -159,75 +162,75 @@ public class ControladorGestionDescuentos implements Serializable {
 			e.printStackTrace();
 		}
 	}
-	
+
 	public BigDecimal valorTotalPrestamo() {
 		BigDecimal total = new BigDecimal(0);
 		for (VDescuentoMensualSocio desDescuentoMensuale : lstVDescuentoMensualSocio) {
-			total= total.add(desDescuentoMensuale.getValorPrestamo());
+			total = total.add(desDescuentoMensuale.getValorPrestamo());
 		}
 		return total;
 	}
-	
+
 	public BigDecimal valorTotalPlanes() {
 		BigDecimal total = new BigDecimal(0);
 		for (VDescuentoMensualSocio desDescuentoMensuale : lstVDescuentoMensualSocio) {
-			total= total.add(desDescuentoMensuale.getValorPlanMovil());
+			total = total.add(desDescuentoMensuale.getValorPlanMovil());
 		}
 		return total;
 	}
-	
+
 	public BigDecimal valorTotalConvenio() {
 		BigDecimal total = new BigDecimal(0);
 		for (VDescuentoMensualSocio desDescuentoMensuale : lstVDescuentoMensualSocio) {
-			total= total.add(desDescuentoMensuale.getValorConvenio());
+			total = total.add(desDescuentoMensuale.getValorConvenio());
 		}
 		return total;
 	}
-	
+
 	public BigDecimal valorTotalAhorro() {
 		BigDecimal total = new BigDecimal(0);
 		for (VDescuentoMensualSocio desDescuentoMensuale : lstVDescuentoMensualSocio) {
-			total= total.add(desDescuentoMensuale.getValorAhorro());
+			total = total.add(desDescuentoMensuale.getValorAhorro());
 		}
 		return total;
 	}
-	
+
 	public BigDecimal valorTotalCesantia() {
 		BigDecimal total = new BigDecimal(0);
 		for (VDescuentoMensualSocio desDescuentoMensuale : lstVDescuentoMensualSocio) {
-			total= total.add(desDescuentoMensuale.getValorCesantia());
+			total = total.add(desDescuentoMensuale.getValorCesantia());
 		}
 		return total;
 	}
-	
+
 	public BigDecimal valorTotalSalud() {
 		BigDecimal total = new BigDecimal(0);
 		for (VDescuentoMensualSocio desDescuentoMensuale : lstVDescuentoMensualSocio) {
-			total= total.add(desDescuentoMensuale.getValorSalud());
+			total = total.add(desDescuentoMensuale.getValorSalud());
 		}
 		return total;
 	}
-	
+
 	public BigDecimal valorTotalExternos() {
 		BigDecimal total = new BigDecimal(0);
 		for (VDescuentoMensualSocio desDescuentoMensuale : lstVDescuentoMensualSocio) {
-			total= total.add(desDescuentoMensuale.getAportesExternos());
+			total = total.add(desDescuentoMensuale.getAportesExternos());
 		}
 		return total;
 	}
-	
+
 	public BigDecimal valorTotalNovedades() {
 		BigDecimal total = new BigDecimal(0);
 		for (VDescuentoMensualSocio desDescuentoMensuale : lstVDescuentoMensualSocio) {
-			total= total.add(desDescuentoMensuale.getNovedades());
+			total = total.add(desDescuentoMensuale.getNovedades());
 		}
 		return total;
 	}
-	
+
 	public BigDecimal valorTotalDescuento() {
 		BigDecimal total = new BigDecimal(0);
 		for (VDescuentoMensualSocio desDescuentoMensuale : lstVDescuentoMensualSocio) {
-			total= total.add(desDescuentoMensuale.getTotalDescuento());
+			total = total.add(desDescuentoMensuale.getTotalDescuento());
 		}
 		return total;
 	}
@@ -293,6 +296,66 @@ public class ControladorGestionDescuentos implements Serializable {
 
 	}
 
+	public void anularNovedadEconomica(DescNovedade objNovedad) {
+		System.out.println("Llega");
+		try {
+			objNovedad.getDescEstadoDescuento().setIdEstadoDescuento(4);
+			managerGestionDescuentos.actualizarNovedad(objNovedad);
+			managerLog.generarLogAuditoria(beanLogin.getCredencial(), this.getClass(), "Anulación valor novedad",
+					"Se actualizó novedad " + objNovedad.getIdNovedad());
+			inicializarNovedadesEconomicas();
+			JSFUtil.crearMensajeINFO("Actualización Correcta.");
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+
+	/***
+	 * Metodo para modificar desde pantalla.
+	 * 
+	 * @param event
+	 */
+	public void onRowEdit(RowEditEvent<Object> event) {
+		try {
+			DescNovedade objNovedad = (DescNovedade) event.getObject();
+			managerGestionDescuentos.actualizarObjeto(event.getObject());
+			JSFUtil.crearMensajeINFO("Se actualizó correctamente.");
+			managerLog.generarLogAuditoria(beanLogin.getCredencial(), this.getClass(), "Edición valor novedad",
+					"Se actualizó novedad " + objNovedad.getIdNovedad());
+			inicializarNovedadesEconomicas();
+		} catch (Exception e) {
+			JSFUtil.crearMensajeERROR(e.getMessage());
+			e.printStackTrace();
+		}
+	}
+
+	/***
+	 * 
+	 * @param event
+	 */
+	public void onRowCancel(RowEditEvent<Object> event) {
+		JSFUtil.crearMensajeINFO("Se canceló actualización.");
+	}
+	
+	
+	public List<SelectItem> lstSiTipoNovedad() {
+		List<SelectItem> lstSiTipoNovedad = new ArrayList<SelectItem>();
+		try {
+			for (DesTipoNovedad usrTipoNovedad : managerGestionDescuentos.buscarTipoNovedad()) {
+				SelectItem siCivil = new SelectItem();
+				siCivil.setLabel(usrTipoNovedad.getDescripcion());
+				siCivil.setValue(usrTipoNovedad.getId());
+				lstSiTipoNovedad.add(siCivil);
+			}
+			return lstSiTipoNovedad;
+		} catch (Exception e) {
+			JSFUtil.crearMensajeERROR(e.getMessage());
+			e.printStackTrace();
+			return null;
+		}
+	}
+
 	public void ejecutarDescuentoMensual() {
 		try {
 			lstVDescuentoMensualSocio = lstVDescuentoMensualSocio.stream()
@@ -305,7 +368,7 @@ public class ControladorGestionDescuentos implements Serializable {
 					socio.setCajaAhorro(descMensual.getValorAhorro());
 				else
 					socio.setCajaAhorro(socio.getCajaAhorro().add(descMensual.getValorAhorro()));
-				if (socio.getFondoCesantia()==null)
+				if (socio.getFondoCesantia() == null)
 					socio.setFondoCesantia(descMensual.getValorCesantia());
 				else
 					socio.setFondoCesantia(socio.getFondoCesantia().add(descMensual.getValorCesantia()));

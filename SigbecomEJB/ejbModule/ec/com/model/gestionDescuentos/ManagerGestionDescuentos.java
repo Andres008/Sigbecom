@@ -7,6 +7,7 @@ import javax.ejb.LocalBean;
 import javax.ejb.Stateless;
 
 import ec.com.model.dao.entity.DesDescuentoMensuale;
+import ec.com.model.dao.entity.DesTipoNovedad;
 import ec.com.model.dao.entity.DescNovedade;
 import ec.com.model.dao.entity.DescValoresFijo;
 import ec.com.model.dao.entity.FinCuotasDescontada;
@@ -87,7 +88,7 @@ public class ManagerGestionDescuentos {
 		List<DescNovedade> lstDescuentos;
 		try {
 			lstDescuentos = managerDAOSegbecom.findAll(DescNovedade.class,
-					"o.descEstadoDescuento.idEstadoDescuento DESC, o.fechaRegistro ASC");
+					"o.idNovedad DESC");
 			return lstDescuentos;
 		} catch (Exception e) {
 			throw new Exception("Error al buscar Novedades.");
@@ -176,6 +177,33 @@ public class ManagerGestionDescuentos {
 	public void ingresarUsrSocioDescuentoFijo(UsrSocioDescuentoFijo descuentoNuevo) throws Exception {
 		managerDAOSegbecom.insertar(descuentoNuevo);
 		
+	}
+
+	public void actualizarObjeto(Object object) throws Exception {
+		try {
+			managerDAOSegbecom.actualizar(object);
+		} catch (Exception e) {
+			throw new Exception("Error al actualizar " + object.getClass());
+		}
+
+	}
+	
+	public void actualizarNovedad(DescNovedade object) throws Exception {
+		try {
+			managerDAOSegbecom.actualizar(object);
+		} catch (Exception e) {
+			throw new Exception("Error al actualizar " + object.getClass());
+		}
+
+	}
+
+	@SuppressWarnings("unchecked")
+	public List<DesTipoNovedad> buscarTipoNovedad() throws Exception {
+		try {
+			return managerDAOSegbecom.findAll(DesTipoNovedad.class, "o.id ASC");
+		} catch (Exception e) {
+			throw new Exception("Error al obtener listado tipo de novedades.");
+		}
 	}
 
 }
