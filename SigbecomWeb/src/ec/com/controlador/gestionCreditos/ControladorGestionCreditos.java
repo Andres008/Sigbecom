@@ -496,11 +496,12 @@ public class ControladorGestionCreditos implements Serializable {
 				throw new Exception("Atención, el monto $" + objFinPrestamoSocio.getValorPrestamo()
 						+ " es menor al autorizado para este tipo de credito $"
 						+ objFinPrestamoSocio.getFinTipoCredito().getValorMinimo() + ".");
-			for (FinPrestamoRequisito requisito : objFinPrestamoSocio.getFinPrestamoRequisitos()) {
+			//Verificación de requisitos prestamos
+			/*for (FinPrestamoRequisito requisito : objFinPrestamoSocio.getFinPrestamoRequisitos()) {
 				if (ModelUtil.isEmpty(requisito.getUrl()))
 					throw new Exception(
 							"Atención, requisitos no ingresados, favor complete los requisitos para continuar.");
-			}
+			}*/
 			calcularCuotaMensualPrestamo();
 			if (objSocio == null)
 				objFinPrestamoSocio.setUsrSocio(beanLogin.getCredencial().getObjUsrSocio());
