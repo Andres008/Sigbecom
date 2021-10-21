@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:pc="http://primefaces.org/california">
+
+<h:head>
+	<f:facet name="first">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+		<meta name="viewport"
+			content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" />
+		<meta name="apple-mobile-web-app-capable" content="yes" />
+	</f:facet>
+	<title><ui:insert name="title">Solicitudes</ui:insert></title>
+	<h:outputScript name="js/nanoscroller.js" library="california-layout" />
+	<h:outputScript name="js/layout.js" library="california-layout" />
+	<h:outputStylesheet library="css" name="estilos.css" />
+	<ui:insert name="head" />
+</h:head>
+
+<h:body styleClass="main-body"
+	onload="#{controladorGestionCreditos.inicializarSolicitudCreditoMigracion()}">
+
+	<div
+		class="layout-wrapper #{guestPreferences.menuLayout != 'static' ? guestPreferences.menuLayout : null}">
+		<ui:include src="/affordances/megamenu.xhtml" />
+		<ui:include src="/affordances/topbar.xhtml" />
+		<ui:include src="/affordances/sidebar.xhtml" />
+		<ui:include src="/affordances/right-sidebar.xhtml" />
+
+		<div class="layout-main">
+			<div class="route-bar">
+				<div class="route-bar-breadcrumb">
+					<i class="fa fa-home"></i> <span>/Registro Usuarios</span>
+					<ui:insert name="viewname" />
+				</div>
+				<ui:include src="/affordances/route-bar-menu.xhtml" />
+			</div>
+			<div class="layout-main-content" align="center">
+				<H1>SOLICITUD DE CREDITO</H1>
+				<h:form id="ingreso">
+					<p:growl id="growl" showDetail="true" sticky="true" />
+					<p:wizard
+						flowListener="#{controladorGestionCreditos.onFlowProcess}"
+						backLabel="Regresar" nextLabel="Siguiente">
+						<p:tab id="tabSocio" title="Socio">
+							<p:panel header="Datos Empleado">
+								<p:panelGrid columns="3" styleClass="ui-noborder">
+									<p:outputLabel value="Ingrese Número de Cédula" />
+									<p:inputMask mask="9999999999" required="true"
+										value="#{controladorGestionCreditos.objSocio.cedulaSocio}">
+										<p:ajax update="@form"
+											listener="#{controladorGestionCreditos.buscarSocioMigracionPrestamo()}" />
+									</p:inputMask>
+								</p:panelGrid>
+								<p:panelGrid columns="4">
+									<p:outputLabel value="Apellidos" />
+									<p:outputLabel
+										value="#{controladorGestionCreditos.objSocio.gesPersona.apellidos}" />
+									<p:outputLabel value="Nombres" />
+									<p:outputLabel
+										value="#{controladorGestionCreditos.objSocio.gesPersona.nombres}" />
+								</p:panelGrid>
+							</p:panel>
+						</p:tab>
+						<p:tab id="tabTipoCredito" title="Tipo de Credito">
+							<p:panelGrid columns="2" styleClass="ui-noborder">
+								<p:outputLabel value="Tipo de Crédito" />
+								<p:selectOneMenu required="true"
+									requiredMessage="Seleccione Tipo de Credito Para Continuar."
+									value="#{controladorGestionCreditos.objFinPrestamoSocio.finTipoCredito.idTipoCredito}">
+									<f:selectItem itemLabel="Tipo de Crédito"
+										noSelectionOption="true" />
+									<f:selectItems
+										value="#{controladorGestionCreditos.lstSiTipoCredito()}" />
+									<p:ajax update="@form" process="@this"
+										listener="#{controladorGestionCreditos.cargarTipoCredito()}" />
+								</p:selectOneMenu>
+							</p:panelGrid>
+						</p:tab>
+						<p:tab id="tabDatosCredito" title="Datos Credito">
+							<p:panel
+								header="Información del Credito #{controladorGestionCreditos.objFinPrestamoSocio.finTipoCredito.nombre}">
+								<p:panelGrid columns="4" styleClass="ui-noborder">
+									<p:outputLabel value="Valor Máximo" />
+									<p:outputLabel
+										value="$ #{controladorGestionCreditos.objFinPrestamoSocio.finTipoCredito.valorMaximo}" />
+									<p:outputLabel value="Valor Mínimo" />
+									<p:outputLabel
+										value="$ #{controladorGestionCreditos.objFinPrestamoSocio.finTipoCredito.valorMinimo}" />
+
+									<p:outputLabel value="Plazo Máximo" />
+									<p:outputLabel
+										value="#{controladorGestionCreditos.objFinPrestamoSocio.finTipoCredito.plazoMaximo} meses" />
+									<p:outputLabel value="Tasa de Interes" />
+									<p:outputLabel
+										value="#{controladorGestionCreditos.objFinPrestamoSocio.finTipoCredito.tasaInteres} %" />
+
+								</p:panelGrid>
+							</p:panel>
+							<p:panel header="Datos de su Credito">
+								<p:panelGrid columns="4" styleClass="ui-noborder">
+									<p:outputLabel value="Valor a solicitar" />
+									<p:inputNumber
+										placeholder="Valor Máximo $#{controladorGestionCreditos.objFinPrestamoSocio.finTipoCredito.valorMaximo}"
+										decimalSeparator="." thousandSeparator="," minValue="0.01"
+										maxValue="#{controladorGestionCreditos.objFinPrestamoSocio.finTipoCredito.valorMaximo}"
+										value="#{controladorGestionCreditos.objFinPrestamoSocio.valorPrestamo}">
+										<p:ajax
+											listener="#{controladorGestionCreditos.calcularCuotaMensualPrestamo()}"
+											update="@form" process="@this" />
+									</p:inputNumber>
+									<p:outputLabel value="Plazo en Meses" />
+									<p:inputNumber
+										placeholder="Meses Máximo #{controladorGestionCreditos.objFinPrestamoSocio.finTipoCredito.plazoMaximo}"
+										decimalPlaces="0" minValue="1"
+										maxValue="#{controladorGestionCreditos.objFinPrestamoSocio.finTipoCredito.plazoMaximo}"
+										value="#{controladorGestionCreditos.objFinPrestamoSocio.plazoMeses}">
+										<p:ajax
+											listener="#{controladorGestionCreditos.calcularCuotaMensualPrestamo()}"
+											update="@form" process="@this" />
+									</p:inputNumber>
+								</p:panelGrid>
+							</p:panel>
+						</p:tab>
+						<p:tab id="tabEjemplo" title="Datos Pagos">
+							<p:panelGrid columns="4" styleClass="ui-noborder">
+								<p:outputLabel value="Número de Cuotas" />
+								<p:outputLabel
+									value="#{controladorGestionCreditos.objFinPrestamoSocio.plazoMeses}" />
+								<p:outputLabel value="Cuota Mensual Referencial" />
+								<p:outputLabel
+									value="#{controladorGestionCreditos.objFinPrestamoSocio.cuotaMensual}">
+									<f:convertNumber maxFractionDigits="2" />
+								</p:outputLabel>
+							</p:panelGrid>
+							<h:commandLink value="Exportar Excel">
+								<p:graphicImage name="/images/excel.png" width="24" />
+								<p:dataExporter type="xls" target="@form:tblAmortizacion"
+									fileName="tablaAmortizacion" />
+							</h:commandLink>
+							<p:dataTable id="tblAmortizacion" paginator="true" rows="12"
+								value="#{controladorGestionCreditos.objFinPrestamoSocio.finTablaAmortizacions}"
+								var="amortizacion">
+								<p:column headerText="Número Cuota">
+									<p:outputLabel value="#{amortizacion.numeroCuota}" />
+								</p:column>
+								<p:column headerText="Fecha de Pago">
+									<p:outputLabel value="#{amortizacion.fechaPago}">
+										<f:convertDateTime pattern="dd/MM/yyyy" />
+									</p:outputLabel>
+								</p:column>
+								<p:column headerText="Pago Capital">
+									<p:outputLabel value="#{amortizacion.capital}" />
+								</p:column>
+								<p:column headerText="Pago Interes">
+									<p:outputLabel value="#{amortizacion.interes}" />
+								</p:column>
+								<p:column headerText="Cuota Mensual">
+									<p:outputLabel value="#{amortizacion.valorCuota}" />
+								</p:column>
+								<p:column headerText="Saldo Capital">
+									<p:outputLabel value="#{amortizacion.saldoCapital}" />
+								</p:column>
+							</p:dataTable>
+						</p:tab>
+						<p:tab id="tabRequisitos" title="Requisitos">
+							<p:dataTable id="tblRequisitos"
+								value="#{controladorGestionCreditos.objFinPrestamoSocio.finPrestamoRequisitos}"
+								var="requisito">
+								<p:column headerText="Requisito">
+									<p:outputLabel value="#{requisito.finRequisito.nombre}" />
+								</p:column>
+								<p:column headerText="Requisito Ingresado">
+									<p:outputLabel value="NO" rendered="#{requisito.url==null}" />
+									<p:outputLabel value="SI" rendered="#{requisito.url!=null}" />
+								</p:column>
+								<p:column headerText="Cargar Archivo">
+									<p:fileUpload styleClass="ui-fileupload-buttonbar"
+										label="Seleccionar Archivo"
+										listener="#{controladorGestionCreditos.cargarAdjuntoRequisito}"
+										multiple="false" mode="advanced" auto="true"
+										allowTypes="/(\.|\/)(pdf|png|jpg)$/"
+										immediate="#{controladorGestionCreditos.cargarAdjuntoRequisitoPrestamo(requisito)}"
+										process="@this" update="@form:tblRequisitos @form"
+										skinSimple="true">
+									</p:fileUpload>
+								</p:column>
+							</p:dataTable>
+						</p:tab>
+						<p:tab id="tabGenerar" title="Generar Solicitud">
+
+							<p:panelGrid columns="1" styleClass="ui-noborder">
+								<p:panel
+									style="background:#e6f5ff;font-size:12px;text-align:left">
+									<i class="fa fa-info-circle"
+										style="font-size: 18px; color: #00ace6"></i>
+									<p:outputLabel
+										value="Estimado usuario, al aceptar y generar la solicitud esta de acuerdo con toda la información generarda en esta solicitud."
+										style="margin-left:10px;" />
+								</p:panel>
+								<p:commandButton value="Aceptar y Solicitar Credito"
+									action="#{controladorGestionCreditos.ingresarCreditoSocio()}"
+									update="@form">
+									<p:confirm header="Confirmación"
+										message="Desea finalizar la solicitud de credito?"
+										icon="pi pi-exclamation-triangle" />
+								</p:commandButton>
+								<p:confirmDialog global="true" showEffect="fade"
+									hideEffect="fade" responsive="true" width="350">
+									<p:commandButton value="Si" type="button"
+										styleClass="ui-confirmdialog-yes" />
+									<p:commandButton value="No" type="button"
+										styleClass="ui-confirmdialog-no ui-button-flat" />
+								</p:confirmDialog>
+							</p:panelGrid>
+						</p:tab>
+					</p:wizard>
+					<p:separator></p:separator>
+
+				</h:form>
+			</div>
+			<ui:include src="/affordances/footer.xhtml" />
+		</div>
+	</div>
+
+	<p:ajaxStatus
+		style="width:32px;height:32px;position:fixed;right:7px;bottom:7px">
+		<f:facet name="start">
+			<i class="fa fa-circle-o-notch fa-spin ajax-loader"
+				aria-hidden="true"></i>
+		</f:facet>
+
+		<f:facet name="complete">
+			<h:outputText value="" />
+		</f:facet>
+	</p:ajaxStatus>
+
+	<h:outputStylesheet name="css/nanoscroller.css"
+		library="california-layout" />
+	<h:outputStylesheet name="css/layout-#{guestPreferences.theme}.css"
+		library="california-layout" />
+</h:body>
+</html>

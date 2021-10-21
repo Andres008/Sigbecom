@@ -107,6 +107,22 @@
 							<p:ajax event="rowEditCancel"
 								listener="#{controladorGestionDescuentos.onRowCancel}"
 								update="@form:growl" />
+							<p:column headerText="Cédula Socio" width="100"
+								filterBy="#{novedad.usrSocio2.cedulaSocio}"
+								filterMatchMode="contains">
+								<p:outputLabel value="#{novedad.usrSocio2.cedulaSocio}" />
+							</p:column>
+							<p:column headerText="Código Socio" width="100"
+								filterBy="#{novedad.usrSocio2.idSocio}"
+								filterMatchMode="contains">
+								<p:outputLabel value="#{novedad.usrSocio2.idSocio}" />
+							</p:column>
+							<p:column headerText="Socio"
+								filterBy="#{novedad.usrSocio2.gesPersona.apellidos}"
+								filterMatchMode="contains">
+								<p:outputLabel
+									value="#{novedad.usrSocio2.gesPersona.apellidos} #{novedad.usrSocio2.gesPersona.nombres}" />
+							</p:column>
 							<p:column headerText="Descripción">
 								<p:outputLabel value="#{novedad.descripcion}" />
 							</p:column>
@@ -124,15 +140,6 @@
 									</f:facet>
 								</p:cellEditor>
 							</p:column>
-							<p:column headerText="Cédula Socio" width="100"
-								filterBy="#{novedad.usrSocio2.cedulaSocio}"
-								filterMatchMode="contains">
-								<p:outputLabel value="#{novedad.usrSocio2.cedulaSocio}" />
-							</p:column>
-							<p:column headerText="Socio" filterBy="#{novedad.usrSocio2.gesPersona.apellidos}" filterMatchMode="contains" >
-								<p:outputLabel
-									value="#{novedad.usrSocio2.gesPersona.apellidos} #{novedad.usrSocio2.gesPersona.nombres}" />
-							</p:column>
 							<p:column headerText="Fecha" width="90">
 								<p:outputLabel value="#{novedad.fechaRegistro}">
 									<f:convertDateTime pattern="dd/MM/yyyy " />
@@ -141,13 +148,20 @@
 							<p:column headerText="Tipo Novedad" width="70">
 								<p:outputLabel value="#{novedad.desTipoNovedad.descripcion}" />
 							</p:column>
+							<p:column headerText="Responsable Novedad"
+								filterBy="#{novedad.usrSocio1.gesPersona.apellidos}"
+								filterMatchMode="contains">
+								<p:outputLabel
+									value="#{novedad.usrSocio1.gesPersona.apellidos} #{novedad.usrSocio1.gesPersona.nombres}" />
+							</p:column>
 							<p:column headerText="Estado Novedad" width="70">
 								<p:cellEditor>
 									<f:facet name="output">
 										<p:outputLabel value="#{novedad.descEstadoDescuento.estado}" />
 									</f:facet>
 									<f:facet name="input">
-										<p:selectOneMenu style="color : black" requiredMessage="Tipo Novedad requerido"
+										<p:selectOneMenu style="color : black"
+											requiredMessage="Tipo Novedad requerido"
 											value="#{novedad.descEstadoDescuento.idEstadoDescuento}">
 											<f:selectItem itemLabel="Vigente" itemValue="2" />
 											<f:selectItem itemLabel="Anulada" itemValue="4" />
@@ -155,8 +169,9 @@
 									</f:facet>
 								</p:cellEditor>
 							</p:column>
-							<p:column headerText="Editar" width="30" rendered="#{novedad.descEstadoDescuento.idEstadoDescuento!=3}" >
+							<p:column headerText="Editar" width="30">
 								<p:rowEditor editTitle="Edit Row" cancelTitle="Cancel Edit"
+									rendered="#{controladorGestionDescuentos.renderizarEditarNovedad(novedad)}"
 									saveTitle="Save Row" />
 							</p:column>
 							<p:confirmDialog global="true" showEffect="fade"

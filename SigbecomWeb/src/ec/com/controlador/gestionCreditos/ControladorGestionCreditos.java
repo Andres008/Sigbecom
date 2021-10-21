@@ -729,6 +729,16 @@ public class ControladorGestionCreditos implements Serializable {
 			JSFUtil.crearMensajeERROR("Error al cargar solicitud credito.");
 		}
 	}
+	
+	public void cargarFinPrestamoSocioAmortizacionSinReporte(FinPrestamoSocio prestamoSocio) {
+		try {
+			objFinPrestamoSocio = managerGestionCredito.buscarSolicitudPrestamoById(prestamoSocio.getIdPrestamoSocio());
+			if (objFinPrestamoSocio.getFinTablaAmortizacions().size() == 0)
+				objFinPrestamoSocio.setFinTablaAmortizacions(ModelUtil.calcularTablaAmortizacion(objFinPrestamoSocio));
+		} catch (Exception e) {
+			JSFUtil.crearMensajeERROR("Error al cargar solicitud credito.");
+		}
+	}
 
 	public void cargarFinPrestamoSocioAccion(FinPrestamoSocio prestamoSocio) {
 		try {

@@ -1,5 +1,6 @@
 package ec.com.model.gestionDescuentos;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 import javax.ejb.EJB;
@@ -87,8 +88,7 @@ public class ManagerGestionDescuentos {
 	public List<DescNovedade> buscarNovedades() throws Exception {
 		List<DescNovedade> lstDescuentos;
 		try {
-			lstDescuentos = managerDAOSegbecom.findAll(DescNovedade.class,
-					"o.idNovedad DESC");
+			lstDescuentos = managerDAOSegbecom.findAll(DescNovedade.class, "o.idNovedad DESC");
 			return lstDescuentos;
 		} catch (Exception e) {
 			throw new Exception("Error al buscar Novedades.");
@@ -162,13 +162,15 @@ public class ManagerGestionDescuentos {
 
 	@SuppressWarnings("unchecked")
 	public List<DesDescuentoMensuale> buscarMisDescuentos(String cedulaSocio) throws Exception {
-		return managerDAOSegbecom.findWhere(DesDescuentoMensuale.class, "o.usrSocio.cedulaSocio='"+cedulaSocio+"'","o.anio DESC, o.mes DESC");
+		return managerDAOSegbecom.findWhere(DesDescuentoMensuale.class, "o.usrSocio.cedulaSocio='" + cedulaSocio + "'",
+				"o.anio DESC, o.mes DESC");
 	}
 
 	@SuppressWarnings("unchecked")
 	public List<DesDescuentoMensuale> buscarDescuentosMensuales(Long anio, Long mes) throws Exception {
 		try {
-			return managerDAOSegbecom.findWhere(DesDescuentoMensuale.class,"o.anio="+anio+" and o.mes="+mes, "o.nombreSocio ASC");
+			return managerDAOSegbecom.findWhere(DesDescuentoMensuale.class, "o.anio=" + anio + " and o.mes=" + mes,
+					"o.nombreSocio ASC");
 		} catch (Exception e) {
 			throw new Exception("Error al buscar descuentos.");
 		}
@@ -176,7 +178,7 @@ public class ManagerGestionDescuentos {
 
 	public void ingresarUsrSocioDescuentoFijo(UsrSocioDescuentoFijo descuentoNuevo) throws Exception {
 		managerDAOSegbecom.insertar(descuentoNuevo);
-		
+
 	}
 
 	public void actualizarObjeto(Object object) throws Exception {
@@ -187,7 +189,7 @@ public class ManagerGestionDescuentos {
 		}
 
 	}
-	
+
 	public void actualizarNovedad(DescNovedade object) throws Exception {
 		try {
 			managerDAOSegbecom.actualizar(object);
@@ -203,6 +205,18 @@ public class ManagerGestionDescuentos {
 			return managerDAOSegbecom.findAll(DesTipoNovedad.class, "o.id ASC");
 		} catch (Exception e) {
 			throw new Exception("Error al obtener listado tipo de novedades.");
+		}
+	}
+
+	@SuppressWarnings("unchecked")
+	public List<DescNovedade> buscarNovedadesByUsuario(String idSocio) throws Exception {
+		List<DescNovedade> lstDescuentos;
+		try {
+			lstDescuentos = managerDAOSegbecom.findWhere(DescNovedade.class,
+					"o.usrSocio2.cedulaSocio='" + idSocio + "'", "o.idNovedad DESC");
+			return lstDescuentos;
+		} catch (Exception e) {
+			throw new Exception("Error al buscar Novedades.");
 		}
 	}
 

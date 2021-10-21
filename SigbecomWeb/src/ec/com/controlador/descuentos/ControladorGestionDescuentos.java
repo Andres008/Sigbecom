@@ -130,6 +130,22 @@ public class ControladorGestionDescuentos implements Serializable {
 		}
 	}
 
+	public void inicializarMisNovedadesEconomicas() {
+		tipoNovedad = new Long(0);
+		objDescNovedade = new DescNovedade();
+		objDescNovedade.setUsrSocio1(beanLogin.getCredencial().getObjUsrSocio());
+		objDescNovedade.setUsrSocio2(new UsrSocio());
+		objDescNovedade.setDescEstadoDescuento(new DescEstadoDescuento(2));
+		objDescNovedade.setDesTipoNovedad(new DesTipoNovedad());
+		try {
+			lstDescNovedade = managerGestionDescuentos
+					.buscarNovedadesByUsuario(beanLogin.getCredencial().getObjUsrSocio().getCedulaSocio());
+		} catch (Exception e) {
+			JSFUtil.crearMensajeERROR(e.getMessage());
+			e.printStackTrace();
+		}
+	}
+
 	public void inicializartipoDescuentos() {
 		objUsrTipoDescuento = new UsrTipoDescuento();
 		try {
@@ -268,6 +284,18 @@ public class ControladorGestionDescuentos implements Serializable {
 		}
 	}
 
+	public boolean renderizarEditarNovedad(DescNovedade novedad) {
+		try {
+			if (novedad != null && novedad.getDescEstadoDescuento().getIdEstadoDescuento() == 2
+					&& novedad.getUsrSocio1().getCedulaSocio()
+							.equals(beanLogin.getCredencial().getObjUsrSocio().getCedulaSocio()))
+				return true;
+		} catch (Exception e) {
+			return false;
+		}
+		return false;
+	}
+
 	public void ejecutarDescuentoFijos() {
 		inicializarDescuentoFijos();
 		try {
@@ -337,8 +365,7 @@ public class ControladorGestionDescuentos implements Serializable {
 	public void onRowCancel(RowEditEvent<Object> event) {
 		JSFUtil.crearMensajeINFO("Se canceló actualización.");
 	}
-	
-	
+
 	public List<SelectItem> lstSiTipoNovedad() {
 		List<SelectItem> lstSiTipoNovedad = new ArrayList<SelectItem>();
 		try {

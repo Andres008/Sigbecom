@@ -67,10 +67,10 @@
 						</p:column>
 						<p:column headerText="Amortización">
 							<p:commandButton value="Tabla" update="@form" process="@this"
-								actionListener="#{controladorGestionCreditos.cargarFinPrestamoSocioAmortizacion(solicitud)}"
+								actionListener="#{controladorGestionCreditos.cargarFinPrestamoSocioAmortizacionSinReporte(solicitud)}"
 								oncomplete="PF('infAmortizacion').show()" />
 						</p:column> 
-						<p:column headerText="Requisitos">
+						<p:column headerText="Requisitos" width="200">
 							<p:dataTable value="#{solicitud.finPrestamoRequisitos}"
 								var="requisito" id="tblRequisito">
 								<p:column headerText="Requisito">

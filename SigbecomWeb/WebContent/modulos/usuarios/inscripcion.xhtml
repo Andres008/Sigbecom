@@ -87,6 +87,10 @@
 							<p:inputText
 								value="#{controladorGestionSocios.objUsrSocio.gesPersona.cedula}"
 								required="true" placeholder="Cédula" />
+							<p:outputLabel value="Código Rol" />
+							<p:inputText
+								value="#{controladorGestionSocios.objUsrSocio.idSocio}"
+								placeholder="Código Rol" />
 							<p:outputLabel value="Tipo Usuario" />
 							<p:selectOneMenu
 								value="#{controladorGestionSocios.objUsrSocio.usrTipoSocio.idTipoSocio}"
@@ -142,7 +146,7 @@
 									<p:outputLabel value="#{descuento.usrTipoDescuento.nombre}" />
 								</p:column>
 								<p:column headerText="Valor">
-									<p:inputNumber value="#{descuento.valor}" >
+									<p:inputNumber value="#{descuento.valor}">
 										<p:ajax update="@form:tblDescuentos" />
 									</p:inputNumber>
 								</p:column>
