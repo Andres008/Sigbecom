@@ -488,8 +488,8 @@ public class ControladorGestionCreditos implements Serializable {
 		}
 
 	}
-
-	public String ingresarCreditoSocio() {
+	
+	public String ingresarCreditoSocioAdmin() {
 		try {
 			if (objFinPrestamoSocio.getValorPrestamo().doubleValue() < objFinPrestamoSocio.getFinTipoCredito()
 					.getValorMinimo().doubleValue())
@@ -502,6 +502,52 @@ public class ControladorGestionCreditos implements Serializable {
 					throw new Exception(
 							"Atención, requisitos no ingresados, favor complete los requisitos para continuar.");
 			}*/
+			calcularCuotaMensualPrestamo();
+			if (objSocio == null)
+				objFinPrestamoSocio.setUsrSocio(beanLogin.getCredencial().getObjUsrSocio());
+			else
+				objFinPrestamoSocio.setUsrSocio(objSocio);
+			objFinPrestamoSocio.setFechaSolicitud(new Date());
+			objFinPrestamoSocio
+					.setFechaPrimeraCouta(objFinPrestamoSocio.getFinTablaAmortizacions().get(0).getFechaPago());
+			objFinPrestamoSocio.setFechaUltimaCuota(objFinPrestamoSocio.getFinTablaAmortizacions()
+					.get(objFinPrestamoSocio.getFinTablaAmortizacions().size() - 1).getFechaPago());
+			objFinPrestamoSocio.setSaldoCapital(objFinPrestamoSocio.getValorPrestamo());
+			objFinPrestamoSocio.setFinEstadoCredito(new FinEstadoCredito(1));
+			objFinPrestamoSocio.setValorRecibido(calcularValorRecibirNovacion(objFinPrestamoSocio));
+			objFinPrestamoSocio.setCuotasPagadas(new BigDecimal(0));
+			objFinPrestamoSocio.setFinTablaAmortizacions(new ArrayList<FinTablaAmortizacion>());
+			FinAccionPrestamo accion = new FinAccionPrestamo(new Timestamp(new Date().getTime()),
+					new FinAccionesCredito(1), objFinPrestamoSocio, beanLogin.getCredencial().getObjUsrSocio(),
+					"Solicitud de prestamo Creada");
+			objFinPrestamoSocio.getFinAccionPrestamos().add(accion);
+			managerGestionCredito.ingresarCreditoSocio(objFinPrestamoSocio);
+			managerLog.generarLogUsabilidad(beanLogin.getCredencial(), this.getClass(), "ingresarCreditoSocio",
+					"Se ingreso correctamente credito Nº" + objFinPrestamoSocio.getIdPrestamoSocio());
+			JSFUtil.crearMensajeINFO("Se creo exitosamente la solicitud.");
+			return "/modulos/prestamosFina/solicitudCreditoAdministrador?faces-redirect=true";
+		} catch (Exception e) {
+			managerLog.generarLogErrorGeneral(beanLogin.getCredencial(), this.getClass(), "ingresarCreditoSocio",
+					e.getMessage());
+			e.printStackTrace();
+			JSFUtil.crearMensajeERROR(e.getMessage());
+			return "";
+		}
+	}
+
+	public String ingresarCreditoSocio() {
+		try {
+			if (objFinPrestamoSocio.getValorPrestamo().doubleValue() < objFinPrestamoSocio.getFinTipoCredito()
+					.getValorMinimo().doubleValue())
+				throw new Exception("Atención, el monto $" + objFinPrestamoSocio.getValorPrestamo()
+						+ " es menor al autorizado para este tipo de credito $"
+						+ objFinPrestamoSocio.getFinTipoCredito().getValorMinimo() + ".");
+			
+			for (FinPrestamoRequisito requisito : objFinPrestamoSocio.getFinPrestamoRequisitos()) {
+				if (ModelUtil.isEmpty(requisito.getUrl()))
+					throw new Exception(
+							"Atención, requisitos no ingresados, favor complete los requisitos para continuar.");
+			}
 			calcularCuotaMensualPrestamo();
 			if (objSocio == null)
 				objFinPrestamoSocio.setUsrSocio(beanLogin.getCredencial().getObjUsrSocio());

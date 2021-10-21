@@ -103,6 +103,14 @@
 							<p:column headerText="Total Cuotas">
 								<p:outputLabel value="#{credito.plazoMeses}" />
 							</p:column>
+							<p:column headerText="Interes">
+								<p:outputLabel
+									value="#{controladorGestionCreditos.cuotaVigenteByPrestamo(credito).interes}" />
+							</p:column>
+							<p:column headerText="Capital">
+								<p:outputLabel
+									value="#{controladorGestionCreditos.cuotaVigenteByPrestamo(credito).capital}" />
+							</p:column>
 							<p:column headerText="Valor a descontar">
 								<p:outputLabel
 									value="#{controladorGestionCreditos.cuotaVigenteByPrestamo(credito).valorCuota}" />
