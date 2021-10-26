@@ -60,34 +60,34 @@
 							value="#{controladorGestionDescuentos.lstDesDescuentoMensuale}"
 							var="credito">
 							<p:column headerText="Año Descuento">
-								<p:outputLabel value="#{credito.anio}" />
+								<p:outputLabel value="#{credito.anio}"> <f:convertNumber maxFractionDigits="0" minFractionDigits="0"/> </p:outputLabel>
 							</p:column>
 							<p:column headerText="Mes Descuento">
-								<p:outputLabel value="#{credito.mes}" />
+								<p:outputLabel value="#{credito.mes}" > <f:convertNumber maxFractionDigits="0" minFractionDigits="0"/> </p:outputLabel>
 							</p:column>
 							<p:column headerText="Descuento Creditos">
-								<p:outputLabel value="#{credito.valorPrestamo}" />
+								<p:outputLabel value="#{credito.valorPrestamo}"> <f:convertNumber maxFractionDigits="2" minFractionDigits="2"/> </p:outputLabel>
 							</p:column>
 							<p:column headerText="Descuento Convenios">
-								<p:outputLabel value="#{credito.valorConvenio}" />
+								<p:outputLabel value="#{credito.valorConvenio}"> <f:convertNumber maxFractionDigits="2" minFractionDigits="2"/> </p:outputLabel>
 							</p:column>
 							<p:column headerText="Descuento Planes Móviles">
-								<p:outputLabel value="#{credito.valorPlanMovil}" />
+								<p:outputLabel value="#{credito.valorPlanMovil}" > <f:convertNumber maxFractionDigits="2" minFractionDigits="2"/> </p:outputLabel>
 							</p:column>
 							<p:column headerText="Descuento Ahorro">
-								<p:outputLabel value="#{credito.valorAhorro}" />
+								<p:outputLabel value="#{credito.valorAhorro}"> <f:convertNumber maxFractionDigits="2" minFractionDigits="2"/> </p:outputLabel>
 							</p:column>
 							<p:column headerText="Descuento Cesantía">
-								<p:outputLabel value="#{credito.valorCesantia}" />
+								<p:outputLabel value="#{credito.valorCesantia}"> <f:convertNumber maxFractionDigits="2" minFractionDigits="2"/> </p:outputLabel>
 							</p:column>
 							<p:column headerText="Descuento Salud">
-								<p:outputLabel value="#{credito.valorSalud}" />
+								<p:outputLabel value="#{credito.valorSalud}" > <f:convertNumber maxFractionDigits="2" minFractionDigits="2"/> </p:outputLabel>
 							</p:column>
 							<p:column headerText="Novedades">
-								<p:outputLabel value="#{credito.novedades}" />
+								<p:outputLabel value="#{credito.novedades}"> <f:convertNumber maxFractionDigits="2" minFractionDigits="2"/> </p:outputLabel>
 							</p:column>
 							<p:column headerText="Total Descuento Mensual">
-								<p:outputLabel value="#{credito.totalDescuento}" />
+								<p:outputLabel value="#{credito.totalDescuento}"> <f:convertNumber maxFractionDigits="2" minFractionDigits="2"/> </p:outputLabel>
 							</p:column>
 						</p:dataTable>
 					</p:panel>
