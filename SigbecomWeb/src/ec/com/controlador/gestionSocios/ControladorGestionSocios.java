@@ -328,7 +328,16 @@ public class ControladorGestionSocios implements Serializable {
 	 */
 	public void actualizarPersonaSocio() {
 		try {
+			objUsrSocio.getGesPersona().setEmail(objUsrSocio.getGesPersona().getEmail().trim());
 			ModelUtil.esEmailCorrecto(objUsrSocio.getGesPersona().getEmail());
+			if (objUsrSocio.getGesPersona().getGesEstadoCivil().getIdEstadoCivil() == 0)
+				throw new Exception("Atención, es requerido el estado civíl.");
+			if (objUsrSocio.getGesPersona().getGesGenero().getIdGenero()== 0)
+				throw new Exception("Atención, es requerido el género.");
+			if (objUsrSocio.getGesPersona().getGesTipoSangre().getIdTipoSangre()== 0)
+				throw new Exception("Atención, es requerido el tipo de sangre.");
+			if (objUsrSocio.getGesPersona().getGesEtnia().getIdEtnia()== 0)
+				throw new Exception("Atención, es requerido la etnia.");
 			managerGestionPersonas.actualizarGesPersona(objUsrSocio.getGesPersona());
 			managerGestionSocios.actualizarUsrSocio(objUsrSocio);
 			inicializarActualizacionSocio();
@@ -467,6 +476,16 @@ public class ControladorGestionSocios implements Serializable {
 	public void ingresarFamiliar() throws Exception {
 		try {
 			ModelUtil.verificarCedulaEcuador(objGesPariente.getGesPersona().getCedula());
+			if (objGesPariente.getUsrConsanguinidad().getIdConsanguinidad() == 0)
+				throw new Exception("Atención, la Consaguinidad es requerido.");
+			if (objGesPariente.getGesPersona().getGesEstadoCivil().getIdEstadoCivil() == 0)
+				throw new Exception("Atención, es requerido el estado civíl.");
+			if (objGesPariente.getGesPersona().getGesGenero().getIdGenero()== 0)
+				throw new Exception("Atención, es requerido el género.");
+			if (objGesPariente.getGesPersona().getGesTipoSangre().getIdTipoSangre()== 0)
+				throw new Exception("Atención, es requerido el tipo de sangre.");
+			if (objGesPariente.getGesPersona().getGesEtnia().getIdEtnia()== 0)
+				throw new Exception("Atención, es requerido la etnia.");
 			objGesPariente.setUsrConsanguinidad(managerGestionSocios
 					.buscarConsanguinidadById(objGesPariente.getUsrConsanguinidad().getIdConsanguinidad()));
 			objGesPariente.setUsrSocio(objUsrSocio);

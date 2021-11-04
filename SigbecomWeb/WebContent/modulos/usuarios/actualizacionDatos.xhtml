@@ -140,7 +140,7 @@
 									<p:selectOneMenu
 										value="#{controladorGestionSocios.objUsrSocio.gesPersona.gesEstadoCivil.idEstadoCivil}"
 										required="true">
-										<f:selectItem itemLabel="Estado Civil"
+										<f:selectItem itemLabel="Estado Civil" itemValue="0"
 											noSelectionOption="true" />
 										<f:selectItems
 											value="#{controladorGestionUsuario.lstSiEstadoCivil()}" />
@@ -150,16 +150,16 @@
 									<p:selectOneMenu
 										value="#{controladorGestionSocios.objUsrSocio.gesPersona.gesGenero.idGenero}"
 										required="true">
-										<f:selectItem itemLabel="Género" noSelectionOption="true" />
+										<f:selectItem itemLabel="Género" noSelectionOption="true" itemValue="0"/>
 										<f:selectItems
 											value="#{controladorGestionUsuario.lstSiGenero()}" />
 										<p:ajax update="@form" process="@this" />
 									</p:selectOneMenu>
-									<p:outputLabel value="Tipo de Sangre" />
+									<p:outputLabel value="Tipo de Sangre" /> 
 									<p:selectOneMenu
-										value="#{controladorGestionSocios.objUsrSocio.gesPersona.gesTipoSangre.idTipoSangre}"
+										value="#{controladorGestionSocios.objUsrSocio.gesPersona.gesTipoSangre.idTipoSangre}" itemValue="0"
 										required="true">
-										<f:selectItem itemLabel="Tipo de Sangre"
+										<f:selectItem itemLabel="Tipo de Sangre" itemValue="0"
 											noSelectionOption="true" />
 										<f:selectItems
 											value="#{controladorGestionUsuario.lstSiTipoSangre()}" />
@@ -169,7 +169,7 @@
 									<p:selectOneMenu
 										value="#{controladorGestionSocios.objUsrSocio.gesPersona.gesEtnia.idEtnia}"
 										required="true">
-										<f:selectItem itemLabel="Etnia" noSelectionOption="true" />
+										<f:selectItem itemLabel="Etnia" itemValue="0" noSelectionOption="true" />
 										<f:selectItems
 											value="#{controladorGestionUsuario.lstSiEtnia()}" />
 										<p:ajax update="@form" process="@this" />
