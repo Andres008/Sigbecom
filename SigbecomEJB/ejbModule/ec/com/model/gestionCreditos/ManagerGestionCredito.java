@@ -10,6 +10,7 @@ import ec.com.model.dao.entity.FinCuotasDescontada;
 import ec.com.model.dao.entity.FinPrestamoSocio;
 import ec.com.model.dao.entity.FinRequisito;
 import ec.com.model.dao.entity.FinResolucionPrestamo;
+import ec.com.model.dao.entity.FinTablaAmortizacion;
 import ec.com.model.dao.entity.FinTipoCredito;
 import ec.com.model.dao.entity.FinTipoSolicitud;
 import ec.com.model.dao.entity.GesDiscapacidadPersona;
@@ -259,6 +260,16 @@ public class ManagerGestionCredito {
 	public List<FinPrestamoSocio> buscarSolicitudesVigentes() throws Exception {
 		return managerDAOSegbecom.findWhere(FinPrestamoSocio.class, "o.finEstadoCredito.idEstadoCredito=5",
 				"o.idPrestamoSocio DESC");
+	}
+
+	@SuppressWarnings("unchecked")
+	public List<FinTablaAmortizacion> buscarTablaAmortizacionByIdCredito(long idPrestamoSocio) throws Exception {
+		try {
+			return managerDAOSegbecom.findWhere(FinTablaAmortizacion.class,
+					"o.finPrestamoSocio.idPrestamoSocio=" + idPrestamoSocio, "o.numeroCuota ASC");
+		} catch (Exception e) {
+			throw new Exception("Error al consultar tabla de amortización. " + e.getMessage());
+		}
 	}
 
 }

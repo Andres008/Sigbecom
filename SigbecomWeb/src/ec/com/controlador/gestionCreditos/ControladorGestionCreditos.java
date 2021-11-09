@@ -356,6 +356,8 @@ public class ControladorGestionCreditos implements Serializable {
 		try {
 			SimpleDateFormat formato = new SimpleDateFormat("dd/MM/yyyy");
 			prestamoSocio = managerGestionCredito.buscarSolicitudPrestamoById(prestamoSocio.getIdPrestamoSocio());
+			prestamoSocio.setFinTablaAmortizacions(
+					managerGestionCredito.buscarTablaAmortizacionByIdCredito(prestamoSocio.getIdPrestamoSocio()));
 			Map<String, Object> parametros = new HashMap<String, Object>();
 			parametros.put("nombreSocio", prestamoSocio.getUsrSocio().getGesPersona().getApellidos() + " "
 					+ prestamoSocio.getUsrSocio().getGesPersona().getNombres());
@@ -369,19 +371,15 @@ public class ControladorGestionCreditos implements Serializable {
 			parametros.put("tipoCredito", prestamoSocio.getFinTipoCredito().getNombre());
 			File jasper = new File(beanLogin.getPathReporte() + "creditos/fin_tabla_amortizacion.jasper");
 			JasperPrint jasperPrint;
-			try {
-				jasperPrint = JasperFillManager.fillReport(jasper.getPath(), parametros,
-						new JRBeanCollectionDataSource(prestamoSocio.getFinTablaAmortizacions()));
-				archivo = JasperExportManager.exportReportToPdf(jasperPrint);
-			} catch (JRException e) {
-				JSFUtil.crearMensajeERROR("Error al generar el reporte de solicitud. " + e.getMessage());
-				e.printStackTrace();
-			}
+			prestamoSocio.setFinTablaAmortizacions(
+					managerGestionCredito.buscarTablaAmortizacionByIdCredito(prestamoSocio.getIdPrestamoSocio()));
+			jasperPrint = JasperFillManager.fillReport(jasper.getPath(), parametros,
+					new JRBeanCollectionDataSource(prestamoSocio.getFinTablaAmortizacions()));
+			archivo = JasperExportManager.exportReportToPdf(jasperPrint);
 		} catch (Exception e) {
 			JSFUtil.crearMensajeERROR("Error al generar el reporte de solicitud. " + e.getMessage());
 			e.printStackTrace();
 		}
-
 	}
 
 	public void imprimirSolicitudSecretario(FinPrestamoSocio prestamoSocio) {
@@ -488,7 +486,7 @@ public class ControladorGestionCreditos implements Serializable {
 		}
 
 	}
-	
+
 	public String ingresarCreditoSocioAdmin() {
 		try {
 			if (objFinPrestamoSocio.getValorPrestamo().doubleValue() < objFinPrestamoSocio.getFinTipoCredito()
@@ -496,12 +494,14 @@ public class ControladorGestionCreditos implements Serializable {
 				throw new Exception("Atención, el monto $" + objFinPrestamoSocio.getValorPrestamo()
 						+ " es menor al autorizado para este tipo de credito $"
 						+ objFinPrestamoSocio.getFinTipoCredito().getValorMinimo() + ".");
-			//Verificación de requisitos prestamos
-			/*for (FinPrestamoRequisito requisito : objFinPrestamoSocio.getFinPrestamoRequisitos()) {
-				if (ModelUtil.isEmpty(requisito.getUrl()))
-					throw new Exception(
-							"Atención, requisitos no ingresados, favor complete los requisitos para continuar.");
-			}*/
+			// Verificación de requisitos prestamos
+			/*
+			 * for (FinPrestamoRequisito requisito :
+			 * objFinPrestamoSocio.getFinPrestamoRequisitos()) { if
+			 * (ModelUtil.isEmpty(requisito.getUrl())) throw new Exception(
+			 * "Atención, requisitos no ingresados, favor complete los requisitos para continuar."
+			 * ); }
+			 */
 			calcularCuotaMensualPrestamo();
 			if (objSocio == null)
 				objFinPrestamoSocio.setUsrSocio(beanLogin.getCredencial().getObjUsrSocio());
@@ -542,7 +542,7 @@ public class ControladorGestionCreditos implements Serializable {
 				throw new Exception("Atención, el monto $" + objFinPrestamoSocio.getValorPrestamo()
 						+ " es menor al autorizado para este tipo de credito $"
 						+ objFinPrestamoSocio.getFinTipoCredito().getValorMinimo() + ".");
-			
+
 			for (FinPrestamoRequisito requisito : objFinPrestamoSocio.getFinPrestamoRequisitos()) {
 				if (ModelUtil.isEmpty(requisito.getUrl()))
 					throw new Exception(
@@ -776,7 +776,7 @@ public class ControladorGestionCreditos implements Serializable {
 			JSFUtil.crearMensajeERROR("Error al cargar solicitud credito.");
 		}
 	}
-	
+
 	public void cargarFinPrestamoSocioAmortizacionSinReporte(FinPrestamoSocio prestamoSocio) {
 		try {
 			objFinPrestamoSocio = managerGestionCredito.buscarSolicitudPrestamoById(prestamoSocio.getIdPrestamoSocio());
