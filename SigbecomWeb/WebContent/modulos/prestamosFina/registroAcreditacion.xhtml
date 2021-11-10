@@ -20,7 +20,7 @@
 	<ui:insert name="head" />
 </h:head>
 
-<h:body styleClass="main-body" 
+<h:body styleClass="main-body"
 	onload="#{controladorGestionCreditos.inicializarAcreditacionSolicitudes()}">
 
 	<div
@@ -84,18 +84,27 @@
 								</p:column>
 							</p:dataTable>
 						</p:column>
-						<p:column headerText="Imprimir" width="100" >
+						<p:column headerText="Imprimir" width="100">
 							<p:panelGrid columns="1" styleClass="ui-noborder">
-								<p:commandButton value="Solicitud" update="@form" process="@this"
+								<p:commandButton value="Solicitud" update="@form"
+									process="@this"
 									actionListener="#{controladorGestionCreditos.imprimirSolicitudCredito(solicitud)}"
 									oncomplete="PF('infPDF').show()" />
-									<p:commandButton value="Presidente" update="@form" process="@this"
+								<p:commandButton value="Presidente" update="@form"
+									process="@this"
 									actionListener="#{controladorGestionCreditos.imprimirSolicitudPresidente(solicitud)}"
 									oncomplete="PF('infPDF').show()" />
-									<p:commandButton value="Secretario" update="@form" process="@this"
+								<p:commandButton value="Secretario" update="@form"
+									process="@this"
 									actionListener="#{controladorGestionCreditos.imprimirSolicitudSecretario(solicitud)}"
 									oncomplete="PF('infPDF').show()" />
 							</p:panelGrid>
+						</p:column>
+						<p:column headerText="Historial" style="font-size:90%"
+							exportable="false">
+							<p:commandButton value="Historial" update="@form" process="@this"
+								actionListener="#{controladorGestionCreditos.cargarFinPrestamoSocioAmortizacion(solicitud)}"
+								style="font-size:110%" oncomplete="PF('infAccion').show()" />
 						</p:column>
 						<p:column headerText="Revisión">
 							<p:commandButton value="Acreditar" update="@form" process="@this"
@@ -114,35 +123,49 @@
 						widgetVar="infAmortizacion" id="infAmortizacion" modal="true"
 						position="top" showEffect="fade" hideEffect="fade"
 						resizable="false" width="90%">
-						<p:dataTable emptyMessage="No existen datos." rows="10"
-							paginator="true"
-							value="#{controladorGestionCreditos.objFinPrestamoSocio.finTablaAmortizacions}"
-							var="amortizacion">
-							<p:column headerText="Número Cuota">
-								<p:outputLabel value="#{amortizacion.numeroCuota}" />
-							</p:column>
-							<p:column headerText="Fecha de Pago">
-								<p:outputLabel value="#{amortizacion.fechaPago}">
-									<f:convertDateTime pattern="dd/MM/yyyy" />
-								</p:outputLabel>
-							</p:column>
-							<p:column headerText="Estado Cuota">
-								<p:outputLabel
-									value="#{amortizacion.finEstadoCuota.descripcion}" />
-							</p:column>
-							<p:column headerText="Pago Capital">
-								<p:outputLabel value="#{amortizacion.capital}" />
-							</p:column>
-							<p:column headerText="Pago Interes">
-								<p:outputLabel value="#{amortizacion.interes}" />
-							</p:column>
-							<p:column headerText="Cuota Mensual">
-								<p:outputLabel value="#{amortizacion.valorCuota}" />
-							</p:column>
-							<p:column headerText="Saldo Capital">
-								<p:outputLabel value="#{amortizacion.saldoCapital}" />
-							</p:column>
-						</p:dataTable>
+						<p:tabView>
+							<p:tab title="Excel">
+								<h:commandLink value="Exportar Excel">
+									<p:graphicImage name="/images/excel.png" width="24" />
+									<p:dataExporter type="xls" target="@form:tblAmorti"
+										fileName="#{controladorGestionCreditos.objFinPrestamoSocio.usrSocio.gesPersona.apellidos}" />
+								</h:commandLink>
+								<p:dataTable emptyMessage="No existen datos." rows="10"
+									paginator="true"
+									value="#{controladorGestionCreditos.objFinPrestamoSocio.finTablaAmortizacions}"
+									var="amortizacion">
+									<p:column headerText="Número Cuota">
+										<p:outputLabel value="#{amortizacion.numeroCuota}" />
+									</p:column>
+									<p:column headerText="Fecha de Pago">
+										<p:outputLabel value="#{amortizacion.fechaPago}">
+											<f:convertDateTime pattern="dd/MM/yyyy" />
+										</p:outputLabel>
+									</p:column>
+									<p:column headerText="Estado Cuota">
+										<p:outputLabel
+											value="#{amortizacion.finEstadoCuota.descripcion}" />
+									</p:column>
+									<p:column headerText="Pago Capital">
+										<p:outputLabel value="#{amortizacion.capital}" />
+									</p:column>
+									<p:column headerText="Pago Interes">
+										<p:outputLabel value="#{amortizacion.interes}" />
+									</p:column>
+									<p:column headerText="Cuota Mensual">
+										<p:outputLabel value="#{amortizacion.valorCuota}" />
+									</p:column>
+									<p:column headerText="Saldo Capital">
+										<p:outputLabel value="#{amortizacion.saldoCapital}" />
+									</p:column>
+								</p:dataTable>
+							</p:tab>
+							<p:tab title="PDF">
+								<p:media cache="false"
+									value="#{controladorGestionCreditos.reportePDF()}" width="100%"
+									height="400" player="pdf"></p:media>
+							</p:tab>
+						</p:tabView>
 					</p:dialog>
 					<p:dialog
 						header="Resolución de revisión de la Solicitud de Prestamo"
@@ -175,6 +198,32 @@
 								</p:inputTextarea>
 							</p:panelGrid>
 						</p:panel>
+					</p:dialog>
+					<p:dialog header="Historial Solicitud" widgetVar="infAccion"
+						id="infAccion" modal="true" position="top" showEffect="fade"
+						hideEffect="fade" resizable="false" width="90%">
+						<p:dataTable emptyMessage="No existen datos." rows="10"
+							sortBy="#{amortizacion.fecha}" paginator="true"
+							sortOrder="descending"
+							value="#{controladorGestionCreditos.objFinPrestamoSocio.finAccionPrestamos}"
+							var="amortizacion">
+							<p:column headerText="Acción">
+								<p:outputLabel
+									value="#{amortizacion.finAccionesCredito.descripcion}" />
+							</p:column>
+							<p:column headerText="Fecha">
+								<p:outputLabel value="#{amortizacion.fecha}">
+									<f:convertDateTime pattern="dd/MM/yyyy HH:mm" />
+								</p:outputLabel>
+							</p:column>
+							<p:column headerText="Usuario">
+								<p:outputLabel
+									value="#{amortizacion.usrSocio.gesPersona.apellidos} #{amortizacion.usrSocio.gesPersona.nombres}" />
+							</p:column>
+							<p:column headerText="Observación">
+								<p:outputLabel value="#{amortizacion.observacion}" />
+							</p:column>
+						</p:dataTable>
 					</p:dialog>
 				</h:form>
 

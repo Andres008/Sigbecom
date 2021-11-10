@@ -352,12 +352,14 @@ public class ControladorGestionCreditos implements Serializable {
 
 	}
 
-	public void imprimirTablaAmortizacion(FinPrestamoSocio prestamoSocio) {
+	public void imprimirTablaAmortizacion(FinPrestamoSocio prestamoSocio) throws Exception {
 		try {
 			SimpleDateFormat formato = new SimpleDateFormat("dd/MM/yyyy");
 			prestamoSocio = managerGestionCredito.buscarSolicitudPrestamoById(prestamoSocio.getIdPrestamoSocio());
 			prestamoSocio.setFinTablaAmortizacions(
 					managerGestionCredito.buscarTablaAmortizacionByIdCredito(prestamoSocio.getIdPrestamoSocio()));
+			if (prestamoSocio.getFinTablaAmortizacions().isEmpty())
+				prestamoSocio.setFinTablaAmortizacions(ModelUtil.calcularTablaAmortizacion(prestamoSocio));
 			Map<String, Object> parametros = new HashMap<String, Object>();
 			parametros.put("nombreSocio", prestamoSocio.getUsrSocio().getGesPersona().getApellidos() + " "
 					+ prestamoSocio.getUsrSocio().getGesPersona().getNombres());
@@ -371,14 +373,15 @@ public class ControladorGestionCreditos implements Serializable {
 			parametros.put("tipoCredito", prestamoSocio.getFinTipoCredito().getNombre());
 			File jasper = new File(beanLogin.getPathReporte() + "creditos/fin_tabla_amortizacion.jasper");
 			JasperPrint jasperPrint;
-			prestamoSocio.setFinTablaAmortizacions(
-					managerGestionCredito.buscarTablaAmortizacionByIdCredito(prestamoSocio.getIdPrestamoSocio()));
+			/*prestamoSocio.setFinTablaAmortizacions(
+					managerGestionCredito.buscarTablaAmortizacionByIdCredito(prestamoSocio.getIdPrestamoSocio()));*/
 			jasperPrint = JasperFillManager.fillReport(jasper.getPath(), parametros,
 					new JRBeanCollectionDataSource(prestamoSocio.getFinTablaAmortizacions()));
 			archivo = JasperExportManager.exportReportToPdf(jasperPrint);
 		} catch (Exception e) {
-			JSFUtil.crearMensajeERROR("Error al generar el reporte de solicitud. " + e.getMessage());
 			e.printStackTrace();
+			throw new Exception("Error al genear informe." + e.getMessage());
+			
 		}
 	}
 
@@ -448,7 +451,7 @@ public class ControladorGestionCreditos implements Serializable {
 			parametros.put("telefono", prestamoSocio.getUsrSocio().getGesPersona().getTelefono());
 			parametros.put("nombreSG", managerGestionSistema.buscarValorParametroNombre("PRESIDENTE EJECUTIVO"));
 			parametros.put("primerTexto",
-					"Pongo en su conocimiiento que con fecha " + formatodia.format(prestamoSocio.getFechaSolicitud())
+					"Pongo en su conocimiento que con fecha " + formatodia.format(prestamoSocio.getFechaSolicitud())
 							+ " de " + ModelUtil.getMesAlfanumerico(prestamoSocio.getFechaSolicitud()) + " de "
 							+ formatoanio.format(prestamoSocio.getFechaSolicitud())
 							+ ", solicité se me otorgue un préstamo de $" + prestamoSocio.getValorPrestamo()
@@ -771,7 +774,11 @@ public class ControladorGestionCreditos implements Serializable {
 			objFinPrestamoSocio = managerGestionCredito.buscarSolicitudPrestamoById(prestamoSocio.getIdPrestamoSocio());
 			if (objFinPrestamoSocio.getFinTablaAmortizacions().size() == 0)
 				objFinPrestamoSocio.setFinTablaAmortizacions(ModelUtil.calcularTablaAmortizacion(objFinPrestamoSocio));
-			imprimirTablaAmortizacion(prestamoSocio);
+			try {
+				imprimirTablaAmortizacion(objFinPrestamoSocio);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
 		} catch (Exception e) {
 			JSFUtil.crearMensajeERROR("Error al cargar solicitud credito.");
 		}

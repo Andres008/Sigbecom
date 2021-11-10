@@ -281,7 +281,7 @@
 				<textElement textAlignment="Center" verticalAlignment="Middle"/>
 				<textFieldExpression><![CDATA[$F{fechaPago}]]></textFieldExpression>
 			</textField>
-			<textField pattern="MM/dd/yyyy">
+			<textField pattern="MM/dd/yyyy" isBlankWhenNull="true">
 				<reportElement x="140" y="0" width="70" height="15" uuid="ce4d9cea-19d2-4a9c-89a3-61becd63694d"/>
 				<box>
 					<leftPen lineWidth="1.0"/>

@@ -69,7 +69,7 @@
 							<p:commandButton value="Tabla" update="@form" process="@this"
 								actionListener="#{controladorGestionCreditos.cargarFinPrestamoSocioAmortizacionSinReporte(solicitud)}"
 								oncomplete="PF('infAmortizacion').show()" />
-						</p:column> 
+						</p:column>
 						<p:column headerText="Requisitos" width="200">
 							<p:dataTable value="#{solicitud.finPrestamoRequisitos}"
 								var="requisito" id="tblRequisito">
@@ -84,50 +84,57 @@
 								</p:column>
 							</p:dataTable>
 						</p:column>
+						<p:column headerText="Historial" style="font-size:90%"
+							exportable="false">
+							<p:commandButton value="Historial" update="@form" process="@this"
+								actionListener="#{controladorGestionCreditos.cargarFinPrestamoSocioAmortizacion(solicitud)}"
+								style="font-size:110%" oncomplete="PF('infAccion').show()" />
+						</p:column>
 						<p:column headerText="Revisión">
 							<p:commandButton value="Revisar" update="@form" process="@this"
 								actionListener="#{controladorGestionCreditos.cargarFinPrestamoSocio(solicitud)}"
 								oncomplete="PF('infRevision').show()" />
 						</p:column>
 					</p:dataTable>
-					<p:dialog header="Requisito" widgetVar="infPDF" id="inf" modal="true"
-						position="top" showEffect="fade" hideEffect="fade"
+					<p:dialog header="Requisito" widgetVar="infPDF" id="inf"
+						modal="true" position="top" showEffect="fade" hideEffect="fade"
 						resizable="false" width="90%">
 						<p:media cache="false"
 							value="#{controladorGestionCreditos.reportePDF()}" width="1050"
 							height="500" player="pdf"></p:media>
 					</p:dialog>
-					<p:dialog
-						header="Tabla de Amortizacion"
+					<p:dialog header="Tabla de Amortizacion"
 						widgetVar="infAmortizacion" id="infAmortizacion" modal="true"
 						position="top" showEffect="fade" hideEffect="fade"
 						resizable="false" width="90%">
-						<p:dataTable emptyMessage="No existen datos." rows="10" paginator="true"
+						<p:dataTable emptyMessage="No existen datos." rows="10"
+							paginator="true"
 							value="#{controladorGestionCreditos.objFinPrestamoSocio.finTablaAmortizacions}"
 							var="amortizacion">
 							<p:column headerText="Número Cuota">
-									<p:outputLabel value="#{amortizacion.numeroCuota}" />
-								</p:column>
-								<p:column headerText="Fecha de Pago">
-									<p:outputLabel value="#{amortizacion.fechaPago}">
-										<f:convertDateTime pattern="dd/MM/yyyy" />
-									</p:outputLabel>
-								</p:column>
-								<p:column headerText="Estado Cuota" >
-									<p:outputLabel value="#{amortizacion.finEstadoCuota.descripcion}" />
-								</p:column>
-								<p:column headerText="Pago Capital">
-									<p:outputLabel value="#{amortizacion.capital}" />
-								</p:column>
-								<p:column headerText="Pago Interes">
-									<p:outputLabel value="#{amortizacion.interes}" />
-								</p:column>
-								<p:column headerText="Cuota Mensual">
-									<p:outputLabel value="#{amortizacion.valorCuota}" />
-								</p:column>
-								<p:column headerText="Saldo Capital">
-									<p:outputLabel value="#{amortizacion.saldoCapital}" />
-								</p:column>
+								<p:outputLabel value="#{amortizacion.numeroCuota}" />
+							</p:column>
+							<p:column headerText="Fecha de Pago">
+								<p:outputLabel value="#{amortizacion.fechaPago}">
+									<f:convertDateTime pattern="dd/MM/yyyy" />
+								</p:outputLabel>
+							</p:column>
+							<p:column headerText="Estado Cuota">
+								<p:outputLabel
+									value="#{amortizacion.finEstadoCuota.descripcion}" />
+							</p:column>
+							<p:column headerText="Pago Capital">
+								<p:outputLabel value="#{amortizacion.capital}" />
+							</p:column>
+							<p:column headerText="Pago Interes">
+								<p:outputLabel value="#{amortizacion.interes}" />
+							</p:column>
+							<p:column headerText="Cuota Mensual">
+								<p:outputLabel value="#{amortizacion.valorCuota}" />
+							</p:column>
+							<p:column headerText="Saldo Capital">
+								<p:outputLabel value="#{amortizacion.saldoCapital}" />
+							</p:column>
 						</p:dataTable>
 					</p:dialog>
 					<p:dialog
@@ -168,6 +175,32 @@
 								</p:inputTextarea>
 							</p:panelGrid>
 						</p:panel>
+					</p:dialog>
+					<p:dialog header="Historial Solicitud" widgetVar="infAccion"
+						id="infAccion" modal="true" position="top" showEffect="fade"
+						hideEffect="fade" resizable="false" width="90%">
+						<p:dataTable emptyMessage="No existen datos." rows="10"
+							sortBy="#{amortizacion.fecha}" paginator="true"
+							sortOrder="descending"
+							value="#{controladorGestionCreditos.objFinPrestamoSocio.finAccionPrestamos}"
+							var="amortizacion">
+							<p:column headerText="Acción">
+								<p:outputLabel
+									value="#{amortizacion.finAccionesCredito.descripcion}" />
+							</p:column>
+							<p:column headerText="Fecha">
+								<p:outputLabel value="#{amortizacion.fecha}">
+									<f:convertDateTime pattern="dd/MM/yyyy HH:mm" />
+								</p:outputLabel>
+							</p:column>
+							<p:column headerText="Usuario">
+								<p:outputLabel
+									value="#{amortizacion.usrSocio.gesPersona.apellidos} #{amortizacion.usrSocio.gesPersona.nombres}" />
+							</p:column>
+							<p:column headerText="Observación">
+								<p:outputLabel value="#{amortizacion.observacion}" />
+							</p:column>
+						</p:dataTable>
 					</p:dialog>
 				</h:form>
 
