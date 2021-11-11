@@ -30,7 +30,7 @@
 		</band>
 	</title>
 	<pageHeader>
-		<band height="532">
+		<band height="598">
 			<staticText>
 				<reportElement x="60" y="10" width="175" height="20" uuid="4d9eb9bf-388f-4f95-98ef-8f1d954873fd"/>
 				<textElement>
@@ -161,6 +161,30 @@
 				</textElement>
 				<textFieldExpression><![CDATA[$P{codEmpelado}]]></textFieldExpression>
 			</textField>
+			<staticText>
+				<reportElement x="50" y="530" width="159" height="20" uuid="ed09c37b-ab98-4514-b126-fd03c090a23e"/>
+				<text><![CDATA[f).............................................]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="50" y="550" width="158" height="19" uuid="51dca3be-db03-470e-bd8b-e0d19552ea35"/>
+				<text><![CDATA[SECRETARIO GENERAL]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="50" y="570" width="158" height="19" uuid="d2313aaa-a461-474f-94ab-b24dceb0a3c8"/>
+				<text><![CDATA[FECHA:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="330" y="530" width="159" height="20" uuid="bcd85608-86b8-4aea-80a5-4fca5d91832d"/>
+				<text><![CDATA[f).............................................]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="330" y="550" width="158" height="19" uuid="f7fda1a5-c0f1-4803-b159-8aaff0639381"/>
+				<text><![CDATA[SECRETARIO (A) FINANZAS]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="330" y="570" width="158" height="19" uuid="760a5951-a901-45e3-b721-8b9eb4ae5e0b"/>
+				<text><![CDATA[FECHA:]]></text>
+			</staticText>
 		</band>
 	</pageHeader>
 </jasperReport>

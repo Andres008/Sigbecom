@@ -181,8 +181,10 @@ public class ControladorGestionSocios implements Serializable {
 		try {
 			objUsrSocio = managerGestionSocios
 					.buscarSocioById(beanLogin.getCredencial().getObjUsrSocio().getCedulaSocio());
-			if (objUsrSocio.getPrimerInicio().equals("S"))
+			if (objUsrSocio.getPrimerInicio().equals("S")) {
 				objUsrSocio.setClave("");
+				objUsrSocio.getGesPersona().setFechaNac(new Date());
+			}
 			if (objUsrSocio.getGesPersona().getGesDiscapacidadPersonas() == null)
 				objUsrSocio.getGesPersona().setGesDiscapacidadPersonas(new ArrayList<GesDiscapacidadPersona>());
 			if (objUsrSocio.getGesPersona().getGesEstadoCivil() == null)
@@ -206,7 +208,6 @@ public class ControladorGestionSocios implements Serializable {
 				objUsrSocio.getUsrParroquia().getUsrCanton().getUsrProvincia().setIdProvincia("0");
 				;
 			}
-			objUsrSocio.getGesPersona().setFechaNac(new Date());
 			if (objUsrSocio.getUsrCargo() == null)
 				objUsrSocio.setUsrCargo(new UsrCargo());
 			if (objUsrSocio.getUsrArea() == null)
@@ -332,11 +333,11 @@ public class ControladorGestionSocios implements Serializable {
 			ModelUtil.esEmailCorrecto(objUsrSocio.getGesPersona().getEmail());
 			if (objUsrSocio.getGesPersona().getGesEstadoCivil().getIdEstadoCivil() == 0)
 				throw new Exception("Atención, es requerido el estado civíl.");
-			if (objUsrSocio.getGesPersona().getGesGenero().getIdGenero()== 0)
+			if (objUsrSocio.getGesPersona().getGesGenero().getIdGenero() == 0)
 				throw new Exception("Atención, es requerido el género.");
-			if (objUsrSocio.getGesPersona().getGesTipoSangre().getIdTipoSangre()== 0)
+			if (objUsrSocio.getGesPersona().getGesTipoSangre().getIdTipoSangre() == 0)
 				throw new Exception("Atención, es requerido el tipo de sangre.");
-			if (objUsrSocio.getGesPersona().getGesEtnia().getIdEtnia()== 0)
+			if (objUsrSocio.getGesPersona().getGesEtnia().getIdEtnia() == 0)
 				throw new Exception("Atención, es requerido la etnia.");
 			managerGestionPersonas.actualizarGesPersona(objUsrSocio.getGesPersona());
 			managerGestionSocios.actualizarUsrSocio(objUsrSocio);
@@ -351,6 +352,7 @@ public class ControladorGestionSocios implements Serializable {
 					e.getMessage());
 		}
 	}
+
 
 	public void cargarDescuentosSocio() {
 		try {
@@ -480,11 +482,11 @@ public class ControladorGestionSocios implements Serializable {
 				throw new Exception("Atención, la Consaguinidad es requerido.");
 			if (objGesPariente.getGesPersona().getGesEstadoCivil().getIdEstadoCivil() == 0)
 				throw new Exception("Atención, es requerido el estado civíl.");
-			if (objGesPariente.getGesPersona().getGesGenero().getIdGenero()== 0)
+			if (objGesPariente.getGesPersona().getGesGenero().getIdGenero() == 0)
 				throw new Exception("Atención, es requerido el género.");
-			if (objGesPariente.getGesPersona().getGesTipoSangre().getIdTipoSangre()== 0)
+			if (objGesPariente.getGesPersona().getGesTipoSangre().getIdTipoSangre() == 0)
 				throw new Exception("Atención, es requerido el tipo de sangre.");
-			if (objGesPariente.getGesPersona().getGesEtnia().getIdEtnia()== 0)
+			if (objGesPariente.getGesPersona().getGesEtnia().getIdEtnia() == 0)
 				throw new Exception("Atención, es requerido la etnia.");
 			objGesPariente.setUsrConsanguinidad(managerGestionSocios
 					.buscarConsanguinidadById(objGesPariente.getUsrConsanguinidad().getIdConsanguinidad()));

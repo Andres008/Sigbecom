@@ -82,7 +82,7 @@
 				<h:form id="principal">
 					<p:growl id="growl" showDetail="true" sticky="true" />
 					<p:panel header="Datos Económicos">
-						<p:panelGrid columns="4" styleClass="ui-noborder" >
+						<p:panelGrid columns="4" styleClass="ui-noborder">
 							<p:outputLabel value="Ahorros" />
 							<p:outputLabel
 								value="#{controladorGestionSocios.objUsrSocio.cajaAhorro}" />
@@ -132,9 +132,10 @@
 										<p:ajax update="@form" process="@this" />
 									</p:inputText>
 									<p:outputLabel value="Fecha Nacimiento" />
-									<p:calendar required="true" locale="es" id="feNac"
-										pattern="dd/MM/yyyy"
+									<p:calendar required="true" id="feNac" pattern="dd/MM/yyyy" placeholder="dd/MM/yyyy"
+										 mask="99/99/9999" showOn="false"
 										value="#{controladorGestionSocios.objUsrSocio.gesPersona.fechaNac}">
+										<p:ajax update="@form" process="@this"/>
 									</p:calendar>
 									<p:outputLabel value="Estado Civil" />
 									<p:selectOneMenu
@@ -150,15 +151,16 @@
 									<p:selectOneMenu
 										value="#{controladorGestionSocios.objUsrSocio.gesPersona.gesGenero.idGenero}"
 										required="true">
-										<f:selectItem itemLabel="Género" noSelectionOption="true" itemValue="0"/>
+										<f:selectItem itemLabel="Género" noSelectionOption="true"
+											itemValue="0" />
 										<f:selectItems
 											value="#{controladorGestionUsuario.lstSiGenero()}" />
 										<p:ajax update="@form" process="@this" />
 									</p:selectOneMenu>
-									<p:outputLabel value="Tipo de Sangre" /> 
+									<p:outputLabel value="Tipo de Sangre" />
 									<p:selectOneMenu
-										value="#{controladorGestionSocios.objUsrSocio.gesPersona.gesTipoSangre.idTipoSangre}" itemValue="0"
-										required="true">
+										value="#{controladorGestionSocios.objUsrSocio.gesPersona.gesTipoSangre.idTipoSangre}"
+										itemValue="0" required="true">
 										<f:selectItem itemLabel="Tipo de Sangre" itemValue="0"
 											noSelectionOption="true" />
 										<f:selectItems
@@ -169,7 +171,8 @@
 									<p:selectOneMenu
 										value="#{controladorGestionSocios.objUsrSocio.gesPersona.gesEtnia.idEtnia}"
 										required="true">
-										<f:selectItem itemLabel="Etnia" itemValue="0" noSelectionOption="true" />
+										<f:selectItem itemLabel="Etnia" itemValue="0"
+											noSelectionOption="true" />
 										<f:selectItems
 											value="#{controladorGestionUsuario.lstSiEtnia()}" />
 										<p:ajax update="@form" process="@this" />
