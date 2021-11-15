@@ -18,6 +18,7 @@ import javax.ejb.EJB;
 import javax.enterprise.context.SessionScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
+import javax.servlet.http.HttpServletResponse;
 
 import org.apache.poi.openxml4j.opc.OPCPackage;
 import org.apache.poi.xssf.usermodel.XSSFCell;
@@ -53,10 +54,13 @@ public class FrmPlanillaPagoPlan implements Serializable{
 	private int anio;
 	private Integer mes;
 	private String nombreArch;
+	private Long idContrato;
+	private PlanRegistroPago planRegistroPago;
 	
 	private UploadedFile file;
 	private byte[] archivo;
 	private List<PlanRegistroPago> lstPlanRegistroPago;
+	private List<PlanContratoComite> lstPlanContratoComite;
 	
 	private int filaTmp;
 	
@@ -67,8 +71,17 @@ public class FrmPlanillaPagoPlan implements Serializable{
 		file = null;
 		cargarRegistroPagos();
 		filaTmp = 0;
+		lstPlanContratoComite = new ArrayList<PlanContratoComite>();
+		cargarContratosComiteActivos();
 	}
-	
+	public void cargarContratosComiteActivos() {
+		try {
+			lstPlanContratoComite = managerPlanesMoviles.findAllPlanContratoComiteActivo();
+		} catch (Exception e) {
+			JSFUtil.crearMensajeERROR("No se cargo el listado de numeros correctamente");
+			e.printStackTrace();
+		}
+	}
 	public void cargarRegistroPagos() {
 		try {
 			lstPlanRegistroPago = managerPlanesMoviles.findAllPlanRegistroPagoByEstado("GENERADO");
@@ -134,7 +147,56 @@ public class FrmPlanillaPagoPlan implements Serializable{
 	public void cargarMes() {
 		System.out.println("Mes: "+mes);
 	}
-
+	public void eliminarRegistro(PlanRegistroPago planRegistroPago) {
+		try {
+			managerPlanesMoviles.removePlanRegistro(planRegistroPago.getIdRegistroPagos());
+			JSFUtil.crearMensajeINFO("Registro eliminado correctamente");
+			PrimeFaces prime=PrimeFaces.current();
+			prime.ajax().update("form2");
+			//HttpServletResponse response ;
+			//response.setHeader("Refresh", "0; URL=http://your-current-page");
+			
+		} catch (Exception e) {
+			JSFUtil.crearMensajeERROR("El Registro no se elimino correctamente");
+			e.printStackTrace();
+		}
+		
+	}
+	public void cargarFormulario() {
+		anio = ModelUtil.getAnio(new Date());
+		planRegistroPago = new PlanRegistroPago();
+		planRegistroPago.setAnio(anio);
+		PrimeFaces prime=PrimeFaces.current();
+		prime.ajax().update("frmReg");
+		prime.executeScript("PF('dlgReg').show();");
+	}
+	public void registroIndividual() {
+		PlanContratoComite planContratoComite = lstPlanContratoComite.stream().filter(p->p.getIdContrato()==idContrato).findAny().orElse(null);
+		BigDecimal costoAdm = planContratoComite.getPlanCostosAdm().getCargo().add(planContratoComite.getPlanCostosAdm().getCostoLinea()).add(planContratoComite.getPlanCostosAdm().getAdministracion());
+		Date fechaIngreso = new Date();
+		planRegistroPago.setCostoAdm(costoAdm);
+		planRegistroPago.setEstado("GENERADO");
+		planRegistroPago.setFechaIngreso(fechaIngreso);
+		planRegistroPago.setLineaTelefono(planContratoComite.getLineaTelefono());
+		planRegistroPago.setNombreRef(planContratoComite.getUsrSocio().getGesPersona().getApellidos()+" "+
+									  planContratoComite.getUsrSocio().getGesPersona().getNombres());
+		planRegistroPago.setPlanContratoComite(planContratoComite);
+		planRegistroPago.setTotal(planRegistroPago.getValorPlan().add(planRegistroPago.getCostoAdm()));
+		try {
+			managerPlanesMoviles.insertarPlanRegistroPagos(planRegistroPago);
+			init();
+			idContrato = null;
+			planRegistroPago = new PlanRegistroPago();
+			JSFUtil.crearMensajeINFO("Registro realizado correctamente");
+			PrimeFaces prime=PrimeFaces.current();
+			prime.ajax().update("form1");
+			prime.ajax().update("form2");
+			prime.executeScript("PF('dlgReg').hide();");
+		} catch (Exception e) {
+			JSFUtil.crearMensajeERROR("No se regsitro correctamente");
+			e.printStackTrace();
+		}
+	}
 	public void registrarPlanillas(){
 		System.out.println("Archivo: "+file.getFileName());
 		Date fechaIngreso = new Date();
@@ -225,6 +287,7 @@ public class FrmPlanillaPagoPlan implements Serializable{
 		}
 		//return "frmPlanillaPagoPlan.xhtml?faces-redirect=true";
 	}
+	
 	public void onRowEdit(RowEditEvent<Object> event) {
 		 try {
 			 PlanRegistroPago planRegistroPago = (PlanRegistroPago) event.getObject();
@@ -408,6 +471,26 @@ public class FrmPlanillaPagoPlan implements Serializable{
 
 	public void setMes(Integer mes) {
 		this.mes = mes;
+	}
+
+	public Long getIdContrato() {
+		return idContrato;
+	}
+
+	public void setIdContrato(Long idContrato) {
+		this.idContrato = idContrato;
+	}
+	public List<PlanContratoComite> getLstPlanContratoComite() {
+		return lstPlanContratoComite;
+	}
+	public void setLstPlanContratoComite(List<PlanContratoComite> lstPlanContratoComite) {
+		this.lstPlanContratoComite = lstPlanContratoComite;
+	}
+	public PlanRegistroPago getPlanRegistroPago() {
+		return planRegistroPago;
+	}
+	public void setPlanRegistroPago(PlanRegistroPago planRegistroPago) {
+		this.planRegistroPago = planRegistroPago;
 	}
 	
 }
