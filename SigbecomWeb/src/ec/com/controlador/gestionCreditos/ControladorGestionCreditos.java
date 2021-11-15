@@ -246,6 +246,7 @@ public class ControladorGestionCreditos implements Serializable {
 		objFinPrestamoSocio = new FinPrestamoSocio();
 		objFinPrestamoSocio.setFinTipoCredito(new FinTipoCredito());
 		objFinPrestamoSocio.setFinTipoSolicitud(new FinTipoSolicitud(2));
+		objFinPrestamoSocio.setFinAccionPrestamos(new ArrayList<FinAccionPrestamo>());
 		objFinPrestamoSocio.setFinPrestamoRequisitos(new ArrayList<FinPrestamoRequisito>());
 		objFinPrestamoSocio.setFinTablaAmortizacions(new ArrayList<FinTablaAmortizacion>());
 		objFinPrestamoSocio.setFinPrestamoNovacions2(new ArrayList<FinPrestamoNovacion>());
@@ -373,15 +374,18 @@ public class ControladorGestionCreditos implements Serializable {
 			parametros.put("tipoCredito", prestamoSocio.getFinTipoCredito().getNombre());
 			File jasper = new File(beanLogin.getPathReporte() + "creditos/fin_tabla_amortizacion.jasper");
 			JasperPrint jasperPrint;
-			/*prestamoSocio.setFinTablaAmortizacions(
-					managerGestionCredito.buscarTablaAmortizacionByIdCredito(prestamoSocio.getIdPrestamoSocio()));*/
+			/*
+			 * prestamoSocio.setFinTablaAmortizacions(
+			 * managerGestionCredito.buscarTablaAmortizacionByIdCredito(prestamoSocio.
+			 * getIdPrestamoSocio()));
+			 */
 			jasperPrint = JasperFillManager.fillReport(jasper.getPath(), parametros,
 					new JRBeanCollectionDataSource(prestamoSocio.getFinTablaAmortizacions()));
 			archivo = JasperExportManager.exportReportToPdf(jasperPrint);
 		} catch (Exception e) {
 			e.printStackTrace();
 			throw new Exception("Error al genear informe." + e.getMessage());
-			
+
 		}
 	}
 
