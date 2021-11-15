@@ -108,7 +108,12 @@
 	                	
 	                	<div class="card" align="right">
 						    <p:panelGrid columns="2" styleClass="ui-noborder">
-								<p:commandButton value="Eliminar Datos Cargados"
+						    	<p:commandButton value="Registro Individual" style="width: 200px"
+									action="#{frmPlanillaPagoPlan.cargarFormulario()}" >
+				
+								</p:commandButton>
+								<p:outputLabel/>
+								<p:commandButton value="Eliminar Datos Cargados" style="width: 200px"
 									action="#{frmPlanillaPagoPlan.borrarGenerados()}" update="@form">
 									<p:confirm header="Confirmación"
 									message="Esta seguro de borrar la información?"
@@ -141,7 +146,7 @@
 							</f:facet>
 							<p:ajax event="rowEdit" listener="#{frmPlanillaPagoPlan.onRowEdit}" update="form2:growl"/>
             				<p:ajax event="rowEditCancel" listener="#{frmPlanillaPagoPlan.onRowCancel}" update="form2:growl"/>
-							<p:column headerText="No">
+							<p:column headerText="No" width="15">
 						        #{index + 1}
 						    </p:column>
 							<p:column headerText="LINEA" filterBy="#{dato.lineaTelefono}">
@@ -222,10 +227,18 @@
 							<p:column headerText="ESTADO" filterBy="#{dato.estado}">
 								<h:outputText value="#{dato.estado}"/>
 							</p:column>
-							<p:column width="6" exportable="false">
+							<p:column width="7" exportable="false">
 									<!-- <p:rowEditor rendered="false" -->
 									<p:rowEditor editTitle="Edit Row" cancelTitle="Cancel Edit" saveTitle="Save Row" 
 										/>
+				            </p:column>
+				            <p:column width="7" exportable="false">
+								<p:commandButton icon="ui-icon-close" update=":form2"
+									action="#{frmPlanillaPagoPlan.eliminarRegistro(dato)}">
+										<p:confirm header="Confirmación"
+										message="Esta seguro de eliminar la información?"
+										icon="pi pi-exclamation-triangle" />
+									</p:commandButton>
 				            </p:column>
 						</p:dataTable>
 						<br/>
@@ -242,7 +255,54 @@
 					</p:panel>
 	                </h:form>
 <!-- Inicio de Dialogs -->
-
+<p:dialog
+	header="FORMULARIO DE REGISTRO INDIVIDUAL" resizable="false" position="top" 
+	widgetVar="dlgReg" id="dlgReg" modal="true"
+	hideEffect="fade">
+	<h:form id="frmReg">
+		<h:panelGrid columns="2" cellpadding="7">
+			<p:outputLabel for="num" value="Seleccione Numero de Telefono:"/>
+			<p:selectOneMenu id="num" required="true" value="#{frmPlanillaPagoPlan.idContrato}" effect="fold"
+					filter="true" filterMatchMode="contains">
+	             <f:selectItem itemLabel="Seleccione Numero" itemValue="" noSelectionOption="true"/>
+	             <f:selectItems value="#{frmPlanillaPagoPlan.lstPlanContratoComite}" var="dat"
+	             	itemLabel="#{dat.lineaTelefono} #{dat.usrSocio.gesPersona.apellidos} #{dat.usrSocio.gesPersona.nombres}" itemValue="#{dat.idContrato}"/>
+	        </p:selectOneMenu>
+	        <p:outputLabel for="per" value="Ingrese Periodo:" />
+			<p:inputText id="per" required="true" value="#{frmPlanillaPagoPlan.planRegistroPago.anio}" maxlength="4">
+				<p:keyFilter mask="num" />
+			</p:inputText>
+			<p:outputLabel for="mes" value="Seleccione Mes Planilla" />
+			<p:selectOneMenu id="mes" required="true" value="#{frmPlanillaPagoPlan.planRegistroPago.mes}" >
+					<f:selectItem itemLabel="Seleccione Mes" noSelectionOption="true"/>
+					<f:selectItem itemLabel="ENERO" itemValue="1"/>
+					<f:selectItem itemLabel="FEBRERO"  itemValue="2"/>
+					<f:selectItem itemLabel="MARZO" itemValue="3"/>
+					<f:selectItem itemLabel="ABRIL" itemValue="4"/>
+					<f:selectItem itemLabel="MAYO" itemValue="5"/>
+					<f:selectItem itemLabel="JUNIO" itemValue="6"/>
+					<f:selectItem itemLabel="JULIO" itemValue="7"/>
+					<f:selectItem itemLabel="AGOSTO" itemValue="8"/>
+					<f:selectItem itemLabel="SEPTIEMBRE" itemValue="9"/>
+					<f:selectItem itemLabel="OCTUBRE" itemValue="10"/>
+					<f:selectItem itemLabel="NOVIEMBRE" itemValue="11"/>
+					<f:selectItem itemLabel="DICIEMBRE" itemValue="12"/>
+					<p:ajax event="change" update="form1"
+	        				listener="#{frmPlanillaPagoPlan.cargarMes()}" />		       
+			</p:selectOneMenu>
+			<p:outputLabel for="valor" value="Ingrese Valor Plan:" />
+			<p:inputText id="valor" required="true" value="#{frmPlanillaPagoPlan.planRegistroPago.valorPlan}" maxlength="4" >
+			</p:inputText>
+				
+		</h:panelGrid>
+		<h:panelGrid columns="2" cellpadding="7">
+			<p:commandButton value="Registrar" update="frmReg"
+				action="#{frmPlanillaPagoPlan.registroIndividual()}"/>
+			<p:commandButton value="Cancelar" onclick="PF('dlgReg').hide();"
+			action="#{frmPlanillaPagoPlan.init()}"/>
+		</h:panelGrid>
+	</h:form>
+</p:dialog>
 
 
 <!-- Fin de Dialogs -->
