@@ -24,8 +24,9 @@ public class MenuPrincipal implements Serializable{
 	
 	public void cargarDocumento() {
 		
-		String homeUsuario = System.getProperty("user.home");
-		String url = homeUsuario+"/manuales/MANUALES SIGBECOM[4356].pdf";
+		//String homeUsuario = System.getProperty("user.home");
+		//String url = homeUsuario+"/manuales/MANUALES SIGBECOM[4356].pdf";
+		String url = "/home/app/manuales/MANUALES SIGBECOM[4356].pdf";
 		System.out.println("URL:"+url);
 		File file = new File(url);
 		try {
