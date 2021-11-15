@@ -171,17 +171,23 @@ public class FrmPlanillaPagoPlan implements Serializable{
 		prime.executeScript("PF('dlgReg').show();");
 	}
 	public void registroIndividual() {
-		PlanContratoComite planContratoComite = lstPlanContratoComite.stream().filter(p->p.getIdContrato()==idContrato).findAny().orElse(null);
-		BigDecimal costoAdm = planContratoComite.getPlanCostosAdm().getCargo().add(planContratoComite.getPlanCostosAdm().getCostoLinea()).add(planContratoComite.getPlanCostosAdm().getAdministracion());
-		Date fechaIngreso = new Date();
-		planRegistroPago.setCostoAdm(costoAdm);
-		planRegistroPago.setEstado("GENERADO");
-		planRegistroPago.setFechaIngreso(fechaIngreso);
-		planRegistroPago.setLineaTelefono(planContratoComite.getLineaTelefono());
-		planRegistroPago.setNombreRef(planContratoComite.getUsrSocio().getGesPersona().getApellidos()+" "+
-									  planContratoComite.getUsrSocio().getGesPersona().getNombres());
-		planRegistroPago.setPlanContratoComite(planContratoComite);
-		planRegistroPago.setTotal(planRegistroPago.getValorPlan().add(planRegistroPago.getCostoAdm()));
+		PlanContratoComite planContratoComite = new PlanContratoComite();
+		try {
+			planContratoComite = lstPlanContratoComite.stream().filter(p->p.getIdContrato()==idContrato).findAny().orElse(null);
+			BigDecimal costoAdm = planContratoComite.getPlanCostosAdm().getCargo().add(planContratoComite.getPlanCostosAdm().getCostoLinea()).add(planContratoComite.getPlanCostosAdm().getAdministracion());
+			Date fechaIngreso = new Date();
+			planRegistroPago.setCostoAdm(costoAdm);
+			planRegistroPago.setEstado("GENERADO");
+			planRegistroPago.setFechaIngreso(fechaIngreso);
+			planRegistroPago.setLineaTelefono(planContratoComite.getLineaTelefono());
+			planRegistroPago.setNombreRef(planContratoComite.getUsrSocio().getGesPersona().getApellidos()+" "+
+										  planContratoComite.getUsrSocio().getGesPersona().getNombres());
+			planRegistroPago.setPlanContratoComite(planContratoComite);
+			planRegistroPago.setTotal(planRegistroPago.getValorPlan().add(planRegistroPago.getCostoAdm()));
+		} catch (Exception e) {
+			JSFUtil.crearMensajeERROR("El usuario no tiene relacionado los costos administrativos: "+planContratoComite.getLineaTelefono()+" con cedula: "+planContratoComite.getUsrSocio().getCedulaSocio());
+			e.printStackTrace();
+		}
 		try {
 			managerPlanesMoviles.insertarPlanRegistroPagos(planRegistroPago);
 			init();
