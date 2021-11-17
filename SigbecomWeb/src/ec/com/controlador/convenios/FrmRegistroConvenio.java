@@ -1,7 +1,5 @@
 package ec.com.controlador.convenios;
 
-import java.io.ByteArrayInputStream;
-import java.io.InputStream;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -19,8 +17,6 @@ import javax.inject.Inject;
 import javax.inject.Named;
 
 import org.primefaces.PrimeFaces;
-import org.primefaces.event.FileUploadEvent;
-import org.primefaces.model.file.UploadedFile;
 
 import ec.com.controlador.sesion.BeanLogin;
 import ec.com.model.convenios.ManagerConvenios;
@@ -53,8 +49,11 @@ public class FrmRegistroConvenio implements Serializable{
 	private BigDecimal valorProformado;
 	private int plazo;
 	private boolean pnlRender;
+	private Integer mesCon;
+	private Integer anioCon;
 	
 	private List<ConvAdquirido> lstConvAdquiridoTrm;
+	private List<ConvAmortizacion> lstConvAmortizacion;
 	
 	@Inject
 	private BeanLogin beanLogin;
@@ -64,6 +63,7 @@ public class FrmRegistroConvenio implements Serializable{
 		lstConvServicio = new ArrayList<ConvServicio>();
 		lstConvAdquirido = new ArrayList<ConvAdquirido>();
 		lstConvValorMax = new ArrayList<ConvValorMax>();
+		//lstConvAmortizacion = new ArrayList<ConvAmortizacion>();
 		idServicio = new Long(0);
 		convServicio = new ConvServicio();
 		convAdquirido = new ConvAdquirido();
@@ -74,9 +74,13 @@ public class FrmRegistroConvenio implements Serializable{
 		lstConvAdquiridoTrm = new ArrayList<ConvAdquirido>();
 		plazo = 0;
 		pnlRender = false;
+		//anioCon=ModelUtil.getAnio(new Date());
+		//mesCon =ModelUtil.getMes(new Date());
+		
 		cargarListaConvServicio();
 		cargarListaConvAdquiridos();
 		cargarListaRegistroValoresMax();
+		//cargarListaConvAmortizacion();
 	}
 	public String cancelar() {
 		System.out.println("cancelado");
@@ -84,6 +88,23 @@ public class FrmRegistroConvenio implements Serializable{
 		PrimeFaces prime=PrimeFaces.current();
 		prime.ajax().update("form1");
 		return "/modulos/convenios/registroConvenios.xhtml?faces-redirect=true";
+	}
+	public void cargarListaConvAmortizacion() {
+		try {
+			System.out.println("MES: "+mesCon);
+			System.out.println("ANIO: "+anioCon);
+			lstConvAmortizacion = new ArrayList<ConvAmortizacion>();
+			lstConvAmortizacion = managerConvenios.findAllConvAmortizacionByMesAnio(anioCon, mesCon);
+			System.out.println("SIZE: "+lstConvAmortizacion.size());
+			
+			PrimeFaces prime=PrimeFaces.current();
+			//prime.ajax().update("form1");
+			prime.ajax().update("form3");
+		} catch (Exception e) {
+			JSFUtil.crearMensajeERROR("No se cargo el listado correctamente");
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 	public void cargarListaConvServicio() {
 		try {
@@ -470,6 +491,24 @@ private void generarTablaAmortizacion(BigDecimal interes, BigDecimal valorTotal,
 	}
 	public void setPlazo(int plazo) {
 		this.plazo = plazo;
+	}
+	public List<ConvAmortizacion> getLstConvAmortizacion() {
+		return lstConvAmortizacion;
+	}
+	public void setLstConvAmortizacion(List<ConvAmortizacion> lstConvAmortizacion) {
+		this.lstConvAmortizacion = lstConvAmortizacion;
+	}
+	public Integer getMesCon() {
+		return mesCon;
+	}
+	public void setMesCon(Integer mesCon) {
+		this.mesCon = mesCon;
+	}
+	public Integer getAnioCon() {
+		return anioCon;
+	}
+	public void setAnioCon(Integer anioCon) {
+		this.anioCon = anioCon;
 	}
 	
 }
