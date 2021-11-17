@@ -221,6 +221,11 @@ public class ManagerConvenios {
 		return lstConvValorMax;
 	}
 	@SuppressWarnings("unchecked")
+	public List<ConvAmortizacion> findAllConvAmortizacionByMesAnio(Integer anioCon, Integer mesCon) throws Exception{
+		List<ConvAmortizacion> lstConvAmortizacion = managerDAOSegbecom.findWhere(ConvAmortizacion.class,"o.anio = '"+anioCon+"' AND o.mes ='"+mesCon+"'",null);
+		return lstConvAmortizacion;
+	}
+	@SuppressWarnings("unchecked")
 	public List<ConvValorMax> findConvValorMaxByCedula(String cedulaSocio) throws Exception{
 		List<ConvValorMax> lstConvValorMax = managerDAOSegbecom.findWhere(ConvValorMax.class, "o.usrSocio.cedulaSocio = '"+cedulaSocio+"'", null);
 		if(lstConvValorMax!=null && lstConvValorMax.size()==1) {
@@ -238,4 +243,5 @@ public class ManagerConvenios {
 		List<ConvValorMax> lstConvValorMax = managerDAOSegbecom.findWhere(ConvValorMax.class, "o.estado = 'ACTIVO'", null);
 		return lstConvValorMax;
 	}
+
 }

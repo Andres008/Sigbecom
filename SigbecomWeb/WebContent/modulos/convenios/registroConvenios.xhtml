@@ -165,14 +165,94 @@
 								        <p:column headerText="SALDO">
 								           <h:outputText value="#{con.saldo}"/>
 								        </p:column>
-								        <p:column headerText="ESTADO">
-								           <h:outputText value="#{con.descEstadoDescuento.estado}"/>
-								        </p:column>
-									</p:dataTable>
+								    </p:dataTable>
 							</p:rowExpansion>
 						</p:dataTable>
+						<br/>
+						<br/>
+						<h:panelGrid id="fec" columns="2" cellpadding="7">
+							<p:outputLabel value="Ingrese Anio:"/>
+							<p:inputText id="valor" required="true" maxlength="5" 
+									value="#{frmRegistroConvenio.anioCon}">
+							</p:inputText>
+							<p:outputLabel for="m" value="Ingrese Mes:"/>
+							<p:selectOneMenu id="m" value="#{frmRegistroConvenio.mesCon}" style="width:100%">
+												       <f:selectItem itemLabel="Seleccione Mes" noSelectionOption="true"/>
+												       <f:selectItem itemLabel="ENERO" itemValue="1"/>
+												       <f:selectItem itemLabel="FEBRERO"  itemValue="2"/>
+												       <f:selectItem itemLabel="MARZO" itemValue="3"/>
+												       <f:selectItem itemLabel="ABRIL" itemValue="4"/>
+												       <f:selectItem itemLabel="MAYO" itemValue="5"/>
+												       <f:selectItem itemLabel="JUNIO" itemValue="6"/>
+												       <f:selectItem itemLabel="JULIO" itemValue="7"/>
+												       <f:selectItem itemLabel="AGOSTO" itemValue="8"/>
+												       <f:selectItem itemLabel="SEPTIEMBRE" itemValue="9"/>
+												       <f:selectItem itemLabel="OCTUBRE" itemValue="10"/>
+												       <f:selectItem itemLabel="NOVIEMBRE" itemValue="11"/>
+												       <f:selectItem itemLabel="DICIEMBRE" itemValue="12"/>
+												       
+								</p:selectOneMenu>
+								<p:outputLabel/>
+								<p:commandButton value="Consultar" 
+										action="#{frmRegistroConvenio.cargarListaConvAmortizacion()}"/>
+						</h:panelGrid>
+						
+						<p:separator/>
+						 
+						
+						
 					</p:panel>
 	                </h:form>
+	                <h:form id="form3">
+	                 <div class="card" align="right">
+						    <h:commandLink >
+						    	<p:graphicImage name="images/logo_excel.png" library="california-layout" />
+						    	<p:dataExporter type="xls" target="tblAm" fileName="ListDescuentos"></p:dataExporter>
+						    </h:commandLink>
+					    </div>	
+	                <p:dataTable id="tblAm" value="#{frmRegistroConvenio.lstConvAmortizacion}" var="dat">
+	                		<p:column headerText="CEDULA" filterBy="#{dat.convAdquirido.convValorMax.usrSocio.gesPersona.cedula}">
+								<h:outputText value="#{dat.convAdquirido.convValorMax.usrSocio.gesPersona.cedula}" />
+							</p:column>
+							<p:column headerText="APELLIDO" filterBy="#{dat.convAdquirido.convValorMax.usrSocio.gesPersona.apellidos}">
+								<h:outputText value="#{dat.convAdquirido.convValorMax.usrSocio.gesPersona.apellidos}" />
+							</p:column>
+							<p:column headerText="NOMBRE" filterBy="#{dat.convAdquirido.convValorMax.usrSocio.gesPersona.nombres}">
+								<h:outputText value="#{dat.convAdquirido.convValorMax.usrSocio.gesPersona.nombres}" />
+							</p:column>
+							<p:column headerText="EMPRESA" filterBy="#{dat.convAdquirido.convServicio.convEmpresa.empresa}">
+								<h:outputText value="#{dat.convAdquirido.convServicio.convEmpresa.empresa}" />
+							</p:column>
+							<p:column headerText="SERVICIO" filterBy="#{dat.convAdquirido.convServicio.servicioProducto}">
+								<h:outputText value="#{dat.convAdquirido.convServicio.servicioProducto}" />
+							</p:column>
+							<p:column headerText="MES" filterBy="#{dat.mes}">
+							     <h:outputText value="#{dat.mes}"/>
+							</p:column>
+							<p:column headerText="ANIO" filterBy="#{dat.anio}">
+							     <h:outputText value="#{dat.anio}"/>
+							</p:column>
+							<p:column headerText="CUOTA" >
+								<h:outputText value="#{dat.numeroCuota}" />
+							</p:column>
+							<p:column headerText="CAPITAL">
+							      <h:outputText value="#{dat.capital}"/>
+							</p:column>
+							<p:column headerText="INTERES">
+							      <h:outputText value="#{dat.interes}"/>
+							</p:column>
+							<p:column headerText="VALOR CUOTA">
+								<h:outputText value="#{dat.valorCuota}"/>
+							</p:column>
+							<p:column headerText="SALDO">
+							      <h:outputText value="#{dat.saldo}"/>
+							</p:column>
+							<p:column headerText="ESTADO" filterBy="#{dat.descEstadoDescuento.estado}">
+							      <h:outputText value="#{dat.descEstadoDescuento.estado}"/>
+							</p:column>
+						</p:dataTable>
+	                </h:form>
+	                
 <!-- Inicio de Dialogs -->
 
 

@@ -291,7 +291,8 @@
 	        				listener="#{frmPlanillaPagoPlan.cargarMes()}" />		       
 			</p:selectOneMenu>
 			<p:outputLabel for="valor" value="Ingrese Valor Plan:" />
-			<p:inputText id="valor" required="true" value="#{frmPlanillaPagoPlan.planRegistroPago.valorPlan}" maxlength="4" >
+			<p:inputText id="valor" required="true" maxlength="10" 
+					value="#{frmPlanillaPagoPlan.planRegistroPago.valorPlan}">
 			</p:inputText>
 				
 		</h:panelGrid>

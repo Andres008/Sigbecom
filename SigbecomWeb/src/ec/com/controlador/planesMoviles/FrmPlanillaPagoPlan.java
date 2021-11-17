@@ -184,22 +184,23 @@ public class FrmPlanillaPagoPlan implements Serializable{
 										  planContratoComite.getUsrSocio().getGesPersona().getNombres());
 			planRegistroPago.setPlanContratoComite(planContratoComite);
 			planRegistroPago.setTotal(planRegistroPago.getValorPlan().add(planRegistroPago.getCostoAdm()));
+		
+			try {
+				managerPlanesMoviles.insertarPlanRegistroPagos(planRegistroPago);
+				init();
+				idContrato = null;
+				planRegistroPago = new PlanRegistroPago();
+				JSFUtil.crearMensajeINFO("Registro realizado correctamente");
+				PrimeFaces prime=PrimeFaces.current();
+				prime.ajax().update("form1");
+				prime.ajax().update("form2");
+				prime.executeScript("PF('dlgReg').hide();");
+			} catch (Exception e) {
+				JSFUtil.crearMensajeERROR("No se regsitro correctamente");
+				e.printStackTrace();
+			}
 		} catch (Exception e) {
 			JSFUtil.crearMensajeERROR("El usuario no tiene relacionado los costos administrativos: "+planContratoComite.getLineaTelefono()+" con cedula: "+planContratoComite.getUsrSocio().getCedulaSocio());
-			e.printStackTrace();
-		}
-		try {
-			managerPlanesMoviles.insertarPlanRegistroPagos(planRegistroPago);
-			init();
-			idContrato = null;
-			planRegistroPago = new PlanRegistroPago();
-			JSFUtil.crearMensajeINFO("Registro realizado correctamente");
-			PrimeFaces prime=PrimeFaces.current();
-			prime.ajax().update("form1");
-			prime.ajax().update("form2");
-			prime.executeScript("PF('dlgReg').hide();");
-		} catch (Exception e) {
-			JSFUtil.crearMensajeERROR("No se regsitro correctamente");
 			e.printStackTrace();
 		}
 	}
