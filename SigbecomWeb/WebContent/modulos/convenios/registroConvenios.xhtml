@@ -210,11 +210,18 @@
 						    	<p:dataExporter type="xls" target="tblAm" fileName="ListDescuentos"></p:dataExporter>
 						    </h:commandLink>
 					    </div>	
-	                <p:dataTable id="tblAm" value="#{frmRegistroConvenio.lstConvAmortizacion}" var="dat">
+	                <p:dataTable id="tblAm" rowIndexVar="index" 
+	                	value="#{frmRegistroConvenio.lstConvAmortizacion}" var="dat">
+	                		<p:column headerText="No" width="27">
+								<h:outputText value="#{index+1}" />
+							</p:column>
 	                		<p:column headerText="CEDULA" filterBy="#{dat.convAdquirido.convValorMax.usrSocio.gesPersona.cedula}">
 								<h:outputText value="#{dat.convAdquirido.convValorMax.usrSocio.gesPersona.cedula}" />
 							</p:column>
-							<p:column headerText="APELLIDO" filterBy="#{dat.convAdquirido.convValorMax.usrSocio.gesPersona.apellidos}">
+							<p:column headerText="CODIGO" filterBy="#{dat.convAdquirido.convValorMax.usrSocio.idSocio}">
+								<h:outputText value="#{dat.convAdquirido.convValorMax.usrSocio.idSocio}" />
+							</p:column>
+							<p:column headerText="APELLIDO" sortBy="#{dat.convAdquirido.convValorMax.usrSocio.gesPersona.apellidos}" filterBy="#{dat.convAdquirido.convValorMax.usrSocio.gesPersona.apellidos}">
 								<h:outputText value="#{dat.convAdquirido.convValorMax.usrSocio.gesPersona.apellidos}" />
 							</p:column>
 							<p:column headerText="NOMBRE" filterBy="#{dat.convAdquirido.convValorMax.usrSocio.gesPersona.nombres}">

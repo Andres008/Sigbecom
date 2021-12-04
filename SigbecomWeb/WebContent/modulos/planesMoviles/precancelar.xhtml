@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://java.sun.com/jsf/html" xmlns:f="http://java.sun.com/jsf/core" xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:p="http://primefaces.org/ui">
+
+<h:head>
+	<f:event type="preRenderView" listener="#{controlFormularios.verificarSesion()}" />
+	<f:facet name="first">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0"/>
+        <meta name="apple-mobile-web-app-capable" content="yes" />
+    </f:facet>
+        <title><ui:insert name="title">Plan Móvil</ui:insert></title>
+        <h:outputScript name="js/nanoscroller.js" library="california-layout" />
+        <h:outputScript name="js/layout.js" library="california-layout" />
+        <h:outputStylesheet library="css" name="theme.css"/>
+</h:head>
+
+<h:body styleClass="main-body" onload="#{frmAplicarPlanMovil.init()}">
+
+        <div class="layout-wrapper #{guestPreferences.menuLayout != 'static' ? guestPreferences.menuLayout : null}">
+            <ui:include src="/affordances/megamenu.xhtml" />
+            <ui:include src="/affordances/topbar.xhtml" />
+            <ui:include src="/affordances/sidebar.xhtml" />
+            <ui:include src="/affordances/right-sidebar.xhtml" />
+			<div class="layout-main">
+                <div class="route-bar">
+                    <div class="route-bar-breadcrumb">
+                        <i class="fa fa-home"></i> <span>/PLANES MOVILES/Precancelar Plan Móvil</span>
+                        <ui:insert name="viewname" />
+                    </div>
+					<ui:include src="/affordances/route-bar-menu.xhtml" />
+                </div>
+				<div class="layout-main-content" align="center">
+                    <H1>Precancelación de Planes Móviles</H1>
+                    <h:form id="form1">
+	                    <p:growl id="growl" showDetail="true" sticky="true" />
+						<p:panel id="pnls" header="Consulta de Cuentas por cobrar" toggleable="true" collapsed="true">
+							<p:panelGrid columns="2" styleClass="ui-noborder" layout="grid"
+								columnClasses="ui-g-12 ui-md-6 ui-lg-4, ui-g-12 ui-md-6 ui-lg-4, ui-g-12 ui-md-6 ui-lg-4">
+								<p:outputLabel for="nom" value="Seleccione Cliente:" />
+								<p:selectOneMenu id="nom" required="true" value="#{frmPrecancelar.cedula}"
+												 filter="true" filterMatchMode="contains">
+			                    	<f:selectItem itemLabel="Seleccione Cliente"
+										noSelectionOption="true" />
+			                    	<f:selectItems value="#{frmPrecancelar.lstUsrSocio}" var="dat"
+			                    			itemLabel="#{dat.cedulaSocio} #{dat.gesPersona.apellidos} #{dat.gesPersona.nombres}" itemValue="#{dat.cedulaSocio}"/>
+			                    </p:selectOneMenu>
+	                    	</p:panelGrid>
+							<p:separator/>
+
+							<p:panelGrid columns="2" styleClass="ui-noborder">
+								<p:commandButton value="Cancelar"
+									action="#{frmPrecancelar.inicializar()}" update="@form">
+								</p:commandButton>							
+								<p:commandButton value="Cargar Registros"
+									action="#{frmPrecancelar.cargarListaCuotasPendientes()}" update="form2:tblUsr">
+									<p:confirm header="Confirmación"
+									message="Esta seguro de ingresar la información?"
+									icon="pi pi-exclamation-triangle" />
+								</p:commandButton>
+							</p:panelGrid>	
+							<p:confirmDialog global="true" showEffect="fade" hideEffect="fade"
+								responsive="true" width="350">
+								<p:commandButton value="Si" type="button"
+									styleClass="ui-confirmdialog-yes" />
+								<p:commandButton value="No" type="button"
+									styleClass="ui-confirmdialog-no ui-button-flat" />
+							</p:confirmDialog>
+							
+	                    </p:panel>
+	                    <p:separator/>
+	                </h:form>
+	                <h:form id="form2">
+	                	<p:growl id="growl" showDetail="true" sticky="true" />
+	                	<p:panel id="pnl"  header="CUENTAS POR COBRAR - EQUIPOS MOVILES DEL USUARIO">
+						<p:dataTable value="#{frmPrecancelar.lstCuotasPendientes}"
+							id="tblUsr"  var="mov" paginator="true"
+							rows="10">
+							<f:facet name="header">
+								LISTADO DE CUENTAS POR COBRAR EQUIPOS MOVILES
+							</f:facet>
+							<p:column headerText="Equipo Movil">
+										<h:outputText value="#{mov.planEquipo.equipo}"/>
+									</p:column>
+									<p:column headerText="Valor Equipo">
+										<h:outputText value="#{mov.valorCapital}">
+											<f:convertNumber pattern="#0.00" />
+										</h:outputText>
+									</p:column>
+									<p:column headerText="Comision">
+										<h:outputText value="#{mov.comision}">
+											<f:convertNumber pattern="#0.00" />
+										</h:outputText>
+									</p:column>
+									<p:column headerText="Total">
+										<h:outputText value="#{mov.total}">
+											<f:convertNumber pattern="#0.00" />
+										</h:outputText>
+									</p:column>
+									<p:column headerText="Plazo">
+										<h:outputText value="#{mov.mesesPlazo}"/>
+									</p:column>
+									<p:column headerText="Num Cuota" sortOrder="asc" sortBy="#{mov.numCuota}">
+										<h:outputText value="#{mov.numCuota}"/>
+									</p:column>
+									<p:column headerText="Cuota">
+										<h:outputText value="#{mov.valorCuota}">
+											<f:convertNumber pattern="#0.00" />
+										</h:outputText>
+									</p:column>
+									<p:column headerText="Saldo">
+										<h:outputText value="#{mov.saldo}">
+											<f:convertNumber pattern="#0.00" />
+										</h:outputText>
+									</p:column>
+									<p:column headerText="Mes" >
+										<h:outputText value="#{frmEquipoMovil.convertirMes(mov.mes)}"/>
+									</p:column>
+									<p:column headerText="Año" sortOrder="asc" sortBy="#{mov.anio}">
+										<h:outputText value="#{mov.anio}"/>
+									</p:column>
+									<p:column headerText="Estado">
+										<h:outputText value="#{mov.estado}"/>
+									</p:column>
+						</p:dataTable>
+						<br/>
+						<br/>
+						<p:panelGrid columns="2" styleClass="ui-noborder">
+								<p:commandButton value="Cancelar"
+									action="#{frmPrecancelar.inicializar()}" update="@form">
+								</p:commandButton>							
+								<p:commandButton value="Precancelar"
+									action="#{frmPrecancelar.cargarListaCuotasPendientes()}" update="@form">
+									<p:confirm header="Confirmación"
+									message="Esta seguro de ingresar la información?"
+									icon="pi pi-exclamation-triangle" />
+								</p:commandButton>
+							</p:panelGrid>	
+							<p:confirmDialog global="true" showEffect="fade" hideEffect="fade"
+								responsive="true" width="350">
+								<p:commandButton value="Si" type="button"
+									styleClass="ui-confirmdialog-yes" />
+								<p:commandButton value="No" type="button"
+									styleClass="ui-confirmdialog-no ui-button-flat" />
+							</p:confirmDialog>
+					</p:panel>
+	                </h:form>
+<!-- Inicio de Dialogs -->
+
+<p:dialog>
+
+</p:dialog>
+
+
+<!-- Fin de Dialogs -->
+                </div>
+				<ui:include src="/affordances/footer.xhtml" />
+            </div>
+        </div>
+		
+        <p:ajaxStatus style="width:32px;height:32px;position:fixed;right:7px;bottom:7px">
+           <f:facet name="start">
+               <i class="fa fa-circle-o-notch fa-spin ajax-loader" aria-hidden="true"></i>
+           </f:facet>
+
+           <f:facet name="complete">
+               <h:outputText value="" />
+           </f:facet>
+       </p:ajaxStatus>
+
+        <h:outputStylesheet name="css/nanoscroller.css" library="california-layout" />
+        <h:outputStylesheet name="css/layout-#{guestPreferences.theme}.css" library="california-layout" />
+    </h:body>
+</html>
+

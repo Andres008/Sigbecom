@@ -38,7 +38,11 @@
 						<p:commandButton icon="fa fa-download" update="frmPDFT"
 							action="#{menuPrincipal.cargarDocumento()}"/>
 					</h:panelGrid>
-					
+					<h:panelGrid cellpadding="10" columns="2">
+						<p:outputLabel value="Presentacion ......... "/>
+						<p:commandButton icon="fa fa-download" update="frmPDFT"
+							action="#{menuPrincipal.cargarPresentacion()}"/>
+					</h:panelGrid>
                 </div>
 				<ui:include src="/affordances/footer.xhtml" />
             </div>
