@@ -272,4 +272,18 @@ public class ManagerGestionCredito {
 		}
 	}
 
+	@SuppressWarnings("unchecked")
+	public List<FinTablaAmortizacion> buscarCuotasPendientesByTipoCredito(FinTipoCredito objTipoCredito)
+			throws Exception {
+		return managerDAOSegbecom.findWhere(FinTablaAmortizacion.class,
+				"o.finEstadoCuota.idEstadoCuota in (1,2) and o.finPrestamoSocio.finTipoCredito.idTipoCredito="
+						+ objTipoCredito.getIdTipoCredito(),
+				null);
+	}
+
+	public void actualizarTablaAmortizacion(FinTablaAmortizacion finTablaAmortizacion) throws Exception {
+		managerDAOSegbecom.actualizar(finTablaAmortizacion);
+		
+	}
+
 }

@@ -189,24 +189,49 @@
 									</p:column>
 								</p:dataTable>
 							</p:column>
-							<p:column headerText="Inactivar">
-								<p:commandButton icon="fa fa-arrow-circle-o-down"
-									actionListener="#{controladorGestionCreditos.inactivarTipoCredito(credito)}"
-									update="@form:pnlTipoCredito @form:growl" process="@this">
-									<p:confirm header="Confirmación"
-										message="Esta seguro de Inactivar el Tipo de Credito?"
-										icon="pi pi-exclamation-triangle" />
-									<p:confirmDialog global="true" showEffect="fade"
-										hideEffect="fade" responsive="true" width="350">
-										<p:commandButton value="Si" type="button"
-											styleClass="ui-confirmdialog-yes" />
-										<p:commandButton value="No" type="button"
-											styleClass="ui-confirmdialog-no ui-button-flat" />
-									</p:confirmDialog>
-								</p:commandButton>
+							<p:column headerText="Acciones">
+								<p:panelGrid columns="1">
+									<p:commandButton icon="fa fa-arrow-circle-o-down"
+										value="Inactivar"
+										actionListener="#{controladorGestionCreditos.inactivarTipoCredito(credito)}"
+										update="@form:pnlTipoCredito @form:growl" process="@this">
+										<p:confirm header="Confirmación"
+											message="Esta seguro de Inactivar el Tipo de Credito?"
+											icon="pi pi-exclamation-triangle" />
+									</p:commandButton>
+									<p:commandButton icon="fa fa-arrow-circle-o-down"
+										value="Cambiar Día"
+										actionListener="#{controladorGestionCreditos.cargarTipoCredito(credito)}"
+										update=":actualizacion" process="@this"
+										oncomplete="PF('infAccion').show()">
+									</p:commandButton>
+
+
+								</p:panelGrid>
+								<p:confirmDialog global="true" showEffect="fade"
+									hideEffect="fade" responsive="true" width="350">
+									<p:commandButton value="Si" type="button"
+										styleClass="ui-confirmdialog-yes" />
+									<p:commandButton value="No" type="button"
+										styleClass="ui-confirmdialog-no ui-button-flat" />
+								</p:confirmDialog>
 							</p:column>
 						</p:dataTable>
 					</p:panel>
+				</h:form>
+				<h:form id="actualizacion">
+					<p:dialog header="Acciones Credito" widgetVar="infAccion"
+						id="infAccion" modal="true" position="top" showEffect="fade"
+						hideEffect="fade" resizable="false" width="90%">
+						<p:panelGrid columns="2">
+							<p:outputLabel value="Día de descuento" />
+							<p:inputNumber
+								value="#{controladorGestionCreditos.objTipoCredito.diaPagoMaximo}"
+								decimalPlaces="0" />
+						</p:panelGrid>
+						<p:commandButton value="Actualizar Dia" update="@form :ingreso"
+							actionListener="#{controladorGestionCreditos.actualizarFechaPago()}" />
+					</p:dialog>
 				</h:form>
 			</div>
 			<ui:include src="/affordances/footer.xhtml" />
