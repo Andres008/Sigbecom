@@ -331,7 +331,7 @@ public class ControladorGestionCreditos implements Serializable {
 							+ " meses plazo, a una tasa de interés del "
 							+ prestamoSocio.getFinTipoCredito().getTasaInteres() + "%.");
 			parametros.put("nroSolicitud", String.valueOf(prestamoSocio.getIdPrestamoSocio()));
-			parametros.put("codEmpelado", String.valueOf(prestamoSocio.getUsrSocio().getIdSocio()));
+			parametros.put("codEmpleado", String.valueOf(prestamoSocio.getUsrSocio().getIdSocio()));
 			parametros.put("lugarFecha",
 					"Ibarra, " + formatodia.format(prestamoSocio.getFechaSolicitud()) + " de "
 							+ ModelUtil.getMesAlfanumerico(prestamoSocio.getFechaSolicitud()) + " del "
