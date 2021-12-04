@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://java.sun.com/jsf/html" xmlns:f="http://java.sun.com/jsf/core" xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:p="http://primefaces.org/ui">
+
+
+<h:head>
+	<f:event type="preRenderView" listener="#{controlFormularios.verificarSesion()}" />
+	<f:facet name="first">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0"/>
+        <meta name="apple-mobile-web-app-capable" content="yes" />
+    </f:facet>
+        <title><ui:insert name="title">Plan Móvil</ui:insert></title>
+        <h:outputScript name="js/nanoscroller.js" library="california-layout" />
+        <h:outputScript name="js/layout.js" library="california-layout" />
+        <h:outputStylesheet library="css" name="theme.css"/>
+</h:head>
+
+<h:body styleClass="main-body" onload="#{frmDescuento.init()}">
+
+        <div class="layout-wrapper #{guestPreferences.menuLayout != 'static' ? guestPreferences.menuLayout : null}">
+            <ui:include src="/affordances/megamenu.xhtml" />
+            <ui:include src="/affordances/topbar.xhtml" />
+            <ui:include src="/affordances/sidebar.xhtml" />
+            <ui:include src="/affordances/right-sidebar.xhtml" />
+			<div class="layout-main">
+                <div class="route-bar">
+                    <div class="route-bar-breadcrumb">
+                        <i class="fa fa-home"></i> <span>/PLANES MOVILES/Registro Pagos Pendientes</span>
+                        <ui:insert name="viewname" />
+                    </div>
+					<ui:include src="/affordances/route-bar-menu.xhtml" />
+                </div>
+				<div class="layout-main-content" align="center">
+                    <H1>Planes Móviles</H1>
+                    
+	                <h:form id="form1">
+	                	<p:growl id="growl" showDetail="true" sticky="true" />
+	                	<p:panel id="pnl"  header="LISTADO - DESCUENTOS">
+	                	<div class="card" align="right">
+						    <h:commandLink >
+						    	<p:graphicImage name="images/logo_excel.png" library="california-layout" />
+						    	<p:dataExporter type="xls" target="tblEmp" fileName="ListPlanMovil"></p:dataExporter>
+						    </h:commandLink>
+					    </div>	
+						<p:dataTable value="#{frmDescuento.lstPlanPago}" sortMode="multiple"
+							id="tblEmp"  var="dato" paginator="true"
+							rows="10">
+							<f:facet name="header">
+								LISTADO DE SOCIOS - DESCUENTOS TOTALES
+							</f:facet>
+							
+							<p:column headerText="CEDULA" filterBy="#{dato.planContratoComite.usrSocio.cedulaSocio}">
+								<h:outputText value="#{dato.planContratoComite.usrSocio.cedulaSocio}"/>
+							</p:column>
+							<p:column headerText="APELLIDOS" filterBy="#{dato.planContratoComite.usrSocio.gesPersona.apellidos}">
+								<h:outputText value="#{dato.planContratoComite.usrSocio.gesPersona.apellidos}"/>
+							</p:column>
+							<p:column headerText="NOMBRES" filterBy="#{dato.planContratoComite.usrSocio.gesPersona.nombres}">
+								<h:outputText value="#{dato.planContratoComite.usrSocio.gesPersona.nombres}"/>
+							</p:column>
+							<p:column headerText="OPERADORA" filterBy="#{dato.planContratoComite.planPlanMovil.planOperadora.empresa}">
+								<h:outputText value="#{dato.planContratoComite.planPlanMovil.planOperadora.empresa}"/>
+							</p:column>
+							<p:column headerText="PLAN" filterBy="#{dato.planContratoComite.planPlanMovil.plan}">
+								<h:outputText value="#{dato.planContratoComite.planPlanMovil.plan}"/>
+							</p:column>
+							<p:column headerText="LINEA" filterBy="#{dato.planContratoComite.lineaTelefono}">
+								<h:outputText value="#{dato.planContratoComite.lineaTelefono}"/>
+							</p:column>
+							<p:column headerText="CUOTA TOTAL" filterBy="#{dato.valorTotal}">
+								<h:outputText value="#{dato.valorTotal}">
+									<f:convertNumber pattern="#0.00" />
+								</h:outputText>
+							</p:column>
+							<p:column headerText="MES" filterBy="#{dato.mes}">
+								<h:outputText value="#{frmDescuento.convertirMes(dato.mes)}"/>
+							</p:column>
+							<p:column headerText="AÑO" filterBy="#{dato.ano}">
+								<h:outputText value="#{dato.ano}"/>
+							</p:column>
+							<p:column headerText="ESTADO DESCUENTO" filterBy="#{dato.descEstadoDescuento.estado}">
+								<h:outputText value="#{dato.descEstadoDescuento.estado}"/>
+							</p:column>
+							
+						</p:dataTable>
+						<br/>
+						<br/>
+						<p:separator/>
+						 	<div class="card" align="right">
+						    <h:commandLink >
+						    	<p:graphicImage name="images/logo_excel.png" library="california-layout" />
+						    	<p:dataExporter type="xls" target="tblEmp1" fileName="ListPlanMovil"></p:dataExporter>
+						    </h:commandLink>
+					    </div>	
+						<p:dataTable value="#{frmDescuento.lstRegistroPago}" sortMode="multiple"
+							id="tblEmp1"  var="dato" paginator="true"
+							rows="10">
+							<f:facet name="header">
+								LISTADO DE SOCIOS - DESCUENTOS POR LINEA
+							</f:facet>
+							
+							<p:column headerText="CEDULA" filterBy="#{dato.planContratoComite.usrSocio.cedulaSocio}">
+								<h:outputText value="#{dato.planContratoComite.usrSocio.cedulaSocio}"/>
+							</p:column>
+							<p:column headerText="APELLIDOS" filterBy="#{dato.planContratoComite.usrSocio.gesPersona.apellidos}">
+								<h:outputText value="#{dato.planContratoComite.usrSocio.gesPersona.apellidos}"/>
+							</p:column>
+							<p:column headerText="NOMBRES" filterBy="#{dato.planContratoComite.usrSocio.gesPersona.nombres}">
+								<h:outputText value="#{dato.planContratoComite.usrSocio.gesPersona.nombres}"/>
+							</p:column>
+							<p:column headerText="OPERADORA" filterBy="#{dato.planContratoComite.planPlanMovil.planOperadora.empresa}">
+								<h:outputText value="#{dato.planContratoComite.planPlanMovil.planOperadora.empresa}"/>
+							</p:column>
+							<p:column headerText="PLAN" filterBy="#{dato.planContratoComite.planPlanMovil.plan}">
+								<h:outputText value="#{dato.planContratoComite.planPlanMovil.plan}"/>
+							</p:column>
+							<p:column headerText="LINEA" filterBy="#{dato.planContratoComite.lineaTelefono}">
+								<h:outputText value="#{dato.planContratoComite.lineaTelefono}"/>
+							</p:column>
+							<p:column headerText="CUOTA OPERADORA" filterBy="#{dato.valorPlan}">
+								<h:outputText value="#{dato.valorPlan}">
+									<f:convertNumber pattern="#0.00" />
+								</h:outputText>
+							</p:column>
+							<p:column headerText="COSTO ADMIN" filterBy="#{dato.costoAdm}">
+								<h:outputText value="#{dato.costoAdm}">
+									<f:convertNumber pattern="#0.00" />
+								</h:outputText>
+							</p:column>
+							<p:column headerText="TOTAL" filterBy="#{dato.total}">
+								<h:outputText value="#{dato.total}">
+									<f:convertNumber pattern="#0.00" />
+								</h:outputText>
+							</p:column>
+							<p:column headerText="MES" filterBy="#{dato.mes}">
+								<h:outputText value="#{frmDescuento.convertirMes(dato.mes)}"/>
+							</p:column>
+							<p:column headerText="AÑO" filterBy="#{dato.anio}">
+								<h:outputText value="#{dato.anio}"/>
+							</p:column>
+							<p:column headerText="ESTADO DESCUENTO" filterBy="#{dato.estado}">
+								<h:outputText value="#{dato.estado}"/>
+							</p:column>
+							
+						</p:dataTable>
+						<br/>
+						<br/>
+						<p:separator/>
+						 	<div class="card" align="right">
+						    <h:commandLink >
+						    	<p:graphicImage name="images/logo_excel.png" library="california-layout" />
+						    	<p:dataExporter type="xls" target="tblEmp2" fileName="ListPlanMovil"></p:dataExporter>
+						    </h:commandLink>
+					    </div>	
+						<p:dataTable value="#{frmDescuento.lstAmortizacion}" sortMode="multiple"
+							id="tblEmp2"  var="dato" paginator="true"
+							rows="10">
+							<f:facet name="header">
+								LISTADO DE SOCIOS - DESCUENTOS POR EQUIPOS
+							</f:facet>
+							
+							<p:column headerText="CEDULA" filterBy="#{dato.planContratoComite.usrSocio.cedulaSocio}">
+								<h:outputText value="#{dato.planContratoComite.usrSocio.cedulaSocio}"/>
+							</p:column>
+							<p:column headerText="APELLIDOS" filterBy="#{dato.planContratoComite.usrSocio.gesPersona.apellidos}">
+								<h:outputText value="#{dato.planContratoComite.usrSocio.gesPersona.apellidos}"/>
+							</p:column>
+							<p:column headerText="NOMBRES" filterBy="#{dato.planContratoComite.usrSocio.gesPersona.nombres}">
+								<h:outputText value="#{dato.planContratoComite.usrSocio.gesPersona.nombres}"/>
+							</p:column>
+							<p:column headerText="OPER" filterBy="#{dato.planContratoComite.planPlanMovil.planOperadora.empresa}" width="30">
+								<h:outputText value="#{dato.planContratoComite.planPlanMovil.planOperadora.empresa}"/>
+							</p:column>
+							<p:column headerText="LINEA" filterBy="#{dato.planContratoComite.lineaTelefono}">
+								<h:outputText value="#{dato.planContratoComite.lineaTelefono}"/>
+							</p:column>
+							<p:column headerText="Equipo Movil" >
+								<h:outputText value="#{dato.planEquipo.equipo}"/>
+							</p:column>
+									<p:column headerText="Valor Equipo" >
+										<h:outputText value="#{dato.valorCapital}">
+											<f:convertNumber pattern="#0.00" />
+										</h:outputText>
+									</p:column>
+									<p:column headerText="Comision" >
+										<h:outputText value="#{dato.comision}">
+											<f:convertNumber pattern="#0.00" />
+										</h:outputText>
+									</p:column>
+									<p:column headerText="Total" width="25">
+										<h:outputText value="#{dato.total}">
+											<f:convertNumber pattern="#0.00" />
+										</h:outputText>
+									</p:column>
+									<p:column headerText="Plazo" width="25">
+										<h:outputText value="#{dato.mesesPlazo}"/>
+									</p:column>
+									<p:column headerText="Num Cuota" sortOrder="asc" sortBy="#{dato.numCuota}" width="30">
+										<h:outputText value="#{dato.numCuota}"/>
+									</p:column>
+									<p:column headerText="Cuota" width="25">
+										<h:outputText value="#{dato.valorCuota}">
+											<f:convertNumber pattern="#0.00" />
+										</h:outputText>
+									</p:column>
+									<p:column headerText="Saldo" width="25">
+										<h:outputText value="#{dato.saldo}">
+											<f:convertNumber pattern="#0.00" />
+										</h:outputText>
+									</p:column>
+									<p:column headerText="Mes" filterBy="#{frmEquipoMovil.convertirMes(dato.mes)}">
+										<h:outputText value="#{frmEquipoMovil.convertirMes(dato.mes)}"/>
+									</p:column>
+									<p:column headerText="Año" sortOrder="asc" sortBy="#{dato.anio}" width="25" filterBy="#{dato.anio}">
+										<h:outputText value="#{dato.anio}"/>
+									</p:column>
+									<p:column headerText="Estado" filterBy="#{dato.estado}">
+										<h:outputText value="#{dato.estado}"/>
+									</p:column>
+							
+						</p:dataTable>
+					</p:panel>
+	         </h:form>
+<!-- Inicio de Dialogs -->
+<!-- Fin de Dialogs -->
+			</div>
+				<ui:include src="/affordances/footer.xhtml" />
+            </div>
+        </div>
+		
+        <p:ajaxStatus style="width:32px;height:32px;position:fixed;right:7px;bottom:7px">
+           <f:facet name="start">
+               <i class="fa fa-circle-o-notch fa-spin ajax-loader" aria-hidden="true"></i>
+           </f:facet>
+
+           <f:facet name="complete">
+               <h:outputText value="" />
+           </f:facet>
+       </p:ajaxStatus>
+
+        <h:outputStylesheet name="css/nanoscroller.css" library="california-layout" />
+        <h:outputStylesheet name="css/layout-#{guestPreferences.theme}.css" library="california-layout" />
+    </h:body>
+</html>
+

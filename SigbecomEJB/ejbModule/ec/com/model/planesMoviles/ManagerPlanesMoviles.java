@@ -2,10 +2,12 @@ package ec.com.model.planesMoviles;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.ejb.EJB;
 import javax.ejb.LocalBean;
 import javax.ejb.Stateless;
+import javax.enterprise.concurrent.LastExecution;
 
 import org.apache.taglibs.standard.tag.common.core.UrlSupport;
 
@@ -199,18 +201,77 @@ public class ManagerPlanesMoviles {
     	else
     		return null;
     }
+    @SuppressWarnings("unchecked")
+	public List<PlanContratoComite> findContratoComiteByLineaAndEstado(String lineaTelefono, String estado) throws Exception {
+    	List<PlanContratoComite> lstPlanContratoComite = managerDAOSegbecom.findWhere(PlanContratoComite.class, "o.lineaTelefono ='"+lineaTelefono+"' AND o.estado = '"+estado+"'", null);
+    	if(lstPlanContratoComite!=null && lstPlanContratoComite.size()==1) {
+    		return lstPlanContratoComite;
+    	}
+    	if(lstPlanContratoComite!=null && lstPlanContratoComite.size()>1) {
+    		throw new Exception("Más de un numero encontrado: "+lineaTelefono);
+    	}
+    	else
+    		return null;
+    }
     public void insertarPlanRegistroPagos(PlanRegistroPago planRegistroPago) throws Exception {
     	managerDAOSegbecom.insertar(planRegistroPago);
     }
     @SuppressWarnings("unchecked")
 	public List<PlanRegistroPago> findAllPlanRegistroPago() throws Exception {
-    	List<PlanRegistroPago> lstPlanRegistroPago = managerDAOSegbecom.findAll(PlanRegistroPago.class);
+    	List<PlanRegistroPago> lstPlanRegistroPago = managerDAOSegbecom.findAll(PlanRegistroPago.class, "o.idRegistroPagos DESC");
     	return lstPlanRegistroPago;
     }
-    
+    @SuppressWarnings("unchecked")
+	public List<PlanRegistroPago> findAllPlanRegistroPagoByEstado(String estado) throws Exception {
+    	List<PlanRegistroPago> lstPlanRegistroPago = managerDAOSegbecom.findWhere(PlanRegistroPago.class, "o.estado = '"+estado+"'", "o.idRegistroPagos DESC");
+    	return lstPlanRegistroPago;
+    }
+    public void removePlanRegistro(long idRegistroPagos) throws Exception {
+    	managerDAOSegbecom.eliminar(PlanRegistroPago.class, idRegistroPagos);
+    }
+    public void removePlanContratoComite(long idcontrato) throws Exception {
+    	managerDAOSegbecom.eliminar(PlanContratoComite.class, idcontrato);
+    }
     @SuppressWarnings("unchecked")
 	public List<PlanContratoComite> findAllPlanContratoComite() throws Exception {
     	List<PlanContratoComite> lstPlanContratoComite = managerDAOSegbecom.findAll(PlanContratoComite.class);
+    	for (PlanContratoComite planContratoComite : lstPlanContratoComite) {
+			for (PlanAmortEquipmov planAmortEquipmov : planContratoComite.getPlanAmortEquipmovs()) {
+				planAmortEquipmov.getIdAmortEquipmov();
+			}
+		}
+    	return lstPlanContratoComite;
+    }
+    @SuppressWarnings("unchecked")
+	public List<PlanContratoComite> findAllPlanContratoComiteActivo() throws Exception {
+    	List<PlanContratoComite> lstPlanContratoComite = managerDAOSegbecom.findWhere(PlanContratoComite.class, "o.estado='ACTIVO'", null);
+    	for (PlanContratoComite planContratoComite : lstPlanContratoComite) {
+			for (PlanAmortEquipmov planAmortEquipmov : planContratoComite.getPlanAmortEquipmovs()) {
+				planAmortEquipmov.getIdAmortEquipmov();
+			}
+		}
+    	return lstPlanContratoComite;
+    }
+    @SuppressWarnings("unchecked")
+	public List<PlanContratoComite> findPlanContratoComiteByCedula(String cedulaSocio) throws Exception {
+    	List<PlanContratoComite> lstPlanContratoComite = managerDAOSegbecom.findWhere(PlanContratoComite.class, "o.usrSocio.cedulaSocio = '"+cedulaSocio+"'", null);
+    	for (PlanContratoComite planContratoComite : lstPlanContratoComite) {
+			for (PlanPago planPago : planContratoComite.getPlanPagos()) {
+				planPago.getIdPlanPagos();
+				for (PlanAmortEquipmov planAmortEquipmov : planPago.getPlanAmortEquipmovs()) {
+					planAmortEquipmov.getIdAmortEquipmov();
+				}
+				for (PlanRegistroPago planRegistroPago : planPago.getPlanRegistroPagos()) {
+					planRegistroPago.getIdRegistroPagos();
+				}
+			}
+			for (PlanAmortEquipmov planAmortEquipmov : planContratoComite.getPlanAmortEquipmovs()) {
+				planAmortEquipmov.getIdAmortEquipmov();
+			}
+			for (PlanRegistroPago planRegistroPago : planContratoComite.getPlanRegistroPagos()) {
+				planRegistroPago.getIdRegistroPagos();
+			}
+		}
     	return lstPlanContratoComite;
     }
     @SuppressWarnings("unchecked")
@@ -226,5 +287,121 @@ public class ManagerPlanesMoviles {
     public void insertarPlanAmortEquipmov(PlanAmortEquipmov planAmortEquipmov) throws Exception {
     	managerDAOSegbecom.insertar(planAmortEquipmov);
     }
+    @SuppressWarnings("unchecked")
+	public List<PlanAmortEquipmov> findPlanAmortEquipmovByLineaTelef(String lineaTelefono) throws Exception{
+    	List<PlanAmortEquipmov> lstPlanAmortEquipmov = managerDAOSegbecom.findWhere(PlanAmortEquipmov.class, "o.planContratoComite.lineaTelefono = '"+lineaTelefono+"' AND o.estado = 'GENERADO' OR o.estado = 'PENDIENTE'", null); 
+    	if(lstPlanAmortEquipmov!= null && lstPlanAmortEquipmov.size()>0) {
+    		return lstPlanAmortEquipmov;
+    	}
+    	else {
+    		return null;
+    	}
+    }
     
+    
+    @SuppressWarnings("unchecked")
+	public List<String> findAllCedulasContratoPlanActivosRenovados() throws Exception {
+    	List<String> lstCedulasContratosPlan = managerDAOSegbecom.findDistinct(PlanContratoComite.class,"o.usrSocio.cedulaSocio" ,"o.estado = 'ACTIVO' OR o.estado = 'RENOVADO'", null);
+    	if(lstCedulasContratosPlan !=null && lstCedulasContratosPlan.size()>0) {
+    		return lstCedulasContratosPlan;
+    	}
+    	else {
+			return null;
+		}	
+    }
+    
+    public List<PlanContratoComite> findAllContratosComiteEstadoActivo() throws Exception{
+    	List<PlanContratoComite> lstPlanContratoComite = managerDAOSegbecom.findWhere(PlanContratoComite.class, "o.estado='ACTIVO'","o.idContrato ASC");
+    	return lstPlanContratoComite;
+    }
+    
+    @SuppressWarnings("unchecked")
+	public List<PlanRegistroPago> findRegistroPagoGeneradosByCedula(String cedula) throws Exception {
+    	List<PlanRegistroPago> lstPlanRegistroPago = managerDAOSegbecom.findWhere(PlanRegistroPago.class, "o.planContratoComite.usrSocio.cedulaSocio = '"+cedula+"' AND o.estado = 'GENERADO'",null);
+    	if(lstPlanRegistroPago!=null && lstPlanRegistroPago.size()>0) {
+    		return lstPlanRegistroPago;
+    	}
+    	else {
+			return null;
+		}	
+    }
+    @SuppressWarnings("unchecked")
+	public List<PlanAmortEquipmov> findAmortEquipmovByPlanContratoMes(String lineaTelefono, Integer mes) throws Exception{
+    	List<PlanAmortEquipmov> lstPlanAmortEquipmov = managerDAOSegbecom.findWhere(PlanAmortEquipmov.class, "o.planContratoComite.lineaTelefono = '"+lineaTelefono+"' AND o.estado = 'GENERADO' AND o.mes = '"+mes+"'", null); 
+    	if(lstPlanAmortEquipmov!= null && lstPlanAmortEquipmov.size()>0) {
+    		return lstPlanAmortEquipmov;
+    	}
+    	else {
+    		return null;
+    	}
+    }
+    @SuppressWarnings("unchecked")
+	public List<PlanAmortEquipmov> findAllAmortEquipmovByCedulaMes(String cedula, Integer mes) throws Exception{
+    	List<PlanAmortEquipmov> lstPlanAmortEquipmov = managerDAOSegbecom.findWhere(PlanAmortEquipmov.class, "o.planContratoComite.usrSocio.cedulaSocio = '"+cedula+"' AND o.estado = 'GENERADO' AND o.mes = '"+mes+"'", null); 
+    	if(lstPlanAmortEquipmov!= null && lstPlanAmortEquipmov.size()>0) {
+    		return lstPlanAmortEquipmov;
+    	}
+    	else {
+    		return null;
+    	}
+    }
+    @SuppressWarnings("unchecked")
+   	public List<PlanPago> findAllPlanPagoByCedula(String cedula) throws Exception{
+       	List<PlanPago> lstPlanPago = managerDAOSegbecom.findWhere(PlanPago.class, "o.planContratoComite.usrSocio.cedulaSocio = '"+cedula+"'", "o.idPlanPagos DESC");
+       	for (PlanPago planPago : lstPlanPago) {
+			for (PlanAmortEquipmov planAmortEquipmov : planPago.getPlanAmortEquipmovs()) {
+				planAmortEquipmov.getIdAmortEquipmov();
+			}
+			for (PlanRegistroPago planRegistroPago : planPago.getPlanRegistroPagos()) {
+				planRegistroPago.getIdRegistroPagos();
+			}
+		}
+       	return lstPlanPago;
+    }
+    
+    @SuppressWarnings("unchecked")
+   	public List<PlanPago> findAllPlanPagoByIdContrato(long idContrato) throws Exception{
+       	List<PlanPago> lstPlanPago = managerDAOSegbecom.findWhere(PlanPago.class, "o.planContratoComite.idContrato= '"+idContrato+"'", "o.idPlanPagos DESC");
+       	if(lstPlanPago!=null && lstPlanPago.size()>0) {
+       		return lstPlanPago;
+       	}
+       	else {
+       		return null;
+       	}
+    } 
+	public PlanAmortEquipmov findPlanAmortEquipmovById(long idAmortEquipmov) throws Exception{
+    	PlanAmortEquipmov planAmortEquipmov = (PlanAmortEquipmov) managerDAOSegbecom.findById(PlanAmortEquipmov.class, idAmortEquipmov); 
+    	return planAmortEquipmov;
+    }
+	
+    @SuppressWarnings("unchecked")
+	public List<PlanAmortEquipmov> findAllPlanAmortEquipmov() throws Exception{
+    	List<PlanAmortEquipmov> lstPlanAmortEquipmov = managerDAOSegbecom.findAll(PlanAmortEquipmov.class, "o.idAmortEquipmov");
+    	if(lstPlanAmortEquipmov!= null && lstPlanAmortEquipmov.size()>0) {
+    		return lstPlanAmortEquipmov;
+    	}
+    	else {
+    		return null;
+    	}
+    }
+    @SuppressWarnings("unchecked")
+	public List<PlanAmortEquipmov> findAllAmortEquipmovByIdPlanPagos(Long idPlanPagos) throws Exception{
+    	List<PlanAmortEquipmov> lstPlanAmortEquipmov = managerDAOSegbecom.findWhere(PlanAmortEquipmov.class, "o.planPago.idPlanPagos = '"+idPlanPagos+"'", null); 
+    	if(lstPlanAmortEquipmov!= null && lstPlanAmortEquipmov.size()>0) {
+    		return lstPlanAmortEquipmov;
+    	}
+    	else {
+    		return null;
+    	}
+    }
+    @SuppressWarnings("unchecked")
+	public List<PlanRegistroPago> findAllPlanRegistroPagoByIdPlanPagos(Long idPlanPagos) throws Exception{
+    	List<PlanRegistroPago> lstPlanRegistroPago = managerDAOSegbecom.findWhere(PlanRegistroPago.class, "o.planPago.idPlanPagos = '"+idPlanPagos+"'", null); 
+    	if(lstPlanRegistroPago!= null && lstPlanRegistroPago.size()>0) {
+    		return lstPlanRegistroPago;
+    	}
+    	else {
+    		return null;
+    	}
+    }
 }

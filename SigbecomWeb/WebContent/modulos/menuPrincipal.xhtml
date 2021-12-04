@@ -33,11 +33,25 @@
                 </div>
 				<div class="layout-main-content">
                     <ui:insert name="content"/>
-                
+					<h:panelGrid cellpadding="10" columns="2">
+						<p:outputLabel value="Manual de Usuario ......... "/>
+						<p:commandButton icon="fa fa-download" update="frmPDFT"
+							action="#{menuPrincipal.cargarDocumento()}"/>
+					</h:panelGrid>
+					
                 </div>
 				<ui:include src="/affordances/footer.xhtml" />
             </div>
         </div>
+        
+<p:dialog
+	header="MANUAL DE USUARIO" resizable="false" position="top" width="70%"
+	widgetVar="dlgPDFT" id="dlgPDF" modal="true"
+	hideEffect="fade">
+	<h:form id="frmPDFT">
+		<p:media value="#{menuPrincipal.pdf}" width="97%" height="550px" player="pdf"/>
+	</h:form>
+</p:dialog>
 
         <p:ajaxStatus style="width:32px;height:32px;position:fixed;right:7px;bottom:7px">
            <f:facet name="start">

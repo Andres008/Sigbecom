@@ -41,6 +41,8 @@
 			<div class="layout-main-content" align="center">
 				<H1>EJECUTAR DESCUENTO PRESTAMOS</H1>
 				<h:form id="solicitudes">
+					<h5>Hora Actual</h5>
+					<p:clock pattern="HH:mm:ss dd.MM.yyyy" mode="server" />
 					<p:growl id="growl" showDetail="true" sticky="true" />
 					<p:panel
 						header="Descuento de Prestamos del Mes de #{controladorGestionCreditos.mesAnioLetras()}">
@@ -58,25 +60,56 @@
 							<p:commandButton value="No" type="button"
 								styleClass="ui-confirmdialog-no ui-button-flat" />
 						</p:confirmDialog>
-						<p:dataTable
+						<br />
+						<div class="p-d-flex p-jc-between">
+							<p:panelGrid columns="2" styleClass="ui-noborder">
+								<h4>Exportar a Excel</h4>
+								<h:commandLink>
+									<p:graphicImage name="/images/excel.png" width="24" />
+									<p:dataExporter type="xls" target="@form:tblDescuentos"
+										fileName="descuentos" />
+								</h:commandLink>
+							</p:panelGrid>
+						</div>
+						<p:dataTable paginator="true" rows="15" id="tblDescuentos"
+							sortBy="#{credito.usrSocio.gesPersona.apellidos}"
 							emptyMessage="No tiene descuentos pendientes para este mes"
 							value="#{controladorGestionCreditos.lstFinPrestamoSocio}"
-							var="credito">
-							<p:column headerText="Código Credito">
-								<p:outputLabel value="#{credito.idPrestamoSocio}" />
+							var="credito" rowIndexVar="index">
+							<p:column headerText="N°" width="15">
+								<p:outputLabel value="#{index + 1}" />
 							</p:column>
-							<p:column headerText="Tipo de Credito">
-								<p:outputLabel value="#{credito.finTipoCredito.nombre}" />
+							<p:column headerText="Cédula Socio"
+								filterBy="#{credito.usrSocio.cedulaSocio}">
+								<p:outputLabel value="#{credito.usrSocio.cedulaSocio}" />
 							</p:column>
-							<p:column headerText="Nombre Socio">
+							<p:column headerText="Código Socio"
+								filterBy="#{credito.usrSocio.idSocio}">
+								<p:outputLabel value="#{credito.usrSocio.idSocio}" />
+							</p:column>
+							<p:column headerText="Nombre Socio"
+								filterBy="#{credito.usrSocio.gesPersona.apellidos}">
 								<p:outputLabel
 									value="#{credito.usrSocio.gesPersona.apellidos} #{credito.usrSocio.gesPersona.nombres}" />
 							</p:column>
-							<p:column headerText="Cuota a descontar">
+							<p:column headerText="Tipo de Credito"
+								filterBy="#{credito.finTipoCredito.nombre}"
+								filterMatchMode="contains">
+								<p:outputLabel value="#{credito.finTipoCredito.nombre}" />
+							</p:column>
+							<p:column headerText="N° Cuota">
 								<p:outputLabel value="#{credito.cuotasPagadas+1}" />
 							</p:column>
 							<p:column headerText="Total Cuotas">
 								<p:outputLabel value="#{credito.plazoMeses}" />
+							</p:column>
+							<p:column headerText="Interes">
+								<p:outputLabel
+									value="#{controladorGestionCreditos.cuotaVigenteByPrestamo(credito).interes}" />
+							</p:column>
+							<p:column headerText="Capital">
+								<p:outputLabel
+									value="#{controladorGestionCreditos.cuotaVigenteByPrestamo(credito).capital}" />
 							</p:column>
 							<p:column headerText="Valor a descontar">
 								<p:outputLabel

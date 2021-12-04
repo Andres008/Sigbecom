@@ -14,7 +14,7 @@
         <ui:insert name="head"/>
 </h:head>
 
-<h:body styleClass="main-body">
+<h:body styleClass="main-body" onload="#{frmRevisionDocumento.ini()}">
 
         <div class="layout-wrapper #{guestPreferences.menuLayout != 'static' ? guestPreferences.menuLayout : null}">
             <ui:include src="/affordances/megamenu.xhtml" />

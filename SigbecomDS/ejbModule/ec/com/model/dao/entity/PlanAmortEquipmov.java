@@ -49,6 +49,10 @@ public class PlanAmortEquipmov implements Serializable {
 	@ManyToOne
 	@JoinColumn(name="id_contrato")
 	private PlanContratoComite planContratoComite;
+	
+	@ManyToOne
+	@JoinColumn(name="id_plan_pagos")
+	private PlanPago planPago;
 
 	//bi-directional many-to-one association to PlanContratoComite
 	@ManyToOne
@@ -160,6 +164,14 @@ public class PlanAmortEquipmov implements Serializable {
 
 	public void setAnio(Integer anio) {
 		this.anio = anio;
+	}
+
+	public PlanPago getPlanPago() {
+		return planPago;
+	}
+
+	public void setPlanPago(PlanPago planPago) {
+		this.planPago = planPago;
 	}
 	
 }

@@ -13,6 +13,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -25,14 +26,18 @@ import javax.inject.Named;
 
 import org.primefaces.event.FileUploadEvent;
 import org.primefaces.event.FlowEvent;
+import org.primefaces.event.RowEditEvent;
 import org.primefaces.model.DefaultStreamedContent;
 import org.primefaces.model.StreamedContent;
 import org.primefaces.model.file.UploadedFile;
 
 import ec.com.controlador.sesion.BeanLogin;
 import ec.com.model.auditoria.ManagerLog;
+import ec.com.model.dao.entity.DesDescuentoMensuale;
+import ec.com.model.dao.entity.DesTipoNovedad;
 import ec.com.model.dao.entity.DescEstadoDescuento;
 import ec.com.model.dao.entity.DescNovedade;
+import ec.com.model.dao.entity.DescValoresFijo;
 import ec.com.model.dao.entity.FinAccionPrestamo;
 import ec.com.model.dao.entity.FinAccionesCredito;
 import ec.com.model.dao.entity.FinCuotasDescontada;
@@ -48,10 +53,13 @@ import ec.com.model.dao.entity.FinTipcrediRequisito;
 import ec.com.model.dao.entity.FinTipoCredito;
 import ec.com.model.dao.entity.FinTipoSolicitud;
 import ec.com.model.dao.entity.UsrSocio;
+import ec.com.model.dao.entity.UsrSocioDescuentoFijo;
 import ec.com.model.dao.entity.UsrTipoDescuento;
+import ec.com.model.dao.entity.VDescuentoMensualSocio;
 import ec.com.model.gestionCreditos.ManagerGestionCredito;
 import ec.com.model.gestionDescuentos.ManagerGestionDescuentos;
 import ec.com.model.gestionSistema.ManagerGestionSistema;
+import ec.com.model.gestionSocios.ManagerGestionSocios;
 import ec.com.model.modulos.util.CorreoUtil;
 import ec.com.model.modulos.util.JSFUtil;
 import ec.com.model.modulos.util.ModelUtil;
@@ -77,6 +85,9 @@ public class ControladorGestionDescuentos implements Serializable {
 	ManagerLog managerLog;
 
 	@EJB
+	ManagerGestionSocios managerGestionSocios;
+
+	@EJB
 	CorreoUtil correoUtil;
 
 	@EJB
@@ -90,17 +101,45 @@ public class ControladorGestionDescuentos implements Serializable {
 
 	private List<DescNovedade> lstDescNovedade;
 
+	private Long tipoNovedad;
+
+	private List<UsrSocioDescuentoFijo> lstUsrSocioDescuentoFijo;
+
+	private List<VDescuentoMensualSocio> lstVDescuentoMensualSocio;
+
+	private List<DesDescuentoMensuale> lstDesDescuentoMensuale;
+
+	private Long mes, anio;
+
 	public ControladorGestionDescuentos() {
 
 	}
 
 	public void inicializarNovedadesEconomicas() {
-		objDescNovedade= new DescNovedade();
+		tipoNovedad = new Long(0);
+		objDescNovedade = new DescNovedade();
 		objDescNovedade.setUsrSocio1(beanLogin.getCredencial().getObjUsrSocio());
 		objDescNovedade.setUsrSocio2(new UsrSocio());
-		objDescNovedade.setDescEstadoDescuento(new DescEstadoDescuento(1));
+		objDescNovedade.setDescEstadoDescuento(new DescEstadoDescuento(2));
+		objDescNovedade.setDesTipoNovedad(new DesTipoNovedad());
 		try {
 			lstDescNovedade = managerGestionDescuentos.buscarNovedades();
+		} catch (Exception e) {
+			JSFUtil.crearMensajeERROR(e.getMessage());
+			e.printStackTrace();
+		}
+	}
+
+	public void inicializarMisNovedadesEconomicas() {
+		tipoNovedad = new Long(0);
+		objDescNovedade = new DescNovedade();
+		objDescNovedade.setUsrSocio1(beanLogin.getCredencial().getObjUsrSocio());
+		objDescNovedade.setUsrSocio2(new UsrSocio());
+		objDescNovedade.setDescEstadoDescuento(new DescEstadoDescuento(2));
+		objDescNovedade.setDesTipoNovedad(new DesTipoNovedad());
+		try {
+			lstDescNovedade = managerGestionDescuentos
+					.buscarNovedadesByUsuario(beanLogin.getCredencial().getObjUsrSocio().getCedulaSocio());
 		} catch (Exception e) {
 			JSFUtil.crearMensajeERROR(e.getMessage());
 			e.printStackTrace();
@@ -117,6 +156,101 @@ public class ControladorGestionDescuentos implements Serializable {
 		}
 	}
 
+	public void inicializarMisDescuento() {
+		try {
+			lstDesDescuentoMensuale = managerGestionDescuentos
+					.buscarMisDescuentos(beanLogin.getCredencial().getObjUsrSocio().getCedulaSocio());
+		} catch (Exception e) {
+			JSFUtil.crearMensajeERROR(e.getMessage());
+			e.printStackTrace();
+		}
+	}
+
+	public void inicializarDescuentoMensuales() {
+		lstDesDescuentoMensuale = new ArrayList<DesDescuentoMensuale>();
+	}
+
+	public void inicializarResumenDescuento() {
+		try {
+			lstVDescuentoMensualSocio = managerGestionDescuentos.findDescuentoMensual();
+		} catch (Exception e) {
+			JSFUtil.crearMensajeERROR(e.getMessage());
+			e.printStackTrace();
+		}
+	}
+
+	public BigDecimal valorTotalPrestamo() {
+		BigDecimal total = new BigDecimal(0);
+		for (VDescuentoMensualSocio desDescuentoMensuale : lstVDescuentoMensualSocio) {
+			total = total.add(desDescuentoMensuale.getValorPrestamo());
+		}
+		return total;
+	}
+
+	public BigDecimal valorTotalPlanes() {
+		BigDecimal total = new BigDecimal(0);
+		for (VDescuentoMensualSocio desDescuentoMensuale : lstVDescuentoMensualSocio) {
+			total = total.add(desDescuentoMensuale.getValorPlanMovil());
+		}
+		return total;
+	}
+
+	public BigDecimal valorTotalConvenio() {
+		BigDecimal total = new BigDecimal(0);
+		for (VDescuentoMensualSocio desDescuentoMensuale : lstVDescuentoMensualSocio) {
+			total = total.add(desDescuentoMensuale.getValorConvenio());
+		}
+		return total;
+	}
+
+	public BigDecimal valorTotalAhorro() {
+		BigDecimal total = new BigDecimal(0);
+		for (VDescuentoMensualSocio desDescuentoMensuale : lstVDescuentoMensualSocio) {
+			total = total.add(desDescuentoMensuale.getValorAhorro());
+		}
+		return total;
+	}
+
+	public BigDecimal valorTotalCesantia() {
+		BigDecimal total = new BigDecimal(0);
+		for (VDescuentoMensualSocio desDescuentoMensuale : lstVDescuentoMensualSocio) {
+			total = total.add(desDescuentoMensuale.getValorCesantia());
+		}
+		return total;
+	}
+
+	public BigDecimal valorTotalSalud() {
+		BigDecimal total = new BigDecimal(0);
+		for (VDescuentoMensualSocio desDescuentoMensuale : lstVDescuentoMensualSocio) {
+			total = total.add(desDescuentoMensuale.getValorSalud());
+		}
+		return total;
+	}
+
+	public BigDecimal valorTotalExternos() {
+		BigDecimal total = new BigDecimal(0);
+		for (VDescuentoMensualSocio desDescuentoMensuale : lstVDescuentoMensualSocio) {
+			total = total.add(desDescuentoMensuale.getAportesExternos());
+		}
+		return total;
+	}
+
+	public BigDecimal valorTotalNovedades() {
+		BigDecimal total = new BigDecimal(0);
+		for (VDescuentoMensualSocio desDescuentoMensuale : lstVDescuentoMensualSocio) {
+			total = total.add(desDescuentoMensuale.getNovedades());
+		}
+		return total;
+	}
+
+	public BigDecimal valorTotalDescuento() {
+		BigDecimal total = new BigDecimal(0);
+		for (VDescuentoMensualSocio desDescuentoMensuale : lstVDescuentoMensualSocio) {
+			total = total.add(desDescuentoMensuale.getTotalDescuento());
+		}
+		return total;
+	}
+
 	public void ingresarTipoDescuento() {
 		objUsrTipoDescuento.setEstado("A");
 		try {
@@ -131,10 +265,170 @@ public class ControladorGestionDescuentos implements Serializable {
 			e.printStackTrace();
 		}
 	}
-	
+
+	public void inicializarDescuentoFijos() {
+		try {
+			lstUsrSocioDescuentoFijo = managerGestionDescuentos.buscarDescuentosFijos();
+		} catch (Exception e) {
+			JSFUtil.crearMensajeERROR(e.getMessage());
+			e.printStackTrace();
+		}
+	}
+
+	public void buscarDescuentosMensuales() {
+		try {
+			lstDesDescuentoMensuale = managerGestionDescuentos.buscarDescuentosMensuales(anio, mes);
+		} catch (Exception e) {
+			JSFUtil.crearMensajeINFO(e.getMessage());
+			e.printStackTrace();
+		}
+	}
+
+	public boolean renderizarEditarNovedad(DescNovedade novedad) {
+		try {
+			if (novedad != null && novedad.getDescEstadoDescuento().getIdEstadoDescuento() == 2
+					&& novedad.getUsrSocio1().getCedulaSocio()
+							.equals(beanLogin.getCredencial().getObjUsrSocio().getCedulaSocio()))
+				return true;
+		} catch (Exception e) {
+			return false;
+		}
+		return false;
+	}
+
+	public void ejecutarDescuentoFijos() {
+		inicializarDescuentoFijos();
+		try {
+
+			List<DescValoresFijo> lstValoresFijos = managerGestionDescuentos.buscarDescuentosFijosPendientes();
+			for (DescValoresFijo descValoresFijo : lstValoresFijos) {
+				managerGestionDescuentos.eliminarDescuentoFijosPendientes(descValoresFijo);
+			}
+			for (UsrSocioDescuentoFijo descuentoSocio : lstUsrSocioDescuentoFijo) {
+				DescValoresFijo valorFijo = new DescValoresFijo();
+				valorFijo.setDescEstadoDescuento(new DescEstadoDescuento(2));
+				valorFijo.setFechaDescuento(new Timestamp(new Date().getTime()));
+				valorFijo.setUsrSocio(descuentoSocio.getUsrSocio());
+				valorFijo.setUsrSocioDescuentoFijo(descuentoSocio);
+				managerGestionDescuentos.ingresarDescuentoFijoSocio(valorFijo);
+			}
+			managerLog.generarLogUsabilidad(beanLogin.getCredencial(), this.getClass(), "ejecutarDescuentoFijos",
+					"Se ingreso descuentos fijos");
+			JSFUtil.crearMensajeINFO("Se ingreso correctamente los valores a descontar.");
+		} catch (Exception e) {
+			JSFUtil.crearMensajeERROR(e.getMessage());
+			managerLog.generarLogErrorGeneral(beanLogin.getCredencial(), this.getClass(), "ingresarNovedadEconomica",
+					e.getMessage());
+			e.printStackTrace();
+		}
+
+	}
+
+	public void anularNovedadEconomica(DescNovedade objNovedad) {
+		System.out.println("Llega");
+		try {
+			objNovedad.getDescEstadoDescuento().setIdEstadoDescuento(4);
+			managerGestionDescuentos.actualizarNovedad(objNovedad);
+			managerLog.generarLogAuditoria(beanLogin.getCredencial(), this.getClass(), "Anulación valor novedad",
+					"Se actualizó novedad " + objNovedad.getIdNovedad());
+			inicializarNovedadesEconomicas();
+			JSFUtil.crearMensajeINFO("Actualización Correcta.");
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+
+	/***
+	 * Metodo para modificar desde pantalla.
+	 * 
+	 * @param event
+	 */
+	public void onRowEdit(RowEditEvent<Object> event) {
+		try {
+			DescNovedade objNovedad = (DescNovedade) event.getObject();
+			managerGestionDescuentos.actualizarObjeto(event.getObject());
+			JSFUtil.crearMensajeINFO("Se actualizó correctamente.");
+			managerLog.generarLogAuditoria(beanLogin.getCredencial(), this.getClass(), "Edición valor novedad",
+					"Se actualizó novedad " + objNovedad.getIdNovedad());
+			inicializarNovedadesEconomicas();
+		} catch (Exception e) {
+			JSFUtil.crearMensajeERROR(e.getMessage());
+			e.printStackTrace();
+		}
+	}
+
+	/***
+	 * 
+	 * @param event
+	 */
+	public void onRowCancel(RowEditEvent<Object> event) {
+		JSFUtil.crearMensajeINFO("Se canceló actualización.");
+	}
+
+	public List<SelectItem> lstSiTipoNovedad() {
+		List<SelectItem> lstSiTipoNovedad = new ArrayList<SelectItem>();
+		try {
+			for (DesTipoNovedad usrTipoNovedad : managerGestionDescuentos.buscarTipoNovedad()) {
+				SelectItem siCivil = new SelectItem();
+				siCivil.setLabel(usrTipoNovedad.getDescripcion());
+				siCivil.setValue(usrTipoNovedad.getId());
+				lstSiTipoNovedad.add(siCivil);
+			}
+			return lstSiTipoNovedad;
+		} catch (Exception e) {
+			JSFUtil.crearMensajeERROR(e.getMessage());
+			e.printStackTrace();
+			return null;
+		}
+	}
+
+	public void ejecutarDescuentoMensual() {
+		try {
+			lstVDescuentoMensualSocio = lstVDescuentoMensualSocio.stream()
+					.filter(c -> c.getValorAhorro().intValue() > 0).collect(Collectors.toList());
+			lstVDescuentoMensualSocio = lstVDescuentoMensualSocio.stream()
+					.filter(c -> c.getValorCesantia().intValue() > 0).collect(Collectors.toList());
+			for (VDescuentoMensualSocio descMensual : lstVDescuentoMensualSocio) {
+				UsrSocio socio = managerGestionSocios.buscarSocioById(descMensual.getCedulaSocio());
+				if (socio.getCajaAhorro() == null)
+					socio.setCajaAhorro(descMensual.getValorAhorro());
+				else
+					socio.setCajaAhorro(socio.getCajaAhorro().add(descMensual.getValorAhorro()));
+				if (socio.getFondoCesantia() == null)
+					socio.setFondoCesantia(descMensual.getValorCesantia());
+				else
+					socio.setFondoCesantia(socio.getFondoCesantia().add(descMensual.getValorCesantia()));
+				try {
+					managerGestionSocios.actualizarUsrSocio(socio);
+				} catch (Exception e) {
+					managerLog.generarLogAuditoria(beanLogin.getCredencial(), this.getClass(),
+							"ejecutarDescuentoMensual",
+							"Se produjo un error al actualizar los valores de caja de ahorro y cesantia de: "
+									+ socio.getCedulaSocio());
+					JSFUtil.crearMensajeERROR(
+							"Se produjo un error al actualizar los valores de caja de ahorro y cesantia de: "
+									+ socio.getCedulaSocio());
+				}
+			}
+			managerGestionDescuentos.ejecutarDescuentoMensual();
+			JSFUtil.crearMensajeINFO("Proceso Ejecutado correctamente.");
+			inicializarResumenDescuento();
+			managerLog.generarLogAuditoria(beanLogin.getCredencial(), this.getClass(), "ejecutarDescuentoMensual",
+					"Ejecución de descuentos mensuales.");
+		} catch (Exception e) {
+			JSFUtil.crearMensajeERROR(e.getMessage());
+			managerLog.generarLogGeneral(beanLogin.getCredencial(), this.getClass(), "ejecutarDescuentoMensual",
+					e.getMessage());
+			e.printStackTrace();
+		}
+	}
+
 	public void ingresarNovedadEconomica() {
 		try {
 			objDescNovedade.setFechaRegistro(new Timestamp(new Date().getTime()));
+			if (tipoNovedad == 1)
+				objDescNovedade.setValor(objDescNovedade.getValor().multiply(new BigDecimal(-1)));
 			managerGestionDescuentos.ingresarNovedadEconomica(objDescNovedade);
 			managerLog.generarLogUsabilidad(beanLogin.getCredencial(), this.getClass(), "ingresarNovedadEconomica",
 					"Se ingreso tipo descuento id: " + objDescNovedade.getIdNovedad());
@@ -185,6 +479,54 @@ public class ControladorGestionDescuentos implements Serializable {
 
 	public void setLstDescNovedade(List<DescNovedade> lstDescNovedade) {
 		this.lstDescNovedade = lstDescNovedade;
+	}
+
+	public Long getTipoNovedad() {
+		return tipoNovedad;
+	}
+
+	public void setTipoNovedad(Long tipoNovedad) {
+		this.tipoNovedad = tipoNovedad;
+	}
+
+	public List<UsrSocioDescuentoFijo> getLstUsrSocioDescuentoFijo() {
+		return lstUsrSocioDescuentoFijo;
+	}
+
+	public void setLstUsrSocioDescuentoFijo(List<UsrSocioDescuentoFijo> lstUsrSocioDescuentoFijo) {
+		this.lstUsrSocioDescuentoFijo = lstUsrSocioDescuentoFijo;
+	}
+
+	public List<VDescuentoMensualSocio> getLstVDescuentoMensualSocio() {
+		return lstVDescuentoMensualSocio;
+	}
+
+	public void setLstVDescuentoMensualSocio(List<VDescuentoMensualSocio> lstVDescuentoMensualSocio) {
+		this.lstVDescuentoMensualSocio = lstVDescuentoMensualSocio;
+	}
+
+	public List<DesDescuentoMensuale> getLstDesDescuentoMensuale() {
+		return lstDesDescuentoMensuale;
+	}
+
+	public void setLstDesDescuentoMensuale(List<DesDescuentoMensuale> lstDesDescuentoMensuale) {
+		this.lstDesDescuentoMensuale = lstDesDescuentoMensuale;
+	}
+
+	public Long getMes() {
+		return mes;
+	}
+
+	public void setMes(Long mes) {
+		this.mes = mes;
+	}
+
+	public Long getAnio() {
+		return anio;
+	}
+
+	public void setAnio(Long anio) {
+		this.anio = anio;
 	}
 
 }

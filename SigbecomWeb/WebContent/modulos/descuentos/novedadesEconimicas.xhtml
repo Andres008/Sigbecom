@@ -47,9 +47,26 @@
 						<p:panelGrid columns="2" styleClass="ui-noborder">
 							<p:outputLabel value="Socio" />
 							<p:selectOneMenu filter="true" filterMatchMode="contains"
+								required="true" requiredMessage="Empleado requerido"
 								value="#{controladorGestionDescuentos.objDescNovedade.usrSocio2.cedulaSocio}">
 								<f:selectItem itemLabel="Seleccione el Socio" />
 								<f:selectItems value="#{controladorGestionSocios.lstSiSocio()}" />
+							</p:selectOneMenu>
+							<p:outputLabel value="Tipo Novedad" />
+							<p:selectOneMenu filter="true" filterMatchMode="contains"
+								required="true" requiredMessage="Tipo Novedad requerido"
+								value="#{controladorGestionDescuentos.objDescNovedade.desTipoNovedad.id}">
+								<f:selectItem itemLabel="Seleccione Tipo Novedad" />
+								<f:selectItems
+									value="#{controladorGestionDescuentos.lstSiTipoNovedad()}" />
+							</p:selectOneMenu>
+							<p:outputLabel value="Tipo Transacción" />
+							<p:selectOneMenu
+								value="#{controladorGestionDescuentos.tipoNovedad}"
+								required="true" requiredMessage="Tipo Transacción">
+								<f:selectItem noSelectionOption="true" itemLabel="Tipo Novedad" />
+								<f:selectItem itemLabel="A Favor" itemValue="1" />
+								<f:selectItem itemLabel="En Contra" itemValue="2" />
 							</p:selectOneMenu>
 							<p:outputLabel value="Descripción Novedad" />
 							<p:inputTextarea rows="1" autoResize="true"
@@ -58,7 +75,8 @@
 								requiredMessage="La descripción es novedad."
 								style="text-transform: uppercase" />
 							<p:outputLabel value="Valor" />
-							<p:inputNumber
+							<p:inputNumber required="true"
+								requiredMessage="Valor de la novedad requerido"
 								value="#{controladorGestionDescuentos.objDescNovedade.valor}"
 								placeholder="Valor" />
 						</p:panelGrid>
@@ -79,35 +97,90 @@
 					</p:panel>
 					<p:separator></p:separator>
 					<p:panel header="Tipo Descuento Ingresados">
-						<p:dataTable
+						<p:dataTable id="dtNovedades"
 							value="#{controladorGestionDescuentos.lstDescNovedade}"
 							var="novedad" emptyMessage="No existen Novedades Ingresadas"
-							editable="true" paginator="true" rows="10">
-							<p:column headerText="Descripción">
-								<p:outputLabel value="#{novedad.descripcion}" />
-							</p:column>
-							<p:column headerText="Valor" width="50">
-								<p:outputLabel value="#{novedad.valor}">
-									<f:convertNumber minFractionDigits="2" />
-								</p:outputLabel>
-							</p:column>
+							editable="true" paginator="true" rows="15">
+							<p:ajax event="rowEdit"
+								listener="#{controladorGestionDescuentos.onRowEdit}"
+								update="@form:growl @form:dtNovedades" process="@this" />
+							<p:ajax event="rowEditCancel"
+								listener="#{controladorGestionDescuentos.onRowCancel}"
+								update="@form:growl" />
 							<p:column headerText="Cédula Socio" width="100"
 								filterBy="#{novedad.usrSocio2.cedulaSocio}"
 								filterMatchMode="contains">
 								<p:outputLabel value="#{novedad.usrSocio2.cedulaSocio}" />
 							</p:column>
-							<p:column headerText="Socio">
+							<p:column headerText="Código Socio" width="100"
+								filterBy="#{novedad.usrSocio2.idSocio}"
+								filterMatchMode="contains">
+								<p:outputLabel value="#{novedad.usrSocio2.idSocio}" />
+							</p:column>
+							<p:column headerText="Socio"
+								filterBy="#{novedad.usrSocio2.gesPersona.apellidos}"
+								filterMatchMode="contains">
 								<p:outputLabel
 									value="#{novedad.usrSocio2.gesPersona.apellidos} #{novedad.usrSocio2.gesPersona.nombres}" />
+							</p:column>
+							<p:column headerText="Descripción">
+								<p:outputLabel value="#{novedad.descripcion}" />
+							</p:column>
+							<p:column headerText="Valor" width="50">
+								<p:cellEditor>
+									<f:facet name="output">
+										<p:outputLabel value="#{novedad.valor}">
+											<f:convertNumber minFractionDigits="2" />
+										</p:outputLabel>
+									</f:facet>
+									<f:facet name="input">
+										<p:inputNumber required="true"
+											requiredMessage="Valor de la novedad requerido"
+											value="#{novedad.valor}" placeholder="Valor" />
+									</f:facet>
+								</p:cellEditor>
 							</p:column>
 							<p:column headerText="Fecha" width="90">
 								<p:outputLabel value="#{novedad.fechaRegistro}">
 									<f:convertDateTime pattern="dd/MM/yyyy " />
 								</p:outputLabel>
 							</p:column>
-							<p:column headerText="Estado Novedad" width="70">
-								<p:outputLabel value="#{novedad.descEstadoDescuento.estado}" />
+							<p:column headerText="Tipo Novedad" width="70">
+								<p:outputLabel value="#{novedad.desTipoNovedad.descripcion}" />
 							</p:column>
+							<p:column headerText="Responsable Novedad"
+								filterBy="#{novedad.usrSocio1.gesPersona.apellidos}"
+								filterMatchMode="contains">
+								<p:outputLabel
+									value="#{novedad.usrSocio1.gesPersona.apellidos} #{novedad.usrSocio1.gesPersona.nombres}" />
+							</p:column>
+							<p:column headerText="Estado Novedad" width="70">
+								<p:cellEditor>
+									<f:facet name="output">
+										<p:outputLabel value="#{novedad.descEstadoDescuento.estado}" />
+									</f:facet>
+									<f:facet name="input">
+										<p:selectOneMenu style="color : black"
+											requiredMessage="Tipo Novedad requerido"
+											value="#{novedad.descEstadoDescuento.idEstadoDescuento}">
+											<f:selectItem itemLabel="Vigente" itemValue="2" />
+											<f:selectItem itemLabel="Anulada" itemValue="4" />
+										</p:selectOneMenu>
+									</f:facet>
+								</p:cellEditor>
+							</p:column>
+							<p:column headerText="Editar" width="30">
+								<p:rowEditor editTitle="Edit Row" cancelTitle="Cancel Edit"
+									rendered="#{controladorGestionDescuentos.renderizarEditarNovedad(novedad)}"
+									saveTitle="Save Row" />
+							</p:column>
+							<p:confirmDialog global="true" showEffect="fade"
+								hideEffect="fade" responsive="true" width="350">
+								<p:commandButton value="Si" type="button"
+									styleClass="ui-confirmdialog-yes" />
+								<p:commandButton value="No" type="button"
+									styleClass="ui-confirmdialog-no ui-button-flat" />
+							</p:confirmDialog>
 						</p:dataTable>
 					</p:panel>
 				</h:form>

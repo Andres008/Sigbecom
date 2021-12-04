@@ -7,6 +7,7 @@ import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -26,6 +27,7 @@ import javax.inject.Named;
 import org.primefaces.PrimeFaces;
 import org.primefaces.event.FileUploadEvent;
 import org.primefaces.event.FlowEvent;
+import org.primefaces.event.RowEditEvent;
 import org.primefaces.model.DefaultStreamedContent;
 import org.primefaces.model.file.UploadedFile;
 
@@ -179,8 +181,10 @@ public class ControladorGestionSocios implements Serializable {
 		try {
 			objUsrSocio = managerGestionSocios
 					.buscarSocioById(beanLogin.getCredencial().getObjUsrSocio().getCedulaSocio());
-			if (objUsrSocio.getPrimerInicio().equals("S"))
+			if (objUsrSocio.getPrimerInicio().equals("S")) {
 				objUsrSocio.setClave("");
+				objUsrSocio.getGesPersona().setFechaNac(new Date());
+			}
 			if (objUsrSocio.getGesPersona().getGesDiscapacidadPersonas() == null)
 				objUsrSocio.getGesPersona().setGesDiscapacidadPersonas(new ArrayList<GesDiscapacidadPersona>());
 			if (objUsrSocio.getGesPersona().getGesEstadoCivil() == null)
@@ -224,6 +228,10 @@ public class ControladorGestionSocios implements Serializable {
 
 	}
 
+	public void verFecha() {
+		System.out.println(objUsrSocio.getGesPersona().getFechaNac());
+	}
+
 	public void inicializarCuenta() {
 		objUsrCuentaSocio = new UsrCuentaSocio();
 		objUsrCuentaSocio.setUsrTipoCuenta(new UsrTipoCuenta());
@@ -260,12 +268,48 @@ public class ControladorGestionSocios implements Serializable {
 		return "Sin fecha Nacimiento";
 	}
 
+	public void actualizarTipoUsuario() {
+		try {
+			UsrSocio temUsrSocio = managerGestionSocios.buscarSocioById(objUsrSocio.getCedulaSocio());
+			temUsrSocio.getUsrSocioDescuentoFijos().forEach(descuento -> {
+				descuento.setEstado("I");
+				descuento.setFechaFinal(new Date());
+			});
+			managerGestionSocios.actualizarUsrSocio(temUsrSocio);
+			managerGestionSocios.actualizarUsrSocio(objUsrSocio);
+			managerLog.generarLogAuditoria(beanLogin.getCredencial(), this.getClass(), "actualizarTipoUsuario",
+					"Se actualizo usuario, " + objUsrSocio.getCedulaSocio());
+			JSFUtil.crearMensajeINFO("Actualización correcta");
+			inicializarConsultaSocio();
+		} catch (Exception e) {
+			managerLog.generarLogErrorGeneral(beanLogin.getCredencial(), this.getClass(), "actualizarTipoUsuario",
+					e.getMessage());
+			JSFUtil.crearMensajeERROR(e.getMessage());
+			e.printStackTrace();
+		}
+	}
+
 	public void cargarUsrSocio(UsrSocio objUsrSocioAux) {
 		try {
 			objUsrSocio = managerGestionSocios.buscarSocioById(objUsrSocioAux.getCedulaSocio());
 		} catch (Exception e) {
 			JSFUtil.crearMensajeERROR(e.getMessage());
 		}
+	}
+
+	public void actualizarSocioFondos() {
+		try {
+			UsrSocio socioTemp = managerGestionSocios.buscarSocioById(objUsrSocio.getCedulaSocio());
+			managerLog.generarLogUsabilidad(beanLogin.getCredencial(), this.getClass(), "actualizarSocioFondos",
+					"Actualización ahoro: " + objUsrSocio.getGesPersona().getCedula()
+							+ ", Valores anteriores de ahorro: " + socioTemp.getCajaAhorro() + ", Cesantia: "
+							+ socioTemp.getFondoCesantia() + ", Valores nuevos de ahorro: "
+							+ objUsrSocio.getCajaAhorro() + ", Cesantia: " + objUsrSocio.getFondoCesantia());
+			actualizarSocio();
+		} catch (Exception e) {
+			JSFUtil.crearMensajeERROR(e.getMessage());
+		}
+
 	}
 
 	public void restablecerContraseña(UsrSocio objUsrSocioAux) {
@@ -285,7 +329,16 @@ public class ControladorGestionSocios implements Serializable {
 	 */
 	public void actualizarPersonaSocio() {
 		try {
+			objUsrSocio.getGesPersona().setEmail(objUsrSocio.getGesPersona().getEmail().trim());
 			ModelUtil.esEmailCorrecto(objUsrSocio.getGesPersona().getEmail());
+			if (objUsrSocio.getGesPersona().getGesEstadoCivil().getIdEstadoCivil() == 0)
+				throw new Exception("Atención, es requerido el estado civíl.");
+			if (objUsrSocio.getGesPersona().getGesGenero().getIdGenero() == 0)
+				throw new Exception("Atención, es requerido el género.");
+			if (objUsrSocio.getGesPersona().getGesTipoSangre().getIdTipoSangre() == 0)
+				throw new Exception("Atención, es requerido el tipo de sangre.");
+			if (objUsrSocio.getGesPersona().getGesEtnia().getIdEtnia() == 0)
+				throw new Exception("Atención, es requerido la etnia.");
 			managerGestionPersonas.actualizarGesPersona(objUsrSocio.getGesPersona());
 			managerGestionSocios.actualizarUsrSocio(objUsrSocio);
 			inicializarActualizacionSocio();
@@ -299,6 +352,7 @@ public class ControladorGestionSocios implements Serializable {
 					e.getMessage());
 		}
 	}
+
 
 	public void cargarDescuentosSocio() {
 		try {
@@ -331,12 +385,39 @@ public class ControladorGestionSocios implements Serializable {
 		}
 	}
 
+	public void onRowEditAhorros(RowEditEvent<UsrSocioDescuentoFijo> event) {
+		try {
+			UsrSocioDescuentoFijo descuento = managerGestionSocios
+					.buscarUsrSocioDescuentoFijoById(event.getObject().getId());
+			descuento.setFechaFinal(new Date());
+			descuento.setEstado("I");
+			managerGestionSocios.actualizarUsrSocioDescuentoFijo(descuento);
+			UsrSocioDescuentoFijo descuentoNuevo = event.getObject();
+			descuentoNuevo.setId(new Long(0));
+			descuentoNuevo.setFechaInicial(new Date());
+			managerGestionDescuentos.ingresarUsrSocioDescuentoFijo(descuentoNuevo);
+			managerLog.generarLogAuditoria(beanLogin.getCredencial(), this.getClass(), "onRowEditAhorros",
+					"Modificacion de valores de ahorro socio: " + descuento.getUsrSocio().getCedulaSocio()
+							+ ", Valor Antiguo: " + descuento.getValor() + " , valor nuevo: "
+							+ event.getObject().getValor());
+			JSFUtil.crearMensajeINFO("Actualización Correcta");
+		} catch (Exception e) {
+			managerLog.generarLogErrorGeneral(beanLogin.getCredencial(), this.getClass(), "onRowEditAhorros",
+					e.getMessage());
+			e.printStackTrace();
+		}
+	}
+
+	public void onRowCancelAhorros(RowEditEvent<UsrSocioDescuentoFijo> event) {
+		JSFUtil.crearMensajeWARN("Actualización Cancelada");
+	}
+
 	public void actualizarSocio() {
 		try {
 			managerGestionSocios.actualizarUsrSocio(objUsrSocio);
-			inicializarActualizacionSocio();
 			managerLog.generarLogUsabilidad(beanLogin.getCredencial(), this.getClass(), "actualizarSocio",
 					"Actualización a socio: " + objUsrSocio.getGesPersona().getCedula());
+			inicializarActualizacionSocio();
 			JSFUtil.crearMensajeINFO("Datos actualizados Correctamente.");
 		} catch (Exception e) {
 			JSFUtil.crearMensajeERROR(e.getMessage());
@@ -397,6 +478,16 @@ public class ControladorGestionSocios implements Serializable {
 	public void ingresarFamiliar() throws Exception {
 		try {
 			ModelUtil.verificarCedulaEcuador(objGesPariente.getGesPersona().getCedula());
+			if (objGesPariente.getUsrConsanguinidad().getIdConsanguinidad() == 0)
+				throw new Exception("Atención, la Consaguinidad es requerido.");
+			if (objGesPariente.getGesPersona().getGesEstadoCivil().getIdEstadoCivil() == 0)
+				throw new Exception("Atención, es requerido el estado civíl.");
+			if (objGesPariente.getGesPersona().getGesGenero().getIdGenero() == 0)
+				throw new Exception("Atención, es requerido el género.");
+			if (objGesPariente.getGesPersona().getGesTipoSangre().getIdTipoSangre() == 0)
+				throw new Exception("Atención, es requerido el tipo de sangre.");
+			if (objGesPariente.getGesPersona().getGesEtnia().getIdEtnia() == 0)
+				throw new Exception("Atención, es requerido la etnia.");
 			objGesPariente.setUsrConsanguinidad(managerGestionSocios
 					.buscarConsanguinidadById(objGesPariente.getUsrConsanguinidad().getIdConsanguinidad()));
 			objGesPariente.setUsrSocio(objUsrSocio);
@@ -446,11 +537,14 @@ public class ControladorGestionSocios implements Serializable {
 			// String clave = ModelUtil.randomAlphaNumeric();
 			String clave = objUsrSocio.getGesPersona().getCedula();
 			ModelUtil.verificarCedulaEcuador(objUsrSocio.getGesPersona().getCedula());
-			ModelUtil.esEmailCorrecto(objUsrSocio.getGesPersona().getEmail().trim());
+			if (!ModelUtil.isEmpty(objUsrSocio.getGesPersona().getEmail().trim()))
+				ModelUtil.esEmailCorrecto(objUsrSocio.getGesPersona().getEmail().trim());
 			objUsrSocio.getGesPersona().setApellidos(objUsrSocio.getGesPersona().getApellidos().toUpperCase());
 			objUsrSocio.getGesPersona().setNombres(objUsrSocio.getGesPersona().getNombres().toUpperCase());
 			objUsrSocio.getGesPersona().setEmail(objUsrSocio.getGesPersona().getEmail().toLowerCase());
 			objUsrSocio.setPrimerInicio("S");
+			objUsrSocio.setCajaAhorro(new BigDecimal(0));
+			objUsrSocio.setFondoCesantia(new BigDecimal(0));
 			objUsrSocio.setClave(ModelUtil.md5(clave));
 			objUsrSocio.getUsrEstadoSocio().setIdEstado(1);
 			if (managerGestionPersonas.buscarPersonaByCedula(objUsrSocio.getGesPersona().getCedula()) == null)
@@ -459,10 +553,12 @@ public class ControladorGestionSocios implements Serializable {
 			managerGestionSocios.insertarSocio(objUsrSocio);
 			managerLog.generarLogUsabilidad(beanLogin.getCredencial(), this.getClass(), "inscribirUsuario",
 					"Crea usuario " + objUsrSocio.getGesPersona().getCedula());
-			/*correoUtil.enviarCorreoElectronico(objUsrSocio.getGesPersona().getEmail(),
-					"Creación Usuarios Socio Comite de Empresa",
-					"Se ha creado su usuario para utilizar SIGBECOM (), favor acceder al sistema con las siguentes credenciales, Usuario:"
-							+ objUsrSocio.getCedulaSocio() + " , Contraseña:" + clave);*/
+			/*
+			 * correoUtil.enviarCorreoElectronico(objUsrSocio.getGesPersona().getEmail(),
+			 * "Creación Usuarios Socio Comite de Empresa",
+			 * "Se ha creado su usuario para utilizar SIGBECOM (), favor acceder al sistema con las siguentes credenciales, Usuario:"
+			 * + objUsrSocio.getCedulaSocio() + " , Contraseña:" + clave);
+			 */
 			JSFUtil.crearMensajeINFO("Usuario creado correctamente.");
 			inicializarIngresoSocio();
 
@@ -848,6 +944,8 @@ public class ControladorGestionSocios implements Serializable {
 
 	public String finalizarActualizacionDatos() {
 		try {
+			if (ModelUtil.isEmpty(objUsrSocio.getUsrParroquia().getIdParroquia()))
+				throw new Exception("Atención es requerido la informaci{on de la vivienda.");
 			if (objUsrSocio.getUsrEstadoSocio().getIdEstado() == 2) {
 				actualizarSocio();
 				return "/modulos/menuPrincipal.xhtml?faces-redirect=true";

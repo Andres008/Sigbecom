@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://java.sun.com/jsf/html" xmlns:f="http://java.sun.com/jsf/core" xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:p="http://primefaces.org/ui">
 
+
 <h:head>
 	<f:event type="preRenderView" listener="#{controlFormularios.verificarSesion()}" />
 	<f:facet name="first">
@@ -15,7 +16,7 @@
         <h:outputStylesheet library="css" name="theme.css"/>
 </h:head>
 
-<h:body styleClass="main-body">
+<h:body styleClass="main-body" onload="#{frmPlanillaPagoPlan.init()}">
 
         <div class="layout-wrapper #{guestPreferences.menuLayout != 'static' ? guestPreferences.menuLayout : null}">
             <ui:include src="/affordances/megamenu.xhtml" />
@@ -46,8 +47,8 @@
 								<p:outputLabel for="mes" value="Seleccione Mes Planilla" />
 								<p:selectOneMenu id="mes" value="#{frmPlanillaPagoPlan.mes}" style="width:100%">
 												       <f:selectItem itemLabel="Seleccione Mes" noSelectionOption="true"/>
-												       <f:selectItem itemLabel="ENERO"  itemValue="1"/>
-												       <f:selectItem itemLabel="FEBRERO" itemValue="2"/>
+												       <f:selectItem itemLabel="ENERO" itemValue="1"/>
+												       <f:selectItem itemLabel="FEBRERO"  itemValue="2"/>
 												       <f:selectItem itemLabel="MARZO" itemValue="3"/>
 												       <f:selectItem itemLabel="ABRIL" itemValue="4"/>
 												       <f:selectItem itemLabel="MAYO" itemValue="5"/>
@@ -58,6 +59,7 @@
 												       <f:selectItem itemLabel="OCTUBRE" itemValue="10"/>
 												       <f:selectItem itemLabel="NOVIEMBRE" itemValue="11"/>
 												       <f:selectItem itemLabel="DICIEMBRE" itemValue="12"/>
+												       
 										<p:ajax event="change" update="form1"
 	        								listener="#{frmPlanillaPagoPlan.cargarMes()}" />		       
 								</p:selectOneMenu>
@@ -102,20 +104,51 @@
 	                <h:form id="form2">
 	                	<p:growl id="growl" showDetail="true" sticky="true" />
 	                	<p:panel id="pnl"  header="PLANILLAS DE USUARIOS ">
+	                	 
+	                	
 	                	<div class="card" align="right">
+						    <p:panelGrid columns="2" styleClass="ui-noborder">
+						    	<p:commandButton value="Registro Individual" style="width: 200px"
+									action="#{frmPlanillaPagoPlan.cargarFormulario()}" >
+				
+								</p:commandButton>
+								<p:outputLabel/>
+								<p:commandButton value="Eliminar Datos Cargados" style="width: 200px"
+									action="#{frmPlanillaPagoPlan.borrarGenerados()}" update="@form">
+									<p:confirm header="Confirmación"
+									message="Esta seguro de borrar la información?"
+									icon="pi pi-exclamation-triangle" />
+								</p:commandButton>
+							
+								<p:confirmDialog global="true" showEffect="fade" hideEffect="fade"
+									responsive="true" width="350">
+									<p:commandButton value="Si" type="button"
+										styleClass="ui-confirmdialog-yes" />
+									<p:commandButton value="No" type="button"
+										styleClass="ui-confirmdialog-no ui-button-flat" />
+								</p:confirmDialog>
+							</p:panelGrid>	
+						    
+					    </div>
+					   
+					    <p:separator/>
+					    <div class="card" align="right">
 						    <h:commandLink >
 						    	<p:graphicImage name="images/logo_excel.png" library="california-layout" />
-						    	<p:dataExporter type="xls" target="tblEmp" fileName="ListPlanilla" ></p:dataExporter>
+						    	<p:dataExporter type="xls" target="tblEmp" fileName="ListPlanMovil"></p:dataExporter>
 						    </h:commandLink>
-					    </div>
+					    </div>	
 						<p:dataTable value="#{frmPlanillaPagoPlan.lstPlanRegistroPago}"
-							id="tblEmp"  var="dato" paginator="true" editable="true"
-							rows="10">
+							id="tblEmp"  var="dato" editable="true" 
+							rowIndexVar="index">
 							<f:facet name="header">
 								PLANILLA DE PLANES MOVILES
 							</f:facet>
-							<p:ajax event="rowEdit" listener="#{frmRegistroEmpresa.onRowEdit}" update="form2:growl"/>
-            				<p:ajax event="rowEditCancel" listener="#{frmRegistroEmpresa.onRowCancel}" update="form2:growl"/>
+							<p:ajax event="rowEdit" listener="#{frmPlanillaPagoPlan.onRowEdit}" update="form2:growl"/>
+            				<p:ajax event="rowEditCancel" listener="#{frmPlanillaPagoPlan.onRowCancel}" update="form2:growl"/>
+							<p:column headerText="No" width="15">
+						        #{index + 1}
+						    </p:column>
 							<p:column headerText="LINEA" filterBy="#{dato.lineaTelefono}">
 								<h:outputText value="#{dato.lineaTelefono}"/>
 							</p:column>
@@ -128,15 +161,54 @@
 							<p:column headerText="NOMBRE REFENCIAL">
 								<h:outputText value="#{dato.nombreRef}"/>
 							</p:column>
-							<p:column headerText="VALOR PLAN">
-								<h:outputText value="#{dato.valorPlan}">
-									<f:convertNumber pattern="#0.00" />
-								</h:outputText>
+							<p:column headerText="OPERADORA" filterBy="#{dato.planContratoComite.planPlanMovil.planOperadora.empresa}">
+								<h:outputText value="#{dato.planContratoComite.planPlanMovil.planOperadora.empresa}"/>
+							</p:column>
+							<p:column headerText="VALOR PLAN" >
+								<p:cellEditor >
+				                    <f:facet name="output">
+				                        <h:outputText value="#{dato.valorPlan}">
+											<f:convertNumber pattern="#0.00" />
+										</h:outputText>
+				                    </f:facet>
+				                    <f:facet name="input">
+				                        <p:inputText value="#{dato.valorPlan}" style="width:100%"/>
+				                    </f:facet>
+				                </p:cellEditor>
 							</p:column>
 							<p:column headerText="COSTO ADMISNITRATIVO">
-								<h:outputText value="#{dato.costoAdm}">
-									<f:convertNumber pattern="#0.00" />
-								</h:outputText>
+								<p:cellEditor >
+				                    <f:facet name="output">
+				                        <h:outputText value="#{dato.costoAdm}">
+											<f:convertNumber pattern="#0.00" />
+										</h:outputText>
+				                    </f:facet>
+				                    <f:facet name="input">
+				                        <p:inputText value="#{dato.costoAdm}" style="width:100%"/>
+				                    </f:facet>
+				                </p:cellEditor>
+							</p:column>
+							<p:column headerText="CONSUMO ADICIONAL">
+								<p:cellEditor >
+				                    <f:facet name="output">
+				                        <h:outputText value="#{dato.valorAdicional}">
+											<f:convertNumber pattern="#0.00" />
+										</h:outputText>
+				                    </f:facet>
+				                    <f:facet name="input">
+				                        <p:inputText value="#{dato.valorAdicional}" style="width:100%"/>
+				                    </f:facet>
+				                </p:cellEditor>
+							</p:column>
+							<p:column headerText="OBSERVACION">
+								<p:cellEditor >
+				                    <f:facet name="output">
+				                        <h:outputText value="#{dato.observacion}" />
+				                    </f:facet>
+				                    <f:facet name="input">
+				                        <p:inputText value="#{dato.observacion}" style="width:100%"/>
+				                    </f:facet>
+				                </p:cellEditor>
 							</p:column>
 							<p:column headerText="TOTAL PLAN">
 								<h:outputText value="#{dato.total}">
@@ -153,28 +225,28 @@
 								<h:outputText value="#{dato.anio}"/>
 							</p:column>
 							<p:column headerText="ESTADO" filterBy="#{dato.estado}">
-								<p:cellEditor >
-				                    <f:facet name="output">
-				                        <h:outputText value="#{dato.estado}"/>
-				                    </f:facet>
-				                    <f:facet name="input">
-				                        <h:selectOneMenu id="option" value="#{dato.estado}" style="width:100%">
-									      <f:selectItem itemLabel="PENDIENTE" itemValue="PENDIENTE"/>
-									    </h:selectOneMenu>
-				                    </f:facet>
-				                </p:cellEditor>
+								<h:outputText value="#{dato.estado}"/>
 							</p:column>
-							<p:column width="6" exportable="false">
-									<p:rowEditor rendered="#{frmPlanillaPagoPlan.activarEditEstado(dato.estado)}" editTitle="Edit Row" cancelTitle="Cancel Edit" saveTitle="Save Row" 
+							<p:column width="7" exportable="false">
+									<!-- <p:rowEditor rendered="false" -->
+									<p:rowEditor editTitle="Edit Row" cancelTitle="Cancel Edit" saveTitle="Save Row" 
 										/>
+				            </p:column>
+				            <p:column width="7" exportable="false">
+								<p:commandButton icon="ui-icon-close" update=":form2"
+									action="#{frmPlanillaPagoPlan.eliminarRegistro(dato)}">
+										<p:confirm header="Confirmación"
+										message="Esta seguro de eliminar la información?"
+										icon="pi pi-exclamation-triangle" />
+									</p:commandButton>
 				            </p:column>
 						</p:dataTable>
 						<br/>
 						<br/>
 						<p:separator/>
 						<p:panelGrid columns="2" styleClass="ui-noborder">
-								<p:commandButton value="Generar Descuentos Roll"
-									action="#{frmAplicarPlanMovil.generarPlanillaMes()}" update="form2">
+								<p:commandButton value="Generar Descuentos Rol"
+									action="#{frmPlanillaPagoPlan.generarPlanillaMes()}" update="form2">
 									<p:confirm header="Confirmación"
 									message="Esta seguro de ingresar la información?"
 									icon="pi pi-exclamation-triangle" />
@@ -183,7 +255,55 @@
 					</p:panel>
 	                </h:form>
 <!-- Inicio de Dialogs -->
-
+<p:dialog
+	header="FORMULARIO DE REGISTRO INDIVIDUAL" resizable="false" position="top" 
+	widgetVar="dlgReg" id="dlgReg" modal="true"
+	hideEffect="fade">
+	<h:form id="frmReg">
+		<h:panelGrid columns="2" cellpadding="7">
+			<p:outputLabel for="num" value="Seleccione Numero de Telefono:"/>
+			<p:selectOneMenu id="num" required="true" value="#{frmPlanillaPagoPlan.idContrato}" effect="fold"
+					filter="true" filterMatchMode="contains">
+	             <f:selectItem itemLabel="Seleccione Numero" itemValue="" noSelectionOption="true"/>
+	             <f:selectItems value="#{frmPlanillaPagoPlan.lstPlanContratoComite}" var="dat"
+	             	itemLabel="#{dat.lineaTelefono} #{dat.usrSocio.gesPersona.apellidos} #{dat.usrSocio.gesPersona.nombres}" itemValue="#{dat.idContrato}"/>
+	        </p:selectOneMenu>
+	        <p:outputLabel for="per" value="Ingrese Periodo:" />
+			<p:inputText id="per" required="true" value="#{frmPlanillaPagoPlan.planRegistroPago.anio}" maxlength="4">
+				<p:keyFilter mask="num" />
+			</p:inputText>
+			<p:outputLabel for="mes" value="Seleccione Mes Planilla" />
+			<p:selectOneMenu id="mes" required="true" value="#{frmPlanillaPagoPlan.planRegistroPago.mes}" >
+					<f:selectItem itemLabel="Seleccione Mes" noSelectionOption="true"/>
+					<f:selectItem itemLabel="ENERO" itemValue="1"/>
+					<f:selectItem itemLabel="FEBRERO"  itemValue="2"/>
+					<f:selectItem itemLabel="MARZO" itemValue="3"/>
+					<f:selectItem itemLabel="ABRIL" itemValue="4"/>
+					<f:selectItem itemLabel="MAYO" itemValue="5"/>
+					<f:selectItem itemLabel="JUNIO" itemValue="6"/>
+					<f:selectItem itemLabel="JULIO" itemValue="7"/>
+					<f:selectItem itemLabel="AGOSTO" itemValue="8"/>
+					<f:selectItem itemLabel="SEPTIEMBRE" itemValue="9"/>
+					<f:selectItem itemLabel="OCTUBRE" itemValue="10"/>
+					<f:selectItem itemLabel="NOVIEMBRE" itemValue="11"/>
+					<f:selectItem itemLabel="DICIEMBRE" itemValue="12"/>
+					<p:ajax event="change" update="form1"
+	        				listener="#{frmPlanillaPagoPlan.cargarMes()}" />		       
+			</p:selectOneMenu>
+			<p:outputLabel for="valor" value="Ingrese Valor Plan:" />
+			<p:inputText id="valor" required="true" maxlength="10" 
+					value="#{frmPlanillaPagoPlan.planRegistroPago.valorPlan}">
+			</p:inputText>
+				
+		</h:panelGrid>
+		<h:panelGrid columns="2" cellpadding="7">
+			<p:commandButton value="Registrar" update="frmReg"
+				action="#{frmPlanillaPagoPlan.registroIndividual()}"/>
+			<p:commandButton value="Cancelar" onclick="PF('dlgReg').hide();"
+			action="#{frmPlanillaPagoPlan.init()}"/>
+		</h:panelGrid>
+	</h:form>
+</p:dialog>
 
 
 <!-- Fin de Dialogs -->

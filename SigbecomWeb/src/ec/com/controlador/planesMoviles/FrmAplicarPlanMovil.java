@@ -20,6 +20,7 @@ import ec.com.model.dao.entity.PlanContratoComite;
 import ec.com.model.dao.entity.PlanCostosAdm;
 import ec.com.model.dao.entity.PlanEquipo;
 import ec.com.model.dao.entity.PlanOperadora;
+import ec.com.model.dao.entity.PlanPago;
 import ec.com.model.dao.entity.PlanPlanMovil;
 import ec.com.model.dao.entity.UsrSocio;
 import ec.com.model.modulos.util.JSFUtil;
@@ -44,6 +45,8 @@ private static final long serialVersionUID = 1L;
 	private List<UsrSocio> lstUsrNoSocios;
 	private List<PlanOperadora> lstPlanOperadoras;
 	
+	private List<PlanContratoComite> lstPlanContratoComiteDt;
+	
 	private String cedulaSocio;
 	
 	private PlanContratoComite planContratoComite;
@@ -65,6 +68,7 @@ private static final long serialVersionUID = 1L;
 		lstUsersSocios = new ArrayList<UsrSocio>();
 		lstUsrNoSocios = new ArrayList<UsrSocio>();
 		lstPlanOperadoras = new ArrayList<PlanOperadora>();
+		lstPlanContratoComiteDt = new ArrayList<PlanContratoComite>();
 		//panelgrid
 		panelCliente = false;
 		panelEquipo = false;
@@ -88,6 +92,15 @@ private static final long serialVersionUID = 1L;
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			JSFUtil.crearMensajeERROR("No se cargo el listado correctamente");
+			e.printStackTrace();
+		}
+	}
+	
+	public void cargarPlanContratoComite() {
+		try {
+			lstPlanContratoComiteDt = managerPlanesMoviles.findAllPlanContratoComite();
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
@@ -194,22 +207,63 @@ private static final long serialVersionUID = 1L;
 		if(planContratoComite.getUsrSocio()!=null && planContratoComite.getPlanPlanMovil()!=null && 
 		   planContratoComite.getLineaTelefono()!=null && planContratoComite.getFechaContrato()!=null) {
 			try {
-				planContratoComite.setEstado("ACTIVO");
-				managerPlanesMoviles.insertarPlanContratoComite(planContratoComite);
-				JSFUtil.crearMensajeINFO("Cuotas Generadas correctamente");
-				init();
-				PrimeFaces prime=PrimeFaces.current();
-				prime.ajax().update("form1");
-				prime.ajax().update("form2");
+				
+				List<PlanContratoComite> lstPlanContratoCom = managerPlanesMoviles.findContratoComiteByLineaAndEstado(planContratoComite.getLineaTelefono(),"ACTIVO");
+				
+				if(lstPlanContratoCom==null) {
+					planContratoComite.setEstado("ACTIVO");
+					managerPlanesMoviles.insertarPlanContratoComite(planContratoComite);
+					JSFUtil.crearMensajeINFO("Plan cargado correctamente");
+					init();
+					PrimeFaces prime=PrimeFaces.current();
+					prime.ajax().update("form1");
+					prime.ajax().update("form2");
+				}
+				else if(lstPlanContratoCom.size()==1) {
+					JSFUtil.crearMensajeWARN("El numero ya se encuentra registrado");
+					init();
+					PrimeFaces prime=PrimeFaces.current();
+					prime.ajax().update("form1");
+					prime.ajax().update("form2");
+				}
 			} catch (Exception e) {
-				JSFUtil.crearMensajeERROR("Seleccione Plan Móvil requerido");
+				JSFUtil.crearMensajeERROR("No se registro el plan requerido");
 				e.printStackTrace();
 			}
 		}
 		else {
 			JSFUtil.crearMensajeERROR("Datos requerido, Seleccione Plan Móvil");
+			init();
+			PrimeFaces prime=PrimeFaces.current();
+			prime.ajax().update("form1");
+			prime.ajax().update("form2");
 		}
-	} 
+	}
+	public void eliminarContratoComite(PlanContratoComite planContratoComite) {
+		try {
+			List<PlanPago> lstPlanPago = managerPlanesMoviles.findAllPlanPagoByIdContrato(planContratoComite.getIdContrato());
+			String linea = planContratoComite.getLineaTelefono();
+			if(lstPlanPago==null) {
+				managerPlanesMoviles.removePlanContratoComite(planContratoComite.getIdContrato());
+				JSFUtil.crearMensajeINFO("Numero :"+linea+" eliminado correctamente");
+				init();
+				PrimeFaces prime=PrimeFaces.current();
+				prime.ajax().update("form1");
+				prime.ajax().update("form2");
+			}
+			else {
+				JSFUtil.crearMensajeERROR("El registro no puede ser eliminado, contiene varios registros de pagos historicos");
+				init();
+				PrimeFaces prime=PrimeFaces.current();
+				prime.ajax().update("form1");
+				prime.ajax().update("form2");
+			}
+		} catch (Exception e) {
+			JSFUtil.crearMensajeERROR(e.getMessage());
+			e.printStackTrace();
+		}
+		
+	}
 	public void onRowEdit(RowEditEvent<Object> event) {
 		 try {
 			 	managerPlanesMoviles.actualizarObjeto(event.getObject());
@@ -227,45 +281,7 @@ private static final long serialVersionUID = 1L;
 		}
 		return total;
 	}
-	public void generarPlanillaMes() {
-		/*
-		 * BigDecimal valorTotalPlan = new BigDecimal(0); BigDecimal valorTotalEquipo =
-		 * new BigDecimal(0); int anio = ModelUtil.getAnio(new Date()); int mes =
-		 * ModelUtil.getMes(new Date());
-		 * 
-		 * //System.out.println("Fecha Suma: "+ModelUtil.getSumarMeses(fecha, 1));
-		 * if(mes==12) { anio++; mes=1; } else { mes++; } try { DescEstadoDescuento
-		 * descEstadoDescuento =
-		 * managerPlanesMoviles.findWhereEstadoDescEstadoDescuento("INGRESADA");
-		 * 
-		 * for (UsrSocio usrSocio :lstUsersSocios) { for (PlanContratoComite
-		 * planContratoComite : usrSocio.getPlanContratoComites()) { PlanPago planPago =
-		 * new PlanPago();
-		 * if(planContratoComite.getEstadoPlanMovil().equalsIgnoreCase("ACTIVO")) {
-		 * valorTotalPlan =
-		 * (planContratoComite.getValorPlanMovil().multiply(planContratoComite.
-		 * getInteresPlanMovil()).divide(new BigDecimal(100))).
-		 * add(planContratoComite.getValorPlanMovil()).add(planContratoComite.
-		 * getValorNoSocio()); } System.out.println("valor Total: "+valorTotalPlan);
-		 * if(planContratoComite.getEstadoEquipo().equalsIgnoreCase("ACTIVO")) {
-		 * valorTotalEquipo =
-		 * (planContratoComite.getValorEquipo().multiply(planContratoComite.
-		 * getInteresEquipo()).divide(new BigDecimal(100))).
-		 * add(planContratoComite.getValorEquipo()); }
-		 * System.out.println("valor Total Equipo: "+valorTotalEquipo);
-		 * 
-		 * planPago.setValorTotal(valorTotalPlan.add(valorTotalEquipo).setScale(2,
-		 * RoundingMode.HALF_EVEN)); planPago.setAno(new BigDecimal(anio));
-		 * planPago.setMes(new BigDecimal(mes));
-		 * planPago.setDescEstadoDescuento(descEstadoDescuento);
-		 * planPago.setPlanContratoComite(planContratoComite); try {
-		 * managerPlanesMoviles.insertarPlanPago(planPago);
-		 * JSFUtil.crearMensajeINFO("Pagos generados correctamente."); } catch
-		 * (Exception e) { // TODO Auto-generated catch block e.printStackTrace(); } } }
-		 * } catch (Exception e1) { // TODO Auto-generated catch block
-		 * e1.printStackTrace(); }
-		 */
-	}
+	
 	
 	public void onRowCancel(RowEditEvent<Object> event) {
 	       JSFUtil.crearMensajeINFO("Se canceló actualización.");
@@ -391,4 +407,12 @@ private static final long serialVersionUID = 1L;
 		this.idOperadora = idOperadora;
 	}
 
+	public List<PlanContratoComite> getLstPlanContratoComiteDt() {
+		return lstPlanContratoComiteDt;
+	}
+
+	public void setLstPlanContratoComiteDt(List<PlanContratoComite> lstPlanContratoComiteDt) {
+		this.lstPlanContratoComiteDt = lstPlanContratoComiteDt;
+	}
+	
 }

@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:pc="http://primefaces.org/california">
+
+<h:head>
+	<f:facet name="first">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+		<meta name="viewport"
+			content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" />
+		<meta name="apple-mobile-web-app-capable" content="yes" />
+	</f:facet>
+	<title><ui:insert name="title">SIGBECOM</ui:insert></title>
+	<h:outputScript name="js/nanoscroller.js" library="california-layout" />
+	<h:outputScript name="js/layout.js" library="california-layout" />
+	<ui:insert name="head" />
+</h:head>
+
+<h:body styleClass="main-body"
+	onload="#{controladorGestionDescuentos.inicializarDescuentoMensuales()}">
+
+	<div
+		class="layout-wrapper #{guestPreferences.menuLayout != 'static' ? guestPreferences.menuLayout : null}">
+		<ui:include src="/affordances/megamenu.xhtml" />
+		<ui:include src="/affordances/topbar.xhtml" />
+		<ui:include src="/affordances/sidebar.xhtml" />
+		<ui:include src="/affordances/right-sidebar.xhtml" />
+
+		<div class="layout-main">
+			<div class="route-bar">
+				<div class="route-bar-breadcrumb">
+					<i class="fa fa-home"></i> <span>/Registro Usuarios</span>
+					<ui:insert name="viewname" />
+				</div>
+				<ui:include src="/affordances/route-bar-menu.xhtml" />
+			</div>
+			<div class="layout-main-content" align="center">
+				<H1>EJECUTAR DESCUENTO PRESTAMOS</H1>
+				<h:form id="solicitudes">
+					<p:growl id="growl" showDetail="true" sticky="true" />
+					<p:panel
+						header="MIS DESCUENTOS">
+						<br />
+						<div class="p-d-flex p-jc-between">
+							<p:panelGrid columns="2" styleClass="ui-noborder">
+								<h4>Exportar a Excel</h4>
+								<h:commandLink>
+									<p:graphicImage name="/images/excel.png" width="24" />
+									<p:dataExporter type="xls" target="@form:tblDescuentos"
+										fileName="descuentos #{controladorGestionDescuentos.anio} #{controladorGestionDescuentos.mes}" />
+								</h:commandLink>
+							</p:panelGrid>
+						</div>
+						
+						<p:panelGrid columns="5" >
+							<p:outputLabel value="Mes" />
+								<p:selectOneMenu value="#{controladorGestionDescuentos.mes}" required="true" >
+									<f:selectItem itemLabel="Seleccione Mes" noSelectionOption="true"/>
+									<f:selectItem itemLabel="Enero" itemValue="1"/>
+									<f:selectItem itemLabel="Febrero" itemValue="2"/>
+									<f:selectItem itemLabel="Marzo" itemValue="3"/>
+									<f:selectItem itemLabel="Abril" itemValue="4"/>
+									<f:selectItem itemLabel="Mayo" itemValue="5"/>
+									<f:selectItem itemLabel="Junio" itemValue="6"/>
+									<f:selectItem itemLabel="Julio" itemValue="7"/>
+									<f:selectItem itemLabel="Agosto" itemValue="8"/>
+									<f:selectItem itemLabel="Septiembre" itemValue="9"/>
+									<f:selectItem itemLabel="Octubre" itemValue="10"/>
+									<f:selectItem itemLabel="Noviembre" itemValue="11"/>
+									<f:selectItem itemLabel="Diciembre" itemValue="12"/>
+								</p:selectOneMenu>
+							<p:outputLabel value="Año" />
+							<p:spinner min="2021" value="#{controladorGestionDescuentos.anio}" />
+							<p:commandButton update="@form" value="Buscar" actionListener="#{controladorGestionDescuentos.buscarDescuentosMensuales()}" />
+						</p:panelGrid>
+						<p:dataTable paginator="true" rows="15" id="tblDescuentos"
+							emptyMessage="No tiene descuentos"
+							value="#{controladorGestionDescuentos.lstDesDescuentoMensuale}"
+							var="credito">
+							<p:column headerText="Cédula Empleado">
+								<p:outputLabel value="#{credito.usrSocio.cedulaSocio}" />
+							</p:column>
+							<p:column headerText="Código Empleado" filterBy="#{credito.usrSocio.idSocio}">
+								<p:outputLabel value="#{credito.usrSocio.idSocio}" />
+							</p:column>
+							<p:column headerText="Nombre Socio">
+								<p:outputLabel value="#{credito.nombreSocio}" />
+							</p:column>
+							<p:column headerText="Descuento Creditos">
+								<p:outputLabel value="#{credito.valorPrestamo}" >
+								<f:convertNumber maxFractionDigits="2" minFractionDigits="2"
+										currencySymbol="$" />
+								</p:outputLabel>
+							</p:column>
+							<p:column headerText="Descuento Convenios">
+								<p:outputLabel value="#{credito.valorConvenio}" >
+								<f:convertNumber maxFractionDigits="2" minFractionDigits="2"
+										currencySymbol="$" />
+								</p:outputLabel>
+							</p:column>
+							<p:column headerText="Descuento Planes Móviles">
+								<p:outputLabel value="#{credito.valorPlanMovil}" >
+								<f:convertNumber maxFractionDigits="2" minFractionDigits="2"
+										currencySymbol="$" />
+								</p:outputLabel>
+							</p:column>
+							<p:column headerText="Descuento Ahorro">
+								<p:outputLabel value="#{credito.valorAhorro}" >
+								<f:convertNumber maxFractionDigits="2" minFractionDigits="2"
+										currencySymbol="$" />
+								</p:outputLabel>
+							</p:column>
+							<p:column headerText="Descuento Cesantía">
+								<p:outputLabel value="#{credito.valorCesantia}" >
+								<f:convertNumber maxFractionDigits="2" minFractionDigits="2"
+										currencySymbol="$" />
+								</p:outputLabel>
+							</p:column>
+							<p:column headerText="Descuento Salud">
+								<p:outputLabel value="#{credito.valorSalud}" >
+								<f:convertNumber maxFractionDigits="2" minFractionDigits="2"
+										currencySymbol="$" />
+								</p:outputLabel>
+							</p:column>
+							<p:column headerText="Descuento Externos">
+								<p:outputLabel value="#{credito.aportesExternos}" >
+								<f:convertNumber maxFractionDigits="2" minFractionDigits="2"
+										currencySymbol="$" />
+								</p:outputLabel>
+							</p:column>
+							<p:column headerText="Novedades">
+								<p:outputLabel value="#{credito.novedades}">
+								<f:convertNumber maxFractionDigits="2" minFractionDigits="2"
+										currencySymbol="$" />
+								</p:outputLabel>
+							</p:column>
+							<p:column headerText="Total Descuento Mensual">
+								<p:outputLabel value="#{credito.totalDescuento}">
+								<f:convertNumber maxFractionDigits="2" minFractionDigits="2"
+										currencySymbol="$" />
+								</p:outputLabel>
+							</p:column>
+						</p:dataTable>
+					</p:panel>
+				</h:form>
+			</div>
+			<ui:include src="/affordances/footer.xhtml" />
+		</div>
+	</div>
+	<p:ajaxStatus
+		style="width:32px;height:32px;position:fixed;right:7px;bottom:7px">
+		<f:facet name="start">
+			<i class="fa fa-circle-o-notch fa-spin ajax-loader"
+				aria-hidden="true"></i>
+		</f:facet>
+
+		<f:facet name="complete">
+			<h:outputText value="" />
+		</f:facet>
+	</p:ajaxStatus>
+
+	<h:outputStylesheet name="css/nanoscroller.css"
+		library="california-layout" />
+	<h:outputStylesheet name="css/layout-#{guestPreferences.theme}.css"
+		library="california-layout" />
+</h:body>
+</html>

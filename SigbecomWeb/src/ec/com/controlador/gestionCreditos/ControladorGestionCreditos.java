@@ -85,6 +85,8 @@ public class ControladorGestionCreditos implements Serializable {
 
 	private FinRequisito objFinRequisito;
 
+	private FinTipoCredito objTipoCredito;
+
 	private int banderaSolicitud;
 
 	private List<FinTipoCredito> lstFinTipoCredito;
@@ -211,6 +213,7 @@ public class ControladorGestionCreditos implements Serializable {
 			objFinTipoCredito = new FinTipoCredito();
 			objFinTipoCredito.setFinTipcrediRequisitos(new ArrayList<FinTipcrediRequisito>());
 			lstFinTipoCredito = managerGestionCredito.buscarTodosTipoPrestamo();
+			objTipoCredito = new FinTipoCredito();
 		} catch (Exception e) {
 			JSFUtil.crearMensajeERROR(e.getMessage());
 			e.printStackTrace();
@@ -251,6 +254,7 @@ public class ControladorGestionCreditos implements Serializable {
 		objFinPrestamoSocio.setFinPrestamoRequisitos(new ArrayList<FinPrestamoRequisito>());
 		objFinPrestamoSocio.setFinTablaAmortizacions(new ArrayList<FinTablaAmortizacion>());
 		objFinPrestamoSocio.setFinPrestamoNovacions2(new ArrayList<FinPrestamoNovacion>());
+		objFinPrestamoSocio.setFinAccionPrestamos(new ArrayList<FinAccionPrestamo>());
 	}
 
 	public void cargarRequisitoTipoCredito() {
@@ -522,6 +526,33 @@ public class ControladorGestionCreditos implements Serializable {
 			managerLog.generarLogErrorGeneral(beanLogin.getCredencial(), this.getClass(), "incativarTipoCredito",
 					e.getMessage());
 			JSFUtil.crearMensajeERROR(e.getMessage());
+			e.printStackTrace();
+		}
+	}
+
+	public void cargarTipoCredito(FinTipoCredito objTipoCreditoAux) {
+		objTipoCredito = objTipoCreditoAux;
+	}
+
+	public void actualizarFechaPago() {
+		int dias;
+		try {
+			managerLog.generarLogAuditoria(beanLogin.getCredencial(), this.getClass(), "actualizarFechaPago",
+					"Actualizacion de dia credito Id: " + objTipoCredito.getIdTipoCredito() + " NUevo dia: "
+							+ objTipoCredito.getDiaPagoMaximo().intValue());
+			objFinTipoCredito = managerGestionCredito.buscarTipoCreditoId(objTipoCredito);
+			dias = objTipoCredito.getDiaPagoMaximo().intValue() - objFinTipoCredito.getDiaPagoMaximo().intValue();
+			managerGestionCredito.actualizarTipoCredito(objTipoCredito);
+			List<FinTablaAmortizacion> lstAmortizacion;
+			lstAmortizacion = managerGestionCredito.buscarCuotasPendientesByTipoCredito(objTipoCredito);
+			for (FinTablaAmortizacion finTablaAmortizacion : lstAmortizacion) {
+				finTablaAmortizacion.setFechaPago(ModelUtil.getSumarDias(finTablaAmortizacion.getFechaPago(), dias));
+				managerGestionCredito.actualizarTablaAmortizacion(finTablaAmortizacion);
+			}
+			JSFUtil.crearMensajeINFO("Actualizacion Correcta");
+			inicializarTipoPrestamo();
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
@@ -1124,6 +1155,14 @@ public class ControladorGestionCreditos implements Serializable {
 
 	public void setMesesAplazados(int mesesAplazados) {
 		this.mesesAplazados = mesesAplazados;
+	}
+
+	public FinTipoCredito getObjTipoCredito() {
+		return objTipoCredito;
+	}
+
+	public void setObjTipoCredito(FinTipoCredito objTipoCredito) {
+		this.objTipoCredito = objTipoCredito;
 	}
 
 }

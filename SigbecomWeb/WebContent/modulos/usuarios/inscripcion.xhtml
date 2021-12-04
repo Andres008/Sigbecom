@@ -4,7 +4,7 @@
 	xmlns:f="http://java.sun.com/jsf/core"
 	xmlns:ui="http://java.sun.com/jsf/facelets"
 	xmlns:p="http://primefaces.org/ui"
-	xmlns:pc="http://primefaces.org/california"> 
+	xmlns:pc="http://primefaces.org/california">
 
 <h:head>
 	<f:event type="preRenderView"
@@ -83,10 +83,14 @@
 								icon="pi pi-exclamation-triangle" />
 						</p:commandButton>
 						<p:panelGrid columns="4" styleClass="ui-noborder">
-							<p:outputLabel value="Cedula" />
+							<p:outputLabel value="Cédula" />
 							<p:inputText
 								value="#{controladorGestionSocios.objUsrSocio.gesPersona.cedula}"
 								required="true" placeholder="Cédula" />
+							<p:outputLabel value="Código Rol" />
+							<p:inputText
+								value="#{controladorGestionSocios.objUsrSocio.idSocio}"
+								placeholder="Código Rol" />
 							<p:outputLabel value="Tipo Usuario" />
 							<p:selectOneMenu
 								value="#{controladorGestionSocios.objUsrSocio.usrTipoSocio.idTipoSocio}"
@@ -120,12 +124,12 @@
 							<p:outputLabel value="Correo Electronico" />
 							<p:inputText
 								value="#{controladorGestionSocios.objUsrSocio.gesPersona.email}"
-								placeholder="Correo Electronico" 
+								placeholder="Correo Electronico"
 								style="text-transform: lowercase" />
 							<p:outputLabel value="Telefono" />
 							<p:inputText
 								value="#{controladorGestionSocios.objUsrSocio.gesPersona.telefono}"
-								placeholder="Telefono"  />
+								placeholder="Telefono" />
 							<p:outputLabel value="Fecha Ingreso" />
 							<p:calendar id="restricted"
 								requiredMessage="Es obligatorio fecha de ingreso"
@@ -135,15 +139,16 @@
 							</p:calendar>
 						</p:panelGrid>
 						<p:panel header="Descuentos" id="pnlDescuentos">
-							<p:dataTable var="descuento"
+							<p:dataTable var="descuento" id="tblDescuentos"
 								value="#{controladorGestionSocios.objUsrSocio.usrSocioDescuentoFijos}"
 								emptyMessage="No tiene descuentos ">
 								<p:column headerText="Descuento">
 									<p:outputLabel value="#{descuento.usrTipoDescuento.nombre}" />
 								</p:column>
 								<p:column headerText="Valor">
-									<p:inputNumber
-										value="#{descuento.usrTipoDescuento.valorDefecto}" />
+									<p:inputNumber value="#{descuento.valor}">
+										<p:ajax update="@form:tblDescuentos" />
+									</p:inputNumber>
 								</p:column>
 							</p:dataTable>
 						</p:panel>

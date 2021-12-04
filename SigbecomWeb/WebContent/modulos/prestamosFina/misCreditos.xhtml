@@ -73,6 +73,9 @@
 						<p:column headerText="Saldo Capital">
 							<p:outputLabel value="#{solicitud.saldoCapital}" />
 						</p:column>
+						<p:column headerText="Observación">
+							<p:outputLabel value="#{solicitud.observacion}" />
+						</p:column>
 						<p:column headerText="Amortización">
 							<p:commandButton value="Tabla" update="@form" process="@this"
 								actionListener="#{controladorGestionCreditos.cargarFinPrestamoSocioAmortizacion(solicitud)}"
@@ -100,8 +103,13 @@
 					<p:dialog header="Tabla de Amortizacion" widgetVar="infRevision"
 						id="infRevision" modal="true" position="top" showEffect="fade"
 						hideEffect="fade" resizable="false" width="90%">
-						<p:dataTable emptyMessage="No existen datos." rows="10"
-							paginator="true"
+						<h:commandLink value="Exportar Excel">
+								<p:graphicImage name="/images/excel.png" width="24" />
+								<p:dataExporter type="xls" target="@form:tblAmorti"
+									fileName="tablaAmortizacion" />
+							</h:commandLink>
+						<p:dataTable emptyMessage="No existen datos." rows="10" id="tblAmorti"
+							paginator="true" sortBy="#{amortizacion.numeroCuota}"
 							value="#{controladorGestionCreditos.objFinPrestamoSocio.finTablaAmortizacions}"
 							var="amortizacion">
 							<p:column headerText="Número Cuota">

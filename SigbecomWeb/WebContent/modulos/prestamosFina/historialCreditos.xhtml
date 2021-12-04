@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml"
+<html xmlns="http://www.w3.org/1999/xhtml" 
 	xmlns:h="http://java.sun.com/jsf/html"
 	xmlns:f="http://java.sun.com/jsf/core"
 	xmlns:ui="http://java.sun.com/jsf/facelets"
@@ -39,16 +39,25 @@
 				<ui:include src="/affordances/route-bar-menu.xhtml" />
 			</div>
 			<div class="layout-main-content" align="center">
-				<H1>REVISIÓN DE SOLICITUDES DE PRESTAMO</H1>
+				<H1>HISTORIAL DE CREDITOS</H1>
 				<h:form id="solicitudes">
 					<p:growl id="growl" showDetail="true" sticky="true" />
-					<p:dataTable id="tblSolicitud" var="solicitud"
+					<h:commandLink value="Exportar Excel">
+						<p:graphicImage name="/images/excel.png" width="24" />
+						<p:dataExporter type="xls" target="@form:tblSolicitud"
+							fileName="tablaPrestamos" />
+					</h:commandLink>
+					<p:dataTable id="tblSolicitud" var="solicitud" paginator="true" rows="8"
 						emptyMessage="No existe creditos."
 						value="#{controladorGestionCreditos.lstFinPrestamoSocio}">
-						<p:column headerText="Id Solicitud">
-							<p:outputLabel value="#{solicitud.idPrestamoSocio}" />
+						<p:column headerText="Cédula"
+							filterBy="#{solicitud.usrSocio.cedulaSocio}"
+							filterMatchMode="contains">
+							<p:outputLabel value="#{solicitud.usrSocio.cedulaSocio}" />
 						</p:column>
-						<p:column headerText="Nombre Socio">
+						<p:column headerText="Nombre Socio"
+							filterBy="#{solicitud.usrSocio.gesPersona.apellidos}"
+							filterMatchMode="contains">
 							<p:outputLabel
 								value="#{solicitud.usrSocio.gesPersona.apellidos} #{solicitud.usrSocio.gesPersona.nombres}" />
 						</p:column>
@@ -74,12 +83,15 @@
 						<p:column headerText="Saldo Capital">
 							<p:outputLabel value="#{solicitud.saldoCapital}" />
 						</p:column>
-						<p:column headerText="Amortización">
+						<p:column headerText="Cuota Mensual">
+							<p:outputLabel value="#{solicitud.cuotaMensual}" />
+						</p:column>
+						<p:column headerText="Amortización" exportable="false" >
 							<p:commandButton value="Tabla" update="@form" process="@this"
 								actionListener="#{controladorGestionCreditos.cargarFinPrestamoSocioAmortizacion(solicitud)}"
 								oncomplete="PF('infRevision').show()" />
 						</p:column>
-						<p:column headerText="Imprimir">
+						<p:column headerText="Imprimir" exportable="false">
 							<p:panelGrid columns="1" styleClass="ui-noborder">
 								<p:commandButton value="solicitud" update="@form"
 									process="@this"
@@ -87,7 +99,7 @@
 									oncomplete="PF('infPDF').show()" />
 							</p:panelGrid>
 						</p:column>
-						<p:column headerText="Historial">
+						<p:column headerText="Historial" exportable="false">
 							<p:commandButton value="Historial" update="@form" process="@this"
 								actionListener="#{controladorGestionCreditos.cargarFinPrestamoSocioAmortizacion(solicitud)}"
 								oncomplete="PF('infAccion').show()" />

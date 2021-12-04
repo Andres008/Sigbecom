@@ -19,109 +19,172 @@
 		<band splitType="Stretch"/>
 	</background>
 	<title>
-		<band height="47" splitType="Stretch">
+		<band height="60" splitType="Stretch">
 			<staticText>
-				<reportElement x="20" y="20" width="510" height="16" uuid="4a8bb5c8-79eb-4ba2-a1c7-60b40228525f"/>
+				<reportElement x="60" y="20" width="440" height="30" uuid="4a8bb5c8-79eb-4ba2-a1c7-60b40228525f"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font size="12" isBold="true"/>
+					<font size="14" isBold="true"/>
 				</textElement>
 				<text><![CDATA[COMITÉ DE EMPRESA EMELNORTE]]></text>
 			</staticText>
 		</band>
 	</title>
 	<pageHeader>
-		<band height="532">
+		<band height="598">
 			<staticText>
-				<reportElement x="20" y="10" width="140" height="20" uuid="4d9eb9bf-388f-4f95-98ef-8f1d954873fd"/>
+				<reportElement x="60" y="10" width="175" height="20" uuid="4d9eb9bf-388f-4f95-98ef-8f1d954873fd"/>
+				<textElement>
+					<font size="12"/>
+				</textElement>
 				<text><![CDATA[SOLICITUD DE CRÉDITO Nº ]]></text>
 			</staticText>
 			<textField>
-				<reportElement x="160" y="10" width="90" height="20" uuid="2e18d257-a9b2-4fae-a573-6598eeecb32f"/>
+				<reportElement x="235" y="10" width="130" height="20" uuid="2e18d257-a9b2-4fae-a573-6598eeecb32f"/>
+				<textElement>
+					<font size="12"/>
+				</textElement>
 				<textFieldExpression><![CDATA[$P{nroSolicitud}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="320" y="50" width="210" height="20" uuid="fe53d1ef-ca41-4644-9e74-12d8a397fbb8"/>
-				<textElement textAlignment="Right"/>
+				<reportElement x="290" y="50" width="210" height="20" uuid="fe53d1ef-ca41-4644-9e74-12d8a397fbb8"/>
+				<textElement textAlignment="Right">
+					<font size="12"/>
+				</textElement>
 				<textFieldExpression><![CDATA[$P{lugarFecha}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="20" y="100" width="160" height="20" uuid="8ccf0c6e-11e9-4268-9df3-01d72e270428"/>
-				<textElement textAlignment="Left"/>
+				<reportElement x="60" y="100" width="160" height="20" uuid="8ccf0c6e-11e9-4268-9df3-01d72e270428"/>
+				<textElement textAlignment="Left">
+					<font size="12"/>
+				</textElement>
 				<textFieldExpression><![CDATA[$P{apelativoSG}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="20" y="120" width="160" height="20" uuid="cd6cc344-2514-4e6b-bbca-7e15e576c0b2"/>
-				<textElement textAlignment="Left"/>
+				<reportElement x="60" y="120" width="160" height="20" uuid="cd6cc344-2514-4e6b-bbca-7e15e576c0b2"/>
+				<textElement textAlignment="Left">
+					<font size="12"/>
+				</textElement>
 				<textFieldExpression><![CDATA[$P{nombreSG}]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement x="20" y="139" width="500" height="16" uuid="7034919f-a474-4982-aabf-3435860dfc7a"/>
+				<reportElement x="60" y="139" width="440" height="16" uuid="7034919f-a474-4982-aabf-3435860dfc7a"/>
 				<textElement textAlignment="Justified" verticalAlignment="Middle">
-					<font size="10" isBold="true"/>
+					<font size="12" isBold="true"/>
 				</textElement>
 				<text><![CDATA[SECRETARIO GENERAL DEL COMITÉ DE EMPRESA EMELNORTE]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="20" y="155" width="500" height="16" uuid="f9083181-68a0-409f-b9ff-5d858c4d8526"/>
+				<reportElement x="60" y="155" width="440" height="16" uuid="f9083181-68a0-409f-b9ff-5d858c4d8526"/>
 				<textElement textAlignment="Justified" verticalAlignment="Middle">
-					<font size="10" isBold="false"/>
+					<font size="12" isBold="false"/>
 				</textElement>
 				<text><![CDATA[Presente.-]]></text>
 			</staticText>
 			<textField isStretchWithOverflow="true">
-				<reportElement x="20" y="180" width="500" height="20" uuid="216610e4-2764-4c92-b138-71c35d3b958f"/>
-				<textElement textAlignment="Justified"/>
+				<reportElement x="60" y="180" width="440" height="20" uuid="216610e4-2764-4c92-b138-71c35d3b958f"/>
+				<textElement textAlignment="Justified">
+					<font size="12"/>
+				</textElement>
 				<textFieldExpression><![CDATA[$P{primerTexto}]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true">
-				<reportElement x="20" y="214" width="500" height="20" uuid="7bca5838-40a2-46ff-9171-fdde65da11f3"/>
-				<textElement textAlignment="Justified"/>
+				<reportElement x="60" y="224" width="440" height="20" uuid="7bca5838-40a2-46ff-9171-fdde65da11f3"/>
+				<textElement textAlignment="Justified">
+					<font size="12"/>
+				</textElement>
 				<textFieldExpression><![CDATA[$P{segundoTexto}]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement x="20" y="244" width="500" height="20" uuid="d30542d5-3770-4ffe-b930-1b415225112b"/>
+				<reportElement x="60" y="254" width="440" height="36" uuid="d30542d5-3770-4ffe-b930-1b415225112b"/>
+				<textElement textAlignment="Justified">
+					<font size="12"/>
+				</textElement>
 				<text><![CDATA[Por la favorable atención, que se dé a la presente, desde ya anticipo mi cumplido agradecimiento.]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="20" y="274" width="500" height="20" uuid="9876557d-b65f-4938-a544-99c91ef209b0"/>
+				<reportElement x="60" y="310" width="440" height="20" uuid="9876557d-b65f-4938-a544-99c91ef209b0"/>
+				<textElement>
+					<font size="12"/>
+				</textElement>
 				<text><![CDATA[Atentamente,]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="20" y="324" width="500" height="20" uuid="62ed0e94-c62c-4ed3-aca5-cbf48f98e175"/>
+				<reportElement x="60" y="360" width="440" height="20" uuid="62ed0e94-c62c-4ed3-aca5-cbf48f98e175"/>
 				<text><![CDATA[.............................................]]></text>
 			</staticText>
 			<textField>
-				<reportElement x="20" y="344" width="360" height="20" uuid="1bab241f-24c2-491c-9a82-aac26a38ebe4"/>
-				<textElement textAlignment="Left"/>
+				<reportElement x="60" y="380" width="360" height="20" uuid="1bab241f-24c2-491c-9a82-aac26a38ebe4"/>
+				<textElement textAlignment="Left">
+					<font size="12"/>
+				</textElement>
 				<textFieldExpression><![CDATA[$P{nombreSocio}]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement x="20" y="364" width="50" height="20" uuid="a10f18f4-c5dd-49fc-a0bb-88689a668ea2"/>
+				<reportElement x="60" y="400" width="62" height="20" uuid="a10f18f4-c5dd-49fc-a0bb-88689a668ea2"/>
+				<textElement>
+					<font size="12"/>
+				</textElement>
 				<text><![CDATA[Cédula: ]]></text>
 			</staticText>
 			<textField>
-				<reportElement x="70" y="364" width="310" height="20" uuid="622998e4-5d5c-4a5b-9e94-24eaad8e2fe9"/>
-				<textElement textAlignment="Left"/>
+				<reportElement x="122" y="400" width="310" height="20" uuid="622998e4-5d5c-4a5b-9e94-24eaad8e2fe9"/>
+				<textElement textAlignment="Left">
+					<font size="12"/>
+				</textElement>
 				<textFieldExpression><![CDATA[$P{cedulaSocio}]]></textFieldExpression>
 			</textField>
 			<textField isBlankWhenNull="true">
-				<reportElement x="70" y="384" width="310" height="20" uuid="5ba1c81e-f948-40a6-90bb-b835a74f98eb"/>
-				<textElement textAlignment="Left"/>
+				<reportElement x="122" y="420" width="310" height="20" uuid="5ba1c81e-f948-40a6-90bb-b835a74f98eb"/>
+				<textElement textAlignment="Left">
+					<font size="12"/>
+				</textElement>
 				<textFieldExpression><![CDATA[$P{telefono}]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement x="20" y="384" width="50" height="20" uuid="479b8eac-87e7-4007-8c7e-fe3118a79c74"/>
+				<reportElement x="60" y="420" width="62" height="20" uuid="479b8eac-87e7-4007-8c7e-fe3118a79c74"/>
+				<textElement>
+					<font size="12"/>
+				</textElement>
 				<text><![CDATA[Telefono: ]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="20" y="404" width="50" height="20" uuid="64389370-a948-445a-80a4-a662d8c32674"/>
+				<reportElement x="60" y="440" width="62" height="20" uuid="64389370-a948-445a-80a4-a662d8c32674"/>
+				<textElement>
+					<font size="12"/>
+				</textElement>
 				<text><![CDATA[Código: ]]></text>
 			</staticText>
 			<textField isBlankWhenNull="true">
-				<reportElement x="70" y="404" width="310" height="20" uuid="541e6a00-5f83-4c8d-a039-7f8bb702cc5c"/>
-				<textElement textAlignment="Left"/>
+				<reportElement x="122" y="440" width="310" height="20" uuid="541e6a00-5f83-4c8d-a039-7f8bb702cc5c"/>
+				<textElement textAlignment="Left">
+					<font size="12"/>
+				</textElement>
 				<textFieldExpression><![CDATA[$P{codEmpelado}]]></textFieldExpression>
 			</textField>
+			<staticText>
+				<reportElement x="50" y="530" width="159" height="20" uuid="ed09c37b-ab98-4514-b126-fd03c090a23e"/>
+				<text><![CDATA[f).............................................]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="50" y="550" width="158" height="19" uuid="51dca3be-db03-470e-bd8b-e0d19552ea35"/>
+				<text><![CDATA[SECRETARIO GENERAL]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="50" y="570" width="158" height="19" uuid="d2313aaa-a461-474f-94ab-b24dceb0a3c8"/>
+				<text><![CDATA[FECHA:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="330" y="530" width="159" height="20" uuid="bcd85608-86b8-4aea-80a5-4fca5d91832d"/>
+				<text><![CDATA[f).............................................]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="330" y="550" width="158" height="19" uuid="f7fda1a5-c0f1-4803-b159-8aaff0639381"/>
+				<text><![CDATA[SECRETARIO (A) FINANZAS]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="330" y="570" width="158" height="19" uuid="760a5951-a901-45e3-b721-8b9eb4ae5e0b"/>
+				<text><![CDATA[FECHA:]]></text>
+			</staticText>
 		</band>
 	</pageHeader>
 </jasperReport>

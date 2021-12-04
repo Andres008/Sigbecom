@@ -52,7 +52,7 @@ public class FrmGestionarConvenios implements Serializable{
 	private String nombres;
 	private String estado;
 	private boolean inputVal;
-	private BigDecimal valor;
+	//private BigDecimal valor;
 	private int meses;
 	private List<ConvAmortizacion> lstConvAmortizacion;
 	
@@ -62,7 +62,7 @@ public class FrmGestionarConvenios implements Serializable{
 		nombres = "";
 		estado = "";
 		meses=0;
-		valor = new BigDecimal("0");
+		//valor = new BigDecimal("0");
 		inputVal=true;
 		lstConvAmortizacion = new ArrayList<ConvAmortizacion>();
 		lstConvAdquirido = new ArrayList<ConvAdquirido>();
@@ -114,7 +114,7 @@ public class FrmGestionarConvenios implements Serializable{
 		String path;
 		try {
 			path = managerConvenios.buscarValorParametroNombre("PATH_REPORTES");
-			String url = path+"convenios\\"+cedula+"\\"+adjunto;
+			String url = path+"convenios/"+cedula+"/"+adjunto;
 			System.out.println(url);
 			File file = new File(url);
 			nombreArchivoTmp = adjunto;
@@ -156,8 +156,6 @@ public class FrmGestionarConvenios implements Serializable{
 			JSFUtil.crearMensajeERROR("No se cargo el archivo correctamente");
 			e1.printStackTrace();
 		}
-		
-
 	}
 	@SuppressWarnings("static-access")
 	public StreamedContent getPdf() {
@@ -184,7 +182,7 @@ public class FrmGestionarConvenios implements Serializable{
 		convAdquirido = lstConvAdquirido.stream().filter(p->p.getIdConvAdquiridos()==idConvAdquiridos).findAny().orElse(null);
 		GesPersona gespersona;
 		try {
-			gespersona = managerConvenios.findNombresByCedula(convAdquirido.getCedulaSocio());
+			gespersona = managerConvenios.findNombresByCedula(convAdquirido.getConvValorMax().getUsrSocio().getCedulaSocio());
 			nombres = gespersona.getApellidos()+" "+gespersona.getNombres();
 			estado = "";
 		} catch (Exception e) {
@@ -195,22 +193,24 @@ public class FrmGestionarConvenios implements Serializable{
 	
 	public void tramitar() {
 		System.out.println("estado:" + estado);
-		if(!estado.isEmpty() && valor.compareTo(BigDecimal.ZERO) == 1 && meses>0 && estado.equalsIgnoreCase("APROBADO")) {
-			BigDecimal interes=convAdquirido.getConvServicio().getInteres().setScale(2, BigDecimal.ROUND_HALF_EVEN);
-			BigDecimal interesTotal=valor.multiply(interes).divide(new BigDecimal(100)).setScale(2, RoundingMode.HALF_EVEN);
-			BigDecimal deudaTotal=valor.add(interesTotal).setScale(2, RoundingMode.HALF_EVEN);
+		//if(!estado.isEmpty() && valor.compareTo(BigDecimal.ZERO) == 1 && meses>0 && estado.equalsIgnoreCase("APROBADO")) {
+		if(!estado.isEmpty() &&  meses>0 && estado.equalsIgnoreCase("APROBADO")) {
+			//BigDecimal interes=convAdquirido.getConvServicio().getInteres().setScale(2, BigDecimal.ROUND_HALF_EVEN);
+			//BigDecimal interesTotal=valor.multiply(interes).divide(new BigDecimal(100)).setScale(2, RoundingMode.HALF_EVEN);
+			//BigDecimal deudaTotal=valor.add(interesTotal).setScale(2, RoundingMode.HALF_EVEN);
 			convAdquirido.setEstado(estado);
 			convAdquirido.setFechaAprob(new Date());
-			convAdquirido.setValorTotal(valor);
-			convAdquirido.setInteres(interes);
-			convAdquirido.setInteresTotal(interesTotal);
-			convAdquirido.setDeudaTotal(deudaTotal);
+			//convAdquirido.setValorTotal(valor);
+			//convAdquirido.setInteres(interes);
+			//convAdquirido.setInteresTotal(interesTotal);
+			//convAdquirido.setDeudaTotal(deudaTotal);
 			convAdquirido.setPlazo(meses);
 			try {
 				DescEstadoDescuento descEstadoDescuento = managerConvenios.findWhereEstadoDescEstadoDescuento("INGRESADA");
 				managerConvenios.actualizarObjeto(convAdquirido);
 				lstConvAmortizacion = new ArrayList<ConvAmortizacion>();
-				generarTablaAmortizacion(valor, interesTotal,deudaTotal, meses,descEstadoDescuento);
+				//generarTablaAmortizacion(valor, interesTotal,deudaTotal, meses,descEstadoDescuento);
+				generarTablaAmortizacion(convAdquirido.getValorTotal(), convAdquirido.getInteresTotal(),convAdquirido.getDeudaTotal(), meses,descEstadoDescuento);
 				cargarListaConvAdquiridos();
 				cargarListaConvAdquiridosTramitados();
 				PrimeFaces prime=PrimeFaces.current();
@@ -332,7 +332,7 @@ public class FrmGestionarConvenios implements Serializable{
 				convAmortizacion.setDescEstadoDescuento(descEstadoDescuento);
 				convAmortizacion.setNumeroCuota(plazo);
 				convAmortizacion.setFechaPago(fecha);
-				convAmortizacion.setCapital(valor);
+				convAmortizacion.setCapital(convAdquirido.getValorTotal());
 				convAmortizacion.setInteres(interesTotal);
 				convAmortizacion.setValorCuota(convAdquirido.getDeudaTotal());
 				convAmortizacion.setSaldo(new BigDecimal(0));
@@ -421,14 +421,12 @@ public class FrmGestionarConvenios implements Serializable{
 	}
 
 
-	public BigDecimal getValor() {
-		return valor;
-	}
-
-
-	public void setValor(BigDecimal valor) {
-		this.valor = valor;
-	}
+	/*
+	 * public BigDecimal getValor() { return valor; }
+	 * 
+	 * 
+	 * public void setValor(BigDecimal valor) { this.valor = valor; }
+	 */
 
 
 	public int getMeses() {

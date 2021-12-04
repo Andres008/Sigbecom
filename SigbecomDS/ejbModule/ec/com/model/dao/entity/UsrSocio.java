@@ -20,6 +20,12 @@ public class UsrSocio implements Serializable {
 	@Column(name = "cedula_socio")
 	private String cedulaSocio;
 
+	@Column(name = "caja_ahorro")
+	private BigDecimal cajaAhorro;
+
+	@Column(name = "fondo_cesantia")
+	private BigDecimal fondoCesantia;
+
 	private String clave;
 
 	private String direccion;
@@ -72,6 +78,14 @@ public class UsrSocio implements Serializable {
 	// bi-directional many-to-one association to FinPrestamoSocio
 	@OneToMany(mappedBy = "usrSocio")
 	private List<FinPrestamoSocio> finPrestamoSocios;
+	
+	// bi-directional many-to-one association to FinPrestamoSocio
+	@OneToMany(mappedBy = "usrSocio")
+	private List<ConvValorMax> convValorMaxs;
+	
+	// bi-directional many-to-one association to FinPrestamoSocio
+	@OneToMany(mappedBy = "usrSocio")
+	private List<AporteCliente> aporteClientes;
 
 	// bi-directional many-to-one association to AutRol
 	@ManyToOne
@@ -121,19 +135,23 @@ public class UsrSocio implements Serializable {
 	// bi-directional many-to-one association to SesvasSolicitud
 	@OneToMany(mappedBy = "usrSocio")
 	private List<SesvasSolicitud> sesvasSolicituds;
-	
-	//bi-directional many-to-one association to UsrTipoSocio
+
+	// bi-directional many-to-one association to UsrTipoSocio
 	@ManyToOne
-	@JoinColumn(name="id_tipo_socio")
+	@JoinColumn(name = "id_tipo_socio")
 	private UsrTipoSocio usrTipoSocio;
 
-	//bi-directional many-to-one association to UsrSocioDescuentoFijo
-	@OneToMany(mappedBy="usrSocio", cascade = CascadeType.ALL)
+	// bi-directional many-to-one association to UsrSocioDescuentoFijo
+	@OneToMany(mappedBy = "usrSocio", cascade = CascadeType.ALL)
 	private List<UsrSocioDescuentoFijo> usrSocioDescuentoFijos;
-	
-	//bi-directional many-to-one association to UsrSocioDescuentoFijo
-	@OneToMany(mappedBy="usrSocio")
+
+	// bi-directional many-to-one association to UsrSocioDescuentoFijo
+	@OneToMany(mappedBy = "usrSocio")
 	private List<PlanContratoComite> planContratoComites;
+	
+	// bi-directional many-to-one association to UsrCuentaSocio
+	@OneToMany(mappedBy = "usrSocio", cascade = CascadeType.ALL)
+	private List<ConvContacto> convContactos;
 
 	public UsrSocio() {
 	}
@@ -415,7 +433,7 @@ public class UsrSocio implements Serializable {
 	public void setUrlFoto(String urlFoto) {
 		this.urlFoto = urlFoto;
 	}
-	
+
 	public List<FinPrestamoSocio> getFinPrestamoSocios() {
 		return this.finPrestamoSocios;
 	}
@@ -461,6 +479,7 @@ public class UsrSocio implements Serializable {
 	public void setPlanContratoComites(List<PlanContratoComite> planContratoComites) {
 		this.planContratoComites = planContratoComites;
 	}
+
 	public PlanContratoComite addPlanContratoComite(PlanContratoComite planContratoComite) {
 		getPlanContratoComites().add(planContratoComite);
 		planContratoComite.setUsrSocio(this);
@@ -471,5 +490,78 @@ public class UsrSocio implements Serializable {
 		getPlanContratoComites().remove(planContratoComite);
 		planContratoComite.setUsrSocio(null);
 		return planContratoComite;
+	}
+
+	public BigDecimal getCajaAhorro() {
+		return cajaAhorro;
+	}
+
+	public void setCajaAhorro(BigDecimal cajaAhorro) {
+		this.cajaAhorro = cajaAhorro;
+	}
+
+	public BigDecimal getFondoCesantia() {
+		return fondoCesantia;
+	}
+
+	public void setFondoCesantia(BigDecimal fondoCesantia) {
+		this.fondoCesantia = fondoCesantia;
+	}
+
+	public List<ConvContacto> getConvContactos() {
+		return convContactos;
+	}
+
+	public void setConvContactos(List<ConvContacto> convContactos) {
+		this.convContactos = convContactos;
+	}
+	public ConvContacto addConvContacto(ConvContacto convContacto) {
+		getConvContactos().add(convContacto);
+		convContacto.setUsrSocio(this);
+		return convContacto;
+	}
+
+	public ConvContacto removeConvContacto(ConvContacto convContacto) {
+		getConvContactos().remove(convContacto);
+		convContacto.setUsrSocio(null);
+		return convContacto;
+	}
+
+	public List<ConvValorMax> getConvValorMaxs() {
+		return convValorMaxs;
+	}
+
+	public void setConvValorMaxs(List<ConvValorMax> convValorMaxs) {
+		this.convValorMaxs = convValorMaxs;
+	}
+	public ConvValorMax addConvValorMax(ConvValorMax convValorMax) {
+		getConvValorMaxs().add(convValorMax);
+		convValorMax.setUsrSocio(this);
+		return convValorMax;
+	}
+
+	public ConvValorMax removeConvValorMax(ConvValorMax convValorMax) {
+		getConvValorMaxs().remove(convValorMax);
+		convValorMax.setUsrSocio(null);
+		return convValorMax;
+	}
+
+	public List<AporteCliente> getAporteClientes() {
+		return aporteClientes;
+	}
+
+	public void setAporteClientes(List<AporteCliente> aporteClientes) {
+		this.aporteClientes = aporteClientes;
+	}
+	public AporteCliente addAporteCliente(AporteCliente aporteCliente) {
+		getAporteClientes().add(aporteCliente);
+		aporteCliente.setUsrSocio(this);
+		return aporteCliente;
+	}
+
+	public AporteCliente removeAporteCliente(AporteCliente aporteCliente) {
+		getAporteClientes().remove(aporteCliente);
+		aporteCliente.setUsrSocio(null);
+		return aporteCliente;
 	}
 }

@@ -42,6 +42,11 @@ public class PlanRegistroPago implements Serializable {
 	private String nombreRef;
 
 	private BigDecimal total;
+	
+	@Column(name="valor_adicional")
+	private BigDecimal valorAdicional;
+	
+	private String observacion;
 
 	@Column(name="valor_plan")
 	private BigDecimal valorPlan;
@@ -50,6 +55,11 @@ public class PlanRegistroPago implements Serializable {
 	@ManyToOne
 	@JoinColumn(name="id_contrato")
 	private PlanContratoComite planContratoComite;
+	
+	//bi-directional many-to-one association to PlanContratoComite
+	@ManyToOne
+	@JoinColumn(name="id_plan_pagos")
+	private PlanPago planPago;
 
 	public PlanRegistroPago() {
 	}
@@ -142,4 +152,28 @@ public class PlanRegistroPago implements Serializable {
 		this.planContratoComite = planContratoComite;
 	}
 
+	public PlanPago getPlanPago() {
+		return planPago;
+	}
+
+	public void setPlanPago(PlanPago planPago) {
+		this.planPago = planPago;
+	}
+
+	public BigDecimal getValorAdicional() {
+		return valorAdicional;
+	}
+
+	public void setValorAdicional(BigDecimal valorAdicional) {
+		this.valorAdicional = valorAdicional;
+	}
+
+	public String getObservacion() {
+		return observacion;
+	}
+
+	public void setObservacion(String observacion) {
+		this.observacion = observacion;
+	}
+	
 }

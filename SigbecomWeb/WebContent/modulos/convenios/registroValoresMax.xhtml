@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://java.sun.com/jsf/html" xmlns:f="http://java.sun.com/jsf/core" xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:p="http://primefaces.org/ui">
+
+<h:head>
+	<f:event type="preRenderView" listener="#{controlFormularios.verificarSesion()}" />
+	<f:facet name="first">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0"/>
+        <meta name="apple-mobile-web-app-capable" content="yes" />
+    </f:facet>
+        <title><ui:insert name="title">Beneficios</ui:insert></title>
+        <h:outputScript name="js/nanoscroller.js" library="california-layout" />
+        <h:outputScript name="js/layout.js" library="california-layout" />
+        <h:outputStylesheet library="css" name="theme.css"/>
+</h:head>
+
+<h:body styleClass="main-body" onload="#{frmRegistroValoresMax.init()}">
+
+        <div class="layout-wrapper #{guestPreferences.menuLayout != 'static' ? guestPreferences.menuLayout : null}">
+            <ui:include src="/affordances/megamenu.xhtml" />
+            <ui:include src="/affordances/topbar.xhtml" />
+            <ui:include src="/affordances/sidebar.xhtml" />
+            <ui:include src="/affordances/right-sidebar.xhtml" />
+			<div class="layout-main">
+                <div class="route-bar">
+                    <div class="route-bar-breadcrumb">
+                        <i class="fa fa-home"></i> <span>/CONVENIOS/Registro Socios Montos Maximos</span>
+                        <ui:insert name="viewname" />
+                    </div>
+					<ui:include src="/affordances/route-bar-menu.xhtml" />
+                </div>
+				<div class="layout-main-content" align="center">
+                    <H1>MONTOS MAXIMOS</H1>
+                    <h:form id="form1">
+	                    <p:growl id="growl" showDetail="true" sticky="true" />
+						<p:panel header="Seleccionar Convenio" toggleable="true" collapsed="true">
+							<p:panelGrid columns="2" styleClass="ui-noborder">
+								<p:outputLabel value="Seleccione Socio:"/>
+								<p:selectOneMenu id="nom" required="true" value="#{frmRegistroValoresMax.cedulaSocio}"
+												 filter="true" filterMatchMode="contains">
+				                    <f:selectItem itemLabel="Seleccione Cliente"
+											noSelectionOption="true" />
+				                    <f:selectItems value="#{frmRegistroValoresMax.lstUsrSocio}" var="dat"
+				                    			itemLabel="#{dat.cedulaSocio} #{dat.gesPersona.apellidos} #{dat.gesPersona.nombres}" itemValue="#{dat.cedulaSocio}"/>
+				             		<p:ajax event="change" update="form1:valMax"
+	        								oncomplete="$ (function () {PrimeFaces .focus ('form1: valMax');});"/>
+				             	</p:selectOneMenu>
+								<p:outputLabel value="Monto Maximo Permitido según hoja de Ruta:"/>
+								<p:inputNumber id="valMax" required="true" value="#{frmRegistroValoresMax.valorMax}" >
+								</p:inputNumber>
+							</p:panelGrid>
+							<p:panel>
+								<p:panelGrid>
+									<p:commandButton value="Registrar"
+										action="#{frmRegistroValoresMax.registrar()}" update="@form">
+										<p:confirm header="Confirmación"
+										message="Esta seguro de ingresar la información?"
+										icon="pi pi-exclamation-triangle" />
+									</p:commandButton>
+									<p:confirmDialog global="true" showEffect="fade" hideEffect="fade"
+											responsive="true" width="350">
+											<p:commandButton value="Si" type="button"
+												styleClass="ui-confirmdialog-yes" />
+											<p:commandButton value="No" type="button"
+												styleClass="ui-confirmdialog-no ui-button-flat" />
+									</p:confirmDialog>
+								</p:panelGrid>
+								
+							</p:panel>
+						</p:panel>
+	                    <p:separator/>
+	                </h:form>
+	                <h:form id="form2">
+	                	<p:growl id="growl" showDetail="true" sticky="true" />
+	                	<p:panel id="pnl"  header="MIS CONVENIOS">
+						<div class="card" align="right">
+						    <h:commandLink >
+						    	<p:graphicImage name="images/logo_excel.png" library="california-layout"/>
+						    	<p:dataExporter type="xls" target="tblEmp" fileName="ListRegistroValoresMax"></p:dataExporter>
+						    </h:commandLink>
+					    </div>
+					    <p:separator/>
+						<p:dataTable value="#{frmRegistroValoresMax.lstConvValorMax}"
+							id="tblEmp" editable="true" var="dato" paginator="true"
+							rows="10">
+							<p:ajax event="rowEdit" listener="#{frmRegistroValoresMax.onRowEdit}" update="form2:growl"/>
+            				<p:ajax event="rowEditCancel" listener="#{frmRegistroValoresMax.onRowCancel}" update="form2:growl"/>
+							
+							<p:column headerText="CED IDENTIDAD" filterBy="#{dato.usrSocio.cedulaSocio}">
+								<h:outputText value="#{dato.usrSocio.cedulaSocio}"/>
+							</p:column>
+							<p:column headerText="APELLIDOS">
+								<h:outputText value="#{dato.usrSocio.gesPersona.apellidos}"/>
+							</p:column>
+							<p:column headerText="NOMBRES">
+								<h:outputText value="#{dato.usrSocio.gesPersona.nombres}"/>
+				            </p:column>
+				            <p:column headerText="VALOR MAXIMO">
+								<p:cellEditor >
+				                    <f:facet name="output">
+				                        <h:outputText value="#{dato.valorMax}">
+											<f:convertNumber pattern="#0.00" />
+										</h:outputText>
+				                    </f:facet>
+				                    <f:facet name="input">
+				                        <p:inputText value="#{dato.valorMax}" style="width:100%"/>
+				                    </f:facet>
+				                </p:cellEditor>
+				            </p:column>
+				            <p:column headerText="ESTADO">
+								<p:cellEditor>
+							    	<f:facet name="output">
+							        	<h:outputText value="#{dato.estado}"/>
+							        </f:facet>
+							        <f:facet name="input">
+							            <h:selectOneMenu id="option" value="#{dato.estado}" style="width:100%">
+							            	<f:selectItem itemLabel="ACTIVAR" itemValue="ACTIVO"/>
+											<f:selectItem itemLabel="INACTIVAR" itemValue="INACTIVO"/>
+										</h:selectOneMenu>
+							        </f:facet>
+							        </p:cellEditor>
+				            </p:column>
+							<p:column width="6" exportable="false">
+									<!-- <p:rowEditor rendered="false" -->
+									<p:rowEditor editTitle="Edit Row" cancelTitle="Cancel Edit" saveTitle="Save Row"/>
+				            </p:column>
+						</p:dataTable>
+					</p:panel>
+	                </h:form>
+<!-- Inicio de Dialogs -->
+
+
+<p:dialog
+	header="REGISTRO DE CONTACTO"  resizable="false" closable="true"
+	widgetVar="dlgReg" modal="true" position="center"
+	hideEffect="fade" >
+	
+</p:dialog>
+
+<!-- Fin de Dialogs -->
+                </div>
+				<ui:include src="/affordances/footer.xhtml" />
+            </div>
+        </div>
+		
+        <p:ajaxStatus style="width:32px;height:32px;position:fixed;right:7px;bottom:7px">
+           <f:facet name="start">
+               <i class="fa fa-circle-o-notch fa-spin ajax-loader" aria-hidden="true"></i>
+           </f:facet>
+
+           <f:facet name="complete">
+               <h:outputText value="" />
+           </f:facet>
+       </p:ajaxStatus>
+
+        <h:outputStylesheet name="css/nanoscroller.css" library="california-layout" />
+        <h:outputStylesheet name="css/layout-#{guestPreferences.theme}.css" library="california-layout" />
+    </h:body>
+</html>
+																							

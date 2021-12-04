@@ -15,7 +15,7 @@
         <h:outputStylesheet library="css" name="theme.css"/>
 </h:head>
 
-<h:body styleClass="main-body">
+<h:body styleClass="main-body" onload="#{frmAplicarPlanMovil.init()}">
 
         <div class="layout-wrapper #{guestPreferences.menuLayout != 'static' ? guestPreferences.menuLayout : null}">
             <ui:include src="/affordances/megamenu.xhtml" />
@@ -75,13 +75,13 @@
 				                    	<p:ajax event="change" update="plan p1 p2"
 	        								listener="#{frmAplicarPlanMovil.cargarPlanesAndEquiposMoviles()}" />
 				                    </p:selectOneMenu>
-				                    <p:outputLabel  value="Seleccionar Plan Movil:" />
-									<p:selectOneMenu id="plan" value="#{frmAplicarPlanMovil.idPlanMovil}"
+				                    <p:outputLabel for="plan" value="Seleccionar Plan Movil:" />
+									<p:selectOneMenu id="plan"  value="#{frmAplicarPlanMovil.idPlanMovil}"
 													 filter="true" filterMatchMode="contains">
 				                    	<f:selectItem itemLabel="Seleccione plan móvil" noSelectionOption="true" />
 				                    	<f:selectItems value="#{frmAplicarPlanMovil.lstPlanMovils}" var="dat"
-				                    			itemLabel="#{dat.plan} #{dat.detalle}" itemValue="#{dat.idPlanMovil}"/>
-				                    	<p:ajax event="change" update="p1 p2"
+				                    			itemLabel="#{dat.plan} #{dat.precio}" itemValue="#{dat.idPlanMovil}"/>
+				                    	<p:ajax event="change" update="plan p1 p2"
 	        								listener="#{frmAplicarPlanMovil.cargarPlanMovil()}" />
 	        						</p:selectOneMenu>
 	        						<p:outputLabel  value="Plan:" />
@@ -136,7 +136,6 @@
 							<p:column headerText="TIPO SOCIO">
 								<h:outputText value="#{dato.usrTipoSocio.nombre}"/>
 							</p:column>
-							
 							<p:rowExpansion>
 								<p:panel>
 									<p:dataTable value="#{dato.planContratoComites}"  
@@ -165,9 +164,16 @@
 											<h:outputText value="#{con.lineaTelefono}" />
 										</p:column>
 										<p:column headerText="VALOR PLAN" >
-											<h:outputText value="#{con.valorPlan}" >
-												<f:convertNumber pattern="#0.00" />
-											</h:outputText>
+											<p:cellEditor>
+							                    <f:facet name="output">
+							                        <h:outputText value="#{con.valorPlan}" >
+														<f:convertNumber pattern="#0.00" />
+													</h:outputText>
+							                    </f:facet>
+							                    <f:facet name="input">
+							                        <p:inputNumber value="#{con.valorPlan}" style="width:100%"/>
+							                    </f:facet>
+							                </p:cellEditor>
 										</p:column>
 										<p:column headerText="COSTO ADMINISTRATIVO" >
 											<h:outputText value="#{con.planCostosAdm.administracion.add(con.planCostosAdm.cargo).add(con.planCostosAdm.costoLinea)}" />
@@ -179,12 +185,16 @@
 							                    </f:facet>
 							                    <f:facet name="input">
 							                        <h:selectOneMenu id="option" value="#{con.estado}" style="width:100%">
-												       <f:selectItem itemLabel="RENOVADO" itemValue="RENOVADO"/>
-												       <f:selectItem itemLabel="INACTIVO" itemValue="INACTIVO"/>
+												       <f:selectItem itemLabel="ACTIVAR" itemValue="ACTIVO"/>
+												       <f:selectItem itemLabel="INACTIVAR" itemValue="INACTIVO"/>
 												    </h:selectOneMenu>
 							                    </f:facet>
 							                </p:cellEditor>
 										</p:column>
+										<p:column width="17">
+											<p:commandButton icon="fa fa-times-circle" action="#{frmAplicarPlanMovil.eliminarContratoComite(con)}"
+													update="@form"/>
+							            </p:column>
 										<p:column width="6">
 												<p:rowEditor editTitle="Edit Row" cancelTitle="Cancel Edit" saveTitle="Save Row"/>
 							            </p:column>

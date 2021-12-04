@@ -1,0 +1,331 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with Jaspersoft Studio version 6.6.0.final using JasperReports Library version 6.6.0  -->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="factura" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="da75a5a0-8255-47e2-a2ba-d159d3fe2fff">
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="One Empty Record"/>
+	<parameter name="nombreSocio" class="java.lang.String"/>
+	<parameter name="cedulaSocio" class="java.lang.String"/>
+	<parameter name="codEmpelado" class="java.lang.String"/>
+	<parameter name="fecha" class="java.lang.String"/>
+	<parameter name="tasa" class="java.lang.String"/>
+	<parameter name="capital" class="java.lang.String"/>
+	<parameter name="plazo" class="java.lang.String"/>
+	<parameter name="cuota" class="java.lang.String"/>
+	<parameter name="capitalDeuda" class="java.lang.String"/>
+	<parameter name="tipoCredito" class="java.lang.String"/>
+	<queryString>
+		<![CDATA[]]>
+	</queryString>
+	<field name="finCuotasDescontadas" class="java.util.List">
+		<fieldDescription><![CDATA[finCuotasDescontadas]]></fieldDescription>
+	</field>
+	<field name="capital" class="java.math.BigDecimal">
+		<fieldDescription><![CDATA[capital]]></fieldDescription>
+	</field>
+	<field name="idTablaAmortizacion" class="java.lang.Long">
+		<fieldDescription><![CDATA[idTablaAmortizacion]]></fieldDescription>
+	</field>
+	<field name="numeroCuota" class="java.math.BigDecimal">
+		<fieldDescription><![CDATA[numeroCuota]]></fieldDescription>
+	</field>
+	<field name="finPrestamoSocio" class="ec.com.model.dao.entity.FinPrestamoSocio">
+		<fieldDescription><![CDATA[finPrestamoSocio]]></fieldDescription>
+	</field>
+	<field name="valorCuota" class="java.math.BigDecimal">
+		<fieldDescription><![CDATA[valorCuota]]></fieldDescription>
+	</field>
+	<field name="fechaPago" class="java.util.Date">
+		<fieldDescription><![CDATA[fechaPago]]></fieldDescription>
+	</field>
+	<field name="finEstadoCuota" class="ec.com.model.dao.entity.FinEstadoCuota">
+		<fieldDescription><![CDATA[finEstadoCuota]]></fieldDescription>
+	</field>
+	<field name="saldoCapital" class="java.math.BigDecimal">
+		<fieldDescription><![CDATA[saldoCapital]]></fieldDescription>
+	</field>
+	<field name="interes" class="java.math.BigDecimal">
+		<fieldDescription><![CDATA[interes]]></fieldDescription>
+	</field>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="65">
+			<staticText>
+				<reportElement x="20" y="0" width="535" height="30" uuid="a1b76b60-5db2-4da7-b3c0-134e761683af"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="18" isBold="true"/>
+				</textElement>
+				<text><![CDATA[COMITE DE EMPRESA]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="20" y="32" width="535" height="30" uuid="0dded362-d625-4cba-83ad-234628277783"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="16" isBold="true"/>
+				</textElement>
+				<text><![CDATA[TABLA DE AMORTIZACIÓN DE PRESTAMO]]></text>
+			</staticText>
+		</band>
+	</title>
+	<pageHeader>
+		<band height="91">
+			<staticText>
+				<reportElement x="0" y="0" width="50" height="15" uuid="f4b81385-5137-447b-a63f-d145e1ff81b5"/>
+				<textElement>
+					<paragraph tabStopWidth="45"/>
+				</textElement>
+				<text><![CDATA[Nombre:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="0" y="15" width="50" height="15" uuid="fed83e23-e2f8-47cd-a5a9-aeae76130d6c"/>
+				<textElement>
+					<paragraph tabStopWidth="45"/>
+				</textElement>
+				<text><![CDATA[Fecha:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="0" y="30" width="50" height="15" uuid="dd7873bf-2ccd-4102-8aa6-538bdec1b535"/>
+				<textElement>
+					<paragraph tabStopWidth="45"/>
+				</textElement>
+				<text><![CDATA[Tasa:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="0" y="45" width="50" height="15" uuid="c92a7f04-fadf-4ec3-92e4-ddb8111ad1fd"/>
+				<textElement>
+					<paragraph tabStopWidth="45"/>
+				</textElement>
+				<text><![CDATA[Capital:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="0" y="60" width="50" height="15" uuid="b531329e-4607-4d73-878e-97c9363a6cca"/>
+				<textElement>
+					<paragraph tabStopWidth="45"/>
+				</textElement>
+				<text><![CDATA[Plazo:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="0" y="75" width="50" height="15" uuid="262b1f10-7e16-41d5-bc1b-9ee1a80a9f8f"/>
+				<textElement>
+					<paragraph tabStopWidth="45"/>
+				</textElement>
+				<text><![CDATA[Cuota:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="280" y="0" width="50" height="15" uuid="f071b18c-3ca0-4f24-a1db-fc74471fee19"/>
+				<textElement>
+					<paragraph tabStopWidth="45"/>
+				</textElement>
+				<text><![CDATA[Código:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="280" y="30" width="100" height="15" uuid="d0176750-da33-47b0-beee-8f2c3d518804"/>
+				<textElement>
+					<paragraph tabStopWidth="45"/>
+				</textElement>
+				<text><![CDATA[Capital Deuda:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="280" y="45" width="100" height="15" uuid="29494369-8102-4f54-8767-7e3f4d4ee6c2"/>
+				<textElement>
+					<paragraph tabStopWidth="45"/>
+				</textElement>
+				<text><![CDATA[Tipo Credito:]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="50" y="0" width="210" height="15" uuid="6c422bbc-1d2b-4690-9045-3496ffd66963"/>
+				<textFieldExpression><![CDATA[$P{nombreSocio}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="280" y="15" width="50" height="15" uuid="84f1baa2-4915-40e7-a642-be25ce9cac0d"/>
+				<textElement>
+					<paragraph tabStopWidth="45"/>
+				</textElement>
+				<text><![CDATA[Cédula:]]></text>
+			</staticText>
+			<textField isBlankWhenNull="true">
+				<reportElement x="330" y="0" width="210" height="15" uuid="4b440fec-913c-45c8-8f1c-834230a48193"/>
+				<textFieldExpression><![CDATA[$P{codEmpelado}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="330" y="15" width="210" height="15" uuid="0a4c66b8-0bba-4cf0-922d-28541147209b"/>
+				<textFieldExpression><![CDATA[$P{cedulaSocio}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="50" y="15" width="210" height="15" uuid="16c0e8c6-1aad-4924-8f61-c11625706ed8"/>
+				<textFieldExpression><![CDATA[$P{fecha}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="50" y="30" width="210" height="15" uuid="05d0afb5-fe3f-47ae-a37e-3df45ef61bf3"/>
+				<textFieldExpression><![CDATA[$P{tasa}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0.00#;#,##0.00#-">
+				<reportElement x="50" y="45" width="210" height="15" uuid="ab8909e7-922d-47aa-be7e-ff1c99456aaf"/>
+				<textFieldExpression><![CDATA[$P{capital}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="50" y="60" width="210" height="15" uuid="08d3de05-978d-4c77-b3ed-e08d8627b159"/>
+				<textFieldExpression><![CDATA[$F{numeroCuota}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0.00#;#,##0.00#-">
+				<reportElement x="50" y="75" width="210" height="15" uuid="e48b2a1a-f08b-4c59-9bb6-23ec11275500"/>
+				<textFieldExpression><![CDATA[$F{valorCuota}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0.00#;#,##0.00#-">
+				<reportElement x="380" y="30" width="160" height="15" uuid="fd3ac799-6573-449b-815b-13dded023499"/>
+				<textFieldExpression><![CDATA[$P{capitalDeuda}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0.00#;#,##0.00#-">
+				<reportElement x="380" y="45" width="160" height="15" uuid="0916c051-d56f-4d90-bb21-39571ade13e1"/>
+				<textFieldExpression><![CDATA[$P{tipoCredito}]]></textFieldExpression>
+			</textField>
+		</band>
+	</pageHeader>
+	<columnHeader>
+		<band height="19">
+			<staticText>
+				<reportElement x="30" y="2" width="50" height="15" uuid="346a31c8-d501-4d90-b793-06fbe9428699"/>
+				<box>
+					<leftPen lineWidth="1.0"/>
+					<rightPen lineWidth="1.0"/>
+				</box>
+				<textElement>
+					<paragraph tabStopWidth="45"/>
+				</textElement>
+				<text><![CDATA[N° Cuota]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="80" y="2" width="60" height="15" uuid="15326f2f-a9c7-4293-b9ff-2eaef7f7f07f"/>
+				<box>
+					<leftPen lineWidth="1.0"/>
+					<rightPen lineWidth="1.0"/>
+				</box>
+				<textElement textAlignment="Center">
+					<paragraph tabStopWidth="45"/>
+				</textElement>
+				<text><![CDATA[Fecha Pago]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="140" y="2" width="70" height="15" uuid="46cb97a1-580d-40bd-abff-e708d5beeba7"/>
+				<box>
+					<leftPen lineWidth="1.0"/>
+					<rightPen lineWidth="1.0"/>
+				</box>
+				<textElement textAlignment="Center">
+					<paragraph tabStopWidth="45"/>
+				</textElement>
+				<text><![CDATA[Estado Cuota]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="210" y="2" width="70" height="15" uuid="508d70df-a579-4a39-823d-7885b8e350e7"/>
+				<box>
+					<leftPen lineWidth="1.0"/>
+					<rightPen lineWidth="1.0"/>
+				</box>
+				<textElement textAlignment="Center">
+					<paragraph tabStopWidth="45"/>
+				</textElement>
+				<text><![CDATA[Pago Capital]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="280" y="2" width="70" height="15" uuid="9f9cc0a6-b649-4dbf-85fa-fe7d817fc375"/>
+				<box>
+					<leftPen lineWidth="1.0"/>
+					<rightPen lineWidth="1.0"/>
+				</box>
+				<textElement textAlignment="Center">
+					<paragraph tabStopWidth="45"/>
+				</textElement>
+				<text><![CDATA[Pago Interes]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="350" y="2" width="80" height="15" uuid="29adc7b0-8cbf-4ce5-8538-26d89662c6e6"/>
+				<box>
+					<leftPen lineWidth="1.0"/>
+					<rightPen lineWidth="1.0"/>
+				</box>
+				<textElement textAlignment="Center">
+					<paragraph tabStopWidth="45"/>
+				</textElement>
+				<text><![CDATA[Cuota Mensual]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="430" y="2" width="80" height="15" uuid="1f4f443c-5756-4b17-a148-b0da46cf131c"/>
+				<box>
+					<leftPen lineWidth="1.0"/>
+					<rightPen lineWidth="1.0"/>
+				</box>
+				<textElement textAlignment="Center">
+					<paragraph tabStopWidth="45"/>
+				</textElement>
+				<text><![CDATA[Saldo Capital]]></text>
+			</staticText>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="20">
+			<textField>
+				<reportElement x="30" y="0" width="50" height="15" uuid="289d7b2a-3385-4a1d-96fb-14e45d2657ea"/>
+				<box>
+					<leftPen lineWidth="1.0"/>
+					<rightPen lineWidth="1.0"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$F{numeroCuota}]]></textFieldExpression>
+			</textField>
+			<textField pattern="MM/dd/yyyy">
+				<reportElement x="80" y="0" width="60" height="15" uuid="e72c2b52-6cd8-41df-a3bd-103d140827f2"/>
+				<box>
+					<leftPen lineWidth="1.0"/>
+					<rightPen lineWidth="1.0"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$F{fechaPago}]]></textFieldExpression>
+			</textField>
+			<textField pattern="MM/dd/yyyy" isBlankWhenNull="true">
+				<reportElement x="140" y="0" width="70" height="15" uuid="ce4d9cea-19d2-4a9c-89a3-61becd63694d"/>
+				<box>
+					<leftPen lineWidth="1.0"/>
+					<rightPen lineWidth="1.0"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$F{finEstadoCuota}.getDescripcion()]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0.00#;#,##0.00#-">
+				<reportElement x="210" y="0" width="70" height="15" uuid="acd5fcd3-6f30-4194-a5aa-19dbcd3022f7"/>
+				<box>
+					<leftPen lineWidth="1.0"/>
+					<rightPen lineWidth="1.0"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$F{capital}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0.00#;#,##0.00#-">
+				<reportElement x="280" y="0" width="70" height="15" uuid="e1b973e4-4cf1-46d0-b3fe-3f55dcce2ff9"/>
+				<box>
+					<leftPen lineWidth="1.0"/>
+					<rightPen lineWidth="1.0"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$F{interes}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0.00#;#,##0.00#-">
+				<reportElement x="350" y="0" width="80" height="15" uuid="be412b34-2118-412a-9914-79bed29af7f2"/>
+				<box>
+					<leftPen lineWidth="1.0"/>
+					<rightPen lineWidth="1.0"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$F{valorCuota}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0.00#;#,##0.00#-">
+				<reportElement x="430" y="0" width="80" height="15" uuid="94cf07df-d6fc-484d-b18e-d0e49b6ee945"/>
+				<box>
+					<leftPen lineWidth="1.0"/>
+					<rightPen lineWidth="1.0"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$F{saldoCapital}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+</jasperReport>

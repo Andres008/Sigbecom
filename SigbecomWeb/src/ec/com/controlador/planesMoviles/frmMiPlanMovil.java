@@ -11,7 +11,10 @@ import javax.inject.Inject;
 import javax.inject.Named;
 
 import ec.com.controlador.sesion.BeanLogin;
+import ec.com.model.dao.entity.PlanAmortEquipmov;
+import ec.com.model.dao.entity.PlanContratoComite;
 import ec.com.model.dao.entity.PlanPago;
+import ec.com.model.dao.entity.PlanRegistroPago;
 import ec.com.model.modulos.util.JSFUtil;
 import ec.com.model.planesMoviles.ManagerPlanesMoviles;
 
@@ -28,20 +31,79 @@ public class frmMiPlanMovil implements Serializable{
 	private BeanLogin beanLogin;
 	
 	private List<PlanPago> lstPlanPago;
+	private List<PlanContratoComite> lstPlanContratoCom;
 
 	@PostConstruct
 	public void init() {
 		lstPlanPago = new ArrayList<PlanPago>();
+		lstPlanContratoCom = new ArrayList<PlanContratoComite>();
 		cargarMisPlanesMoviles();
 	}
 	
 	public void cargarMisPlanesMoviles() {
 		try {
-			lstPlanPago = managerPlanesMoviles.findAllPlanPago();
+			String cedula = beanLogin.getCredencial().getObjUsrSocio().getCedulaSocio();
+			lstPlanPago = managerPlanesMoviles.findAllPlanPagoByCedula(cedula);
+			lstPlanContratoCom = managerPlanesMoviles.findPlanContratoComiteByCedula(cedula);
+			
+			for (PlanPago planPago : lstPlanPago) {
+				List<PlanAmortEquipmov> lstPlanEquipos = managerPlanesMoviles.findAllAmortEquipmovByIdPlanPagos(planPago.getIdPlanPagos());
+				if(lstPlanEquipos!=null) {
+					planPago.setPlanAmortEquipmovs(lstPlanEquipos);
+				}
+				List<PlanRegistroPago> lstPlanRegistro = managerPlanesMoviles.findAllPlanRegistroPagoByIdPlanPagos(planPago.getIdPlanPagos());
+				if(lstPlanRegistro!=null) {
+					planPago.setPlanRegistroPagos(lstPlanRegistro);
+				}
+			}
 		} catch (Exception e) {
 			JSFUtil.crearMensajeERROR("No se cargo el listado correctamente");
 			e.printStackTrace();
 		}
+	}
+	public String convertirMes(int mes) {
+		String mesAlfanumerico="";
+		switch (mes) {
+		case 1:
+			mesAlfanumerico = "ENERO";
+			break;
+		case 2:
+			mesAlfanumerico = "FEBRERO";
+			break;
+		case 3:
+			mesAlfanumerico = "MARZO";
+			break;
+		case 4:
+			mesAlfanumerico = "ABRIL";
+			break;
+		case 5:
+			mesAlfanumerico = "MAYO";
+			break;
+		case 6:
+			mesAlfanumerico = "JUNIO";
+			break;
+		case 7:
+			mesAlfanumerico = "JULIO";
+			break;
+		case 8:
+			mesAlfanumerico = "AGOSTO";
+			break;
+		case 9:
+			mesAlfanumerico = "SEPTIEMBRE";
+			break;
+		case 10:
+			mesAlfanumerico = "OCTUBRE";
+			break;
+		case 11:
+			mesAlfanumerico = "NOVIEMBRE";
+			break;
+		case 12:
+			mesAlfanumerico = "DICIEMBRE";
+			break;
+		default:
+			break;
+		}
+		return mesAlfanumerico;
 	}
 	public BeanLogin getBeanLogin() {
 		return beanLogin;
@@ -57,6 +119,14 @@ public class frmMiPlanMovil implements Serializable{
 
 	public void setLstPlanPago(List<PlanPago> lstPlanPago) {
 		this.lstPlanPago = lstPlanPago;
+	}
+
+	public List<PlanContratoComite> getLstPlanContratoCom() {
+		return lstPlanContratoCom;
+	}
+
+	public void setLstPlanContratoCom(List<PlanContratoComite> lstPlanContratoCom) {
+		this.lstPlanContratoCom = lstPlanContratoCom;
 	}
 	
 }

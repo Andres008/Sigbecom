@@ -78,30 +78,26 @@
 				<ui:include src="/affordances/route-bar-menu.xhtml" />
 			</div>
 			<div class="layout-main-content" align="center">
-				<H1>ACTUALIZACIÓN DATOS</H1>
+				<H1>Datos Personales</H1>
 				<h:form id="principal">
 					<p:growl id="growl" showDetail="true" sticky="true" />
+					<p:panel header="Datos Económicos">
+						<p:panelGrid columns="4" styleClass="ui-noborder">
+							<p:outputLabel value="Ahorros" />
+							<p:outputLabel
+								value="#{controladorGestionSocios.objUsrSocio.cajaAhorro}" />
+							<p:outputLabel value="Fondo de Cesantía" />
+							<p:outputLabel
+								value="#{controladorGestionSocios.objUsrSocio.fondoCesantia}" />
+						</p:panelGrid>
+					</p:panel>
 					<p:panel header="Actualización de Datos">
 						<p:wizard flowListener="#{controladorGestionSocios.onFlowProcess}"
 							backLabel="Regresar" nextLabel="Siguiente">
-							<p:tab id="datosPersonales" title="Datos Personales">
-								<p:confirmDialog global="true" showEffect="fade"
-									hideEffect="fade" responsive="true" width="350">
-									<p:commandButton value="Si" type="button"
-										styleClass="ui-confirmdialog-yes" />
-									<p:commandButton value="No" type="button"
-										styleClass="ui-confirmdialog-no ui-button-flat" />
-								</p:confirmDialog>
-								<p:commandButton value="Guardar" icon="ui-icon-disk"
-									update="@form" process="@this"
-									actionListener="#{controladorGestionSocios.actualizarPersonaSocio()}">
-									<p:confirm header="Confirmación"
-										message="Desea finalizar la actualización de datos personales?"
-										icon="pi pi-exclamation-triangle" />
-								</p:commandButton>
+							<p:tab id="datosPersonales" title="Fotografia">
 								<p:panelGrid columns="1" styleClass="ui-noborder">
-									<p:graphicImage id="imgFoto" cache="false" height="184" width="148"
-										value="#{beanLogin.cargarFotografia()}"
+									<p:graphicImage id="imgFoto" cache="false" height="184"
+										width="148" value="#{beanLogin.cargarFotografia()}"
 										library="california-layout" />
 									<p:fileUpload mode="advanced" label="Cambiar Fotografia"
 										invalidFileMessage="Error en el formato de la imagen."
@@ -110,12 +106,12 @@
 										listener="#{controladorGestionSocios.handleFileUpload}">
 									</p:fileUpload>
 								</p:panelGrid>
+							</p:tab>
+							<p:tab id="datosPersonales2" title="Datos Personales">
 								<p:panelGrid columns="6" styleClass="ui-noborder">
-									<p:outputLabel value="Cédula" />
-									<p:outputLabel
-										value="#{controladorGestionSocios.objUsrSocio.cedulaSocio}" />
 									<p:outputLabel value="Código Rol" />
-									<p:inputNumber minValue="1" maxValue="3000"
+									<p:inputNumber minValue="1" maxValue="3000" decimalPlaces="0"
+										decimalSeparator=""
 										value="#{controladorGestionSocios.objUsrSocio.idSocio}">
 										<p:ajax update="@form" process="@this" />
 									</p:inputNumber>
@@ -135,11 +131,17 @@
 										<p:keyFilter regEx="/[QWERTYUIOPÑLKJHGFDSAZXCVBNMÁÉÍÓÚ ]/i" />
 										<p:ajax update="@form" process="@this" />
 									</p:inputText>
+									<p:outputLabel value="Fecha Nacimiento" />
+									<p:calendar required="true" id="feNac" pattern="dd/MM/yyyy" placeholder="dd/MM/yyyy"
+										 mask="99/99/9999" showOn="false"
+										value="#{controladorGestionSocios.objUsrSocio.gesPersona.fechaNac}">
+										<p:ajax update="@form" process="@this"/>
+									</p:calendar>
 									<p:outputLabel value="Estado Civil" />
 									<p:selectOneMenu
 										value="#{controladorGestionSocios.objUsrSocio.gesPersona.gesEstadoCivil.idEstadoCivil}"
 										required="true">
-										<f:selectItem itemLabel="Estado Civil"
+										<f:selectItem itemLabel="Estado Civil" itemValue="0"
 											noSelectionOption="true" />
 										<f:selectItems
 											value="#{controladorGestionUsuario.lstSiEstadoCivil()}" />
@@ -149,7 +151,8 @@
 									<p:selectOneMenu
 										value="#{controladorGestionSocios.objUsrSocio.gesPersona.gesGenero.idGenero}"
 										required="true">
-										<f:selectItem itemLabel="Género" noSelectionOption="true" />
+										<f:selectItem itemLabel="Género" noSelectionOption="true"
+											itemValue="0" />
 										<f:selectItems
 											value="#{controladorGestionUsuario.lstSiGenero()}" />
 										<p:ajax update="@form" process="@this" />
@@ -157,8 +160,8 @@
 									<p:outputLabel value="Tipo de Sangre" />
 									<p:selectOneMenu
 										value="#{controladorGestionSocios.objUsrSocio.gesPersona.gesTipoSangre.idTipoSangre}"
-										required="true">
-										<f:selectItem itemLabel="Tipo de Sangre"
+										itemValue="0" required="true">
+										<f:selectItem itemLabel="Tipo de Sangre" itemValue="0"
 											noSelectionOption="true" />
 										<f:selectItems
 											value="#{controladorGestionUsuario.lstSiTipoSangre()}" />
@@ -168,22 +171,16 @@
 									<p:selectOneMenu
 										value="#{controladorGestionSocios.objUsrSocio.gesPersona.gesEtnia.idEtnia}"
 										required="true">
-										<f:selectItem itemLabel="Etnia" noSelectionOption="true" />
+										<f:selectItem itemLabel="Etnia" itemValue="0"
+											noSelectionOption="true" />
 										<f:selectItems
 											value="#{controladorGestionUsuario.lstSiEtnia()}" />
 										<p:ajax update="@form" process="@this" />
 									</p:selectOneMenu>
-									<p:outputLabel value="Fecha Nacimiento" />
-									<p:calendar required="true" id="restricted"
-										value="#{controladorGestionSocios.objUsrSocio.gesPersona.fechaNac}"
-										navigator="true" locale="es" mindate="1/1/1900"
-										maxdate="today" mask="99/99/9999" pattern="dd/MM/yyyy">
-										<p:ajax update="@form" process="@this" />
-									</p:calendar>
 									<p:outputLabel value="Telefono" />
 									<p:inputText
 										value="#{controladorGestionSocios.objUsrSocio.gesPersona.telefono}"
-										placeholder="Cédula" required="true"
+										placeholder="Telefono" required="true"
 										style="text-transform: uppercase">
 										<p:keyFilter regEx="/[0123456789]/i" />
 										<p:ajax update="@form" process="@this" />
@@ -196,7 +193,20 @@
 										<p:ajax update="@form" process="@this" />
 									</p:inputText>
 								</p:panelGrid>
-
+								<p:confirmDialog global="true" showEffect="fade"
+									hideEffect="fade" responsive="true" width="350">
+									<p:commandButton value="Si" type="button"
+										styleClass="ui-confirmdialog-yes" />
+									<p:commandButton value="No" type="button"
+										styleClass="ui-confirmdialog-no ui-button-flat" />
+								</p:confirmDialog>
+								<p:commandButton value="Guardar" icon="ui-icon-disk"
+									update="@form" process="@this"
+									actionListener="#{controladorGestionSocios.actualizarPersonaSocio()}">
+									<p:confirm header="Confirmación"
+										message="Desea finalizar la actualización de datos personales?"
+										icon="pi pi-exclamation-triangle" />
+								</p:commandButton>
 							</p:tab>
 							<p:tab id="datosDiscapacidad" title="Datos Discapacidad">
 								<p:confirmDialog global="true" showEffect="fade"
@@ -245,7 +255,7 @@
 								<p:dialog header="Registrar Discapacidad"
 									widgetVar="infDiscapacidad" id="infDiscapacidad" modal="false"
 									position="top" showEffect="fade" hideEffect="fade"
-									resizable="false" width="90%" height="90%" >
+									resizable="false" width="90%" height="90%">
 									<p:messages id="messageDiscapacidad" showDetail="true"
 										closable="true">
 										<p:autoUpdate />

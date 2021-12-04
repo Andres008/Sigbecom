@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://java.sun.com/jsf/html" xmlns:f="http://java.sun.com/jsf/core" xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:p="http://primefaces.org/ui">
 
+
 <h:head>
 	<f:event type="preRenderView" listener="#{controlFormularios.verificarSesion()}" />
 	<f:facet name="first">
@@ -15,7 +16,7 @@
         <h:outputStylesheet library="css" name="theme.css"/>
 </h:head>
 
-<h:body styleClass="main-body">
+<h:body styleClass="main-body" onload="#{frmRegistroEmpresa.init()}">
 
         <div class="layout-wrapper #{guestPreferences.menuLayout != 'static' ? guestPreferences.menuLayout : null}">
             <ui:include src="/affordances/megamenu.xhtml" />
@@ -101,7 +102,7 @@
 				            </p:column>
 							<p:rowExpansion>
 								<p:panel style="text-align:right">
-									<p:commandButton value="Nuevo Contacto"
+									<p:commandButton value="Nuevo Contacto" update="frmReg"
 										onclick="PF('dlgReg').show();" action="#{frmRegistroEmpresa.cargarEmpresa(dato)}"
 									/>
 								</p:panel>
@@ -111,31 +112,36 @@
 										<f:facet name="header">
 								            LISTA DE CONTACTOS
 										</f:facet>
-										<p:column headerText="NOMBRES" >
-											<h:outputText value="#{con.apellidos} #{con.nombres}" />
-										</p:column>
-										<p:column headerText="CARGO">
+										<p:column headerText="CEDULA">
+								           <h:outputText value="#{con.usrSocio.cedulaSocio}"/>
+								        </p:column>
+								        <p:column headerText="APELLIDOS">
+								           <h:outputText value="#{con.usrSocio.gesPersona.apellidos}"/>
+								        </p:column>
+								        <p:column headerText="NOMBRES">
+								           <h:outputText value="#{con.usrSocio.gesPersona.nombres}"/>
+								        </p:column>
+								        <p:column headerText="CARGO">
 								           <h:outputText value="#{con.cargo}"/>
 								        </p:column>
-								        <p:column headerText="CELULAR">
-								           <h:outputText value="#{con.celular}"/>
+								       	<p:column headerText="TELEFONO">
+								           <h:outputText value="#{con.usrSocio.gesPersona.telefono}"/>
 								        </p:column>
-								        <p:column headerText="TELEFONO">
-								           <h:outputText value="#{con.telefono}"/>
-								        </p:column>
-								        <p:column headerText="CORREO">
-								           <h:outputText value="#{con.email}"/>
+								        <p:column headerText="EMAIL">
+								           <h:outputText value="#{con.usrSocio.gesPersona.email}"/>
 								        </p:column>
 									</p:dataTable>
 								</p:panel>
 								<p:panel style="text-align:right">
-									<p:commandButton value="Nuevo Servicio"
+									<p:commandButton value="Nuevo Servicio" update="frmSer"
 										onclick="PF('dlgSer').show();" action="#{frmRegistroEmpresa.cargarEmpresaServ(dato)}">
 									</p:commandButton>
 								</p:panel>
 								<p:panel>
 									<p:dataTable value="#{dato.convServicios}"
 													id="tblSer" editable="true" var="ser">
+										<p:ajax event="rowEdit" listener="#{frmRegistroEmpresa.onRowEdit}" update="form2:growl"/>
+            							<p:ajax event="rowEditCancel" listener="#{frmRegistroEmpresa.onRowCancel}" update="form2:growl"/>
 										<f:facet name="header">
 								            LISTA DE SERVICIOS
 										</f:facet>
@@ -145,19 +151,48 @@
 								        <p:column headerText="DETALLE">
 								            <h:outputText value="#{ser.detalle}"/>
 								        </p:column>
-								        <p:column headerText="MONTO_MAX">
-								            <h:outputText value="#{ser.montoMax}">
-								            	<f:convertNumber pattern="#0.00" />
-								            </h:outputText>
+								        <p:column headerText="APLICA MONTO_MAX">
+								            <p:cellEditor>
+							                    <f:facet name="output">
+							                        <h:outputText value="#{ser.montoMax}"/>
+							                    </f:facet>
+							                    <f:facet name="input">
+							                    	<h:selectOneMenu id="mo" value="#{ser.montoMax}" style="width:100%">
+														<f:selectItem itemLabel="SI" itemValue="SI"/>
+										                <f:selectItem itemLabel="NO" itemValue="NO"/>
+													</h:selectOneMenu>
+							                    </f:facet>
+							                </p:cellEditor>
 								        </p:column>
-								        <p:column headerText="INTERES">
-								            <h:outputText value="#{ser.interes}">
-								            	<f:convertNumber pattern="#0.00" />
-								            </h:outputText>
+								        <p:column headerText="% COMISION">
+								            <p:cellEditor>
+							                    <f:facet name="output">
+							                        <h:outputText value="#{ser.interes}">
+										            	<f:convertNumber pattern="#0.00" />
+										            </h:outputText>
+							                    </f:facet>
+							                    <f:facet name="input">
+							                        <p:inputText value="#{ser.interes}" style="width:100%"/>
+							                    </f:facet>
+							                </p:cellEditor>
 								        </p:column>
 								        <p:column headerText="ESTADO">
-								            <h:outputText value="#{ser.estado}"/>
+								            <p:cellEditor>
+							                    <f:facet name="output">
+							                        <h:outputText value="#{ser.estado}"/>
+							                    </f:facet>
+							                    <f:facet name="input">
+							                        <h:selectOneMenu id="mon" value="#{ser.estado}" style="width:100%">
+							                        	<f:selectItem itemLabel="Seleccione opcion" noSelectionOption="true"/>
+														<f:selectItem itemLabel="ACTIVAR" itemValue="ACTIVO"/>
+														<f:selectItem itemLabel="FINALIZAR" itemValue="FINALIZADO"/>
+										            </h:selectOneMenu>
+							                    </f:facet>
+							                </p:cellEditor>
 								        </p:column>
+								        <p:column width="6">
+												<p:rowEditor editTitle="Edit Row" cancelTitle="Cancel Edit" saveTitle="Save Row"/>
+							            </p:column>
 									</p:dataTable>
 								</p:panel>
 							</p:rowExpansion>
@@ -173,22 +208,20 @@
 	<h:form id="frmReg">
 		<p:messages id="msgReg" closable="true" showDetail="false"/>
 		<p:panelGrid columns="2">
-			<p:outputLabel for="nomb" value="Nombres:"/>
-			<p:inputText id="nomb" value="#{frmRegistroEmpresa.convContacto.nombres}" required="true"/>
-			<p:outputLabel for="ape" value="Apellidos:"/>
-			<p:inputText id="ape" value="#{frmRegistroEmpresa.convContacto.apellidos}" required="true"/>
+			<p:outputLabel for="per" value="Selecionar Servicio:" />
+			<p:selectOneMenu id="per" value="#{frmRegistroEmpresa.cedulaSocio}"
+							filter="true" filterMatchMode="contains">
+				<f:selectItem itemLabel="Selecione Representante Empresa" itemValue="0"/>
+                <f:selectItems value="#{frmRegistroEmpresa.lstUsrSocio}" var="user"
+                    itemLabel="#{user.cedulaSocio} #{user.gesPersona.apellidos} #{user.gesPersona.nombres}" 
+                    itemValue="#{user.cedulaSocio}"/>
+			</p:selectOneMenu>
 			<p:outputLabel for="car" value="Cargo:"/>
 			<p:inputText id="car" value="#{frmRegistroEmpresa.convContacto.cargo}" required="true"/>
-			<p:outputLabel for="cel" value="Celular:"/>
-			<p:inputText id="cel" value="#{frmRegistroEmpresa.convContacto.celular}" required="true"/>
-			<p:outputLabel for="tel" value="Teléfono:"/>
-			<p:inputText id="tel" value="#{frmRegistroEmpresa.convContacto.telefono}" required="true"/>
-			<p:outputLabel for="ema" value="Email:"/>
-			<p:inputText id="ema" value="#{frmRegistroEmpresa.convContacto.email}" required="true"/>
 		</p:panelGrid>
 		<p:panel>
 			<h:panelGrid columns="2" cellpadding="10">
-				<p:commandButton value="Cancelar" onclick="PF('dlgReg').hide();" update="form2 frmReg"
+				<p:commandButton value="Cancelar" onclick="PF('dlgReg').hide();"
 				action="#{frmRegistroEmpresa.init()}"/>
 				<p:commandButton value="Registrar" 
 					action="#{frmRegistroEmpresa.registrarContacto()}" update="frmReg"/>
@@ -204,17 +237,20 @@
 		<p:messages id="msgSer" closable="true" showDetail="true"/>
 		<p:panelGrid columns="2">
 			<p:outputLabel for="ser" value="Servicio:"/>
-			<p:inputText id="ser" value="#{frmRegistroEmpresa.convServicio.servicioProducto}" />
+			<p:inputText id="ser" required="true" value="#{frmRegistroEmpresa.convServicio.servicioProducto}" />
 			<p:outputLabel for="det" value="Detalle:"/>
-			<p:inputText id="det" value="#{frmRegistroEmpresa.convServicio.detalle}"/>
-			<p:outputLabel for="mon" value="Monto Máximo Permitido:"/>
-			<p:inputText id="mon" value="#{frmRegistroEmpresa.convServicio.montoMax}"/>
-			<p:outputLabel for="in" value="Interes:"/>
-			<p:inputText id="in" value="#{frmRegistroEmpresa.convServicio.interes}"/>
+			<p:inputText id="det" required="true" value="#{frmRegistroEmpresa.convServicio.detalle}"/>
+			<p:outputLabel for="mon" value="Aplica a Monto Máximo:"/>
+			<p:selectOneMenu id="mon" required="true" value="#{frmRegistroEmpresa.convServicio.montoMax}">
+				<f:selectItem itemLabel="SI" itemValue="SI"/>
+                <f:selectItem itemLabel="NO" itemValue="NO"/>
+			</p:selectOneMenu>
+			<p:outputLabel for="in" value="Porcentaje Comision:"/>
+			<p:inputText id="in" required="true" value="#{frmRegistroEmpresa.convServicio.interes}"/>
 		</p:panelGrid>
 		<p:panel>
 			<h:panelGrid columns="2" cellpadding="10">
-				<p:commandButton value="Cancelar" onclick="PF('dlgReg').hide();" update="form2 frmSer"
+				<p:commandButton value="Cancelar" onclick="PF('dlgReg').hide();" update="form2"
 					action="#{frmRegistroEmpresa.init()}"/>
 				<p:commandButton value="Registrar"
 					action="#{frmRegistroEmpresa.registrarServicio()}" update="frmSer"/>

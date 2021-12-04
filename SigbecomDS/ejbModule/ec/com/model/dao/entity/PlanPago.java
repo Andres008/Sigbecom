@@ -4,6 +4,7 @@ import java.io.Serializable;
 import javax.persistence.*;
 import java.math.BigDecimal;
 import java.util.Date;
+import java.util.List;
 
 
 /**
@@ -22,13 +23,13 @@ public class PlanPago implements Serializable {
 	@Column(name="id_plan_pagos")
 	private long idPlanPagos;
 
-	private BigDecimal ano;
+	private Integer ano;
 
 	@Temporal(TemporalType.DATE)
 	@Column(name="fecha_pago")
 	private Date fechaPago;
 
-	private BigDecimal mes;
+	private Integer mes;
 
 	@Column(name="valor_total")
 	private BigDecimal valorTotal;
@@ -42,6 +43,14 @@ public class PlanPago implements Serializable {
 	@ManyToOne
 	@JoinColumn(name="id_contrato")
 	private PlanContratoComite planContratoComite;
+	
+	//bi-directional many-to-one association to PlanAmortEquipmov
+	@OneToMany(mappedBy="planContratoComite")
+	private List<PlanAmortEquipmov> planAmortEquipmovs;
+
+	//bi-directional many-to-one association to PlanRegistroPago
+	@OneToMany(mappedBy="planContratoComite")
+	private List<PlanRegistroPago> planRegistroPagos;
 
 	public PlanPago() {
 	}
@@ -54,28 +63,12 @@ public class PlanPago implements Serializable {
 		this.idPlanPagos = idPlanPagos;
 	}
 
-	public BigDecimal getAno() {
-		return this.ano;
-	}
-
-	public void setAno(BigDecimal ano) {
-		this.ano = ano;
-	}
-
 	public Date getFechaPago() {
 		return this.fechaPago;
 	}
 
 	public void setFechaPago(Date fechaPago) {
 		this.fechaPago = fechaPago;
-	}
-
-	public BigDecimal getMes() {
-		return this.mes;
-	}
-
-	public void setMes(BigDecimal mes) {
-		this.mes = mes;
 	}
 
 	public BigDecimal getValorTotal() {
@@ -102,4 +95,62 @@ public class PlanPago implements Serializable {
 		this.planContratoComite = planContratoComite;
 	}
 
+	public Integer getAno() {
+		return ano;
+	}
+
+	public void setAno(Integer ano) {
+		this.ano = ano;
+	}
+
+	public Integer getMes() {
+		return mes;
+	}
+
+	public void setMes(Integer mes) {
+		this.mes = mes;
+	}
+	public List<PlanAmortEquipmov> getPlanAmortEquipmovs() {
+		return this.planAmortEquipmovs;
+	}
+
+	public void setPlanAmortEquipmovs(List<PlanAmortEquipmov> planAmortEquipmovs) {
+		this.planAmortEquipmovs = planAmortEquipmovs;
+	}
+
+	public PlanAmortEquipmov addPlanAmortEquipmov(PlanAmortEquipmov planAmortEquipmov) {
+		getPlanAmortEquipmovs().add(planAmortEquipmov);
+		planAmortEquipmov.setPlanPago(this);
+
+		return planAmortEquipmov;
+	}
+
+	public PlanAmortEquipmov removePlanAmortEquipmov(PlanAmortEquipmov planAmortEquipmov) {
+		getPlanAmortEquipmovs().remove(planAmortEquipmov);
+		planAmortEquipmov.setPlanPago(null);
+
+		return planAmortEquipmov;
+	}
+
+	public List<PlanRegistroPago> getPlanRegistroPagos() {
+		return this.planRegistroPagos;
+	}
+
+	public void setPlanRegistroPagos(List<PlanRegistroPago> planRegistroPagos) {
+		this.planRegistroPagos = planRegistroPagos;
+	}
+
+	public PlanRegistroPago addPlanRegistroPago(PlanRegistroPago planRegistroPago) {
+		getPlanRegistroPagos().add(planRegistroPago);
+		planRegistroPago.setPlanPago(this);
+
+		return planRegistroPago;
+	}
+
+	public PlanRegistroPago removePlanRegistroPago(PlanRegistroPago planRegistroPago) {
+		getPlanRegistroPagos().remove(planRegistroPago);
+		planRegistroPago.setPlanPago(null);
+
+		return planRegistroPago;
+	}
 }

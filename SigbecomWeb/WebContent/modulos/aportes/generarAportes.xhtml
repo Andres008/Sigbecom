@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://java.sun.com/jsf/html" xmlns:f="http://java.sun.com/jsf/core" xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:p="http://primefaces.org/ui">
+
+
+<h:head>
+	<f:event type="preRenderView" listener="#{controlFormularios.verificarSesion()}" />
+	<f:facet name="first">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0"/>
+        <meta name="apple-mobile-web-app-capable" content="yes" />
+    </f:facet>
+        <title><ui:insert name="title">Aportes</ui:insert></title>
+        <h:outputScript name="js/nanoscroller.js" library="california-layout" />
+        <h:outputScript name="js/layout.js" library="california-layout" />
+        <h:outputStylesheet library="css" name="theme.css"/>
+</h:head>
+
+<h:body styleClass="main-body" onload="#{frmGenerarAportes.init()}">
+
+        <div class="layout-wrapper #{guestPreferences.menuLayout != 'static' ? guestPreferences.menuLayout : null}">
+            <ui:include src="/affordances/megamenu.xhtml" />
+            <ui:include src="/affordances/topbar.xhtml" />
+            <ui:include src="/affordances/sidebar.xhtml" />
+            <ui:include src="/affordances/right-sidebar.xhtml" />
+			<div class="layout-main">
+                <div class="route-bar">
+                    <div class="route-bar-breadcrumb">
+                        <i class="fa fa-home"></i> <span>/APORTES/Generar Aportes</span>
+                        <ui:insert name="viewname" />
+                    </div>
+					<ui:include src="/affordances/route-bar-menu.xhtml" />
+                </div>
+				<div class="layout-main-content" align="center">
+                    <H1>GENERAR APORTES</H1>
+                    <h:form id="form1">
+	                    <p:growl id="growl" showDetail="true" sticky="true" />
+						<p:panel header="Generar Aportes Con Descuento a Roll" toggleable="true" collapsed="true">
+							<p:panelGrid columns="2" styleClass="ui-noborder">
+								<p:outputLabel value="Selecionar Mes:" />
+								<p:selectOneMenu required="true" value="#{frmGenerarAportes.mes}"
+												filter="true" filterMatchMode="contains">
+									<f:selectItem itemLabel="Seleccione Mes" noSelectionOption="true"/>
+									       <f:selectItem itemLabel="ENERO" itemValue="1"/>
+									       <f:selectItem itemLabel="FEBRERO" itemValue="2"/>
+									       <f:selectItem itemLabel="MARZO" itemValue="3"/>
+									       <f:selectItem itemLabel="ABRIL" itemValue="4"/>
+									       <f:selectItem itemLabel="MAYO" itemValue="5"/>
+									       <f:selectItem itemLabel="JUNIO" itemValue="6"/>
+									       <f:selectItem itemLabel="JULIO" itemValue="7"/>
+									       <f:selectItem itemLabel="AGOSTO" itemValue="8"/>
+									       <f:selectItem itemLabel="SEPTIEMBRE" itemValue="9"/>
+									       <f:selectItem itemLabel="OCTUBRE" itemValue="10"/>
+									       <f:selectItem itemLabel="NOVIEMBRE" itemValue="11"/>
+									       <f:selectItem itemLabel="DICIEMBRE" itemValue="12"/>
+								</p:selectOneMenu>
+								<p:outputLabel for="anio" value="Periodo:" />
+								<p:inputNumber id="anio" required="true" value="#{frmGenerarAportes.anio}"/>
+							</p:panelGrid>
+							<p:commandButton value="Generar"
+								action="#{frmGenerarAportes.generarDescuento()}" update="@form">
+								<p:confirm header="Confirmación"
+								message="Esta seguro de ingresar la información?"
+								icon="pi pi-exclamation-triangle" />
+							</p:commandButton>
+							<p:confirmDialog global="true" showEffect="fade" hideEffect="fade"
+								responsive="true" width="350">
+								<p:commandButton value="Si" type="button"
+									styleClass="ui-confirmdialog-yes" />
+								<p:commandButton value="No" type="button"
+									styleClass="ui-confirmdialog-no ui-button-flat" />
+							</p:confirmDialog>
+	                    </p:panel>
+	                    <p:separator/>
+	                </h:form>
+	                <h:form id="form2">
+	                	<p:growl id="growl" showDetail="true" sticky="true" />
+	                	<p:panel id="pnl"  header="LISTADO DE APORTES">
+						
+						<div class="card" align="right">
+						    <h:commandLink >
+						    	<p:graphicImage name="images/logo_excel.png" library="california-layout" />
+						    	<p:dataExporter type="xls" target="tblEmp" fileName="ListAportes" ></p:dataExporter>
+						    </h:commandLink>
+					</div>
+					<p:separator/>
+						
+						<p:dataTable value="#{frmGenerarAportes.lstAporteDescuento}"
+							id="tblEmp" var="dato" paginator="true"
+							rows="20">
+							
+							<p:column headerText="CEDULA" filterBy="dato.aporteCliente.usrSocio.cedulaSocio">
+								<h:outputText value="#{dato.aporteCliente.usrSocio.cedulaSocio}"/>
+							</p:column>
+							<p:column headerText="APELLIDOS">
+								<h:outputText value="#{dato.aporteCliente.usrSocio.gesPersona.apellidos}"/>
+							</p:column>
+							<p:column headerText="NOMBRES">
+								<h:outputText value="#{dato.aporteCliente.usrSocio.gesPersona.nombres}"/>
+							</p:column>
+							<p:column headerText="CUENTA DE APORTE">
+								<h:outputText value="#{dato.aporteCliente.aporteCuenta.cuenta}"/>
+							</p:column>
+							<p:column headerText="FECHA DE EMISION">
+								<h:outputText value="#{dato.fechaAporte}"/>
+							</p:column>
+							<p:column headerText="MES" filterBy="#{dato.mes}">
+								<h:outputText value="#{dato.mes}"/>
+							</p:column>
+							<p:column headerText="AÑO" filterBy="#{dato.anio}">
+								<h:outputText value="#{dato.anio}"/>
+							</p:column>
+							<p:column headerText="VALOR">
+								<h:outputText value="#{dato.valor}"/>
+							</p:column>
+							<p:column headerText="COMISION">
+								<h:outputText value="#{dato.comision}"/>
+							</p:column>
+							<p:column headerText="VALOR TOTAL">
+								<h:outputText value="#{dato.valorTotal}"/>
+							</p:column>
+							<p:column headerText="ESTADO">
+								<h:outputText value="#{dato.descEstadoDescuento.estado}"/>
+							</p:column>
+							
+							
+						</p:dataTable>
+					</p:panel>
+	                </h:form>
+<!-- Inicio de Dialogs -->
+
+<!-- Fin de Dialogs -->
+                </div>
+				<ui:include src="/affordances/footer.xhtml" />
+            </div>
+        </div>
+		
+        <p:ajaxStatus style="width:32px;height:32px;position:fixed;right:7px;bottom:7px">
+           <f:facet name="start">
+               <i class="fa fa-circle-o-notch fa-spin ajax-loader" aria-hidden="true"></i>
+           </f:facet>
+
+           <f:facet name="complete">
+               <h:outputText value="" />
+           </f:facet>
+       </p:ajaxStatus>
+
+        <h:outputStylesheet name="css/nanoscroller.css" library="california-layout" />
+        <h:outputStylesheet name="css/layout-#{guestPreferences.theme}.css" library="california-layout" />
+    </h:body>
+</html>

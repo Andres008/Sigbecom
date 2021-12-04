@@ -46,10 +46,6 @@ public class PlanContratoComite implements Serializable {
 	
 	@Column(name="estado")
 	private String estado;
-	
-	@ManyToOne
-	@JoinColumn(name="id_equipo")
-	private PlanEquipo planEquipo;
 
 	//bi-directional many-to-one association to PlanPlanMovil
 	@ManyToOne
@@ -98,13 +94,6 @@ public class PlanContratoComite implements Serializable {
 
 	public void setLineaTelefono(String lineaTelefono) {
 		this.lineaTelefono = lineaTelefono;
-	}
-	public PlanEquipo getPlanEquipo() {
-		return this.planEquipo;
-	}
-
-	public void setPlanEquipo(PlanEquipo planEquipo) {
-		this.planEquipo = planEquipo;
 	}
 
 	public PlanPlanMovil getPlanPlanMovil() {

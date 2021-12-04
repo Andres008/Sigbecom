@@ -51,30 +51,20 @@
 								oncomplete="#{controladorGestionSocios.inicializarConsultaSocio()}" />
 							<p:ajax event="rowEditCancel"
 								listener="#{controladorRol.onRowCancel}" update="@form:growl" />
-							<p:column headerText="Cédula">
+							<p:column headerText="Cédula"
+								filterBy="#{socio.gesPersona.cedula}">
 								<p:outputLabel value="#{socio.gesPersona.cedula}" />
 							</p:column>
-							<p:column headerText="Código Rol">
+							<p:column headerText="Código Rol" filterBy="#{socio.idSocio}">
 								<p:outputLabel value="#{socio.idSocio}" />
 							</p:column>
-							<p:column headerText="Nombres">
+							<p:column headerText="Nombres"
+								filterBy="#{socio.gesPersona.apellidos}">
 								<p:outputLabel
 									value="#{socio.gesPersona.apellidos} #{socio.gesPersona.nombres}" />
 							</p:column>
 							<p:column headerText="Rol">
-								<p:cellEditor>
-									<f:facet name="output">
-										<p:outputLabel value="#{socio.autRol.nombre}" />
-									</f:facet>
-									<f:facet name="input">
-										<p:selectOneMenu value="#{socio.autRol.idRol}" required="true"
-											style="color : black">
-											<f:selectItem itemLabel="Seleccione Rol"
-												noSelectionOption="true" />
-											<f:selectItems value="#{controladorMenuPerfiles.siAutRol()}" />
-										</p:selectOneMenu>
-									</f:facet>
-								</p:cellEditor>
+								<p:outputLabel value="#{socio.autRol.nombre}" />
 							</p:column>
 							<p:column headerText="Estado">
 								<p:cellEditor>
@@ -91,11 +81,12 @@
 										</p:selectOneMenu>
 									</f:facet>
 								</p:cellEditor>
-
 							</p:column>
 							<p:column headerText="Editar">
-								<p:rowEditor editTitle="Edit Row" cancelTitle="Cancel Edit"
-									saveTitle="Save Row" />
+								<p:commandButton value="Tipo Socio"
+									oncomplete="PF('infTipoSocio').show()"
+									actionListener="#{controladorGestionSocios.cargarUsrSocio(socio)}"
+									update="@form:infTipoSocio" />
 							</p:column>
 							<p:column headerText="Ver Datos Personales">
 								<p:commandButton icon="ui-icon-search"
@@ -119,8 +110,130 @@
 										styleClass="ui-confirmdialog-no ui-button-flat" />
 								</p:confirmDialog>
 							</p:column>
+							<p:column headerText="Ver Datos Ahorros">
+								<p:commandButton icon="ui-icon-search"
+									actionListener="#{controladorGestionSocios.cargarUsrSocio(socio)}"
+									oncomplete="PF('infAhorro').show()" update="@form:infAhorro" />
+							</p:column>
 						</p:dataTable>
 					</p:panel>
+
+					<p:dialog header="Tipo Socio" widgetVar="infTipoSocio"
+						id="infTipoSocio" modal="false" position="top" showEffect="fade"
+						hideEffect="fade" resizable="false" width="90%">
+						<p:messages id="messageinfTipoSocio" showDetail="true"
+							closable="true">
+							<p:autoUpdate />
+						</p:messages>
+						<h1>Actualización Tipo Socio</h1>
+						<p:panelGrid columns="2" styleClass="ui-noborder"
+							id="pnlDescuentosG">
+							<p:outputLabel value="Tipo Usuario" />
+							<p:selectOneMenu
+								value="#{controladorGestionSocios.objUsrSocio.usrTipoSocio.idTipoSocio}"
+								requiredMessage="Es obligatorio el tipo de socio.">
+								<f:selectItems
+									value="#{controladorGestionSocios.lstSiTipoSocio()}" />
+								<p:ajax
+									listener="#{controladorGestionSocios.cargarDescuentosSocio()}"
+									update="@form:infTipoSocio:lstRol @form:infTipoSocio:pnlDescuentos" />
+							</p:selectOneMenu>
+							<p:outputLabel value="Rol" />
+							<p:selectOneMenu id="lstRol"
+								value="#{controladorGestionSocios.objUsrSocio.autRol.idRol}">
+								<f:selectItems value="#{controladorGestionSocios.siAutRol()}" />
+							</p:selectOneMenu>
+						</p:panelGrid>
+						<p:commandButton value="Actualizar"
+							actionListener="#{controladorGestionSocios.actualizarTipoUsuario()}"
+							update="@form" />
+						<p:panel header="Descuentos" id="pnlDescuentos">
+							<p:dataTable var="descuento" id="tblDescuentos"
+								value="#{controladorGestionSocios.objUsrSocio.usrSocioDescuentoFijos}"
+								emptyMessage="No tiene descuentos ">
+								<p:column headerText="Descuento">
+									<p:outputLabel value="#{descuento.usrTipoDescuento.nombre}" />
+								</p:column>
+								<p:column headerText="Valor">
+									<p:inputNumber value="#{descuento.valor}">
+										<p:ajax update="@form:tblDescuentos" />
+									</p:inputNumber>
+								</p:column>
+							</p:dataTable>
+						</p:panel>
+					</p:dialog>
+
+
+					<p:dialog header="Datos Ahorros" widgetVar="infAhorro"
+						id="infAhorro" modal="false" position="top" showEffect="fade"
+						hideEffect="fade" resizable="false" width="90%">
+						<p:messages id="messageAhorro" showDetail="true" closable="true">
+							<p:autoUpdate />
+						</p:messages>
+						<p:panel header="Total Ahorros">
+							<h1>Valores totales de ahorros</h1>
+							<p:panelGrid columns="2" styleClass="ui-noborder">
+								<p:outputLabel value="Caja de Ahorro" />
+								<p:inputNumber
+									value="#{controladorGestionSocios.objUsrSocio.cajaAhorro}"
+									decimalPlaces="2" />
+								<p:outputLabel value="Cesantía" />
+								<p:inputNumber
+									value="#{controladorGestionSocios.objUsrSocio.fondoCesantia}"
+									decimalPlaces="2" />
+							</p:panelGrid>
+							<p:commandButton value="Actualizar Ahorros"
+								actionListener="#{controladorGestionSocios.actualizarSocioFondos()}"
+								update="@form">
+								<p:confirm header="Confirmación"
+									message="Esta seguro de actualizar la información?"
+									icon="pi pi-exclamation-triangle" />
+							</p:commandButton>
+							<p:confirmDialog global="true" showEffect="fade"
+								hideEffect="fade" responsive="true" width="350">
+								<p:commandButton value="Si" type="button"
+									styleClass="ui-confirmdialog-yes" />
+								<p:commandButton value="No" type="button"
+									styleClass="ui-confirmdialog-no ui-button-flat" />
+							</p:confirmDialog>
+
+
+						</p:panel>
+						<p:panel header="Valores Descuentos Mensuales" collapsed="true"
+							id="pnlDescuento" toggleable="true">
+							<p:dataTable var="descuento" editable="true" id="tblDescuento"
+								value="#{controladorGestionSocios.objUsrSocio.usrSocioDescuentoFijos}">
+
+								<p:ajax event="rowEdit"
+									listener="#{controladorGestionSocios.onRowEditAhorros}"
+									update="@form:tblDescuento @form:growl" />
+								<p:ajax event="rowEditCancel"
+									listener="#{dtEditView.onRowCancel}"
+									update="@form:pnlDescuento @form:growl" />
+								<p:column headerText="Descuento">
+									<p:outputLabel value="#{descuento.usrTipoDescuento.nombre}" />
+								</p:column>
+								<p:column headerText="Valor">
+									<p:cellEditor>
+										<f:facet name="output">
+											<p:outputLabel value="#{descuento.valor}" />
+										</f:facet>
+										<f:facet name="input">
+											<p:inputText id="modelInput" value="#{descuento.valor}"
+												style="width:100%" />
+										</f:facet>
+									</p:cellEditor>
+								</p:column>
+								<p:column style="width:6rem">
+									<p:rowEditor editTitle="Edit Row" cancelTitle="Cancel Edit"
+										saveTitle="Save Row" />
+								</p:column>
+							</p:dataTable>
+						</p:panel>
+					</p:dialog>
+
+
+
 					<p:dialog header="Datos Personales" widgetVar="infPersonal"
 						id="infPersonal" modal="false" position="top" showEffect="fade"
 						hideEffect="fade" resizable="false" width="90%">

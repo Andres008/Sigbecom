@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://java.sun.com/jsf/html" xmlns:f="http://java.sun.com/jsf/core" xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:p="http://primefaces.org/ui">
+
+
+<h:head>
+	<f:event type="preRenderView" listener="#{controlFormularios.verificarSesion()}" />
+	<f:facet name="first">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0"/>
+        <meta name="apple-mobile-web-app-capable" content="yes" />
+    </f:facet>
+        <title><ui:insert name="title">Plan Móvil</ui:insert></title>
+        <h:outputScript name="js/nanoscroller.js" library="california-layout" />
+        <h:outputScript name="js/layout.js" library="california-layout" />
+        <h:outputStylesheet library="css" name="theme.css"/>
+</h:head>
+
+<h:body styleClass="main-body" onload="#{frmMisConvenios.init()}">
+
+        <div class="layout-wrapper #{guestPreferences.menuLayout != 'static' ? guestPreferences.menuLayout : null}">
+            <ui:include src="/affordances/megamenu.xhtml" />
+            <ui:include src="/affordances/topbar.xhtml" />
+            <ui:include src="/affordances/sidebar.xhtml" />
+            <ui:include src="/affordances/right-sidebar.xhtml" />
+			<div class="layout-main">
+                <div class="route-bar">
+                    <div class="route-bar-breadcrumb">
+                        <i class="fa fa-home"></i> <span>/CONVENIOS/Mis Convenios</span>
+                        <ui:insert name="viewname" />
+                    </div>
+					<ui:include src="/affordances/route-bar-menu.xhtml" />
+                </div>
+				<div class="layout-main-content" align="center">
+                    <H1>Planes Móviles - Descuentos</H1>
+                    
+	                <h:form id="form1">
+	                	<p:growl id="growl" showDetail="true" sticky="true" />
+	                	<p:panel id="pnl"  header="LISTADO - MIS CONVENIOS">
+	                	<div class="card" align="right">
+						    <h:commandLink >
+						    	<p:graphicImage name="images/logo_excel.png" library="california-layout" />
+						    	<p:dataExporter type="xls" target="tblEmp" fileName="ListPlanMovil"></p:dataExporter>
+						    </h:commandLink>
+					    </div>
+					    <p:separator/>	
+						<p:dataTable value="#{frmMisConvenios.lstConvAdquirido}"
+							id="tblEmp"  var="con" paginator="true"
+							rows="10">
+							<f:facet name="header">
+								<p:outputLabel value="#{frmMisConvenios.beanLogin.credencial.objUsrSocio.cedulaSocio} #{frmMiPlanMovil.beanLogin.credencial.objUsrSocio.gesPersona.apellidos} #{frmMiPlanMovil.beanLogin.credencial.objUsrSocio.gesPersona.nombres}"/>
+							</f:facet>
+							<p:column headerText="EMPRESA" >
+								<h:outputText value="#{con.convServicio.convEmpresa.empresa}" />
+							</p:column>										
+							<p:column headerText="CONVENIO" >
+								<h:outputText value="#{con.convServicio.servicioProducto}" />
+							</p:column>
+							<p:column headerText="FECHA SOLICITUD" >
+								<h:outputText value="#{con.fechaSol}" />
+							</p:column>
+							<p:column headerText="FECHA REVISION" >
+								<h:outputText value="#{con.fechaRevision}" />
+							</p:column>
+							<p:column headerText="OBSERVACION" >
+								<h:outputText value="#{con.observacion}" />
+							</p:column>
+							<p:column headerText="FECHA TRAMITE" >
+								<h:outputText value="#{con.fechaAprob}" />
+							</p:column>
+							<p:column headerText="RESOLUCION" >
+								<h:outputText value="#{con.resolucion}" />
+							</p:column>
+							<p:column headerText="PLAZO" >
+								<h:outputText value="#{con.plazo}" />
+							</p:column>
+							<p:column headerText="VALOR" >
+								<h:outputText value="#{con.valorTotal}" />
+							</p:column>
+							<p:column headerText="PROFORMA">
+						        	<p:commandButton icon="fa fa-search" value="ver" update=":frmPDFT :frmIMAGET"
+						    					action="#{frmMisConvenios.cargarDocumento(sol.adjunto, sol.convValorMax.usrSocio.cedulaSocio)}"/>
+						    </p:column>
+						    <p:column headerText="HOJA DE RUTA">
+						        	<p:commandButton icon="fa fa-search" value="ver" update=":frmPDFT :frmIMAGET"
+						    					action="#{frmMisConvenios.cargarDocumento(sol.hojaRuta, sol.convValorMax.usrSocio.cedulaSocio)}"/>
+						    </p:column>
+							<p:column headerText="ESTADO" >
+								<h:outputText value="#{con.estado}" />
+							</p:column>
+							<p:rowExpansion>
+								<div class="card" align="right">
+								    <h:commandLink >
+								    	<p:graphicImage name="images/logo_excel.png" library="california-layout" />
+								    	<p:dataExporter type="xls" target="tblCon" fileName="ListPlanMovil"></p:dataExporter>
+								    </h:commandLink>
+							    </div>
+							    <p:separator/>	
+								<p:panel>
+									<p:dataTable value="#{con.convAmortizacions}"  
+													id="tblCon" var="am">
+										<f:facet name="header">
+								            TABLA DE AMORTIZACION
+										</f:facet>
+										<p:column headerText="" style="width:2rem">
+											<p:rowToggler />
+										</p:column>
+										<p:column headerText="CUOTA" >
+											<h:outputText value="#{am.numeroCuota}" />
+										</p:column>
+										<p:column headerText="FECHA PAGO">
+								           <h:outputText value="#{am.fechaPago}"/>
+								        </p:column>
+								        <p:column headerText="CAPITAL">
+								           <h:outputText value="#{am.capital}"/>
+								        </p:column>
+								        <p:column headerText="INTERES">
+								           <h:outputText value="#{am.interes}"/>
+								        </p:column>
+								        <p:column headerText="VALOR CUOTA">
+								           <h:outputText value="#{am.valorCuota}"/>
+								        </p:column>
+								        <p:column headerText="SALDO">
+								           <h:outputText value="#{am.saldo}"/>
+								        </p:column>
+								        <p:column headerText="ESTADO DESCUENTO">
+								           <h:outputText value="#{am.descEstadoDescuento.estado}"/>
+								        </p:column>
+									</p:dataTable>
+								</p:panel>
+							</p:rowExpansion>
+						</p:dataTable>
+						
+					</p:panel>
+	         </h:form>
+<!-- Inicio de Dialogs -->
+						<p:dialog
+							header="DOCUMENTO" resizable="false" position="top" width="90%"
+							widgetVar="dlgPDFT" id="dlgPDF" modal="true"
+							hideEffect="fade">
+							<h:form id="frmPDFT">
+								<p:media value="#{frmMisConvenios.pdf}" width="70%" height="600px" player="pdf"/>
+							</h:form>
+						</p:dialog>
+						<p:dialog
+							header="DOCUMENTO" resizable="false" position="center"
+							widgetVar="dlgImageT" id="dlgImage" modal="true"
+							hideEffect="fade" >
+							<h:form id="frmIMAGET">
+								<p:panelGrid columns="2">
+									<p:outputLabel value="Click en el boton para descargar Imagen"/>
+									<p:commandButton value="Descargar" icon="pi pi-arrow-down" ajax="false" styleClass="ui-button-outlined"
+													 onclick="PF('dlgImageT').hide()">
+										<p:fileDownload value="#{frmMisConvenios.download}"/>
+									</p:commandButton>
+								</p:panelGrid>
+							</h:form>
+						</p:dialog>
+<!-- Fin de Dialogs -->
+			</div>
+				<ui:include src="/affordances/footer.xhtml" />
+            </div>
+        </div>
+		
+        <p:ajaxStatus style="width:32px;height:32px;position:fixed;right:7px;bottom:7px">
+           <f:facet name="start">
+               <i class="fa fa-circle-o-notch fa-spin ajax-loader" aria-hidden="true"></i>
+           </f:facet>
+
+           <f:facet name="complete">
+               <h:outputText value="" />
+           </f:facet>
+       </p:ajaxStatus>
+
+        <h:outputStylesheet name="css/nanoscroller.css" library="california-layout" />
+        <h:outputStylesheet name="css/layout-#{guestPreferences.theme}.css" library="california-layout" />
+    </h:body>
+</html>
+
