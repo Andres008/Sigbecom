@@ -112,6 +112,8 @@ public class ControladorGestionCreditos implements Serializable {
 	private int mesesAplazados;
 
 	private Date fechaFinalPrestamo, fechaInicialProrroga;
+	
+	private FinTipoCredito objTipoCredito;
 
 	public ControladorGestionCreditos() {
 
@@ -704,6 +706,33 @@ public class ControladorGestionCreditos implements Serializable {
 			});
 		} catch (Exception e) {
 			JSFUtil.crearMensajeERROR(e.getMessage());
+			e.printStackTrace();
+		}
+	}
+	
+	public void cargarTipoCreditoAct(FinTipoCredito objTipoCreditoAux) {
+		objTipoCredito = objTipoCreditoAux;
+	}
+	
+	public void actualizarFechaPago() {
+		int dias;
+		try {
+			managerLog.generarLogAuditoria(beanLogin.getCredencial(), this.getClass(), "actualizarFechaPago",
+					"Actualizacion de dia credito Id: " + objTipoCredito.getIdTipoCredito() + " NUevo dia: "
+							+ objTipoCredito.getDiaPagoMaximo().intValue());
+			objFinTipoCredito = managerGestionCredito.buscarTipoCreditoId(objTipoCredito);
+			dias = objTipoCredito.getDiaPagoMaximo().intValue() - objFinTipoCredito.getDiaPagoMaximo().intValue();
+			managerGestionCredito.actualizarTipoCredito(objTipoCredito);
+			List<FinTablaAmortizacion> lstAmortizacion;
+			lstAmortizacion = managerGestionCredito.buscarCuotasPendientesByTipoCredito(objTipoCredito);
+			for (FinTablaAmortizacion finTablaAmortizacion : lstAmortizacion) {
+				finTablaAmortizacion.setFechaPago(ModelUtil.getSumarDias(finTablaAmortizacion.getFechaPago(), dias));
+				managerGestionCredito.actualizarTablaAmortizacion(finTablaAmortizacion);
+			}
+			JSFUtil.crearMensajeINFO("Actualizacion Correcta");
+			inicializarTipoPrestamo();
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
@@ -1311,6 +1340,14 @@ public class ControladorGestionCreditos implements Serializable {
 
 	public void setFechaInicialProrroga(Date fechaInicialProrroga) {
 		this.fechaInicialProrroga = fechaInicialProrroga;
+	}
+
+	public FinTipoCredito getObjTipoCredito() {
+		return objTipoCredito;
+	}
+
+	public void setObjTipoCredito(FinTipoCredito objTipoCredito) {
+		this.objTipoCredito = objTipoCredito;
 	}
 
 }
