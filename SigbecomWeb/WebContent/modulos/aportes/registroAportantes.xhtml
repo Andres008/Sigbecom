@@ -85,14 +85,16 @@
 					    <p:separator/>
 						<p:dataTable value="#{frmRegistroAportante.lstAporteClientes}"
 							id="tblEmp" editable="true" var="dato" paginator="true"
-							rows="10" >
+							rows="10" rowIndexVar="index" >
 							<p:ajax event="rowEdit" listener="#{frmCuenta.onRowEdit}" update="form2:growl"/>
             				<p:ajax event="rowEditCancel" listener="#{frmCuenta.onRowCancel}" update="form2:growl"/>
-							
+							<p:column width="27">
+								<h:outputText value="#{index + 1}"/>  
+							</p:column>
 							<p:column headerText="CEDULA" filterBy="#{dato.usrSocio.cedulaSocio}">
 								<h:outputText value="#{dato.usrSocio.cedulaSocio}"/>
 							</p:column>
-							<p:column headerText="APELLIDOS" filterBy="#{dato.usrSocio.gesPersona.apellidos}">
+							<p:column headerText="APELLIDOS" sortBy="#{dato.usrSocio.gesPersona.apellidos}" filterBy="#{dato.usrSocio.gesPersona.apellidos}">
 								<h:outputText value="#{dato.usrSocio.gesPersona.apellidos}"/>
 							</p:column>
 							<p:column headerText="NOMBRES" filterBy="#{dato.usrSocio.gesPersona.nombres}">
@@ -123,7 +125,7 @@
 				                    </f:facet>
 				                </p:cellEditor>
 							</p:column>
-							<p:column headerText="ESTADO">
+							<p:column headerText="ESTADO" filterBy="#{dato.estado}">
 								<p:cellEditor>
 				                    <f:facet name="output">
 				                        <h:outputText value="#{dato.estado}"/>

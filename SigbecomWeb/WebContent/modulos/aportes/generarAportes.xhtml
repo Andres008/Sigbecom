@@ -92,13 +92,13 @@
 							<p:column headerText="CEDULA" filterBy="dato.aporteCliente.usrSocio.cedulaSocio">
 								<h:outputText value="#{dato.aporteCliente.usrSocio.cedulaSocio}"/>
 							</p:column>
-							<p:column headerText="APELLIDOS">
+							<p:column headerText="APELLIDOS" filterBy="#{dato.aporteCliente.usrSocio.gesPersona.apellidos}">
 								<h:outputText value="#{dato.aporteCliente.usrSocio.gesPersona.apellidos}"/>
 							</p:column>
-							<p:column headerText="NOMBRES">
+							<p:column headerText="NOMBRES" filterBy="#{dato.aporteCliente.usrSocio.gesPersona.nombres}">
 								<h:outputText value="#{dato.aporteCliente.usrSocio.gesPersona.nombres}"/>
 							</p:column>
-							<p:column headerText="CUENTA DE APORTE">
+							<p:column headerText="CUENTA DE APORTE" filterBy="#{dato.aporteCliente.aporteCuenta.cuenta}">
 								<h:outputText value="#{dato.aporteCliente.aporteCuenta.cuenta}"/>
 							</p:column>
 							<p:column headerText="FECHA DE EMISION">
@@ -119,7 +119,7 @@
 							<p:column headerText="VALOR TOTAL">
 								<h:outputText value="#{dato.valorTotal}"/>
 							</p:column>
-							<p:column headerText="ESTADO">
+							<p:column headerText="ESTADO" filterBy="#{dato.descEstadoDescuento.estado}">
 								<h:outputText value="#{dato.descEstadoDescuento.estado}"/>
 							</p:column>
 							

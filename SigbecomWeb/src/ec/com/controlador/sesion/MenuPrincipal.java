@@ -39,6 +39,23 @@ public class MenuPrincipal implements Serializable{
 			e.printStackTrace();
 		}
 	}
+public void cargarPresentacion() {
+		
+		//String homeUsuario = System.getProperty("user.home");
+		//String url = homeUsuario+"/manuales/MANUALES SIGBECOM[4356].pdf";
+		String url = "/home/app/manuales/PRESENTACION SIGBECOM FINAL,v1.pdf";
+		System.out.println("URL:"+url);
+		File file = new File(url);
+		try {
+			fis = new FileInputStream(file);
+			PrimeFaces prime=PrimeFaces.current();
+			prime.ajax().update("frmPDFT");
+			prime.executeScript("PF('dlgPDFT').show();");
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
 	@SuppressWarnings("static-access")
 	public StreamedContent getPdf() {
 		if (fis != null) {

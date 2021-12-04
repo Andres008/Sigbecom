@@ -398,4 +398,10 @@ public class ManagerPlanesMoviles {
     		return null;
     	}
     }
+    @SuppressWarnings("unchecked")
+	public List<PlanAmortEquipmov> findWhereCuotasPendientes(String cedula) throws Exception {
+		List<PlanAmortEquipmov> lstCuotasPend = new ArrayList<PlanAmortEquipmov>();
+		lstCuotasPend = managerDAOSegbecom.findWhere(PlanAmortEquipmov.class, "o.planContratoComite.usrSocio.cedulaSocio='"+cedula+"' AND o.estado = 'GENERADO'", "o.idAmortEquipmov ASC");
+		return lstCuotasPend;
+	}
 }
