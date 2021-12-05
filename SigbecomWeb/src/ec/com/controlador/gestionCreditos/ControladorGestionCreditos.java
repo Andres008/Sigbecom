@@ -112,7 +112,7 @@ public class ControladorGestionCreditos implements Serializable {
 	private int mesesAplazados;
 
 	private Date fechaFinalPrestamo, fechaInicialProrroga;
-	
+
 	private FinTipoCredito objTipoCredito;
 
 	public ControladorGestionCreditos() {
@@ -358,12 +358,15 @@ public class ControladorGestionCreditos implements Serializable {
 	public void imprimirTablaAmortizacion(FinPrestamoSocio prestamoSocio) {
 		try {
 			SimpleDateFormat formato = new SimpleDateFormat("dd/MM/yyyy");
-			prestamoSocio = managerGestionCredito.buscarSolicitudPrestamoById(prestamoSocio.getIdPrestamoSocio());
+			//prestamoSocio = managerGestionCredito.buscarSolicitudPrestamoById(prestamoSocio.getIdPrestamoSocio());
 			Map<String, Object> parametros = new HashMap<String, Object>();
 			parametros.put("nombreSocio", prestamoSocio.getUsrSocio().getGesPersona().getApellidos() + " "
 					+ prestamoSocio.getUsrSocio().getGesPersona().getNombres());
 			parametros.put("cedulaSocio", prestamoSocio.getUsrSocio().getCedulaSocio());
-			parametros.put("codEmpelado", prestamoSocio.getUsrSocio().getIdSocio());
+			if (prestamoSocio.getUsrSocio().getIdSocio() == null)
+				parametros.put("codEmpelado", "");
+			else
+				parametros.put("codEmpelado", String.valueOf(prestamoSocio.getUsrSocio().getIdSocio()));
 			parametros.put("fecha", formato.format(prestamoSocio.getFechaPrimeraCouta()));
 			parametros.put("tasa", prestamoSocio.getFinTipoCredito().getTasaInteres().toString());
 			parametros.put("capital", prestamoSocio.getValorPrestamo().toString());
@@ -373,6 +376,7 @@ public class ControladorGestionCreditos implements Serializable {
 			File jasper = new File(beanLogin.getPathReporte() + "creditos/fin_tabla_amortizacion.jasper");
 			JasperPrint jasperPrint;
 			try {
+				//prestamoSocio.setFinTablaAmortizacions(managerGestionCredito.buscarTablaAmortizacionByIdCredito(prestamoSocio.getIdPrestamoSocio()));
 				jasperPrint = JasperFillManager.fillReport(jasper.getPath(), parametros,
 						new JRBeanCollectionDataSource(prestamoSocio.getFinTablaAmortizacions()));
 				archivo = JasperExportManager.exportReportToPdf(jasperPrint);
@@ -710,11 +714,11 @@ public class ControladorGestionCreditos implements Serializable {
 			e.printStackTrace();
 		}
 	}
-	
+
 	public void cargarTipoCreditoAct(FinTipoCredito objTipoCreditoAux) {
 		objTipoCredito = objTipoCreditoAux;
 	}
-	
+
 	public void actualizarFechaPago() {
 		int dias;
 		try {
@@ -754,7 +758,9 @@ public class ControladorGestionCreditos implements Serializable {
 			objFinPrestamoSocio = managerGestionCredito.buscarSolicitudPrestamoById(prestamoSocio.getIdPrestamoSocio());
 			if (objFinPrestamoSocio.getFinTablaAmortizacions().size() == 0)
 				objFinPrestamoSocio.setFinTablaAmortizacions(ModelUtil.calcularTablaAmortizacion(objFinPrestamoSocio));
-			imprimirTablaAmortizacion(prestamoSocio);
+			else 
+				objFinPrestamoSocio.setFinTablaAmortizacions(managerGestionCredito.buscarTablaAmortizacionByIdCredito(prestamoSocio.getIdPrestamoSocio()));
+			imprimirTablaAmortizacion(objFinPrestamoSocio);
 		} catch (Exception e) {
 			JSFUtil.crearMensajeERROR("Error al cargar solicitud credito.");
 		}
