@@ -31,6 +31,7 @@ import org.primefaces.model.file.UploadedFile;
 
 import ec.com.controlador.sesion.BeanLogin;
 import ec.com.model.auditoria.ManagerLog;
+import ec.com.model.dao.entity.DescEstadoDescuento;
 import ec.com.model.dao.entity.FinAccionPrestamo;
 import ec.com.model.dao.entity.FinAccionesCredito;
 import ec.com.model.dao.entity.FinCuotasDescontada;
@@ -85,8 +86,6 @@ public class ControladorGestionCreditos implements Serializable {
 
 	private FinRequisito objFinRequisito;
 
-	private FinTipoCredito objTipoCredito;
-
 	private int banderaSolicitud;
 
 	private List<FinTipoCredito> lstFinTipoCredito;
@@ -111,6 +110,10 @@ public class ControladorGestionCreditos implements Serializable {
 	private FinAccionPrestamo accionCredito;
 
 	private int mesesAplazados;
+
+	private Date fechaFinalPrestamo, fechaInicialProrroga;
+
+	private FinTipoCredito objTipoCredito;
 
 	public ControladorGestionCreditos() {
 
@@ -155,12 +158,13 @@ public class ControladorGestionCreditos implements Serializable {
 		try {
 			objFinPrestamoSocio = new FinPrestamoSocio();
 			objFinPrestamoSocio.setFinTablaAmortizacions(new ArrayList<FinTablaAmortizacion>());
-			lstFinPrestamoSocio = managerGestionCredito
-					.buscarSolicitudesBySocio(beanLogin.getCredencial().getObjUsrSocio());
+			lstFinPrestamoSocio = managerGestionCredito.buscarPrestamosVigentes();
 			lstFinPrestamoSocio = lstFinPrestamoSocio.stream()
 					.filter(fecha -> fecha.getFechaPrimeraCouta().before(new Date())).collect(Collectors.toList());
-			lstFinPrestamoSocio = lstFinPrestamoSocio.stream()
-					.filter(fecha -> fecha.getFechaUltimaCuota().after(new Date())).collect(Collectors.toList());
+			/*
+			 * lstFinPrestamoSocio = lstFinPrestamoSocio.stream() .filter(fecha ->
+			 * fecha.getFechaUltimaCuota().before(new Date())).collect(Collectors.toList());
+			 */
 			lstFinPrestamoSocio = lstFinPrestamoSocio.stream()
 					.filter(prestamo -> cuotaVigenteByPrestamo(prestamo) != null).collect(Collectors.toList());
 		} catch (Exception e) {
@@ -213,7 +217,6 @@ public class ControladorGestionCreditos implements Serializable {
 			objFinTipoCredito = new FinTipoCredito();
 			objFinTipoCredito.setFinTipcrediRequisitos(new ArrayList<FinTipcrediRequisito>());
 			lstFinTipoCredito = managerGestionCredito.buscarTodosTipoPrestamo();
-			objTipoCredito = new FinTipoCredito();
 		} catch (Exception e) {
 			JSFUtil.crearMensajeERROR(e.getMessage());
 			e.printStackTrace();
@@ -221,6 +224,18 @@ public class ControladorGestionCreditos implements Serializable {
 	}
 
 	public void inicializarSolicitudCredito() {
+		objFinPrestamoSocio = new FinPrestamoSocio();
+		objFinPrestamoSocio.setFinTipoCredito(new FinTipoCredito());
+		objFinPrestamoSocio.setFinTipoSolicitud(new FinTipoSolicitud(1));
+		objFinPrestamoSocio.setFinPrestamoRequisitos(new ArrayList<FinPrestamoRequisito>());
+		objFinPrestamoSocio.setFinTablaAmortizacions(new ArrayList<FinTablaAmortizacion>());
+		objFinPrestamoSocio.setFinAccionPrestamos(new ArrayList<FinAccionPrestamo>());
+	}
+
+	public void inicializarSolicitudCreditoMigracion() {
+		fechaFinalPrestamo = new Date();
+		fechaInicialProrroga = new Date();
+		objSocio = new UsrSocio();
 		objFinPrestamoSocio = new FinPrestamoSocio();
 		objFinPrestamoSocio.setFinTipoCredito(new FinTipoCredito());
 		objFinPrestamoSocio.setFinTipoSolicitud(new FinTipoSolicitud(1));
@@ -316,7 +331,7 @@ public class ControladorGestionCreditos implements Serializable {
 							+ " meses plazo, a una tasa de interés del "
 							+ prestamoSocio.getFinTipoCredito().getTasaInteres() + "%.");
 			parametros.put("nroSolicitud", String.valueOf(prestamoSocio.getIdPrestamoSocio()));
-			parametros.put("codEmpelado", String.valueOf(prestamoSocio.getUsrSocio().getIdSocio()));
+			parametros.put("codEmpleado", String.valueOf(prestamoSocio.getUsrSocio().getIdSocio()));
 			parametros.put("lugarFecha",
 					"Ibarra, " + formatodia.format(prestamoSocio.getFechaSolicitud()) + " de "
 							+ ModelUtil.getMesAlfanumerico(prestamoSocio.getFechaSolicitud()) + " del "
@@ -328,6 +343,42 @@ public class ControladorGestionCreditos implements Serializable {
 			JasperPrint jasperPrint;
 			try {
 				jasperPrint = JasperFillManager.fillReport(jasper.getPath(), parametros, beanCollectionDataSource);
+				archivo = JasperExportManager.exportReportToPdf(jasperPrint);
+			} catch (JRException e) {
+				JSFUtil.crearMensajeERROR("Error al generar el reporte de solicitud. " + e.getMessage());
+				e.printStackTrace();
+			}
+		} catch (Exception e) {
+			JSFUtil.crearMensajeERROR("Error al generar el reporte de solicitud. " + e.getMessage());
+			e.printStackTrace();
+		}
+
+	}
+
+	public void imprimirTablaAmortizacion(FinPrestamoSocio prestamoSocio) {
+		try {
+			SimpleDateFormat formato = new SimpleDateFormat("dd/MM/yyyy");
+			//prestamoSocio = managerGestionCredito.buscarSolicitudPrestamoById(prestamoSocio.getIdPrestamoSocio());
+			Map<String, Object> parametros = new HashMap<String, Object>();
+			parametros.put("nombreSocio", prestamoSocio.getUsrSocio().getGesPersona().getApellidos() + " "
+					+ prestamoSocio.getUsrSocio().getGesPersona().getNombres());
+			parametros.put("cedulaSocio", prestamoSocio.getUsrSocio().getCedulaSocio());
+			if (prestamoSocio.getUsrSocio().getIdSocio() == null)
+				parametros.put("codEmpelado", "");
+			else
+				parametros.put("codEmpelado", String.valueOf(prestamoSocio.getUsrSocio().getIdSocio()));
+			parametros.put("fecha", formato.format(prestamoSocio.getFechaPrimeraCouta()));
+			parametros.put("tasa", prestamoSocio.getFinTipoCredito().getTasaInteres().toString());
+			parametros.put("capital", prestamoSocio.getValorPrestamo().toString());
+			parametros.put("numeroCuota", prestamoSocio.getPlazoMeses().toString());
+			parametros.put("capitalDeuda", prestamoSocio.getSaldoCapital().toString());
+			parametros.put("tipoCredito", prestamoSocio.getFinTipoCredito().getNombre());
+			File jasper = new File(beanLogin.getPathReporte() + "creditos/fin_tabla_amortizacion.jasper");
+			JasperPrint jasperPrint;
+			try {
+				//prestamoSocio.setFinTablaAmortizacions(managerGestionCredito.buscarTablaAmortizacionByIdCredito(prestamoSocio.getIdPrestamoSocio()));
+				jasperPrint = JasperFillManager.fillReport(jasper.getPath(), parametros,
+						new JRBeanCollectionDataSource(prestamoSocio.getFinTablaAmortizacions()));
 				archivo = JasperExportManager.exportReportToPdf(jasperPrint);
 			} catch (JRException e) {
 				JSFUtil.crearMensajeERROR("Error al generar el reporte de solicitud. " + e.getMessage());
@@ -490,10 +541,66 @@ public class ControladorGestionCreditos implements Serializable {
 		}
 	}
 
+	public String ingresarCreditoSocioMigracion() {
+		try {
+			if (objFinPrestamoSocio.getValorPrestamo().doubleValue() < objFinPrestamoSocio.getFinTipoCredito()
+					.getValorMinimo().doubleValue())
+				throw new Exception("Atención, el monto $" + objFinPrestamoSocio.getValorPrestamo()
+						+ " es menor al autorizado para este tipo de credito $"
+						+ objFinPrestamoSocio.getFinTipoCredito().getValorMinimo() + ".");
+			objFinPrestamoSocio.setUsrSocio(managerGestionSistema.findByIdAutUsuario(objSocio.getCedulaSocio()));
+			objFinPrestamoSocio.setFechaSolicitud(new Date());
+			objFinPrestamoSocio
+					.setFechaPrimeraCouta(objFinPrestamoSocio.getFinTablaAmortizacions().get(0).getFechaPago());
+			objFinPrestamoSocio.setFechaUltimaCuota(objFinPrestamoSocio.getFinTablaAmortizacions()
+					.get(objFinPrestamoSocio.getFinTablaAmortizacions().size() - 1).getFechaPago());
+			objFinPrestamoSocio.setFinEstadoCredito(new FinEstadoCredito(5));
+			objFinPrestamoSocio.setValorRecibido(calcularValorRecibirNovacion(objFinPrestamoSocio));
+			objFinPrestamoSocio.getFinTablaAmortizacions().forEach(amortizar -> {
+				SimpleDateFormat anio = new SimpleDateFormat("yyyy");
+				SimpleDateFormat mes = new SimpleDateFormat("MM");
+				if (Integer.parseInt(anio.format(amortizar.getFechaPago())) < Integer
+						.parseInt(anio.format(new Date()))) {
+					amortizar.getFinEstadoCuota().setIdEstadoCuota(3);
+					objFinPrestamoSocio.setCuotasPagadas(amortizar.getNumeroCuota());
+					objFinPrestamoSocio.setSaldoCapital(amortizar.getSaldoCapital());
+				}
+
+				if (Integer.parseInt(anio.format(amortizar.getFechaPago())) == Integer.parseInt(anio.format(new Date()))
+						&& Integer.parseInt(mes.format(amortizar.getFechaPago())) < Integer
+								.parseInt(mes.format(new Date()))) {
+					amortizar.getFinEstadoCuota().setIdEstadoCuota(3);
+					objFinPrestamoSocio.setCuotasPagadas(amortizar.getNumeroCuota());
+					objFinPrestamoSocio.setSaldoCapital(amortizar.getSaldoCapital());
+				}
+				if (Integer.parseInt(anio.format(amortizar.getFechaPago())) == Integer.parseInt(anio.format(new Date()))
+						&& Integer.parseInt(mes.format(amortizar.getFechaPago())) == Integer
+								.parseInt(mes.format(new Date())))
+					amortizar.getFinEstadoCuota().setIdEstadoCuota(1);
+
+			});
+			managerGestionCredito.ingresarCreditoSocio(objFinPrestamoSocio);
+			managerLog.generarLogUsabilidad(beanLogin.getCredencial(), this.getClass(), "ingresarCreditoSocio",
+					"Se ingreso correctamente credito Nº" + objFinPrestamoSocio.getIdPrestamoSocio());
+			JSFUtil.crearMensajeINFO("Se creo exitosamente la solicitud.");
+			inicializarSolicitudCreditoMigracion();
+			return "/modulos/prestamosFina/migracionCredito?faces-redirect=true";
+		} catch (Exception e) {
+			managerLog.generarLogErrorGeneral(beanLogin.getCredencial(), this.getClass(), "ingresarCreditoSocio",
+					e.getMessage());
+			e.printStackTrace();
+			JSFUtil.crearMensajeERROR(e.getMessage());
+			return "";
+		}
+	}
+
 	public FinTablaAmortizacion cuotaVigenteByPrestamo(FinPrestamoSocio objPrestamo) {
+		SimpleDateFormat formatoFecha = new SimpleDateFormat("MMyyyy");
 		List<FinTablaAmortizacion> lstAmortiza = objPrestamo.getFinTablaAmortizacions().stream()
 				.filter(amortiza -> amortiza.getFinEstadoCuota().getIdEstadoCuota() == 1).collect(Collectors.toList());
-		lstAmortiza = lstAmortiza.stream().filter(anio -> anio.getFechaPago().before(new Date()))
+		lstAmortiza = lstAmortiza.stream()
+				.filter(anio -> (anio.getFechaPago().before(new Date())
+						&& formatoFecha.format(anio.getFechaPago()).equals(formatoFecha.format(new Date()))))
 				.collect(Collectors.toList());
 		if (lstAmortiza.size() == 1)
 			return lstAmortiza.get(0);
@@ -530,33 +637,6 @@ public class ControladorGestionCreditos implements Serializable {
 		}
 	}
 
-	public void cargarTipoCredito(FinTipoCredito objTipoCreditoAux) {
-		objTipoCredito = objTipoCreditoAux;
-	}
-
-	public void actualizarFechaPago() {
-		int dias;
-		try {
-			managerLog.generarLogAuditoria(beanLogin.getCredencial(), this.getClass(), "actualizarFechaPago",
-					"Actualizacion de dia credito Id: " + objTipoCredito.getIdTipoCredito() + " NUevo dia: "
-							+ objTipoCredito.getDiaPagoMaximo().intValue());
-			objFinTipoCredito = managerGestionCredito.buscarTipoCreditoId(objTipoCredito);
-			dias = objTipoCredito.getDiaPagoMaximo().intValue() - objFinTipoCredito.getDiaPagoMaximo().intValue();
-			managerGestionCredito.actualizarTipoCredito(objTipoCredito);
-			List<FinTablaAmortizacion> lstAmortizacion;
-			lstAmortizacion = managerGestionCredito.buscarCuotasPendientesByTipoCredito(objTipoCredito);
-			for (FinTablaAmortizacion finTablaAmortizacion : lstAmortizacion) {
-				finTablaAmortizacion.setFechaPago(ModelUtil.getSumarDias(finTablaAmortizacion.getFechaPago(), dias));
-				managerGestionCredito.actualizarTablaAmortizacion(finTablaAmortizacion);
-			}
-			JSFUtil.crearMensajeINFO("Actualizacion Correcta");
-			inicializarTipoPrestamo();
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-	}
-
 	public void ingresarRequisito() {
 		try {
 			objFinRequisito.setIdRequisito(0);
@@ -583,6 +663,15 @@ public class ControladorGestionCreditos implements Serializable {
 				&& objPrestamo.getFinEstadoCredito().getIdEstadoCredito() == 5)
 			return true;
 		return false;
+	}
+
+	public void buscarSocioMigracionPrestamo() {
+		try {
+			objSocio = managerGestionSistema.findByIdAutUsuario(objSocio.getCedulaSocio());
+		} catch (Exception e) {
+			inicializarSolicitudCreditoMigracion();
+			JSFUtil.crearMensajeERROR(e.getMessage());
+		}
 	}
 
 	public void cargarAdjuntoRequisitoPrestamo(FinPrestamoRequisito requisito) {
@@ -626,6 +715,33 @@ public class ControladorGestionCreditos implements Serializable {
 		}
 	}
 
+	public void cargarTipoCreditoAct(FinTipoCredito objTipoCreditoAux) {
+		objTipoCredito = objTipoCreditoAux;
+	}
+
+	public void actualizarFechaPago() {
+		int dias;
+		try {
+			managerLog.generarLogAuditoria(beanLogin.getCredencial(), this.getClass(), "actualizarFechaPago",
+					"Actualizacion de dia credito Id: " + objTipoCredito.getIdTipoCredito() + " NUevo dia: "
+							+ objTipoCredito.getDiaPagoMaximo().intValue());
+			objFinTipoCredito = managerGestionCredito.buscarTipoCreditoId(objTipoCredito);
+			dias = objTipoCredito.getDiaPagoMaximo().intValue() - objFinTipoCredito.getDiaPagoMaximo().intValue();
+			managerGestionCredito.actualizarTipoCredito(objTipoCredito);
+			List<FinTablaAmortizacion> lstAmortizacion;
+			lstAmortizacion = managerGestionCredito.buscarCuotasPendientesByTipoCredito(objTipoCredito);
+			for (FinTablaAmortizacion finTablaAmortizacion : lstAmortizacion) {
+				finTablaAmortizacion.setFechaPago(ModelUtil.getSumarDias(finTablaAmortizacion.getFechaPago(), dias));
+				managerGestionCredito.actualizarTablaAmortizacion(finTablaAmortizacion);
+			}
+			JSFUtil.crearMensajeINFO("Actualizacion Correcta");
+			inicializarTipoPrestamo();
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+
 	public void cargarFinPrestamoSocio(FinPrestamoSocio prestamoSocio) {
 		try {
 			objFinPrestamoSocio = managerGestionCredito.buscarSolicitudPrestamoById(prestamoSocio.getIdPrestamoSocio());
@@ -642,6 +758,9 @@ public class ControladorGestionCreditos implements Serializable {
 			objFinPrestamoSocio = managerGestionCredito.buscarSolicitudPrestamoById(prestamoSocio.getIdPrestamoSocio());
 			if (objFinPrestamoSocio.getFinTablaAmortizacions().size() == 0)
 				objFinPrestamoSocio.setFinTablaAmortizacions(ModelUtil.calcularTablaAmortizacion(objFinPrestamoSocio));
+			else 
+				objFinPrestamoSocio.setFinTablaAmortizacions(managerGestionCredito.buscarTablaAmortizacionByIdCredito(prestamoSocio.getIdPrestamoSocio()));
+			imprimirTablaAmortizacion(objFinPrestamoSocio);
 		} catch (Exception e) {
 			JSFUtil.crearMensajeERROR("Error al cargar solicitud credito.");
 		}
@@ -671,7 +790,7 @@ public class ControladorGestionCreditos implements Serializable {
 			objFinPrestamoSocio.getFinEstadoCredito().setIdEstadoCredito(7);
 			managerGestionCredito.actualizarSolicitudCredito(objFinPrestamoSocio);
 			managerLog.generarLogAuditoria(beanLogin.getCredencial(), this.getClass(), "accionPrecancelarPrestamo",
-					"Precancelaci{on de prestamo: " + objFinPrestamoSocio.getIdPrestamoSocio());
+					"Precancelación de prestamo: " + objFinPrestamoSocio.getIdPrestamoSocio());
 			correoUtil.enviarCorreoElectronico(objFinPrestamoSocio.getUsrSocio().getGesPersona().getEmail(),
 					"Precancelación de Prestamo", "Atención se realizó la precancelacipon de su prestamo.");
 			inicializarAdministrarCreditos();
@@ -781,16 +900,21 @@ public class ControladorGestionCreditos implements Serializable {
 		lstFinPrestamoSocio.forEach(prestamo -> {
 			FinTablaAmortizacion amortizacionActual = cuotaVigenteByPrestamo(prestamo);
 			prestamo.setSaldoCapital(amortizacionActual.getSaldoCapital());
-			prestamo.setCuotasPagadas(prestamo.getCuotasPagadas().add(new BigDecimal(1)));
+			if (prestamo.getCuotasPagadas() == null)
+				prestamo.setCuotasPagadas(new BigDecimal(1));
+			else
+				prestamo.setCuotasPagadas(prestamo.getCuotasPagadas().add(new BigDecimal(1)));
 			prestamo.getFinTablaAmortizacions().forEach(amortizacion -> {
 				if (amortizacion.getNumeroCuota().intValue() == prestamo.getCuotasPagadas().intValue()) {
 					amortizacion.setFinEstadoCuota(new FinEstadoCuota(3));
 					FinCuotasDescontada cuotaDescontada = new FinCuotasDescontada();
+					cuotaDescontada.setDescEstadoDescuento(new DescEstadoDescuento());
 					cuotaDescontada.setFechaEjecucionDescuento(new Date());
 					cuotaDescontada.setFinTablaAmortizacion(amortizacion);
 					if (prestamo.getCuotasPagadas().intValue() == prestamo.getPlazoMeses().intValue())
 						prestamo.setFinEstadoCredito(new FinEstadoCredito(6));
 					try {
+						cuotaDescontada.getDescEstadoDescuento().setIdEstadoDescuento(2);
 						managerGestionCredito.ingresarCuotaDescontada(cuotaDescontada);
 					} catch (Exception e) {
 						JSFUtil.crearMensajeERROR(e.getMessage());
@@ -799,7 +923,6 @@ public class ControladorGestionCreditos implements Serializable {
 				if (amortizacion.getNumeroCuota().intValue() == prestamo.getCuotasPagadas().add(new BigDecimal(1))
 						.intValue())
 					amortizacion.setFinEstadoCuota(new FinEstadoCuota(1));
-
 			});
 			try {
 				managerGestionCredito.actualizarSolicitudCredito(prestamo);
@@ -921,6 +1044,59 @@ public class ControladorGestionCreditos implements Serializable {
 								objFinPrestamoSocio.getFinTipoCredito().getTasaInteres().doubleValue(),
 								objFinPrestamoSocio.getPlazoMeses().doubleValue()));
 				objFinPrestamoSocio.setFinTablaAmortizacions(ModelUtil.calcularTablaAmortizacion(objFinPrestamoSocio));
+			}
+	}
+
+	public void verFechaTemp() {
+		SimpleDateFormat fecha = new SimpleDateFormat("dd/MM/yyyy");
+		System.out.println("Fecha que pasa a calcular: " + fecha.format(fechaFinalPrestamo));
+	}
+
+	public void calcularCuotaMensualPrestamoMigracion() {
+		SimpleDateFormat fecha = new SimpleDateFormat("dd/MM/yyyy");
+		System.out.println("Fecha que pasa a calcular: " + fecha.format(fechaFinalPrestamo));
+		if (objFinPrestamoSocio.getValorPrestamo() != null && objFinPrestamoSocio.getPlazoMeses() != null
+				&& fechaFinalPrestamo != null)
+			if (objFinPrestamoSocio.getValorPrestamo().doubleValue() > 0
+					&& objFinPrestamoSocio.getPlazoMeses().doubleValue() > 0) {
+				objFinPrestamoSocio.setCuotaMensual(
+						ModelUtil.calcularCuotaMensual(objFinPrestamoSocio.getValorPrestamo().doubleValue(),
+								objFinPrestamoSocio.getFinTipoCredito().getTasaInteres().doubleValue(),
+								objFinPrestamoSocio.getPlazoMeses().doubleValue()));
+
+				objFinPrestamoSocio.setFinTablaAmortizacions(
+						ModelUtil.calcularTablaAmortizacionMigracion(objFinPrestamoSocio, ModelUtil.getSumarMeses(
+								fechaFinalPrestamo, (objFinPrestamoSocio.getPlazoMeses().intValue() * -1))));
+			}
+	}
+
+	public void calcularCuotaMensualPrestamoMigracionProrroga() {
+		if (objFinPrestamoSocio.getValorPrestamo() != null && objFinPrestamoSocio.getPlazoMeses() != null
+				&& fechaFinalPrestamo != null)
+			if (objFinPrestamoSocio.getValorPrestamo().doubleValue() > 0
+					&& objFinPrestamoSocio.getPlazoMeses().doubleValue() > 0) {
+				objFinPrestamoSocio.setCuotaMensual(
+						ModelUtil.calcularCuotaMensual(objFinPrestamoSocio.getValorPrestamo().doubleValue(),
+								objFinPrestamoSocio.getFinTipoCredito().getTasaInteres().doubleValue(),
+								objFinPrestamoSocio.getPlazoMeses().doubleValue()));
+				objFinPrestamoSocio.setFinTablaAmortizacions(ModelUtil.calcularTablaAmortizacionMigracion(
+						objFinPrestamoSocio, ModelUtil.getSumarMeses(fechaFinalPrestamo, -1)));
+				int aux = 0;
+				SimpleDateFormat anio = new SimpleDateFormat("yyyy");
+				SimpleDateFormat mes = new SimpleDateFormat("MM");
+				SimpleDateFormat formato = new SimpleDateFormat("dd/MM/yyyy");
+				objFinPrestamoSocio.setObservacion("Prorroga de " + mesesAplazados + " meses, desde "
+						+ formato.format(fechaInicialProrroga) + ".");
+				for (FinTablaAmortizacion amortiza : objFinPrestamoSocio.getFinTablaAmortizacions()) {
+					if (mes.format(fechaInicialProrroga).equals(mes.format(amortiza.getFechaPago()))
+							&& anio.format(fechaInicialProrroga).equals(anio.format(amortiza.getFechaPago()))) {
+						aux = 1;
+					}
+					if (aux == 1) {
+						amortiza.setFechaPago(ModelUtil.sumarRestarMes(amortiza.getFechaPago(), mesesAplazados));
+					}
+
+				}
 			}
 	}
 
@@ -1155,6 +1331,22 @@ public class ControladorGestionCreditos implements Serializable {
 
 	public void setMesesAplazados(int mesesAplazados) {
 		this.mesesAplazados = mesesAplazados;
+	}
+
+	public Date getFechaFinalPrestamo() {
+		return fechaFinalPrestamo;
+	}
+
+	public void setFechaFinalPrestamo(Date fechaFinalPrestamo) {
+		this.fechaFinalPrestamo = fechaFinalPrestamo;
+	}
+
+	public Date getFechaInicialProrroga() {
+		return fechaInicialProrroga;
+	}
+
+	public void setFechaInicialProrroga(Date fechaInicialProrroga) {
+		this.fechaInicialProrroga = fechaInicialProrroga;
 	}
 
 	public FinTipoCredito getObjTipoCredito() {
