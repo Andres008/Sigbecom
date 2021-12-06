@@ -25,6 +25,7 @@ import javax.inject.Named;
 
 import org.primefaces.event.FileUploadEvent;
 import org.primefaces.event.FlowEvent;
+import org.primefaces.event.RowEditEvent;
 import org.primefaces.model.DefaultStreamedContent;
 import org.primefaces.model.StreamedContent;
 import org.primefaces.model.file.UploadedFile;
@@ -740,6 +741,24 @@ public class ControladorGestionCreditos implements Serializable {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+	}
+	
+	public void onRowEdit(RowEditEvent<Object> event) {
+		try {
+			managerGestionSistema.actualizarObjeto(event.getObject());
+			JSFUtil.crearMensajeINFO("Se actualizó correctamente.");
+		} catch (Exception e) {
+			JSFUtil.crearMensajeERROR(e.getMessage());
+			e.printStackTrace();
+		}
+	}
+	
+	/***
+	 * 
+	 * @param event
+	 */
+	public void onRowCancel(RowEditEvent<Object> event) {
+		JSFUtil.crearMensajeINFO("Se canceló actualización.");
 	}
 
 	public void cargarFinPrestamoSocio(FinPrestamoSocio prestamoSocio) {
