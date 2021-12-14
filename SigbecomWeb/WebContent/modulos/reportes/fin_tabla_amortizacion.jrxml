@@ -12,6 +12,8 @@
 	<parameter name="cuota" class="java.lang.String"/>
 	<parameter name="capitalDeuda" class="java.lang.String"/>
 	<parameter name="tipoCredito" class="java.lang.String"/>
+	<parameter name="numeroCuota" class="java.lang.String"/>
+	<parameter name="interesPrestamo" class="java.lang.String"/>
 	<queryString>
 		<![CDATA[]]>
 	</queryString>
@@ -101,7 +103,7 @@
 				<textElement>
 					<paragraph tabStopWidth="45"/>
 				</textElement>
-				<text><![CDATA[Plazo:]]></text>
+				<text><![CDATA[Interes:]]></text>
 			</staticText>
 			<staticText>
 				<reportElement x="0" y="75" width="50" height="15" uuid="262b1f10-7e16-41d5-bc1b-9ee1a80a9f8f"/>
@@ -164,7 +166,7 @@
 			</textField>
 			<textField>
 				<reportElement x="50" y="60" width="210" height="15" uuid="08d3de05-978d-4c77-b3ed-e08d8627b159"/>
-				<textFieldExpression><![CDATA[$F{numeroCuota}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$P{interesPrestamo}]]></textFieldExpression>
 			</textField>
 			<textField pattern="#,##0.00#;#,##0.00#-">
 				<reportElement x="50" y="75" width="210" height="15" uuid="e48b2a1a-f08b-4c59-9bb6-23ec11275500"/>
@@ -177,6 +179,17 @@
 			<textField pattern="#,##0.00#;#,##0.00#-">
 				<reportElement x="380" y="45" width="160" height="15" uuid="0916c051-d56f-4d90-bb21-39571ade13e1"/>
 				<textFieldExpression><![CDATA[$P{tipoCredito}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="280" y="60" width="50" height="15" uuid="26ab296b-dd58-4be8-af54-f27529b023db"/>
+				<textElement>
+					<paragraph tabStopWidth="45"/>
+				</textElement>
+				<text><![CDATA[Plazo:]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="330" y="60" width="210" height="15" uuid="ffc51ef5-1681-4535-b9d1-8ef52ef5518d"/>
+				<textFieldExpression><![CDATA[$P{numeroCuota}]]></textFieldExpression>
 			</textField>
 		</band>
 	</pageHeader>

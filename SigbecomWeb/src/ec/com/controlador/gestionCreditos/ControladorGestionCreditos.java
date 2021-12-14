@@ -252,6 +252,7 @@ public class ControladorGestionCreditos implements Serializable {
 		objFinPrestamoSocio.setFinPrestamoRequisitos(new ArrayList<FinPrestamoRequisito>());
 		objFinPrestamoSocio.setFinTablaAmortizacions(new ArrayList<FinTablaAmortizacion>());
 		objFinPrestamoSocio.setFinPrestamoNovacions2(new ArrayList<FinPrestamoNovacion>());
+		objFinPrestamoSocio.setFinAccionPrestamos(new ArrayList<FinAccionPrestamo>());
 		objFinPrestamoSocio.getFinPrestamoNovacions2().add(new FinPrestamoNovacion(objFinPrestamoSocio, prestamoSocio));
 		return "/modulos/prestamosFina/novacionCredito?faces-redirect=true";
 	}
@@ -359,7 +360,8 @@ public class ControladorGestionCreditos implements Serializable {
 	public void imprimirTablaAmortizacion(FinPrestamoSocio prestamoSocio) {
 		try {
 			SimpleDateFormat formato = new SimpleDateFormat("dd/MM/yyyy");
-			//prestamoSocio = managerGestionCredito.buscarSolicitudPrestamoById(prestamoSocio.getIdPrestamoSocio());
+			// prestamoSocio =
+			// managerGestionCredito.buscarSolicitudPrestamoById(prestamoSocio.getIdPrestamoSocio());
 			Map<String, Object> parametros = new HashMap<String, Object>();
 			parametros.put("nombreSocio", prestamoSocio.getUsrSocio().getGesPersona().getApellidos() + " "
 					+ prestamoSocio.getUsrSocio().getGesPersona().getNombres());
@@ -374,10 +376,15 @@ public class ControladorGestionCreditos implements Serializable {
 			parametros.put("numeroCuota", prestamoSocio.getPlazoMeses().toString());
 			parametros.put("capitalDeuda", prestamoSocio.getSaldoCapital().toString());
 			parametros.put("tipoCredito", prestamoSocio.getFinTipoCredito().getNombre());
+			BigDecimal interes = new BigDecimal(0);
+			for (FinTablaAmortizacion amortiza : prestamoSocio.getFinTablaAmortizacions()) {
+				interes = interes.add(amortiza.getInteres());
+			}
+			parametros.put("interesPrestamo", interes.toString());
 			File jasper = new File(beanLogin.getPathReporte() + "creditos/fin_tabla_amortizacion.jasper");
 			JasperPrint jasperPrint;
 			try {
-				//prestamoSocio.setFinTablaAmortizacions(managerGestionCredito.buscarTablaAmortizacionByIdCredito(prestamoSocio.getIdPrestamoSocio()));
+				// prestamoSocio.setFinTablaAmortizacions(managerGestionCredito.buscarTablaAmortizacionByIdCredito(prestamoSocio.getIdPrestamoSocio()));
 				jasperPrint = JasperFillManager.fillReport(jasper.getPath(), parametros,
 						new JRBeanCollectionDataSource(prestamoSocio.getFinTablaAmortizacions()));
 				archivo = JasperExportManager.exportReportToPdf(jasperPrint);
@@ -742,7 +749,7 @@ public class ControladorGestionCreditos implements Serializable {
 			e.printStackTrace();
 		}
 	}
-	
+
 	public void onRowEdit(RowEditEvent<Object> event) {
 		try {
 			managerGestionSistema.actualizarObjeto(event.getObject());
@@ -752,7 +759,7 @@ public class ControladorGestionCreditos implements Serializable {
 			e.printStackTrace();
 		}
 	}
-	
+
 	/***
 	 * 
 	 * @param event
@@ -777,8 +784,9 @@ public class ControladorGestionCreditos implements Serializable {
 			objFinPrestamoSocio = managerGestionCredito.buscarSolicitudPrestamoById(prestamoSocio.getIdPrestamoSocio());
 			if (objFinPrestamoSocio.getFinTablaAmortizacions().size() == 0)
 				objFinPrestamoSocio.setFinTablaAmortizacions(ModelUtil.calcularTablaAmortizacion(objFinPrestamoSocio));
-			else 
-				objFinPrestamoSocio.setFinTablaAmortizacions(managerGestionCredito.buscarTablaAmortizacionByIdCredito(prestamoSocio.getIdPrestamoSocio()));
+			else
+				objFinPrestamoSocio.setFinTablaAmortizacions(
+						managerGestionCredito.buscarTablaAmortizacionByIdCredito(prestamoSocio.getIdPrestamoSocio()));
 			imprimirTablaAmortizacion(objFinPrestamoSocio);
 		} catch (Exception e) {
 			JSFUtil.crearMensajeERROR("Error al cargar solicitud credito.");
