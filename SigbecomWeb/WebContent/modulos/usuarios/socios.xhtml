@@ -42,6 +42,11 @@
 				<H1>USUARIOS SIGBECOM</H1>
 				<h:form>
 					<p:growl id="growl" showDetail="true" sticky="true" />
+					<h:commandLink value="Exportar Excel">
+						<p:graphicImage name="/images/excel.png" width="24" />
+						<p:dataExporter type="xls" target="@form:tblSocios"
+							fileName="tablaSocios" />
+					</h:commandLink>
 					<p:panel header="Usuarios">
 						<p:dataTable id="tblSocios"
 							value="#{controladorGestionSocios.lstUsrSocio}" editable="true"
@@ -82,19 +87,19 @@
 									</f:facet>
 								</p:cellEditor>
 							</p:column>
-							<p:column headerText="Editar">
+							<p:column headerText="Editar" exportable="false">
 								<p:commandButton value="Tipo Socio"
 									oncomplete="PF('infTipoSocio').show()"
 									actionListener="#{controladorGestionSocios.cargarUsrSocio(socio)}"
 									update="@form:infTipoSocio" />
 							</p:column>
-							<p:column headerText="Ver Datos Personales">
+							<p:column headerText="Ver Datos Personales" exportable="false">
 								<p:commandButton icon="ui-icon-search"
 									actionListener="#{controladorGestionSocios.cargarUsrSocio(socio)}"
 									oncomplete="PF('infPersonal').show()"
 									update="@form:infPersonal" />
 							</p:column>
-							<p:column headerText="Reiniciar Contraseña">
+							<p:column headerText="Reiniciar Contraseña" exportable="false">
 								<p:commandButton icon="fa fa-reply"
 									actionListener="#{controladorGestionSocios.restablecerContraseña(socio)}"
 									update="@form">
@@ -110,7 +115,7 @@
 										styleClass="ui-confirmdialog-no ui-button-flat" />
 								</p:confirmDialog>
 							</p:column>
-							<p:column headerText="Ver Datos Ahorros">
+							<p:column headerText="Ver Datos Ahorros" exportable="false">
 								<p:commandButton icon="ui-icon-search"
 									actionListener="#{controladorGestionSocios.cargarUsrSocio(socio)}"
 									oncomplete="PF('infAhorro').show()" update="@form:infAhorro" />
