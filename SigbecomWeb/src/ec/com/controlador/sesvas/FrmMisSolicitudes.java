@@ -342,7 +342,7 @@ public class FrmMisSolicitudes implements Serializable{
 	
 	public void enviarDocumentos() {
 		System.out.println("Upload: ");
-        if (lstAdjuntos.stream().filter(p->p.getFile()==null).collect(Collectors.toList()).size()==0) {
+//        if (lstAdjuntos.stream().filter(p->p.getFile()==null).collect(Collectors.toList()).size()==0) {
         	Date date = new Date();  
             Timestamp fecha = new Timestamp(date.getTime());
             System.out.println("Fecha: "+fecha);
@@ -366,17 +366,20 @@ public class FrmMisSolicitudes implements Serializable{
 					sesvasAdjunto.setSesvasSolicitud(sesvasSolicitud);
 					
 					String str = sesvasAdjunto.getNombreArchivo();
-					String ext = str.substring(str.lastIndexOf('.'), str.length());
-					Date fechaActual = new Date();
-					SimpleDateFormat formato = new SimpleDateFormat("dd");
-					int diaActual = Integer.parseInt(formato.format(fechaActual));
-					String nombreArchivo = ModelUtil.getAnioActual()+"-"+
-										   ModelUtil.getMesActual()+"-"+
-										   diaActual+"-"+sesvasAdjunto.getSesvasRequisito().getSesvasTipoRequisito().getTipoRequisito()+"-"+sesvasSolicitud.getIdSesvasSolicitud();
-					sesvasAdjunto.setNombreArchivo(nombreArchivo+ext);
-					managerSesvas.registrarAdjuntos(sesvasAdjunto);
-					InputStream fis = new ByteArrayInputStream(dtoSesvasAdjunto.getFile());
-					ModelUtil.guardarArchivo(fis, nombreArchivo, url, ext);
+					if(str!=null && !str.isEmpty()) {
+						String ext = str.substring(str.lastIndexOf('.'), str.length());
+						Date fechaActual = new Date();
+						SimpleDateFormat formato = new SimpleDateFormat("dd");
+						int diaActual = Integer.parseInt(formato.format(fechaActual));
+						String nombreArchivo = ModelUtil.getAnioActual()+"-"+
+											   ModelUtil.getMesActual()+"-"+
+											   diaActual+"-"+sesvasAdjunto.getSesvasRequisito().getSesvasTipoRequisito().getTipoRequisito()+"-"+sesvasSolicitud.getIdSesvasSolicitud();
+						sesvasAdjunto.setNombreArchivo(nombreArchivo+ext);
+						
+						managerSesvas.registrarAdjuntos(sesvasAdjunto);
+						InputStream fis = new ByteArrayInputStream(dtoSesvasAdjunto.getFile());
+						ModelUtil.guardarArchivo(fis, nombreArchivo, url, ext);
+					}
 					
 				}
 				CorreoUtil correoUtil= new CorreoUtil();
@@ -387,10 +390,10 @@ public class FrmMisSolicitudes implements Serializable{
 				JSFUtil.crearMensajeERROR("No se registró correctamente");
 				e.printStackTrace();
 			}
-        }
-        else {
-        	//JSFUtil.crearMensajeWARN("Campos necesarios","Se necesita que seleccione los archivos correspondientes a la columna Requisitos");
-        }
+//        }
+//        else {
+//        	//JSFUtil.crearMensajeWARN("Campos necesarios","Se necesita que seleccione los archivos correspondientes a la columna Requisitos");
+//        }
     }
 	
 	public void cargarMisSolicitudes() {
