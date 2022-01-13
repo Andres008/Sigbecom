@@ -81,7 +81,7 @@
 									action="#{frmRegistroConvenio.cancelar()}" >
 								</p:commandButton>
 								<p:commandButton value="Aplicar Convenio"
-										action="#{frmRegistroConvenio.aplicarConvenio()}" update="@form">
+										action="#{frmRegistroConvenio.aplicarConvenio()}" update="form1 form2:tblEmp">
 										<p:confirm header="Confirmación"
 										message="Esta seguro de ingresar la información?"
 										icon="pi pi-exclamation-triangle" />
@@ -140,6 +140,21 @@
 				            <p:column headerText="RESOLUCION">
 								<h:outputText value="#{dato.resolucion}"/>
 				            </p:column>
+				            <p:column width="17" exportable="false">
+								<p:commandButton icon="fa fa-times" update="form2:tblEmp"
+									action="#{frmRegistroConvenio.eliminarConvenio(dato)}">
+									<p:confirm header="Confirmación"
+										message="Esta seguro de eliminar la información?"
+										icon="pi pi-exclamation-triangle" />
+								</p:commandButton>
+								<p:confirmDialog global="true" showEffect="fade" hideEffect="fade"
+											responsive="true" width="350">
+										<p:commandButton value="Si" type="button"
+												styleClass="ui-confirmdialog-yes" />
+										<p:commandButton value="No" type="button"
+												styleClass="ui-confirmdialog-no ui-button-flat" />
+								</p:confirmDialog>
+				            </p:column>
 							<p:rowExpansion>
 							
 								<p:dataTable value="#{dato.convAmortizacions}" rendered="#{frmRegistroConvenio.activarTablaAmortizacion(dato.estado)}"
@@ -165,11 +180,18 @@
 								        <p:column headerText="SALDO">
 								           <h:outputText value="#{con.saldo}"/>
 								        </p:column>
+								        
+								        
 								    </p:dataTable>
 							</p:rowExpansion>
 						</p:dataTable>
 						<br/>
 						<br/>
+						
+					</p:panel>
+					</h:form>
+					<h:form>
+					<p:panel id="pnl"  header="CONVENIOS SOLICITADOS">
 						<h:panelGrid id="fec" columns="2" cellpadding="7">
 							<p:outputLabel value="Ingrese Anio:"/>
 							<p:inputText id="valor" required="true" maxlength="5" 
@@ -263,12 +285,7 @@
 <!-- Inicio de Dialogs -->
 
 
-<p:dialog
-	header="REGISTRO DE CONTACTO"  resizable="false" closable="true"
-	widgetVar="dlgReg" modal="true" position="center"
-	hideEffect="fade" >
-	
-</p:dialog>
+
 
 <!-- Fin de Dialogs -->
                 </div>

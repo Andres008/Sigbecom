@@ -346,6 +346,26 @@ public class ManagerPlanesMoviles {
     	}
     }
     @SuppressWarnings("unchecked")
+	public List<PlanAmortEquipmov> findAllAmortEquipmovByPeriodoMes(Integer periodo, Integer mes) throws Exception{
+    	List<PlanAmortEquipmov> lstPlanAmortEquipmov = managerDAOSegbecom.findWhere(PlanAmortEquipmov.class, "o.anio = '"+periodo+"' AND o.mes = '"+mes+"'", "o.idAmortEquipmov ASC"); 
+    	if(lstPlanAmortEquipmov!= null && lstPlanAmortEquipmov.size()>0) {
+    		return lstPlanAmortEquipmov;
+    	}
+    	else {
+    		return null;
+    	}
+    }
+    @SuppressWarnings("unchecked")
+	public List<PlanAmortEquipmov> findAllAmortEquipmovByPeriodo(Integer periodo) throws Exception{
+    	List<PlanAmortEquipmov> lstPlanAmortEquipmov = managerDAOSegbecom.findWhere(PlanAmortEquipmov.class, "o.anio = '"+periodo+"'", "o.idAmortEquipmov ASC"); 
+    	if(lstPlanAmortEquipmov!= null && lstPlanAmortEquipmov.size()>0) {
+    		return lstPlanAmortEquipmov;
+    	}
+    	else {
+    		return null;
+    	}
+    }
+    @SuppressWarnings("unchecked")
    	public List<PlanPago> findAllPlanPagoByCedula(String cedula) throws Exception{
        	List<PlanPago> lstPlanPago = managerDAOSegbecom.findWhere(PlanPago.class, "o.planContratoComite.usrSocio.cedulaSocio = '"+cedula+"'", "o.idPlanPagos DESC");
        	for (PlanPago planPago : lstPlanPago) {

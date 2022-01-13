@@ -243,5 +243,20 @@ public class ManagerConvenios {
 		List<ConvValorMax> lstConvValorMax = managerDAOSegbecom.findWhere(ConvValorMax.class, "o.estado = 'ACTIVO'", null);
 		return lstConvValorMax;
 	}
-
+	@SuppressWarnings("unchecked")
+	public List<ConvAmortizacion> findConvAmortizacionByidConvAdquiridosEstadoDescontado(Long idConvAdquiridos) throws Exception{
+		List<ConvAmortizacion> lstConvAmortizacion = managerDAOSegbecom.findWhere(ConvAmortizacion.class,"o.convAdquirido.idConvAdquiridos = '"+idConvAdquiridos+"' AND o.descEstadoDescuento.estado='DESCONTADA'",null);
+		return lstConvAmortizacion;
+	}
+	@SuppressWarnings("unchecked")
+	public List<ConvAmortizacion> findConvAmortizacionByidConvAdquiridos(Long idConvAdquiridos) throws Exception{
+		List<ConvAmortizacion> lstConvAmortizacion = managerDAOSegbecom.findWhere(ConvAmortizacion.class,"o.convAdquirido.idConvAdquiridos = '"+idConvAdquiridos+"'",null);
+		return lstConvAmortizacion;
+	}
+	public void eliminarConvAmortizacion(Long idConvAmortizacion) throws Exception {
+		managerDAOSegbecom.eliminar(ConvAmortizacion.class, idConvAmortizacion);
+	}
+	public void eliminarConvAdquirido(Long idConvAdquiridos) throws Exception {
+		managerDAOSegbecom.eliminar(ConvAdquirido.class, idConvAdquiridos);
+	}
 }

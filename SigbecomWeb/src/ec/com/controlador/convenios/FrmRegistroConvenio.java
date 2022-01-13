@@ -215,11 +215,13 @@ public class FrmRegistroConvenio implements Serializable{
 					generarTablaAmortizacion(convAdquirido.getInteres(),convAdquirido.getValorTotal(), convAdquirido.getInteresTotal(),convAdquirido.getDeudaTotal(), plazo,descEstadoDescuento);
 					cargarListaConvAdquiridos();
 					cargarListaConvAdquiridosTramitados();
+					init();
 					PrimeFaces prime=PrimeFaces.current();
 					prime.ajax().update("form1");
 					prime.ajax().update("form2");
 					prime.executeScript("PF('dlgTramite').hide();");
 					JSFUtil.crearMensajeINFO("Se genero la tabla correctamente");
+					
 				} catch (Exception e) {
 					JSFUtil.crearMensajeERROR("No se actualizo las cuotas correctamente");
 					e.printStackTrace();
@@ -417,7 +419,36 @@ private void generarTablaAmortizacion(BigDecimal interes, BigDecimal valorTotal,
 		}
 		return false;
 	}
-	
+	public void eliminarConvenio(ConvAdquirido convAdquirido) {
+		try {
+			Long idConvAdquiridos = convAdquirido.getIdConvAdquiridos();
+			
+			System.out.println("id:"+idConvAdquiridos);
+			List<ConvAmortizacion> lstConvAmortizacion = managerConvenios.findConvAmortizacionByidConvAdquiridosEstadoDescontado(idConvAdquiridos);
+			if(lstConvAmortizacion!=null && lstConvAmortizacion.size()>0) {
+				JSFUtil.crearMensajeERROR("Tiene cuotas descontadas no puede eliminar");
+				System.out.println("TIENE PENDIENTES:");
+			}
+			else {
+				System.out.println("NO TIENE PENDIENTES:");
+				List<ConvAmortizacion> lstConvAmorTmp = managerConvenios.findConvAmortizacionByidConvAdquiridos(idConvAdquiridos);
+				for (ConvAmortizacion convAmortizacion : lstConvAmorTmp) {
+					managerConvenios.eliminarConvAmortizacion(convAmortizacion.getIdConvAmortizacion());
+				}
+				managerConvenios.eliminarConvAdquirido(idConvAdquiridos);
+				JSFUtil.crearMensajeINFO("Regsitro eliminado correctamente");
+				init();
+			}
+			
+			PrimeFaces prime=PrimeFaces.current();
+			prime.ajax().update("form1");
+			prime.ajax().update("form2");
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+	}
 	//GETTERS AND SETTERS
 	public BeanLogin getBeanLogin() {
 		return beanLogin;
