@@ -404,6 +404,17 @@ public class ControladorGestionCreditos implements Serializable {
 			SimpleDateFormat formatodia = new SimpleDateFormat("dd");
 			SimpleDateFormat formatoanio = new SimpleDateFormat("yyyy");
 			Map<String, Object> parametros = new HashMap<String, Object>();
+			objFinPrestamoSocio = prestamoSocio;
+			if (objFinPrestamoSocio.getFinTablaAmortizacions().size() == 0)
+				objFinPrestamoSocio.setFinTablaAmortizacions(ModelUtil.calcularTablaAmortizacion(objFinPrestamoSocio));
+			else
+				objFinPrestamoSocio.setFinTablaAmortizacions(
+						managerGestionCredito.buscarTablaAmortizacionByIdCredito(prestamoSocio.getIdPrestamoSocio()));
+			objFinPrestamoSocio
+					.setFechaPrimeraCouta(objFinPrestamoSocio.getFinTablaAmortizacions().get(0).getFechaPago());
+			objFinPrestamoSocio.setFechaUltimaCuota(objFinPrestamoSocio.getFinTablaAmortizacions()
+					.get(objFinPrestamoSocio.getFinTablaAmortizacions().size() - 1).getFechaPago());
+			managerGestionCredito.actualizarSolicitudCredito(objFinPrestamoSocio);
 			parametros.put("apelativoSG",
 					managerGestionSistema.buscarValorParametroNombre("APELATIVO SECRETARIO GENERAL"));
 			parametros.put("nombreSocio", prestamoSocio.getUsrSocio().getGesPersona().getApellidos() + " "
@@ -457,6 +468,17 @@ public class ControladorGestionCreditos implements Serializable {
 			SimpleDateFormat formatodia = new SimpleDateFormat("dd");
 			SimpleDateFormat formatoanio = new SimpleDateFormat("yyyy");
 			Map<String, Object> parametros = new HashMap<String, Object>();
+			objFinPrestamoSocio = prestamoSocio;
+			if (objFinPrestamoSocio.getFinTablaAmortizacions().size() == 0)
+				objFinPrestamoSocio.setFinTablaAmortizacions(ModelUtil.calcularTablaAmortizacion(objFinPrestamoSocio));
+			else
+				objFinPrestamoSocio.setFinTablaAmortizacions(
+						managerGestionCredito.buscarTablaAmortizacionByIdCredito(prestamoSocio.getIdPrestamoSocio()));
+			objFinPrestamoSocio
+					.setFechaPrimeraCouta(objFinPrestamoSocio.getFinTablaAmortizacions().get(0).getFechaPago());
+			objFinPrestamoSocio.setFechaUltimaCuota(objFinPrestamoSocio.getFinTablaAmortizacions()
+					.get(objFinPrestamoSocio.getFinTablaAmortizacions().size() - 1).getFechaPago());
+			managerGestionCredito.actualizarSolicitudCredito(objFinPrestamoSocio);
 			parametros.put("apelativoSG",
 					managerGestionSistema.buscarValorParametroNombre("APELATIVO PRESIDENTE EJECUTIVO"));
 			parametros.put("nombreSocio", prestamoSocio.getUsrSocio().getGesPersona().getApellidos() + " "
@@ -788,6 +810,19 @@ public class ControladorGestionCreditos implements Serializable {
 				objFinPrestamoSocio.setFinTablaAmortizacions(
 						managerGestionCredito.buscarTablaAmortizacionByIdCredito(prestamoSocio.getIdPrestamoSocio()));
 			imprimirTablaAmortizacion(objFinPrestamoSocio);
+		} catch (Exception e) {
+			JSFUtil.crearMensajeERROR("Error al cargar solicitud credito.");
+		}
+	}
+
+	public void cargarFinPrestamoSocioAmortizacionSinReporte(FinPrestamoSocio prestamoSocio) {
+		try {
+			objFinPrestamoSocio = managerGestionCredito.buscarSolicitudPrestamoById(prestamoSocio.getIdPrestamoSocio());
+			if (objFinPrestamoSocio.getFinTablaAmortizacions().size() == 0)
+				objFinPrestamoSocio.setFinTablaAmortizacions(ModelUtil.calcularTablaAmortizacion(objFinPrestamoSocio));
+			else
+				objFinPrestamoSocio.setFinTablaAmortizacions(
+						managerGestionCredito.buscarTablaAmortizacionByIdCredito(prestamoSocio.getIdPrestamoSocio()));
 		} catch (Exception e) {
 			JSFUtil.crearMensajeERROR("Error al cargar solicitud credito.");
 		}

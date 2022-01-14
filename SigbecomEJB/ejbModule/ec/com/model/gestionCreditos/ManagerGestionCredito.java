@@ -161,6 +161,9 @@ public class ManagerGestionCredito {
 				prestamoSocio.getFinAccionPrestamos().forEach(accion -> {
 					accion.getObservacion();
 				});
+				prestamoSocio.getFinTablaAmortizacions().forEach(table->{
+					table.getIdTablaAmortizacion();
+				});
 			});
 			return lstFinPrestamoSocio;
 		} catch (Exception e) {
