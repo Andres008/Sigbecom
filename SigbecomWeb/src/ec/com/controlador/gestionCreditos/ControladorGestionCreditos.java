@@ -137,6 +137,8 @@ public class ControladorGestionCreditos implements Serializable {
 			// Estado de creditos 3 solicitud REVISADA
 			long idEstadoCredito = new Long(3);
 			lstFinPrestamoSocio = managerGestionCredito.buscarSolicitudesPrestamoByEstado(idEstadoCredito);
+			objFinPrestamoSocio = new FinPrestamoSocio();
+			objFinPrestamoSocio.setFinResolucionPrestamo(new FinResolucionPrestamo());
 		} catch (Exception e) {
 			JSFUtil.crearMensajeERROR(e.getMessage());
 		}
