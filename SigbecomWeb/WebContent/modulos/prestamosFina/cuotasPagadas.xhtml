@@ -64,6 +64,18 @@
 							actionListener="#{controladorGestionCreditos.buscarCuotasPagadas()}"
 							value="Buscar" update="@form" />
 					</p:panelGrid>
+					<br />
+					<br />
+					<div class="p-d-flex p-jc-between">
+						<p:panelGrid columns="2" styleClass="ui-noborder">
+							<h4>Exportar a Excel</h4>
+							<h:commandLink>
+								<p:graphicImage name="/images/excel.png" width="24" />
+								<p:dataExporter type="xls" target="@form:tblSolicitud"
+									fileName="cuotasPagadas" />
+							</h:commandLink>
+						</p:panelGrid>
+					</div>
 					<p:dataTable id="tblSolicitud" var="solicitud" paginator="true"
 						rows="15" emptyMessage="No existe pagos realizados."
 						value="#{controladorGestionCreditos.lstFinTablaAmortizacion}"
@@ -129,8 +141,7 @@
 								</p:column>
 								<p:column>
 									<f:facet name="footer">
-										<h:outputText
-											value="#{controladorGestionCreditos.totalCuota}">
+										<h:outputText value="#{controladorGestionCreditos.totalCuota}">
 											<f:convertNumber type="currency" currencySymbol="$" />
 										</h:outputText>
 									</f:facet>
