@@ -93,6 +93,8 @@ public class ControladorGestionCreditos implements Serializable {
 
 	private FinPrestamoSocio objFinPrestamoSocio;
 
+	private List<FinTablaAmortizacion> lstFinTablaAmortizacion;
+
 	private List<FinPrestamoSocio> lstFinPrestamoSocio;
 
 	private boolean skip;
@@ -110,11 +112,13 @@ public class ControladorGestionCreditos implements Serializable {
 	private long panelAccion;
 	private FinAccionPrestamo accionCredito;
 
-	private int mesesAplazados;
+	private int mesesAplazados, anio, mes;
 
 	private Date fechaFinalPrestamo, fechaInicialProrroga;
 
 	private FinTipoCredito objTipoCredito;
+
+	private BigDecimal totalCapitalCuota, totalInteresCuota, totalCuota;
 
 	public ControladorGestionCreditos() {
 
@@ -182,6 +186,33 @@ public class ControladorGestionCreditos implements Serializable {
 		} catch (Exception e) {
 			JSFUtil.crearMensajeERROR(e.getMessage());
 		}
+	}
+
+	public void inicializarCuotasPagadas() {
+		try {
+			anio = ModelUtil.getAnioActual();
+			mes = ModelUtil.getMesActual();
+			buscarCuotasPagadas();
+		} catch (Exception e) {
+			JSFUtil.crearMensajeERROR(e.getMessage());
+		}
+	}
+
+	public void buscarCuotasPagadas() {
+		totalCapitalCuota = new BigDecimal(0);
+		totalCuota = new BigDecimal(0);
+		totalInteresCuota = new BigDecimal(0);
+		try {
+			lstFinTablaAmortizacion = managerGestionCredito.busarCuotaPagadaMesAnio(anio, mes);
+			lstFinTablaAmortizacion.forEach(cuotaP -> {
+				totalCapitalCuota = totalCapitalCuota.add(cuotaP.getCapital());
+				totalCuota = totalCuota.add(cuotaP.getValorCuota());
+				totalInteresCuota = totalInteresCuota.add(cuotaP.getInteres());
+			});
+		} catch (Exception e) {
+			JSFUtil.crearMensajeERROR(e.getMessage());
+		}
+
 	}
 
 	public void inicializarHistorialCreditos() {
@@ -1419,6 +1450,54 @@ public class ControladorGestionCreditos implements Serializable {
 
 	public void setObjTipoCredito(FinTipoCredito objTipoCredito) {
 		this.objTipoCredito = objTipoCredito;
+	}
+
+	public List<FinTablaAmortizacion> getLstFinTablaAmortizacion() {
+		return lstFinTablaAmortizacion;
+	}
+
+	public void setLstFinTablaAmortizacion(List<FinTablaAmortizacion> lstFinTablaAmortizacion) {
+		this.lstFinTablaAmortizacion = lstFinTablaAmortizacion;
+	}
+
+	public int getAnio() {
+		return anio;
+	}
+
+	public void setAnio(int anio) {
+		this.anio = anio;
+	}
+
+	public int getMes() {
+		return mes;
+	}
+
+	public void setMes(int mes) {
+		this.mes = mes;
+	}
+
+	public BigDecimal getTotalCapitalCuota() {
+		return totalCapitalCuota;
+	}
+
+	public void setTotalCapitalCuota(BigDecimal totalCapitalCuota) {
+		this.totalCapitalCuota = totalCapitalCuota;
+	}
+
+	public BigDecimal getTotalInteresCuota() {
+		return totalInteresCuota;
+	}
+
+	public void setTotalInteresCuota(BigDecimal totalInteresCuota) {
+		this.totalInteresCuota = totalInteresCuota;
+	}
+
+	public BigDecimal getTotalCuota() {
+		return totalCuota;
+	}
+
+	public void setTotalCuota(BigDecimal totalCuota) {
+		this.totalCuota = totalCuota;
 	}
 
 }
