@@ -10,6 +10,8 @@ import javax.enterprise.context.SessionScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 
+import org.primefaces.PrimeFaces;
+
 import ec.com.controlador.sesion.BeanLogin;
 import ec.com.model.dao.entity.PlanAmortEquipmov;
 import ec.com.model.dao.entity.UsrSocio;
@@ -29,9 +31,12 @@ public class FrmPrecancelar implements Serializable {
 		super();
 	}
 	private List<PlanAmortEquipmov> lstCuotasPendientes;
+	private List<PlanAmortEquipmov> lstAllAmortEquipmov;
 	private String cedula;
 	private List<UsrSocio> lstUsrSocio;
-
+	private Integer periodo;
+	private Integer mes;
+	
 	@Inject
 	private BeanLogin beanLogin;
 	
@@ -52,6 +57,14 @@ public class FrmPrecancelar implements Serializable {
 			e.printStackTrace();
 		}
 	}
+	public void cargarAllAmortEquipmov() {
+		try {
+			lstAllAmortEquipmov = managerPlanesMoviles.findAllAmortEquipmovByPeriodoMes(periodo, mes);
+		} catch (Exception e) {
+			JSFUtil.crearMensajeERROR("No se cargo correctamente la lista");
+			e.printStackTrace();
+		}
+	}
 	public void cargarListaCuotasPendientes() {
 		if(cedula!=null && !cedula.isEmpty()) {
 			lstCuotasPendientes = new ArrayList<PlanAmortEquipmov>();
@@ -67,8 +80,53 @@ public class FrmPrecancelar implements Serializable {
 	}
 	public void precancelar() {
 		if(lstCuotasPendientes!=null && lstCuotasPendientes.size()>0) {
-			
+			try {
+				for (PlanAmortEquipmov planAmortEquipmov : lstCuotasPendientes) {
+					planAmortEquipmov.setEstado("PRECANCELADO");
+					
+						managerPlanesMoviles.actualizarObjeto(planAmortEquipmov);
+					
+				}
+				init();
+				inicializar();
+				JSFUtil.crearMensajeINFO("Cuotas precanceladas correctamente");
+				PrimeFaces prime=PrimeFaces.current();
+				prime.ajax().update("form1");
+				prime.ajax().update("form2");
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		}
+		else {
+			JSFUtil.crearMensajeERROR("No ha seleecionado un usuario con cuotas pendientes");
+			PrimeFaces prime=PrimeFaces.current();
+			prime.ajax().update("form1");
+			prime.ajax().update("form2");
+		}
+	}
+	public void cargarConsulta() {
+		lstAllAmortEquipmov = new ArrayList<PlanAmortEquipmov>();
+		if(periodo!=null && mes !=null) {
+			try {
+				lstAllAmortEquipmov= managerPlanesMoviles.findAllAmortEquipmovByPeriodoMes(periodo, mes);
+			} catch (Exception e) {
+				JSFUtil.crearMensajeERROR("No se cargo correctamente el listado solicitado");
+				e.printStackTrace();
+			}
+		}
+		else if(periodo!=null && mes==null) {
+			try {
+				lstAllAmortEquipmov= managerPlanesMoviles.findAllAmortEquipmovByPeriodo(periodo);
+			} catch (Exception e) {
+				JSFUtil.crearMensajeERROR("No se cargo correctamente el listado solicitado");
+				e.printStackTrace();
+			}
+		}
+		
+		PrimeFaces prime=PrimeFaces.current();
+		prime.ajax().update("form2");
+		prime.ajax().update("form3");
 	}
 	public String getCedula() {
 		return cedula;
@@ -93,6 +151,24 @@ public class FrmPrecancelar implements Serializable {
 	}
 	public void setBeanLogin(BeanLogin beanLogin) {
 		this.beanLogin = beanLogin;
+	}
+	public List<PlanAmortEquipmov> getLstAllAmortEquipmov() {
+		return lstAllAmortEquipmov;
+	}
+	public void setLstAllAmortEquipmov(List<PlanAmortEquipmov> lstAllAmortEquipmov) {
+		this.lstAllAmortEquipmov = lstAllAmortEquipmov;
+	}
+	public Integer getPeriodo() {
+		return periodo;
+	}
+	public void setPeriodo(Integer periodo) {
+		this.periodo = periodo;
+	}
+	public Integer getMes() {
+		return mes;
+	}
+	public void setMes(Integer mes) {
+		this.mes = mes;
 	}
 	
 }

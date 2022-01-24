@@ -161,6 +161,9 @@ public class ManagerGestionCredito {
 				prestamoSocio.getFinAccionPrestamos().forEach(accion -> {
 					accion.getObservacion();
 				});
+				prestamoSocio.getFinTablaAmortizacions().forEach(table -> {
+					table.getIdTablaAmortizacion();
+				});
 			});
 			return lstFinPrestamoSocio;
 		} catch (Exception e) {
@@ -283,7 +286,20 @@ public class ManagerGestionCredito {
 
 	public void actualizarTablaAmortizacion(FinTablaAmortizacion finTablaAmortizacion) throws Exception {
 		managerDAOSegbecom.actualizar(finTablaAmortizacion);
-		
+
+	}
+
+	@SuppressWarnings("unchecked")
+	public List<FinTablaAmortizacion> busarCuotaPagadaMesAnio(int anio, int mes) throws Exception {
+		if (mes < 10)
+			return managerDAOSegbecom.findWhere(FinTablaAmortizacion.class,
+					"o.finEstadoCuota.idEstadoCuota=3 and to_char(o.fechaPago,'MMyyyy')='"
+							.concat("0".concat(String.valueOf(mes)).concat(String.valueOf(anio).concat("'"))),
+					"o.finPrestamoSocio.saldoCapital ASC");
+		return managerDAOSegbecom.findWhere(FinTablaAmortizacion.class,
+				"o.finEstadoCuota.idEstadoCuota=3 and to_char(o.fechaPago,'MMyyyy')='"
+						.concat(String.valueOf(mes).concat(String.valueOf(anio).concat("'"))),
+				"o.finPrestamoSocio.saldoCapital ASC");
 	}
 
 }

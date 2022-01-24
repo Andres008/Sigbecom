@@ -48,9 +48,16 @@
 							fileName="tablaPrestamos" />
 					</h:commandLink>
 					<p:dataTable id="tblSolicitud" var="solicitud" paginator="true"
-						rows="8" style="font-size:90%" emptyMessage="No existe creditos."
+						editable="true" rows="8" style="font-size:90%"
+						emptyMessage="No existe creditos."
 						value="#{controladorGestionCreditos.lstFinPrestamoSocio}"
 						rowIndexVar="index">
+						<p:ajax event="rowEdit"
+							listener="#{controladorGestionCreditos.onRowEdit}"
+							update="@form:growl" process="@this"/>
+						<p:ajax event="rowEditCancel"
+							listener="#{controladorGestionCreditos.onRowCancel}"
+							update="@form:growl" />
 						<p:column headerText="N°" width="15">
 							<p:outputLabel value="#{index + 1}" />
 						</p:column>
@@ -87,7 +94,15 @@
 							<p:outputLabel value="#{solicitud.cuotaMensual}" />
 						</p:column>
 						<p:column headerText="Observación" style="font-size:90%">
-							<p:outputLabel value="#{solicitud.observacion}" />
+							<p:cellEditor>
+								<f:facet name="output">
+									<p:outputLabel value="#{solicitud.observacion}" />
+								</f:facet>
+								<f:facet name="input">
+									<p:inputText value="#{solicitud.observacion}" style="width:100%"
+										label="Name" />
+								</f:facet>
+							</p:cellEditor>
 						</p:column>
 						<p:column headerText="Amortización" style="font-size:90%"
 							exportable="false">
@@ -105,18 +120,22 @@
 									oncomplete="PF('infPDF').show()" />
 							</p:panelGrid>
 						</p:column>
-						<p:column headerText="Historial" style="font-size:90%"
+						<p:column headerText="Acción" style="font-size:90%" width="65"
 							exportable="false">
-							<p:commandButton value="Historial" update="@form" process="@this"
-								actionListener="#{controladorGestionCreditos.cargarFinPrestamoSocioAmortizacion(solicitud)}"
-								style="font-size:110%" oncomplete="PF('infAccion').show()" />
+							<p:panelGrid columns="1" styleClass="ui-noborder">
+								<p:commandButton value="Historial" update="@form"
+									process="@this"
+									actionListener="#{controladorGestionCreditos.cargarFinPrestamoSocioAmortizacion(solicitud)}"
+									style="font-size:110%" oncomplete="PF('infAccion').show()" />
+								<p:commandButton value="Acción" update="@form" process="@this"
+									style="font-size:110%"
+									actionListener="#{controladorGestionCreditos.cargarFinPrestamoSocioAccion(solicitud)}"
+									oncomplete="PF('ingAccion').show()" />
+							</p:panelGrid>
 						</p:column>
-						<p:column headerText="Ingresar Acción" style="font-size:90%"
-							exportable="false">
-							<p:commandButton value="Acción" update="@form" process="@this"
-								style="font-size:110%"
-								actionListener="#{controladorGestionCreditos.cargarFinPrestamoSocioAccion(solicitud)}"
-								oncomplete="PF('ingAccion').show()" />
+						<p:column style="width:6rem" width="30" headerText="Editar">
+							<p:rowEditor editTitle="Edit Row" cancelTitle="Cancel Edit"
+								saveTitle="Save Row" />
 						</p:column>
 					</p:dataTable>
 					<p:dialog header="Ingresar Acciones Credito" widgetVar="ingAccion"

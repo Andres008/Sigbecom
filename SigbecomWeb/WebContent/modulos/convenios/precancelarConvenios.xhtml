@@ -25,24 +25,24 @@
 			<div class="layout-main">
                 <div class="route-bar">
                     <div class="route-bar-breadcrumb">
-                        <i class="fa fa-home"></i> <span>/PLANES MOVILES/Precancelar Plan Móvil</span>
+                        <i class="fa fa-home"></i> <span>/CONVENIOS/Precancelar Convenios</span>
                         <ui:insert name="viewname" />
                     </div>
 					<ui:include src="/affordances/route-bar-menu.xhtml" />
                 </div>
 				<div class="layout-main-content" align="center">
-                    <H1>Precancelación de Planes Móviles</H1>
+                    <H1>Precancelación de Convenios</H1>
                     <h:form id="form1">
 	                    <p:growl id="growl" showDetail="true" sticky="true" />
 						<p:panel id="pnls" header="Consulta de Cuentas por cobrar" toggleable="true" collapsed="true">
 							<p:panelGrid columns="2" styleClass="ui-noborder" layout="grid"
 								columnClasses="ui-g-12 ui-md-6 ui-lg-4, ui-g-12 ui-md-6 ui-lg-4, ui-g-12 ui-md-6 ui-lg-4">
 								<p:outputLabel for="nom" value="Seleccione Cliente:" />
-								<p:selectOneMenu id="nom" required="true" value="#{frmPrecancelar.cedula}"
+								<p:selectOneMenu id="nom" required="true" value="#{frmPrecancelarConvenio.cedula}"
 												 filter="true" filterMatchMode="contains">
 			                    	<f:selectItem itemLabel="Seleccione Cliente"
 										noSelectionOption="true" />
-			                    	<f:selectItems value="#{frmPrecancelar.lstUsrSocio}" var="dat"
+			                    	<f:selectItems value="#{frmPrecancelarConvenio.lstUsrSocio}" var="dat"
 			                    			itemLabel="#{dat.cedulaSocio} #{dat.gesPersona.apellidos} #{dat.gesPersona.nombres}" itemValue="#{dat.cedulaSocio}"/>
 			                    </p:selectOneMenu>
 	                    	</p:panelGrid>
@@ -53,7 +53,7 @@
 									action="#{frmPrecancelar.inicializar()}" update="@form">
 								</p:commandButton>							
 								<p:commandButton value="Cargar Registros"
-									action="#{frmPrecancelar.cargarListaCuotasPendientes()}" update="form2:tblUsr">
+									action="#{frmPrecancelarConvenio.cargarListaCuotasPendientes()}" update="form2:tblUsr">
 									<p:confirm header="Confirmación"
 									message="Esta seguro de ingresar la información?"
 									icon="pi pi-exclamation-triangle" />

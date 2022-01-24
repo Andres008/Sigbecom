@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:pc="http://primefaces.org/california">
+
+<h:head>
+	<f:facet name="first">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+		<meta name="viewport"
+			content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" />
+		<meta name="apple-mobile-web-app-capable" content="yes" />
+	</f:facet>
+	<title><ui:insert name="title">SIGBECOM</ui:insert></title>
+	<h:outputScript name="js/nanoscroller.js" library="california-layout" />
+	<h:outputScript name="js/layout.js" library="california-layout" />
+	<ui:insert name="head" />
+</h:head>
+
+<h:body styleClass="main-body"
+	onload="#{controladorGestionCreditos.inicializarCuotasPagadas()}">
+
+	<div
+		class="layout-wrapper #{guestPreferences.menuLayout != 'static' ? guestPreferences.menuLayout : null}">
+		<ui:include src="/affordances/megamenu.xhtml" />
+		<ui:include src="/affordances/topbar.xhtml" />
+		<ui:include src="/affordances/sidebar.xhtml" />
+		<ui:include src="/affordances/right-sidebar.xhtml" />
+
+		<div class="layout-main">
+			<div class="route-bar">
+				<div class="route-bar-breadcrumb">
+					<i class="fa fa-home"></i> <span>/Registro Usuarios</span>
+					<ui:insert name="viewname" />
+				</div>
+				<ui:include src="/affordances/route-bar-menu.xhtml" />
+			</div>
+			<div class="layout-main-content" align="center">
+				<H1>Cuotas Mensuales Pagadas</H1>
+				<h:form id="solicitudes">
+					<p:growl id="growl" showDetail="true" sticky="true" />
+					<p:panelGrid columns="5" styleClass="ui-noborder">
+						<p:outputLabel value="Año" />
+						<p:spinner value="#{controladorGestionCreditos.anio}" min="2021" />
+						<p:outputLabel value="Mes" />
+						<p:selectOneMenu value="#{controladorGestionCreditos.mes}">
+							<f:selectItem itemValue="1" itemLabel="ENERO" />
+							<f:selectItem itemValue="2" itemLabel="FEBRERO" />
+							<f:selectItem itemValue="3" itemLabel="MARZO" />
+							<f:selectItem itemValue="4" itemLabel="ABRIL" />
+							<f:selectItem itemValue="5" itemLabel="MAYO" />
+							<f:selectItem itemValue="6" itemLabel="JUNIO" />
+							<f:selectItem itemValue="7" itemLabel="JULIO" />
+							<f:selectItem itemValue="8" itemLabel="AGOSTO" />
+							<f:selectItem itemValue="9" itemLabel="SEPTIEMBRE" />
+							<f:selectItem itemValue="10" itemLabel="OCTUBRE" />
+							<f:selectItem itemValue="11" itemLabel="NOVIEMBRE" />
+							<f:selectItem itemValue="12" itemLabel="DICIEMBRE" />
+						</p:selectOneMenu>
+						<p:commandButton
+							actionListener="#{controladorGestionCreditos.buscarCuotasPagadas()}"
+							value="Buscar" update="@form" />
+					</p:panelGrid>
+					<p:dataTable id="tblSolicitud" var="solicitud" paginator="true"
+						rows="15" emptyMessage="No existe pagos realizados."
+						value="#{controladorGestionCreditos.lstFinTablaAmortizacion}"
+						rowIndexVar="index">
+						<p:column headerText="N°" width="15">
+							<p:outputLabel value="#{index + 1}" />
+						</p:column>
+						<p:column headerText="Cédula Socio">
+							<p:outputLabel
+								value="#{solicitud.finPrestamoSocio.usrSocio.cedulaSocio}" />
+						</p:column>
+						<p:column headerText="Nombre Socio">
+							<p:outputLabel
+								value="#{solicitud.finPrestamoSocio.usrSocio.gesPersona.apellidos} #{solicitud.finPrestamoSocio.usrSocio.gesPersona.nombres}" />
+						</p:column>
+						<p:column headerText="Estado Credito">
+							<p:outputLabel
+								value="#{solicitud.finPrestamoSocio.finEstadoCredito.descripcion}" />
+						</p:column>
+						<p:column headerText="Tipo Prestamo">
+							<p:outputLabel
+								value="#{solicitud.finPrestamoSocio.finTipoCredito.nombre}" />
+						</p:column>
+						<p:column headerText="Valor Solicitado">
+							<p:outputLabel
+								value="#{solicitud.finPrestamoSocio.valorPrestamo}" />
+						</p:column>
+						<p:column headerText="Cuotas Pagadas">
+							<p:outputLabel
+								value="#{solicitud.finPrestamoSocio.cuotasPagadas}" />
+						</p:column>
+						<p:column headerText="Capital Pagado">
+							<p:outputLabel value="#{solicitud.capital}" />
+						</p:column>
+						<p:column headerText="Interes Pagado">
+							<p:outputLabel value="#{solicitud.interes}" />
+						</p:column>
+						<p:column headerText="Cuota Pagada">
+							<p:outputLabel value="#{solicitud.valorCuota}" />
+						</p:column>
+						<p:column headerText="Saldo Capital">
+							<p:outputLabel value="#{solicitud.finPrestamoSocio.saldoCapital}" />
+						</p:column>
+						<p:columnGroup type="footer">
+							<p:row>
+								<p:column colspan="7" style="text-align:right"
+									footerText="Total:" />
+								<p:column>
+									<f:facet name="footer">
+										<h:outputText
+											value="#{controladorGestionCreditos.totalCapitalCuota}">
+											<f:convertNumber type="currency" currencySymbol="$" />
+										</h:outputText>
+									</f:facet>
+								</p:column>
+								<p:column>
+									<f:facet name="footer">
+										<h:outputText
+											value="#{controladorGestionCreditos.totalInteresCuota}">
+											<f:convertNumber type="currency" currencySymbol="$" />
+										</h:outputText>
+									</f:facet>
+								</p:column>
+								<p:column>
+									<f:facet name="footer">
+										<h:outputText
+											value="#{controladorGestionCreditos.totalCuota}">
+											<f:convertNumber type="currency" currencySymbol="$" />
+										</h:outputText>
+									</f:facet>
+								</p:column>
+							</p:row>
+						</p:columnGroup>
+					</p:dataTable>
+				</h:form>
+			</div>
+			<ui:include src="/affordances/footer.xhtml" />
+		</div>
+	</div>
+
+	<p:ajaxStatus
+		style="width:32px;height:32px;position:fixed;right:7px;bottom:7px">
+		<f:facet name="start">
+			<i class="fa fa-circle-o-notch fa-spin ajax-loader"
+				aria-hidden="true"></i>
+		</f:facet>
+
+		<f:facet name="complete">
+			<h:outputText value="" />
+		</f:facet>
+	</p:ajaxStatus>
+
+	<h:outputStylesheet name="css/nanoscroller.css"
+		library="california-layout" />
+	<h:outputStylesheet name="css/layout-#{guestPreferences.theme}.css"
+		library="california-layout" />
+</h:body>
+</html>

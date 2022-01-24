@@ -25,6 +25,7 @@ import javax.inject.Named;
 
 import org.primefaces.event.FileUploadEvent;
 import org.primefaces.event.FlowEvent;
+import org.primefaces.event.RowEditEvent;
 import org.primefaces.model.DefaultStreamedContent;
 import org.primefaces.model.StreamedContent;
 import org.primefaces.model.file.UploadedFile;
@@ -92,6 +93,8 @@ public class ControladorGestionCreditos implements Serializable {
 
 	private FinPrestamoSocio objFinPrestamoSocio;
 
+	private List<FinTablaAmortizacion> lstFinTablaAmortizacion;
+
 	private List<FinPrestamoSocio> lstFinPrestamoSocio;
 
 	private boolean skip;
@@ -109,11 +112,13 @@ public class ControladorGestionCreditos implements Serializable {
 	private long panelAccion;
 	private FinAccionPrestamo accionCredito;
 
-	private int mesesAplazados;
+	private int mesesAplazados, anio, mes;
 
 	private Date fechaFinalPrestamo, fechaInicialProrroga;
 
 	private FinTipoCredito objTipoCredito;
+
+	private BigDecimal totalCapitalCuota, totalInteresCuota, totalCuota;
 
 	public ControladorGestionCreditos() {
 
@@ -136,6 +141,8 @@ public class ControladorGestionCreditos implements Serializable {
 			// Estado de creditos 3 solicitud REVISADA
 			long idEstadoCredito = new Long(3);
 			lstFinPrestamoSocio = managerGestionCredito.buscarSolicitudesPrestamoByEstado(idEstadoCredito);
+			objFinPrestamoSocio = new FinPrestamoSocio();
+			objFinPrestamoSocio.setFinResolucionPrestamo(new FinResolucionPrestamo());
 		} catch (Exception e) {
 			JSFUtil.crearMensajeERROR(e.getMessage());
 		}
@@ -179,6 +186,33 @@ public class ControladorGestionCreditos implements Serializable {
 		} catch (Exception e) {
 			JSFUtil.crearMensajeERROR(e.getMessage());
 		}
+	}
+
+	public void inicializarCuotasPagadas() {
+		try {
+			anio = ModelUtil.getAnioActual();
+			mes = ModelUtil.getMesActual();
+			buscarCuotasPagadas();
+		} catch (Exception e) {
+			JSFUtil.crearMensajeERROR(e.getMessage());
+		}
+	}
+
+	public void buscarCuotasPagadas() {
+		totalCapitalCuota = new BigDecimal(0);
+		totalCuota = new BigDecimal(0);
+		totalInteresCuota = new BigDecimal(0);
+		try {
+			lstFinTablaAmortizacion = managerGestionCredito.busarCuotaPagadaMesAnio(anio, mes);
+			lstFinTablaAmortizacion.forEach(cuotaP -> {
+				totalCapitalCuota = totalCapitalCuota.add(cuotaP.getCapital());
+				totalCuota = totalCuota.add(cuotaP.getValorCuota());
+				totalInteresCuota = totalInteresCuota.add(cuotaP.getInteres());
+			});
+		} catch (Exception e) {
+			JSFUtil.crearMensajeERROR(e.getMessage());
+		}
+
 	}
 
 	public void inicializarHistorialCreditos() {
@@ -251,6 +285,7 @@ public class ControladorGestionCreditos implements Serializable {
 		objFinPrestamoSocio.setFinPrestamoRequisitos(new ArrayList<FinPrestamoRequisito>());
 		objFinPrestamoSocio.setFinTablaAmortizacions(new ArrayList<FinTablaAmortizacion>());
 		objFinPrestamoSocio.setFinPrestamoNovacions2(new ArrayList<FinPrestamoNovacion>());
+		objFinPrestamoSocio.setFinAccionPrestamos(new ArrayList<FinAccionPrestamo>());
 		objFinPrestamoSocio.getFinPrestamoNovacions2().add(new FinPrestamoNovacion(objFinPrestamoSocio, prestamoSocio));
 		return "/modulos/prestamosFina/novacionCredito?faces-redirect=true";
 	}
@@ -358,7 +393,8 @@ public class ControladorGestionCreditos implements Serializable {
 	public void imprimirTablaAmortizacion(FinPrestamoSocio prestamoSocio) {
 		try {
 			SimpleDateFormat formato = new SimpleDateFormat("dd/MM/yyyy");
-			//prestamoSocio = managerGestionCredito.buscarSolicitudPrestamoById(prestamoSocio.getIdPrestamoSocio());
+			// prestamoSocio =
+			// managerGestionCredito.buscarSolicitudPrestamoById(prestamoSocio.getIdPrestamoSocio());
 			Map<String, Object> parametros = new HashMap<String, Object>();
 			parametros.put("nombreSocio", prestamoSocio.getUsrSocio().getGesPersona().getApellidos() + " "
 					+ prestamoSocio.getUsrSocio().getGesPersona().getNombres());
@@ -373,10 +409,15 @@ public class ControladorGestionCreditos implements Serializable {
 			parametros.put("numeroCuota", prestamoSocio.getPlazoMeses().toString());
 			parametros.put("capitalDeuda", prestamoSocio.getSaldoCapital().toString());
 			parametros.put("tipoCredito", prestamoSocio.getFinTipoCredito().getNombre());
+			BigDecimal interes = new BigDecimal(0);
+			for (FinTablaAmortizacion amortiza : prestamoSocio.getFinTablaAmortizacions()) {
+				interes = interes.add(amortiza.getInteres());
+			}
+			parametros.put("interesPrestamo", interes.toString());
 			File jasper = new File(beanLogin.getPathReporte() + "creditos/fin_tabla_amortizacion.jasper");
 			JasperPrint jasperPrint;
 			try {
-				//prestamoSocio.setFinTablaAmortizacions(managerGestionCredito.buscarTablaAmortizacionByIdCredito(prestamoSocio.getIdPrestamoSocio()));
+				// prestamoSocio.setFinTablaAmortizacions(managerGestionCredito.buscarTablaAmortizacionByIdCredito(prestamoSocio.getIdPrestamoSocio()));
 				jasperPrint = JasperFillManager.fillReport(jasper.getPath(), parametros,
 						new JRBeanCollectionDataSource(prestamoSocio.getFinTablaAmortizacions()));
 				archivo = JasperExportManager.exportReportToPdf(jasperPrint);
@@ -396,6 +437,17 @@ public class ControladorGestionCreditos implements Serializable {
 			SimpleDateFormat formatodia = new SimpleDateFormat("dd");
 			SimpleDateFormat formatoanio = new SimpleDateFormat("yyyy");
 			Map<String, Object> parametros = new HashMap<String, Object>();
+			objFinPrestamoSocio = prestamoSocio;
+			if (objFinPrestamoSocio.getFinTablaAmortizacions().size() == 0)
+				objFinPrestamoSocio.setFinTablaAmortizacions(ModelUtil.calcularTablaAmortizacion(objFinPrestamoSocio));
+			else
+				objFinPrestamoSocio.setFinTablaAmortizacions(
+						managerGestionCredito.buscarTablaAmortizacionByIdCredito(prestamoSocio.getIdPrestamoSocio()));
+			objFinPrestamoSocio
+					.setFechaPrimeraCouta(objFinPrestamoSocio.getFinTablaAmortizacions().get(0).getFechaPago());
+			objFinPrestamoSocio.setFechaUltimaCuota(objFinPrestamoSocio.getFinTablaAmortizacions()
+					.get(objFinPrestamoSocio.getFinTablaAmortizacions().size() - 1).getFechaPago());
+			managerGestionCredito.actualizarSolicitudCredito(objFinPrestamoSocio);
 			parametros.put("apelativoSG",
 					managerGestionSistema.buscarValorParametroNombre("APELATIVO SECRETARIO GENERAL"));
 			parametros.put("nombreSocio", prestamoSocio.getUsrSocio().getGesPersona().getApellidos() + " "
@@ -449,6 +501,17 @@ public class ControladorGestionCreditos implements Serializable {
 			SimpleDateFormat formatodia = new SimpleDateFormat("dd");
 			SimpleDateFormat formatoanio = new SimpleDateFormat("yyyy");
 			Map<String, Object> parametros = new HashMap<String, Object>();
+			objFinPrestamoSocio = prestamoSocio;
+			if (objFinPrestamoSocio.getFinTablaAmortizacions().size() == 0)
+				objFinPrestamoSocio.setFinTablaAmortizacions(ModelUtil.calcularTablaAmortizacion(objFinPrestamoSocio));
+			else
+				objFinPrestamoSocio.setFinTablaAmortizacions(
+						managerGestionCredito.buscarTablaAmortizacionByIdCredito(prestamoSocio.getIdPrestamoSocio()));
+			objFinPrestamoSocio
+					.setFechaPrimeraCouta(objFinPrestamoSocio.getFinTablaAmortizacions().get(0).getFechaPago());
+			objFinPrestamoSocio.setFechaUltimaCuota(objFinPrestamoSocio.getFinTablaAmortizacions()
+					.get(objFinPrestamoSocio.getFinTablaAmortizacions().size() - 1).getFechaPago());
+			managerGestionCredito.actualizarSolicitudCredito(objFinPrestamoSocio);
 			parametros.put("apelativoSG",
 					managerGestionSistema.buscarValorParametroNombre("APELATIVO PRESIDENTE EJECUTIVO"));
 			parametros.put("nombreSocio", prestamoSocio.getUsrSocio().getGesPersona().getApellidos() + " "
@@ -742,6 +805,24 @@ public class ControladorGestionCreditos implements Serializable {
 		}
 	}
 
+	public void onRowEdit(RowEditEvent<Object> event) {
+		try {
+			managerGestionSistema.actualizarObjeto(event.getObject());
+			JSFUtil.crearMensajeINFO("Se actualizó correctamente.");
+		} catch (Exception e) {
+			JSFUtil.crearMensajeERROR(e.getMessage());
+			e.printStackTrace();
+		}
+	}
+
+	/***
+	 * 
+	 * @param event
+	 */
+	public void onRowCancel(RowEditEvent<Object> event) {
+		JSFUtil.crearMensajeINFO("Se canceló actualización.");
+	}
+
 	public void cargarFinPrestamoSocio(FinPrestamoSocio prestamoSocio) {
 		try {
 			objFinPrestamoSocio = managerGestionCredito.buscarSolicitudPrestamoById(prestamoSocio.getIdPrestamoSocio());
@@ -758,9 +839,23 @@ public class ControladorGestionCreditos implements Serializable {
 			objFinPrestamoSocio = managerGestionCredito.buscarSolicitudPrestamoById(prestamoSocio.getIdPrestamoSocio());
 			if (objFinPrestamoSocio.getFinTablaAmortizacions().size() == 0)
 				objFinPrestamoSocio.setFinTablaAmortizacions(ModelUtil.calcularTablaAmortizacion(objFinPrestamoSocio));
-			else 
-				objFinPrestamoSocio.setFinTablaAmortizacions(managerGestionCredito.buscarTablaAmortizacionByIdCredito(prestamoSocio.getIdPrestamoSocio()));
+			else
+				objFinPrestamoSocio.setFinTablaAmortizacions(
+						managerGestionCredito.buscarTablaAmortizacionByIdCredito(prestamoSocio.getIdPrestamoSocio()));
 			imprimirTablaAmortizacion(objFinPrestamoSocio);
+		} catch (Exception e) {
+			JSFUtil.crearMensajeERROR("Error al cargar solicitud credito.");
+		}
+	}
+
+	public void cargarFinPrestamoSocioAmortizacionSinReporte(FinPrestamoSocio prestamoSocio) {
+		try {
+			objFinPrestamoSocio = managerGestionCredito.buscarSolicitudPrestamoById(prestamoSocio.getIdPrestamoSocio());
+			if (objFinPrestamoSocio.getFinTablaAmortizacions().size() == 0)
+				objFinPrestamoSocio.setFinTablaAmortizacions(ModelUtil.calcularTablaAmortizacion(objFinPrestamoSocio));
+			else
+				objFinPrestamoSocio.setFinTablaAmortizacions(
+						managerGestionCredito.buscarTablaAmortizacionByIdCredito(prestamoSocio.getIdPrestamoSocio()));
 		} catch (Exception e) {
 			JSFUtil.crearMensajeERROR("Error al cargar solicitud credito.");
 		}
@@ -1355,6 +1450,54 @@ public class ControladorGestionCreditos implements Serializable {
 
 	public void setObjTipoCredito(FinTipoCredito objTipoCredito) {
 		this.objTipoCredito = objTipoCredito;
+	}
+
+	public List<FinTablaAmortizacion> getLstFinTablaAmortizacion() {
+		return lstFinTablaAmortizacion;
+	}
+
+	public void setLstFinTablaAmortizacion(List<FinTablaAmortizacion> lstFinTablaAmortizacion) {
+		this.lstFinTablaAmortizacion = lstFinTablaAmortizacion;
+	}
+
+	public int getAnio() {
+		return anio;
+	}
+
+	public void setAnio(int anio) {
+		this.anio = anio;
+	}
+
+	public int getMes() {
+		return mes;
+	}
+
+	public void setMes(int mes) {
+		this.mes = mes;
+	}
+
+	public BigDecimal getTotalCapitalCuota() {
+		return totalCapitalCuota;
+	}
+
+	public void setTotalCapitalCuota(BigDecimal totalCapitalCuota) {
+		this.totalCapitalCuota = totalCapitalCuota;
+	}
+
+	public BigDecimal getTotalInteresCuota() {
+		return totalInteresCuota;
+	}
+
+	public void setTotalInteresCuota(BigDecimal totalInteresCuota) {
+		this.totalInteresCuota = totalInteresCuota;
+	}
+
+	public BigDecimal getTotalCuota() {
+		return totalCuota;
+	}
+
+	public void setTotalCuota(BigDecimal totalCuota) {
+		this.totalCuota = totalCuota;
 	}
 
 }
