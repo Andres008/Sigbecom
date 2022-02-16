@@ -302,4 +302,8 @@ public class ManagerGestionCredito {
 				"o.finPrestamoSocio.saldoCapital ASC");
 	}
 
+	public void eliminarAmortizacion(FinTablaAmortizacion amortiza) throws Exception {
+		managerDAOSegbecom.eliminar(FinTablaAmortizacion.class, amortiza.getIdTablaAmortizacion());
+	}
+
 }

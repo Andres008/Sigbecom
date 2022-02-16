@@ -1054,6 +1054,7 @@ public class ControladorGestionCreditos implements Serializable {
 					new FinAccionesCredito(4), objFinPrestamoSocio, beanLogin.getCredencial().getObjUsrSocio(),
 					"Solicitud de prestamo Acreditada. ");
 			objFinPrestamoSocio.getFinAccionPrestamos().add(accion);
+			borrarTablaAmortizacionRegistrada(objFinPrestamoSocio);
 			managerGestionCredito.actualizarSolicitudCredito(objFinPrestamoSocio);
 			managerLog.generarLogAuditoria(beanLogin.getCredencial(), this.getClass(), "registrarAcreditacionPrestamo",
 					"Se acredito solicitud prestamo: " + objFinPrestamoSocio.getIdPrestamoSocio());
@@ -1066,6 +1067,23 @@ public class ControladorGestionCreditos implements Serializable {
 			JSFUtil.crearMensajeERROR(e.getMessage());
 			managerLog.generarLogErrorGeneral(beanLogin.getCredencial(), this.getClass(),
 					"registrarAcreditacionPrestamo", e.getMessage());
+		}
+	}
+
+	private void borrarTablaAmortizacionRegistrada(FinPrestamoSocio objFinPrestamoSocio2) {
+		try {
+			FinPrestamoSocio objFinPrestamoSocioAux = managerGestionCredito
+					.buscarSolicitudPrestamoById(objFinPrestamoSocio2.getIdPrestamoSocio());
+			objFinPrestamoSocioAux.getFinTablaAmortizacions().forEach(amortiza->{
+				try {
+					managerGestionCredito.eliminarAmortizacion(amortiza);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			});
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
 	}
 
