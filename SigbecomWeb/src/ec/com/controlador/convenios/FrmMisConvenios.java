@@ -58,6 +58,7 @@ private static final long serialVersionUID = 1L;
 	}
 public void cargarDocumento(String adjunto, String cedula) {
 		
+		if(!adjunto.isEmpty()) {
 		String path;
 		try {
 			path = managerConvenios.buscarValorParametroNombre("PATH_REPORTES");
@@ -103,7 +104,11 @@ public void cargarDocumento(String adjunto, String cedula) {
 			JSFUtil.crearMensajeERROR("No se cargo el archivo correctamente");
 			e1.printStackTrace();
 		}
-		
+		}
+		else
+			JSFUtil.crearMensajeINFO("Archivo no disponible");
+			PrimeFaces prime=PrimeFaces.current();
+			prime.ajax().update("form1");
 
 	}
 	@SuppressWarnings("static-access")

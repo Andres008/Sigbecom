@@ -138,4 +138,14 @@ public class ManagerAporte {
     		return null;
     	}
     }
+    @SuppressWarnings("unchecked")
+	public List<AporteDescuento> findAllAporteDescuentosByCedulaSocio(String cedula) throws Exception{
+    	List<AporteDescuento> lsAporteDescuentos = managerDAOSegbecom.findWhere(AporteDescuento.class, "o.aporteCliente.usrSocio.cedulaSocio= '"+cedula+"'", null);
+    	if(lsAporteDescuentos !=null && lsAporteDescuentos.size()>0) {
+    		return lsAporteDescuentos;
+    	}
+    	else {
+    		return null;
+    	}
+    }
 }
