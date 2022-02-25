@@ -360,27 +360,7 @@ public class BeanLogin implements Serializable {
 
 
 
-	public int getTiempoCierreSesion() {
-
-		int valorMinutos = 0;
-
-		/*
-
-		 * try { valorMinutos =
-
-		 * managerParametros.getParametroInteger("TIEMPO_CIERRE_SESION"); valorMinutos=
-
-		 * (valorMinutos*60)*1000; } catch (Exception e) { // TODO Auto-generated catch
-
-		 * block e.printStackTrace(); }
-
-		 */
-
-		return valorMinutos;
-
-	}
-
-
+	
 
 	/**
 

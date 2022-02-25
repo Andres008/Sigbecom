@@ -23,7 +23,7 @@
 <h:body styleClass="main-body"
 	onload="#{controladorGestionCreditos.inicializarAdministrarCreditos()}">
 	<h:form id="cierreSesion">
-		<p:idleMonitor timeout="#{beanLogin.tiempoCierreSesion}"
+		<p:idleMonitor timeout="#{beanLogin.tiempoCierreSesion()}"
 			onidle="PF('idleDialog').show()" />
 		<p:dialog header="#{beanLogin.tituloCierreSesion}" resizable="false"
 			widgetVar="idleDialog" modal="true" width="400" closable="false">
