@@ -392,7 +392,7 @@ public class BeanLogin implements Serializable {
 
 	public String getTituloCierreSesion() {
 
-		return "Cierre de Sesion";
+		return "Por su seguridad la sesion se ha cerrado.";
 
 	}
 
