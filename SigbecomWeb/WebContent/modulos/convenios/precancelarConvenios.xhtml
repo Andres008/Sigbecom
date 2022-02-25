@@ -1,274 +1,313 @@
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://java.sun.com/jsf/html" xmlns:f="http://java.sun.com/jsf/core" xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:p="http://primefaces.org/ui">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui">
 
 <h:head>
-	<f:event type="preRenderView" listener="#{controlFormularios.verificarSesion()}" />
+	<f:event type="preRenderView"
+		listener="#{controlFormularios.verificarSesion()}" />
 	<f:facet name="first">
-        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0"/>
-        <meta name="apple-mobile-web-app-capable" content="yes" />
-    </f:facet>
-        <title><ui:insert name="title">Plan Móvil</ui:insert></title>
-        <h:outputScript name="js/nanoscroller.js" library="california-layout" />
-        <h:outputScript name="js/layout.js" library="california-layout" />
-        <h:outputStylesheet library="css" name="theme.css"/>
+		<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+		<meta name="viewport"
+			content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" />
+		<meta name="apple-mobile-web-app-capable" content="yes" />
+	</f:facet>
+	<title><ui:insert name="title">Plan Móvil</ui:insert></title>
+	<h:outputScript name="js/nanoscroller.js" library="california-layout" />
+	<h:outputScript name="js/layout.js" library="california-layout" />
+	<h:outputStylesheet library="css" name="theme.css" />
 </h:head>
 
 <h:body styleClass="main-body" onload="#{frmPrecancelar.init()}">
+	<h:form id="cierreSesion">
+		<p:idleMonitor timeout="#{beanLogin.tiempoCierreSesion()}"
+			onidle="PF('idleDialog').show()" />
+		<p:dialog header="#{beanLogin.tituloCierreSesion}" resizable="false"
+			widgetVar="idleDialog" modal="true" width="400" closable="false">
+			<p:panel style="text-align:center">
+				<p:commandButton value="Volver a Ingresar"
+					action="#{beanLogin.actionSalirSistema}" />
+			</p:panel>
 
-        <div class="layout-wrapper #{guestPreferences.menuLayout != 'static' ? guestPreferences.menuLayout : null}">
-            <ui:include src="/affordances/megamenu.xhtml" />
-            <ui:include src="/affordances/topbar.xhtml" />
-            <ui:include src="/affordances/sidebar.xhtml" />
-            <ui:include src="/affordances/right-sidebar.xhtml" />
-			<div class="layout-main">
-                <div class="route-bar">
-                    <div class="route-bar-breadcrumb">
-                        <i class="fa fa-home"></i> <span>/CONVENIOS/Precancelar Convenios</span>
-                        <ui:insert name="viewname" />
-                    </div>
-					<ui:include src="/affordances/route-bar-menu.xhtml" />
-                </div>
-				<div class="layout-main-content" align="center">
-                    <H1>Precancelación de Convenios</H1>
-                    <h:form id="form1">
-	                    <p:growl id="growl" showDetail="true" sticky="true" />
-						<p:panel id="pnls" header="Consulta de Cuentas por cobrar" toggleable="true" collapsed="true">
-							<p:panelGrid columns="2" styleClass="ui-noborder" layout="grid"
-								columnClasses="ui-g-12 ui-md-6 ui-lg-4, ui-g-12 ui-md-6 ui-lg-4, ui-g-12 ui-md-6 ui-lg-4">
-								<p:outputLabel for="nom" value="Seleccione Cliente:" />
-								<p:selectOneMenu id="nom" required="true" value="#{frmPrecancelarConvenio.cedula}"
-												 filter="true" filterMatchMode="contains">
-			                    	<f:selectItem itemLabel="Seleccione Cliente"
-										noSelectionOption="true" />
-			                    	<f:selectItems value="#{frmPrecancelarConvenio.lstUsrSocio}" var="dat"
-			                    			itemLabel="#{dat.cedulaSocio} #{dat.gesPersona.apellidos} #{dat.gesPersona.nombres}" itemValue="#{dat.cedulaSocio}"/>
-			                    </p:selectOneMenu>
-	                    	</p:panelGrid>
-							<p:separator/>
+		</p:dialog>
+	</h:form>
+	<div
+		class="layout-wrapper #{guestPreferences.menuLayout != 'static' ? guestPreferences.menuLayout : null}">
+		<ui:include src="/affordances/megamenu.xhtml" />
+		<ui:include src="/affordances/topbar.xhtml" />
+		<ui:include src="/affordances/sidebar.xhtml" />
+		<ui:include src="/affordances/right-sidebar.xhtml" />
+		<div class="layout-main">
+			<div class="route-bar">
+				<div class="route-bar-breadcrumb">
+					<i class="fa fa-home"></i> <span>/CONVENIOS/Precancelar
+						Convenios</span>
+					<ui:insert name="viewname" />
+				</div>
+				<ui:include src="/affordances/route-bar-menu.xhtml" />
+			</div>
+			<div class="layout-main-content" align="center">
+				<H1>Precancelación de Convenios</H1>
+				<h:form id="form1">
+					<p:growl id="growl" showDetail="true" sticky="true" />
+					<p:panel id="pnls" header="Consulta de Cuentas por cobrar"
+						toggleable="true" collapsed="true">
+						<p:panelGrid columns="2" styleClass="ui-noborder" layout="grid"
+							columnClasses="ui-g-12 ui-md-6 ui-lg-4, ui-g-12 ui-md-6 ui-lg-4, ui-g-12 ui-md-6 ui-lg-4">
+							<p:outputLabel for="nom" value="Seleccione Cliente:" />
+							<p:selectOneMenu id="nom" required="true"
+								value="#{frmPrecancelarConvenio.cedula}" filter="true"
+								filterMatchMode="contains">
+								<f:selectItem itemLabel="Seleccione Cliente"
+									noSelectionOption="true" />
+								<f:selectItems value="#{frmPrecancelarConvenio.lstUsrSocio}"
+									var="dat"
+									itemLabel="#{dat.cedulaSocio} #{dat.gesPersona.apellidos} #{dat.gesPersona.nombres}"
+									itemValue="#{dat.cedulaSocio}" />
+							</p:selectOneMenu>
+						</p:panelGrid>
+						<p:separator />
 
-							<p:panelGrid columns="2" styleClass="ui-noborder">
-								<p:commandButton value="Cancelar"
-									action="#{frmPrecancelar.inicializar()}" update="@form">
-								</p:commandButton>							
-								<p:commandButton value="Cargar Registros"
-									action="#{frmPrecancelarConvenio.cargarListaCuotasPendientes()}" update="form2:tblUsr">
-									<p:confirm header="Confirmación"
+						<p:panelGrid columns="2" styleClass="ui-noborder">
+							<p:commandButton value="Cancelar"
+								action="#{frmPrecancelar.inicializar()}" update="@form">
+							</p:commandButton>
+							<p:commandButton value="Cargar Registros"
+								action="#{frmPrecancelarConvenio.cargarListaCuotasPendientes()}"
+								update="form2:tblUsr">
+								<p:confirm header="Confirmación"
 									message="Esta seguro de ingresar la información?"
 									icon="pi pi-exclamation-triangle" />
-								</p:commandButton>
-							</p:panelGrid>	
-							<p:confirmDialog global="true" showEffect="fade" hideEffect="fade"
-								responsive="true" width="350">
-								<p:commandButton value="Si" type="button"
-									styleClass="ui-confirmdialog-yes" />
-								<p:commandButton value="No" type="button"
-									styleClass="ui-confirmdialog-no ui-button-flat" />
-							</p:confirmDialog>
-							
-	                    </p:panel>
-	                    <p:separator/>
-	                </h:form>
-	                <h:form id="form2">
-	                	<p:growl id="growl" showDetail="true" sticky="true" />
-	                	<p:panel id="pnl"  header="CUENTAS POR COBRAR - EQUIPOS MOVILES DEL USUARIO">
+							</p:commandButton>
+						</p:panelGrid>
+						<p:confirmDialog global="true" showEffect="fade" hideEffect="fade"
+							responsive="true" width="350">
+							<p:commandButton value="Si" type="button"
+								styleClass="ui-confirmdialog-yes" />
+							<p:commandButton value="No" type="button"
+								styleClass="ui-confirmdialog-no ui-button-flat" />
+						</p:confirmDialog>
+
+					</p:panel>
+					<p:separator />
+				</h:form>
+				<h:form id="form2">
+					<p:growl id="growl" showDetail="true" sticky="true" />
+					<p:panel id="pnl"
+						header="CUENTAS POR COBRAR - EQUIPOS MOVILES DEL USUARIO">
 						<p:dataTable value="#{frmPrecancelar.lstCuotasPendientes}"
-							id="tblUsr"  var="mov" paginator="true"
-							rows="10">
+							id="tblUsr" var="mov" paginator="true" rows="10">
 							<f:facet name="header">
 								LISTADO DE CUENTAS POR COBRAR EQUIPOS MOVILES
 							</f:facet>
 							<p:column headerText="Equipo Movil">
-										<h:outputText value="#{mov.planEquipo.equipo}"/>
-									</p:column>
-									<p:column headerText="Valor Equipo">
-										<h:outputText value="#{mov.valorCapital}">
-											<f:convertNumber pattern="#0.00" />
-										</h:outputText>
-									</p:column>
-									<p:column headerText="Comision">
-										<h:outputText value="#{mov.comision}">
-											<f:convertNumber pattern="#0.00" />
-										</h:outputText>
-									</p:column>
-									<p:column headerText="Total">
-										<h:outputText value="#{mov.total}">
-											<f:convertNumber pattern="#0.00" />
-										</h:outputText>
-									</p:column>
-									<p:column headerText="Plazo">
-										<h:outputText value="#{mov.mesesPlazo}"/>
-									</p:column>
-									<p:column headerText="Num Cuota" sortOrder="asc" sortBy="#{mov.numCuota}">
-										<h:outputText value="#{mov.numCuota}"/>
-									</p:column>
-									<p:column headerText="Cuota">
-										<h:outputText value="#{mov.valorCuota}">
-											<f:convertNumber pattern="#0.00" />
-										</h:outputText>
-									</p:column>
-									<p:column headerText="Saldo">
-										<h:outputText value="#{mov.saldo}">
-											<f:convertNumber pattern="#0.00" />
-										</h:outputText>
-									</p:column>
-									<p:column headerText="Mes" >
-										<h:outputText value="#{frmEquipoMovil.convertirMes(mov.mes)}"/>
-									</p:column>
-									<p:column headerText="Año" sortOrder="asc" sortBy="#{mov.anio}">
-										<h:outputText value="#{mov.anio}"/>
-									</p:column>
-									<p:column headerText="Estado">
-										<h:outputText value="#{mov.estado}"/>
-									</p:column>
+								<h:outputText value="#{mov.planEquipo.equipo}" />
+							</p:column>
+							<p:column headerText="Valor Equipo">
+								<h:outputText value="#{mov.valorCapital}">
+									<f:convertNumber pattern="#0.00" />
+								</h:outputText>
+							</p:column>
+							<p:column headerText="Comision">
+								<h:outputText value="#{mov.comision}">
+									<f:convertNumber pattern="#0.00" />
+								</h:outputText>
+							</p:column>
+							<p:column headerText="Total">
+								<h:outputText value="#{mov.total}">
+									<f:convertNumber pattern="#0.00" />
+								</h:outputText>
+							</p:column>
+							<p:column headerText="Plazo">
+								<h:outputText value="#{mov.mesesPlazo}" />
+							</p:column>
+							<p:column headerText="Num Cuota" sortOrder="asc"
+								sortBy="#{mov.numCuota}">
+								<h:outputText value="#{mov.numCuota}" />
+							</p:column>
+							<p:column headerText="Cuota">
+								<h:outputText value="#{mov.valorCuota}">
+									<f:convertNumber pattern="#0.00" />
+								</h:outputText>
+							</p:column>
+							<p:column headerText="Saldo">
+								<h:outputText value="#{mov.saldo}">
+									<f:convertNumber pattern="#0.00" />
+								</h:outputText>
+							</p:column>
+							<p:column headerText="Mes">
+								<h:outputText value="#{frmEquipoMovil.convertirMes(mov.mes)}" />
+							</p:column>
+							<p:column headerText="Año" sortOrder="asc" sortBy="#{mov.anio}">
+								<h:outputText value="#{mov.anio}" />
+							</p:column>
+							<p:column headerText="Estado">
+								<h:outputText value="#{mov.estado}" />
+							</p:column>
 						</p:dataTable>
-						<br/>
-						<br/>
+						<br />
+						<br />
 						<p:panelGrid columns="2" styleClass="ui-noborder">
-								<p:commandButton value="Cancelar"
-									action="#{frmPrecancelar.inicializar()}" update="@form">
-								</p:commandButton>							
-								<p:commandButton value="Precancelar"
-									action="#{frmPrecancelar.precancelar()}" update="@form">
-									<p:confirm header="Confirmación"
+							<p:commandButton value="Cancelar"
+								action="#{frmPrecancelar.inicializar()}" update="@form">
+							</p:commandButton>
+							<p:commandButton value="Precancelar"
+								action="#{frmPrecancelar.precancelar()}" update="@form">
+								<p:confirm header="Confirmación"
 									message="Esta seguro de ingresar la información?"
 									icon="pi pi-exclamation-triangle" />
-								</p:commandButton>
-							</p:panelGrid>	
-							<p:confirmDialog global="true" showEffect="fade" hideEffect="fade"
-								responsive="true" width="350">
-								<p:commandButton value="Si" type="button"
-									styleClass="ui-confirmdialog-yes" />
-								<p:commandButton value="No" type="button"
-									styleClass="ui-confirmdialog-no ui-button-flat" />
-							</p:confirmDialog>
+							</p:commandButton>
+						</p:panelGrid>
+						<p:confirmDialog global="true" showEffect="fade" hideEffect="fade"
+							responsive="true" width="350">
+							<p:commandButton value="Si" type="button"
+								styleClass="ui-confirmdialog-yes" />
+							<p:commandButton value="No" type="button"
+								styleClass="ui-confirmdialog-no ui-button-flat" />
+						</p:confirmDialog>
 					</p:panel>
-					<p:separator/>
-					
+					<p:separator />
+
 					<h:panelGrid id="fec" columns="2" cellpadding="7">
-							<p:outputLabel value="Ingrese Anio:"/>
-							<p:inputText id="valor" required="true" maxlength="5" 
-									value="#{frmPrecancelar.periodo}">
-							</p:inputText>
-							<p:outputLabel for="m" value="Ingrese Mes:"/>
-							<p:selectOneMenu id="m" value="#{frmPrecancelar.mes}" style="width:100%">
-												       <f:selectItem itemLabel="Seleccione Mes" noSelectionOption="true"/>
-												       <f:selectItem itemLabel="ENERO" itemValue="1"/>
-												       <f:selectItem itemLabel="FEBRERO"  itemValue="2"/>
-												       <f:selectItem itemLabel="MARZO" itemValue="3"/>
-												       <f:selectItem itemLabel="ABRIL" itemValue="4"/>
-												       <f:selectItem itemLabel="MAYO" itemValue="5"/>
-												       <f:selectItem itemLabel="JUNIO" itemValue="6"/>
-												       <f:selectItem itemLabel="JULIO" itemValue="7"/>
-												       <f:selectItem itemLabel="AGOSTO" itemValue="8"/>
-												       <f:selectItem itemLabel="SEPTIEMBRE" itemValue="9"/>
-												       <f:selectItem itemLabel="OCTUBRE" itemValue="10"/>
-												       <f:selectItem itemLabel="NOVIEMBRE" itemValue="11"/>
-												       <f:selectItem itemLabel="DICIEMBRE" itemValue="12"/>
-												       
-								</p:selectOneMenu>
-								<p:outputLabel/>
-								<p:commandButton value="Consultar" 
-										action="#{frmPrecancelar.cargarConsulta()}"/>
-						</h:panelGrid>
-					
-	              </h:form>
-	              <h:form id="form3">
-	                 <div class="card" align="right">
-						    <h:commandLink >
-						    	<p:graphicImage name="images/logo_excel.png" library="california-layout" />
-						    	<p:dataExporter type="xls" target="tblAm" fileName="ListDescuentos"></p:dataExporter>
-						    </h:commandLink>
-					    </div>	
-	                <p:dataTable id="tblAm" rowIndexVar="index" 
-	                	value="#{frmPrecancelar.lstAllAmortEquipmov}" var="mov">
-			                		<p:column headerText="No" width="27">
-										<h:outputText value="#{index+1}" />
-									</p:column>
-									<p:column headerText="Cedula" filterBy="#{mov.planContratoComite.usrSocio.cedulaSocio}">
-										<h:outputText value="#{mov.planContratoComite.usrSocio.cedulaSocio}"/>
-									</p:column>
-									<p:column headerText="Cod Emp" width="27" filterBy="#{mov.planContratoComite.usrSocio.idSocio}">
-										<h:outputText value="#{mov.planContratoComite.usrSocio.idSocio}"/>
-									</p:column>
-									<p:column headerText="Apellidos" filterBy="#{mov.planContratoComite.usrSocio.gesPersona.apellidos}">
-										<h:outputText value="#{mov.planContratoComite.usrSocio.gesPersona.apellidos}"/>
-									</p:column>
-									<p:column headerText="Nombres" filterBy="#{mov.planContratoComite.usrSocio.gesPersona.nombres}">
-										<h:outputText value="#{mov.planContratoComite.usrSocio.gesPersona.nombres}"/>
-									</p:column>
-									<p:column headerText="Equipo Movil">
-										<h:outputText value="#{mov.planEquipo.equipo}"/>
-									</p:column>
-									<p:column headerText="Valor Equip" width="27">
-										<h:outputText value="#{mov.valorCapital}">
-											<f:convertNumber pattern="#0.00" />
-										</h:outputText>
-									</p:column>
-									<p:column headerText="Comision" width="27">
-										<h:outputText value="#{mov.comision}">
-											<f:convertNumber pattern="#0.00" />
-										</h:outputText>
-									</p:column>
-									<p:column headerText="Total" width="27">
-										<h:outputText value="#{mov.total}">
-											<f:convertNumber pattern="#0.00" />
-										</h:outputText>
-									</p:column>
-									<p:column headerText="Plazo" width="27">
-										<h:outputText value="#{mov.mesesPlazo}"/>
-									</p:column>
-									<p:column headerText="Num Cuota" width="27">
-										<h:outputText value="#{mov.numCuota}"/>
-									</p:column>
-									<p:column headerText="Cuota" width="27">
-										<h:outputText value="#{mov.valorCuota}">
-											<f:convertNumber pattern="#0.00" />
-										</h:outputText>
-									</p:column>
-									<p:column headerText="Saldo" width="27">
-										<h:outputText value="#{mov.saldo}">
-											<f:convertNumber pattern="#0.00" />
-										</h:outputText>
-									</p:column>
-									<p:column headerText="Mes" >
-										<h:outputText value="#{frmEquipoMovil.convertirMes(mov.mes)}"/>
-									</p:column>
-									<p:column headerText="Año" width="27">
-										<h:outputText value="#{mov.anio}"/>
-									</p:column>
-									<p:column headerText="Estado" filterBy="#{mov.estado}">
-										<h:outputText value="#{mov.estado}"/>
-									</p:column>
-						</p:dataTable>
-	                </h:form>
-	             
-<!-- Inicio de Dialogs -->
+						<p:outputLabel value="Ingrese Anio:" />
+						<p:inputText id="valor" required="true" maxlength="5"
+							value="#{frmPrecancelar.periodo}">
+						</p:inputText>
+						<p:outputLabel for="m" value="Ingrese Mes:" />
+						<p:selectOneMenu id="m" value="#{frmPrecancelar.mes}"
+							style="width:100%">
+							<f:selectItem itemLabel="Seleccione Mes" noSelectionOption="true" />
+							<f:selectItem itemLabel="ENERO" itemValue="1" />
+							<f:selectItem itemLabel="FEBRERO" itemValue="2" />
+							<f:selectItem itemLabel="MARZO" itemValue="3" />
+							<f:selectItem itemLabel="ABRIL" itemValue="4" />
+							<f:selectItem itemLabel="MAYO" itemValue="5" />
+							<f:selectItem itemLabel="JUNIO" itemValue="6" />
+							<f:selectItem itemLabel="JULIO" itemValue="7" />
+							<f:selectItem itemLabel="AGOSTO" itemValue="8" />
+							<f:selectItem itemLabel="SEPTIEMBRE" itemValue="9" />
+							<f:selectItem itemLabel="OCTUBRE" itemValue="10" />
+							<f:selectItem itemLabel="NOVIEMBRE" itemValue="11" />
+							<f:selectItem itemLabel="DICIEMBRE" itemValue="12" />
 
-<p:dialog>
+						</p:selectOneMenu>
+						<p:outputLabel />
+						<p:commandButton value="Consultar"
+							action="#{frmPrecancelar.cargarConsulta()}" />
+					</h:panelGrid>
 
-</p:dialog>
+				</h:form>
+				<h:form id="form3">
+					<div class="card" align="right">
+						<h:commandLink>
+							<p:graphicImage name="images/logo_excel.png"
+								library="california-layout" />
+							<p:dataExporter type="xls" target="tblAm"
+								fileName="ListDescuentos"></p:dataExporter>
+						</h:commandLink>
+					</div>
+					<p:dataTable id="tblAm" rowIndexVar="index"
+						value="#{frmPrecancelar.lstAllAmortEquipmov}" var="mov">
+						<p:column headerText="No" width="27">
+							<h:outputText value="#{index+1}" />
+						</p:column>
+						<p:column headerText="Cedula"
+							filterBy="#{mov.planContratoComite.usrSocio.cedulaSocio}">
+							<h:outputText
+								value="#{mov.planContratoComite.usrSocio.cedulaSocio}" />
+						</p:column>
+						<p:column headerText="Cod Emp" width="27"
+							filterBy="#{mov.planContratoComite.usrSocio.idSocio}">
+							<h:outputText value="#{mov.planContratoComite.usrSocio.idSocio}" />
+						</p:column>
+						<p:column headerText="Apellidos"
+							filterBy="#{mov.planContratoComite.usrSocio.gesPersona.apellidos}">
+							<h:outputText
+								value="#{mov.planContratoComite.usrSocio.gesPersona.apellidos}" />
+						</p:column>
+						<p:column headerText="Nombres"
+							filterBy="#{mov.planContratoComite.usrSocio.gesPersona.nombres}">
+							<h:outputText
+								value="#{mov.planContratoComite.usrSocio.gesPersona.nombres}" />
+						</p:column>
+						<p:column headerText="Equipo Movil">
+							<h:outputText value="#{mov.planEquipo.equipo}" />
+						</p:column>
+						<p:column headerText="Valor Equip" width="27">
+							<h:outputText value="#{mov.valorCapital}">
+								<f:convertNumber pattern="#0.00" />
+							</h:outputText>
+						</p:column>
+						<p:column headerText="Comision" width="27">
+							<h:outputText value="#{mov.comision}">
+								<f:convertNumber pattern="#0.00" />
+							</h:outputText>
+						</p:column>
+						<p:column headerText="Total" width="27">
+							<h:outputText value="#{mov.total}">
+								<f:convertNumber pattern="#0.00" />
+							</h:outputText>
+						</p:column>
+						<p:column headerText="Plazo" width="27">
+							<h:outputText value="#{mov.mesesPlazo}" />
+						</p:column>
+						<p:column headerText="Num Cuota" width="27">
+							<h:outputText value="#{mov.numCuota}" />
+						</p:column>
+						<p:column headerText="Cuota" width="27">
+							<h:outputText value="#{mov.valorCuota}">
+								<f:convertNumber pattern="#0.00" />
+							</h:outputText>
+						</p:column>
+						<p:column headerText="Saldo" width="27">
+							<h:outputText value="#{mov.saldo}">
+								<f:convertNumber pattern="#0.00" />
+							</h:outputText>
+						</p:column>
+						<p:column headerText="Mes">
+							<h:outputText value="#{frmEquipoMovil.convertirMes(mov.mes)}" />
+						</p:column>
+						<p:column headerText="Año" width="27">
+							<h:outputText value="#{mov.anio}" />
+						</p:column>
+						<p:column headerText="Estado" filterBy="#{mov.estado}">
+							<h:outputText value="#{mov.estado}" />
+						</p:column>
+					</p:dataTable>
+				</h:form>
+
+				<!-- Inicio de Dialogs -->
+
+				<p:dialog>
+
+				</p:dialog>
 
 
-<!-- Fin de Dialogs -->
-                </div>
-				<ui:include src="/affordances/footer.xhtml" />
-            </div>
-        </div>
-		
-        <p:ajaxStatus style="width:32px;height:32px;position:fixed;right:7px;bottom:7px">
-           <f:facet name="start">
-               <i class="fa fa-circle-o-notch fa-spin ajax-loader" aria-hidden="true"></i>
-           </f:facet>
+				<!-- Fin de Dialogs -->
+			</div>
+			<ui:include src="/affordances/footer.xhtml" />
+		</div>
+	</div>
 
-           <f:facet name="complete">
-               <h:outputText value="" />
-           </f:facet>
-       </p:ajaxStatus>
+	<p:ajaxStatus
+		style="width:32px;height:32px;position:fixed;right:7px;bottom:7px">
+		<f:facet name="start">
+			<i class="fa fa-circle-o-notch fa-spin ajax-loader"
+				aria-hidden="true"></i>
+		</f:facet>
 
-        <h:outputStylesheet name="css/nanoscroller.css" library="california-layout" />
-        <h:outputStylesheet name="css/layout-#{guestPreferences.theme}.css" library="california-layout" />
-    </h:body>
+		<f:facet name="complete">
+			<h:outputText value="" />
+		</f:facet>
+	</p:ajaxStatus>
+
+	<h:outputStylesheet name="css/nanoscroller.css"
+		library="california-layout" />
+	<h:outputStylesheet name="css/layout-#{guestPreferences.theme}.css"
+		library="california-layout" />
+</h:body>
 </html>
 

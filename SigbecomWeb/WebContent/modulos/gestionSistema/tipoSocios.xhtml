@@ -22,7 +22,18 @@
 
 <h:body styleClass="main-body"
 	onload="#{controladorGestionSocios.inicializarTipoUsuario()}">
+	<h:form id="cierreSesion">
+		<p:idleMonitor timeout="#{beanLogin.tiempoCierreSesion()}"
+			onidle="PF('idleDialog').show()" />
+		<p:dialog header="#{beanLogin.tituloCierreSesion}" resizable="false"
+			widgetVar="idleDialog" modal="true" width="400" closable="false">
+			<p:panel style="text-align:center">
+				<p:commandButton value="Volver a Ingresar"
+					action="#{beanLogin.actionSalirSistema}" />
+			</p:panel>
 
+		</p:dialog>
+	</h:form>
 	<div
 		class="layout-wrapper #{guestPreferences.menuLayout != 'static' ? guestPreferences.menuLayout : null}">
 		<ui:include src="/affordances/megamenu.xhtml" />
@@ -56,21 +67,28 @@
 								placeholder="Descripción Tipo Usuario"
 								style="text-transform: uppercase" />
 						</p:panelGrid>
-						<p:panel header="Descuentos" >
-							<p:panelGrid columns="3" styleClass="iu-noborder" >
-								<p:outputLabel value="Tipo Descuento"/>
-								<p:selectOneMenu value="#{controladorGestionSocios.objUsrTipoDescuento.idDescuento}" >
-									<f:selectItem itemLabel="Seleccione Descuento"/>
-									<f:selectItems value="#{controladorGestionSocios.lstSiTipoDescuento()}" />
+						<p:panel header="Descuentos">
+							<p:panelGrid columns="3" styleClass="iu-noborder">
+								<p:outputLabel value="Tipo Descuento" />
+								<p:selectOneMenu
+									value="#{controladorGestionSocios.objUsrTipoDescuento.idDescuento}">
+									<f:selectItem itemLabel="Seleccione Descuento" />
+									<f:selectItems
+										value="#{controladorGestionSocios.lstSiTipoDescuento()}" />
 								</p:selectOneMenu>
-								<p:commandButton value="Agregar" actionListener="#{controladorGestionSocios.agregarDescuentoSocio()}" update="@form"/>
+								<p:commandButton value="Agregar"
+									actionListener="#{controladorGestionSocios.agregarDescuentoSocio()}"
+									update="@form" />
 							</p:panelGrid>
-							<p:dataTable value="#{controladorGestionSocios.objUsrTipoSocio.usrTipoDescuentoSocios}" var="descuento" emptyMessage="No tiene descuento ingresado." >
-								<p:column headerText="Descuento" >
+							<p:dataTable
+								value="#{controladorGestionSocios.objUsrTipoSocio.usrTipoDescuentoSocios}"
+								var="descuento" emptyMessage="No tiene descuento ingresado.">
+								<p:column headerText="Descuento">
 									<p:outputLabel value="#{descuento.usrTipoDescuento.nombre}" />
 								</p:column>
-								<p:column headerText="Valor Dolares" >
-									<p:outputLabel value="#{descuento.usrTipoDescuento.valorDefecto}" />
+								<p:column headerText="Valor Dolares">
+									<p:outputLabel
+										value="#{descuento.usrTipoDescuento.valorDefecto}" />
 								</p:column>
 							</p:dataTable>
 						</p:panel>
@@ -122,8 +140,8 @@
 
 							</p:column>
 							<p:column headerText="Descuentos">
-								<p:dataTable value="#{rol.usrTipoDescuentoSocios}" emptyMessage="No tiene descuentos"
-									var="descuento">
+								<p:dataTable value="#{rol.usrTipoDescuentoSocios}"
+									emptyMessage="No tiene descuentos" var="descuento">
 									<p:column headerText="Descuento">
 										<p:outputLabel value="#{descuento.usrTipoDescuento.nombre}" />
 									</p:column>
