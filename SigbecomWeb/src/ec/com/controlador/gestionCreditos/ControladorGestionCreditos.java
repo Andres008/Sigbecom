@@ -581,15 +581,16 @@ public class ControladorGestionCreditos implements Serializable {
 					.setFechaPrimeraCouta(objFinPrestamoSocio.getFinTablaAmortizacions().get(0).getFechaPago());
 			objFinPrestamoSocio.setFechaUltimaCuota(objFinPrestamoSocio.getFinTablaAmortizacions()
 					.get(objFinPrestamoSocio.getFinTablaAmortizacions().size() - 1).getFechaPago());
-			objFinPrestamoSocio.setSaldoCapital(objFinPrestamoSocio.getValorPrestamo());
+			
 			objFinPrestamoSocio.setFinEstadoCredito(new FinEstadoCredito(1));
 			objFinPrestamoSocio.setValorRecibido(calcularValorRecibirNovacion(objFinPrestamoSocio));
-			objFinPrestamoSocio.setCuotasPagadas(new BigDecimal(0));
 			objFinPrestamoSocio.setFinTablaAmortizacions(new ArrayList<FinTablaAmortizacion>());
 			FinAccionPrestamo accion = new FinAccionPrestamo(new Timestamp(new Date().getTime()),
 					new FinAccionesCredito(1), objFinPrestamoSocio, beanLogin.getCredencial().getObjUsrSocio(),
 					"Solicitud de prestamo Creada");
 			objFinPrestamoSocio.getFinAccionPrestamos().add(accion);
+			objFinPrestamoSocio.setCuotasPagadas(new BigDecimal(0));
+			objFinPrestamoSocio.setSaldoCapital(objFinPrestamoSocio.getValorPrestamo());
 			managerGestionCredito.ingresarCreditoSocio(objFinPrestamoSocio);
 			managerLog.generarLogUsabilidad(beanLogin.getCredencial(), this.getClass(), "ingresarCreditoSocio",
 					"Se ingreso correctamente credito Nº" + objFinPrestamoSocio.getIdPrestamoSocio());
