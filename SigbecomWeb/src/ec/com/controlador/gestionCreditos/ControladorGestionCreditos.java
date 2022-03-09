@@ -581,15 +581,16 @@ public class ControladorGestionCreditos implements Serializable {
 					.setFechaPrimeraCouta(objFinPrestamoSocio.getFinTablaAmortizacions().get(0).getFechaPago());
 			objFinPrestamoSocio.setFechaUltimaCuota(objFinPrestamoSocio.getFinTablaAmortizacions()
 					.get(objFinPrestamoSocio.getFinTablaAmortizacions().size() - 1).getFechaPago());
-			objFinPrestamoSocio.setSaldoCapital(objFinPrestamoSocio.getValorPrestamo());
+			
 			objFinPrestamoSocio.setFinEstadoCredito(new FinEstadoCredito(1));
 			objFinPrestamoSocio.setValorRecibido(calcularValorRecibirNovacion(objFinPrestamoSocio));
-			objFinPrestamoSocio.setCuotasPagadas(new BigDecimal(0));
 			objFinPrestamoSocio.setFinTablaAmortizacions(new ArrayList<FinTablaAmortizacion>());
 			FinAccionPrestamo accion = new FinAccionPrestamo(new Timestamp(new Date().getTime()),
 					new FinAccionesCredito(1), objFinPrestamoSocio, beanLogin.getCredencial().getObjUsrSocio(),
 					"Solicitud de prestamo Creada");
 			objFinPrestamoSocio.getFinAccionPrestamos().add(accion);
+			objFinPrestamoSocio.setCuotasPagadas(new BigDecimal(0));
+			objFinPrestamoSocio.setSaldoCapital(objFinPrestamoSocio.getValorPrestamo());
 			managerGestionCredito.ingresarCreditoSocio(objFinPrestamoSocio);
 			managerLog.generarLogUsabilidad(beanLogin.getCredencial(), this.getClass(), "ingresarCreditoSocio",
 					"Se ingreso correctamente credito Nº" + objFinPrestamoSocio.getIdPrestamoSocio());
@@ -1054,6 +1055,7 @@ public class ControladorGestionCreditos implements Serializable {
 					new FinAccionesCredito(4), objFinPrestamoSocio, beanLogin.getCredencial().getObjUsrSocio(),
 					"Solicitud de prestamo Acreditada. ");
 			objFinPrestamoSocio.getFinAccionPrestamos().add(accion);
+			borrarTablaAmortizacionRegistrada(objFinPrestamoSocio);
 			managerGestionCredito.actualizarSolicitudCredito(objFinPrestamoSocio);
 			managerLog.generarLogAuditoria(beanLogin.getCredencial(), this.getClass(), "registrarAcreditacionPrestamo",
 					"Se acredito solicitud prestamo: " + objFinPrestamoSocio.getIdPrestamoSocio());
@@ -1066,6 +1068,23 @@ public class ControladorGestionCreditos implements Serializable {
 			JSFUtil.crearMensajeERROR(e.getMessage());
 			managerLog.generarLogErrorGeneral(beanLogin.getCredencial(), this.getClass(),
 					"registrarAcreditacionPrestamo", e.getMessage());
+		}
+	}
+
+	private void borrarTablaAmortizacionRegistrada(FinPrestamoSocio objFinPrestamoSocio2) {
+		try {
+			FinPrestamoSocio objFinPrestamoSocioAux = managerGestionCredito
+					.buscarSolicitudPrestamoById(objFinPrestamoSocio2.getIdPrestamoSocio());
+			objFinPrestamoSocioAux.getFinTablaAmortizacions().forEach(amortiza->{
+				try {
+					managerGestionCredito.eliminarAmortizacion(amortiza);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			});
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
 	}
 

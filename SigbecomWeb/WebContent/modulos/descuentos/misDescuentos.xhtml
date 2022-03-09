@@ -22,7 +22,18 @@
 
 <h:body styleClass="main-body"
 	onload="#{controladorGestionDescuentos.inicializarMisDescuento()}">
+	<h:form id="cierreSesion">
+		<p:idleMonitor timeout="#{beanLogin.tiempoCierreSesion()}"
+			onidle="PF('idleDialog').show()" />
+		<p:dialog header="#{beanLogin.tituloCierreSesion}" resizable="false"
+			widgetVar="idleDialog" modal="true" width="400" closable="false">
+			<p:panel style="text-align:center">
+				<p:commandButton value="Volver a Ingresar"
+					action="#{beanLogin.actionSalirSistema}" />
+			</p:panel>
 
+		</p:dialog>
+	</h:form>
 	<div
 		class="layout-wrapper #{guestPreferences.menuLayout != 'static' ? guestPreferences.menuLayout : null}">
 		<ui:include src="/affordances/megamenu.xhtml" />
@@ -42,8 +53,7 @@
 				<H1>EJECUTAR DESCUENTO PRESTAMOS</H1>
 				<h:form id="solicitudes">
 					<p:growl id="growl" showDetail="true" sticky="true" />
-					<p:panel
-						header="MIS DESCUENTOS">
+					<p:panel header="MIS DESCUENTOS">
 						<br />
 						<div class="p-d-flex p-jc-between">
 							<p:panelGrid columns="2" styleClass="ui-noborder">
@@ -60,37 +70,59 @@
 							value="#{controladorGestionDescuentos.lstDesDescuentoMensuale}"
 							var="credito">
 							<p:column headerText="Año Descuento">
-								<p:outputLabel value="#{credito.anio}"> <f:convertNumber maxFractionDigits="0" minFractionDigits="0"/> </p:outputLabel>
+								<p:outputLabel value="#{credito.anio}">
+									<f:convertNumber maxFractionDigits="0" minFractionDigits="0" />
+								</p:outputLabel>
 							</p:column>
 							<p:column headerText="Mes Descuento">
-								<p:outputLabel value="#{credito.mes}" > <f:convertNumber maxFractionDigits="0" minFractionDigits="0"/> </p:outputLabel>
+								<p:outputLabel value="#{credito.mes}">
+									<f:convertNumber maxFractionDigits="0" minFractionDigits="0" />
+								</p:outputLabel>
 							</p:column>
 							<p:column headerText="Descuento Creditos">
-								<p:outputLabel value="#{credito.valorPrestamo}"> <f:convertNumber maxFractionDigits="2" minFractionDigits="2"/> </p:outputLabel>
+								<p:outputLabel value="#{credito.valorPrestamo}">
+									<f:convertNumber maxFractionDigits="2" minFractionDigits="2" />
+								</p:outputLabel>
 							</p:column>
 							<p:column headerText="Descuento Convenios">
-								<p:outputLabel value="#{credito.valorConvenio}"> <f:convertNumber maxFractionDigits="2" minFractionDigits="2"/> </p:outputLabel>
+								<p:outputLabel value="#{credito.valorConvenio}">
+									<f:convertNumber maxFractionDigits="2" minFractionDigits="2" />
+								</p:outputLabel>
 							</p:column>
 							<p:column headerText="Descuento Planes Móviles">
-								<p:outputLabel value="#{credito.valorPlanMovil}" > <f:convertNumber maxFractionDigits="2" minFractionDigits="2"/> </p:outputLabel>
+								<p:outputLabel value="#{credito.valorPlanMovil}">
+									<f:convertNumber maxFractionDigits="2" minFractionDigits="2" />
+								</p:outputLabel>
 							</p:column>
 							<p:column headerText="Descuento Ahorro">
-								<p:outputLabel value="#{credito.valorAhorro}"> <f:convertNumber maxFractionDigits="2" minFractionDigits="2"/> </p:outputLabel>
+								<p:outputLabel value="#{credito.valorAhorro}">
+									<f:convertNumber maxFractionDigits="2" minFractionDigits="2" />
+								</p:outputLabel>
 							</p:column>
 							<p:column headerText="Descuento Cesantía">
-								<p:outputLabel value="#{credito.valorCesantia}"> <f:convertNumber maxFractionDigits="2" minFractionDigits="2"/> </p:outputLabel>
+								<p:outputLabel value="#{credito.valorCesantia}">
+									<f:convertNumber maxFractionDigits="2" minFractionDigits="2" />
+								</p:outputLabel>
 							</p:column>
 							<p:column headerText="Descuento Salud">
-								<p:outputLabel value="#{credito.valorSalud}" > <f:convertNumber maxFractionDigits="2" minFractionDigits="2"/> </p:outputLabel>
+								<p:outputLabel value="#{credito.valorSalud}">
+									<f:convertNumber maxFractionDigits="2" minFractionDigits="2" />
+								</p:outputLabel>
 							</p:column>
 							<p:column headerText="Descuentos Externos">
-								<p:outputLabel value="#{credito.aportesExternos}"> <f:convertNumber maxFractionDigits="2" minFractionDigits="2"/> </p:outputLabel>
+								<p:outputLabel value="#{credito.aportesExternos}">
+									<f:convertNumber maxFractionDigits="2" minFractionDigits="2" />
+								</p:outputLabel>
 							</p:column>
 							<p:column headerText="Novedades">
-								<p:outputLabel value="#{credito.novedades}"> <f:convertNumber maxFractionDigits="2" minFractionDigits="2"/> </p:outputLabel>
+								<p:outputLabel value="#{credito.novedades}">
+									<f:convertNumber maxFractionDigits="2" minFractionDigits="2" />
+								</p:outputLabel>
 							</p:column>
 							<p:column headerText="Total Descuento Mensual">
-								<p:outputLabel value="#{credito.totalDescuento}"> <f:convertNumber maxFractionDigits="2" minFractionDigits="2"/> </p:outputLabel>
+								<p:outputLabel value="#{credito.totalDescuento}">
+									<f:convertNumber maxFractionDigits="2" minFractionDigits="2" />
+								</p:outputLabel>
 							</p:column>
 						</p:dataTable>
 					</p:panel>

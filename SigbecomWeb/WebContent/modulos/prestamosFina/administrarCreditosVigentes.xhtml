@@ -22,7 +22,18 @@
 
 <h:body styleClass="main-body"
 	onload="#{controladorGestionCreditos.inicializarAdministrarCreditos()}">
+	<h:form id="cierreSesion">
+		<p:idleMonitor timeout="#{beanLogin.tiempoCierreSesion()}"
+			onidle="PF('idleDialog').show()" />
+		<p:dialog header="#{beanLogin.tituloCierreSesion}" resizable="false"
+			widgetVar="idleDialog" modal="true" width="400" closable="false">
+			<p:panel style="text-align:center">
+				<p:commandButton value="Volver a Ingresar"
+					action="#{beanLogin.actionSalirSistema}" />
+			</p:panel>
 
+		</p:dialog>
+	</h:form>
 	<div
 		class="layout-wrapper #{guestPreferences.menuLayout != 'static' ? guestPreferences.menuLayout : null}">
 		<ui:include src="/affordances/megamenu.xhtml" />
@@ -54,7 +65,7 @@
 						rowIndexVar="index">
 						<p:ajax event="rowEdit"
 							listener="#{controladorGestionCreditos.onRowEdit}"
-							update="@form:growl" process="@this"/>
+							update="@form:growl" process="@this" />
 						<p:ajax event="rowEditCancel"
 							listener="#{controladorGestionCreditos.onRowCancel}"
 							update="@form:growl" />
@@ -99,8 +110,8 @@
 									<p:outputLabel value="#{solicitud.observacion}" />
 								</f:facet>
 								<f:facet name="input">
-									<p:inputText value="#{solicitud.observacion}" style="width:100%"
-										label="Name" />
+									<p:inputText value="#{solicitud.observacion}"
+										style="width:100%" label="Name" />
 								</f:facet>
 							</p:cellEditor>
 						</p:column>

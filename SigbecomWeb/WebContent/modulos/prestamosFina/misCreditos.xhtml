@@ -22,7 +22,18 @@
 
 <h:body styleClass="main-body"
 	onload="#{controladorGestionCreditos.inicializarMisSolicitudes()}">
+<h:form id="cierreSesion">
+		<p:idleMonitor timeout="#{beanLogin.tiempoCierreSesion()}"
+			onidle="PF('idleDialog').show()" />
+		<p:dialog header="#{beanLogin.tituloCierreSesion}" resizable="false"
+			widgetVar="idleDialog" modal="true" width="400" closable="false">
+			<p:panel style="text-align:center">
+				<p:commandButton value="Volver a Ingresar"
+					action="#{beanLogin.actionSalirSistema}" />
+			</p:panel>
 
+		</p:dialog>
+	</h:form>
 	<div
 		class="layout-wrapper #{guestPreferences.menuLayout != 'static' ? guestPreferences.menuLayout : null}">
 		<ui:include src="/affordances/megamenu.xhtml" />
@@ -64,14 +75,23 @@
 						<p:column headerText="Valor Solicitado">
 							<p:outputLabel value="#{solicitud.valorPrestamo}" />
 						</p:column>
-						<p:column headerText="Valor Acreditar">
+						<p:column headerText="Valor Acreditado">
 							<p:outputLabel value="#{solicitud.valorRecibido}" />
 						</p:column>
-						<p:column headerText="Cuotas Pagadas">
+						<p:column headerText="Número Cuotas Pagadas">
 							<p:outputLabel value="#{solicitud.cuotasPagadas}" />
+						</p:column>
+						<p:column headerText="Valor Cuota Mensual">
+							<p:outputLabel value="#{solicitud.cuotaMensual}" />
 						</p:column>
 						<p:column headerText="Saldo Capital">
 							<p:outputLabel value="#{solicitud.saldoCapital}" />
+						</p:column>
+						<p:column headerText="Fecha Inicial">
+							<p:outputLabel value="#{solicitud.fechaPrimeraCouta}" />
+						</p:column>
+						<p:column headerText="Fecha Final">
+							<p:outputLabel value="#{solicitud.fechaUltimaCuota}" />
 						</p:column>
 						<p:column headerText="Observación">
 							<p:outputLabel value="#{solicitud.observacion}" />

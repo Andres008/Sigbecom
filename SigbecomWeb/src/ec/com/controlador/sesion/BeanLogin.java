@@ -91,6 +91,7 @@ public class BeanLogin implements Serializable {
 
 
 	private String pathReporte;
+	
 
 
 
@@ -120,6 +121,19 @@ public class BeanLogin implements Serializable {
 
 		return "/login.xhtml?faces-redirect=true";
 
+	}
+	
+	public int tiempoCierreSesion() {
+		String valorPath = "";
+		try {
+			valorPath = managerGestionSistema.buscarValorParametroNombre("CIERRE_SESSION");
+			int valor = Integer.parseInt(valorPath);
+			return valor*60*1000;
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return 1;
 	}
 
 
@@ -346,27 +360,7 @@ public class BeanLogin implements Serializable {
 
 
 
-	public int getTiempoCierreSesion() {
-
-		int valorMinutos = 0;
-
-		/*
-
-		 * try { valorMinutos =
-
-		 * managerParametros.getParametroInteger("TIEMPO_CIERRE_SESION"); valorMinutos=
-
-		 * (valorMinutos*60)*1000; } catch (Exception e) { // TODO Auto-generated catch
-
-		 * block e.printStackTrace(); }
-
-		 */
-
-		return valorMinutos;
-
-	}
-
-
+	
 
 	/**
 
@@ -398,7 +392,7 @@ public class BeanLogin implements Serializable {
 
 	public String getTituloCierreSesion() {
 
-		return "Cierre de Sesion";
+		return "Por su seguridad la sesion se ha cerrado.";
 
 	}
 

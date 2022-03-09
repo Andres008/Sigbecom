@@ -22,7 +22,18 @@
 
 <h:body styleClass="main-body"
 	onload="#{controladorRol.inicializarAutRol()}">
+	<h:form id="cierreSesion">
+		<p:idleMonitor timeout="#{beanLogin.tiempoCierreSesion()}"
+			onidle="PF('idleDialog').show()" />
+		<p:dialog header="#{beanLogin.tituloCierreSesion}" resizable="false"
+			widgetVar="idleDialog" modal="true" width="400" closable="false">
+			<p:panel style="text-align:center">
+				<p:commandButton value="Volver a Ingresar"
+					action="#{beanLogin.actionSalirSistema}" />
+			</p:panel>
 
+		</p:dialog>
+	</h:form>
 	<div
 		class="layout-wrapper #{guestPreferences.menuLayout != 'static' ? guestPreferences.menuLayout : null}">
 		<ui:include src="/affordances/megamenu.xhtml" />
@@ -47,10 +58,14 @@
 							<p:outputLabel value="Nombre" />
 							<p:inputText value="#{controladorRol.objAutRol.nombre}"
 								placeholder="Nombre Rol" style="text-transform: uppercase" />
-								<p:outputLabel value="Tipo Usuario" />
-							<p:selectOneMenu value="#{controladorRol.objAutRol.usrTipoSocio.idTipoSocio}" required="true" requiredMessage="Es obligatorio el tipo de socio.">
-								<f:selectItem itemLabel="Seleccione Tipo Usuario"/>
-								<f:selectItems value="#{controladorGestionSocios.lstSiTipoSocio()}" />
+							<p:outputLabel value="Tipo Usuario" />
+							<p:selectOneMenu
+								value="#{controladorRol.objAutRol.usrTipoSocio.idTipoSocio}"
+								required="true"
+								requiredMessage="Es obligatorio el tipo de socio.">
+								<f:selectItem itemLabel="Seleccione Tipo Usuario" />
+								<f:selectItems
+									value="#{controladorGestionSocios.lstSiTipoSocio()}" />
 							</p:selectOneMenu>
 							<p:outputLabel value="Descripción" />
 							<p:inputTextarea value="#{controladorRol.objAutRol.descripcion}"
@@ -116,7 +131,8 @@
 									saveTitle="Save Row" />
 							</p:column>
 							<p:column headerText="Inactivar">
-								<p:commandButton icon="ui-icon-close" rendered="#{rol.estado eq 'A'?true:false}"
+								<p:commandButton icon="ui-icon-close"
+									rendered="#{rol.estado eq 'A'?true:false}"
 									actionListener="#{controladorRol.inactivarRol(rol)}"
 									update="@form">
 									<p:confirm header="Confirmación"

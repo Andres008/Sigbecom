@@ -1,173 +1,216 @@
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://java.sun.com/jsf/html" xmlns:f="http://java.sun.com/jsf/core" xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:p="http://primefaces.org/ui">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui">
 
 
 <h:head>
-	<f:event type="preRenderView" listener="#{controlFormularios.verificarSesion()}" />
+	<f:event type="preRenderView"
+		listener="#{controlFormularios.verificarSesion()}" />
 	<f:facet name="first">
-        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0"/>
-        <meta name="apple-mobile-web-app-capable" content="yes" />
-    </f:facet>
-        <title><ui:insert name="title">Aportes</ui:insert></title>
-        <h:outputScript name="js/nanoscroller.js" library="california-layout" />
-        <h:outputScript name="js/layout.js" library="california-layout" />
-        <h:outputStylesheet library="css" name="theme.css"/>
+		<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+		<meta name="viewport"
+			content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" />
+		<meta name="apple-mobile-web-app-capable" content="yes" />
+	</f:facet>
+	<title><ui:insert name="title">Aportes</ui:insert></title>
+	<h:outputScript name="js/nanoscroller.js" library="california-layout" />
+	<h:outputScript name="js/layout.js" library="california-layout" />
+	<h:outputStylesheet library="css" name="theme.css" />
 </h:head>
 
 <h:body styleClass="main-body" onload="#{frmRegistroAportante.init()}">
+	<h:form id="cierreSesion">
+		<p:idleMonitor timeout="#{beanLogin.tiempoCierreSesion()}"
+			onidle="PF('idleDialog').show()" />
+		<p:dialog header="#{beanLogin.tituloCierreSesion}" resizable="false"
+			widgetVar="idleDialog" modal="true" width="400" closable="false">
+			<p:panel style="text-align:center">
+				<p:commandButton value="Volver a Ingresar"
+					action="#{beanLogin.actionSalirSistema}" />
+			</p:panel>
 
-        <div class="layout-wrapper #{guestPreferences.menuLayout != 'static' ? guestPreferences.menuLayout : null}">
-            <ui:include src="/affordances/megamenu.xhtml" />
-            <ui:include src="/affordances/topbar.xhtml" />
-            <ui:include src="/affordances/sidebar.xhtml" />
-            <ui:include src="/affordances/right-sidebar.xhtml" />
-			<div class="layout-main">
-                <div class="route-bar">
-                    <div class="route-bar-breadcrumb">
-                        <i class="fa fa-home"></i> <span>/APORTES/Registro Aportantes</span>
-                        <ui:insert name="viewname" />
-                    </div>
-					<ui:include src="/affordances/route-bar-menu.xhtml" />
-                </div>
-				<div class="layout-main-content" align="center">
-                    <H1>REGISTRAR APORTANTES</H1>
-                    <h:form id="form1">
-	                    <p:growl id="growl" showDetail="true" sticky="true" />
-						<p:panel header="Registrar Cuentas de Aportes" toggleable="true" collapsed="true">
-							<p:panelGrid columns="2" styleClass="ui-noborder">
-								<p:outputLabel value="Selecionar Cuenta de Aporte:" />
-								<p:selectOneMenu required="true" value="#{frmRegistroAportante.idCuenta}"
-												filter="true" filterMatchMode="contains">
-									<f:selectItem itemLabel="Selecione Cuenta" itemValue="0"/>
-                    				<f:selectItems value="#{frmRegistroAportante.lstAporteCuentas}" var="ser"
-                    								   itemLabel="#{ser.cuenta}" itemValue="#{ser.idCuenta}"/>
-									
-								</p:selectOneMenu>
-								<p:outputLabel value="Selecionar Cliente:" />
-								<p:selectOneMenu required="true" value="#{frmRegistroAportante.cedulaSocio}"
-												filter="true" filterMatchMode="contains">
-									<f:selectItem itemLabel="Selecione Servicio" itemValue=""/>
-                    				<f:selectItems value="#{frmRegistroAportante.lstUsrSocios}" var="ser"
-                    								   itemLabel="#{ser.cedulaSocio} #{ser.gesPersona.apellidos} #{ser.gesPersona.nombres}" itemValue="#{ser.cedulaSocio}"/>
-								</p:selectOneMenu>
-								<p:outputLabel for="saldo" value="Saldo Inicial:" />
-								<p:inputNumber id="saldo" value="#{frmRegistroAportante.saldoInicial}"/>
-								<p:outputLabel for="det" value="Detalle:" />
-								<p:inputText id="det" value="#{frmRegistroAportante.detalle}"/>
-							</p:panelGrid>
-							<p:commandButton value="Registrar"
-								action="#{frmRegistroAportante.registrarAportanteAunaCuenta()}" update="@form">
-								<p:confirm header="Confirmación"
+		</p:dialog>
+	</h:form>
+	<div
+		class="layout-wrapper #{guestPreferences.menuLayout != 'static' ? guestPreferences.menuLayout : null}">
+		<ui:include src="/affordances/megamenu.xhtml" />
+		<ui:include src="/affordances/topbar.xhtml" />
+		<ui:include src="/affordances/sidebar.xhtml" />
+		<ui:include src="/affordances/right-sidebar.xhtml" />
+		<div class="layout-main">
+			<div class="route-bar">
+				<div class="route-bar-breadcrumb">
+					<i class="fa fa-home"></i> <span>/APORTES/Registro
+						Aportantes</span>
+					<ui:insert name="viewname" />
+				</div>
+				<ui:include src="/affordances/route-bar-menu.xhtml" />
+			</div>
+			<div class="layout-main-content" align="center">
+				<H1>REGISTRAR APORTANTES</H1>
+				<h:form id="form1">
+					<p:growl id="growl" showDetail="true" sticky="true" />
+					<p:panel header="Registrar Cuentas de Aportes" toggleable="true"
+						collapsed="true">
+						<p:panelGrid columns="2" styleClass="ui-noborder">
+							<p:outputLabel value="Selecionar Cuenta de Aporte:" />
+							<p:selectOneMenu required="true"
+								value="#{frmRegistroAportante.idCuenta}" filter="true"
+								filterMatchMode="contains">
+								<f:selectItem itemLabel="Selecione Cuenta" itemValue="0" />
+								<f:selectItems value="#{frmRegistroAportante.lstAporteCuentas}"
+									var="ser" itemLabel="#{ser.cuenta}" itemValue="#{ser.idCuenta}" />
+
+							</p:selectOneMenu>
+							<p:outputLabel value="Selecionar Cliente:" />
+							<p:selectOneMenu required="true"
+								value="#{frmRegistroAportante.cedulaSocio}" filter="true"
+								filterMatchMode="contains">
+								<f:selectItem itemLabel="Selecione Servicio" itemValue="" />
+								<f:selectItems value="#{frmRegistroAportante.lstUsrSocios}"
+									var="ser"
+									itemLabel="#{ser.cedulaSocio} #{ser.gesPersona.apellidos} #{ser.gesPersona.nombres}"
+									itemValue="#{ser.cedulaSocio}" />
+							</p:selectOneMenu>
+							<p:outputLabel for="saldo" value="Saldo Inicial:" />
+							<p:inputNumber id="saldo"
+								value="#{frmRegistroAportante.saldoInicial}" />
+							<p:outputLabel for="det" value="Detalle:" />
+							<p:inputText id="det" value="#{frmRegistroAportante.detalle}" />
+						</p:panelGrid>
+						<p:commandButton value="Registrar"
+							action="#{frmRegistroAportante.registrarAportanteAunaCuenta()}"
+							update="@form">
+							<p:confirm header="Confirmación"
 								message="Esta seguro de ingresar la información?"
 								icon="pi pi-exclamation-triangle" />
-							</p:commandButton>
-							<p:confirmDialog global="true" showEffect="fade" hideEffect="fade"
-								responsive="true" width="350">
-								<p:commandButton value="Si" type="button"
-									styleClass="ui-confirmdialog-yes" />
-								<p:commandButton value="No" type="button"
-									styleClass="ui-confirmdialog-no ui-button-flat" />
-							</p:confirmDialog>
-	                    </p:panel>
-	                    <p:separator/>
-	                </h:form>
-	                <h:form id="form2">
-	                	<p:growl id="growl" showDetail="true" sticky="true" />
-	                	<p:panel id="pnl"  header="LISTADO DE CLIENTES">
-	                	<div class="card" align="right">
-						    <h:commandLink >
-						    	<p:graphicImage name="images/logo_excel.png" library="california-layout" />
-						    	<p:dataExporter type="xls" target="tblEmp" fileName="ListAporteClientes" ></p:dataExporter>
-						    </h:commandLink>
-					    </div>
-					    <p:separator/>
+						</p:commandButton>
+						<p:confirmDialog global="true" showEffect="fade" hideEffect="fade"
+							responsive="true" width="350">
+							<p:commandButton value="Si" type="button"
+								styleClass="ui-confirmdialog-yes" />
+							<p:commandButton value="No" type="button"
+								styleClass="ui-confirmdialog-no ui-button-flat" />
+						</p:confirmDialog>
+					</p:panel>
+					<p:separator />
+				</h:form>
+				<h:form id="form2">
+					<p:growl id="growl" showDetail="true" sticky="true" />
+					<p:panel id="pnl" header="LISTADO DE CLIENTES">
+						<div class="card" align="right">
+							<h:commandLink>
+								<p:graphicImage name="images/logo_excel.png"
+									library="california-layout" />
+								<p:dataExporter type="xls" target="tblEmp"
+									fileName="ListAporteClientes"></p:dataExporter>
+							</h:commandLink>
+						</div>
+						<p:separator />
 						<p:dataTable value="#{frmRegistroAportante.lstAporteClientes}"
-							id="tblEmp" editable="true" var="dato" paginator="true"
-							rows="10" rowIndexVar="index" >
-							<p:ajax event="rowEdit" listener="#{frmCuenta.onRowEdit}" update="form2:growl"/>
-            				<p:ajax event="rowEditCancel" listener="#{frmCuenta.onRowCancel}" update="form2:growl"/>
+							id="tblEmp" editable="true" var="dato" paginator="true" rows="10"
+							rowIndexVar="index">
+							<p:ajax event="rowEdit" listener="#{frmCuenta.onRowEdit}"
+								update="form2:growl" />
+							<p:ajax event="rowEditCancel" listener="#{frmCuenta.onRowCancel}"
+								update="form2:growl" />
 							<p:column width="27">
-								<h:outputText value="#{index + 1}"/>  
+								<h:outputText value="#{index + 1}" />
 							</p:column>
-							<p:column headerText="CEDULA" filterBy="#{dato.usrSocio.cedulaSocio}">
-								<h:outputText value="#{dato.usrSocio.cedulaSocio}"/>
+							<p:column headerText="CEDULA"
+								filterBy="#{dato.usrSocio.cedulaSocio}">
+								<h:outputText value="#{dato.usrSocio.cedulaSocio}" />
 							</p:column>
-							<p:column headerText="APELLIDOS" sortBy="#{dato.usrSocio.gesPersona.apellidos}" filterBy="#{dato.usrSocio.gesPersona.apellidos}">
-								<h:outputText value="#{dato.usrSocio.gesPersona.apellidos}"/>
+							<p:column headerText="APELLIDOS"
+								sortBy="#{dato.usrSocio.gesPersona.apellidos}"
+								filterBy="#{dato.usrSocio.gesPersona.apellidos}">
+								<h:outputText value="#{dato.usrSocio.gesPersona.apellidos}" />
 							</p:column>
-							<p:column headerText="NOMBRES" filterBy="#{dato.usrSocio.gesPersona.nombres}">
-								<h:outputText value="#{dato.usrSocio.gesPersona.nombres}"/>
+							<p:column headerText="NOMBRES"
+								filterBy="#{dato.usrSocio.gesPersona.nombres}">
+								<h:outputText value="#{dato.usrSocio.gesPersona.nombres}" />
 							</p:column>
-							<p:column headerText="CUENTA DE APORTE" filterBy="#{dato.aporteCuenta.cuenta}">
-								<h:outputText value="#{dato.aporteCuenta.cuenta}"/>
+							<p:column headerText="CUENTA DE APORTE"
+								filterBy="#{dato.aporteCuenta.cuenta}">
+								<h:outputText value="#{dato.aporteCuenta.cuenta}" />
 							</p:column>
 							<p:column headerText="SALDO INICIAL">
 								<p:cellEditor>
-				                    <f:facet name="output">
-				                        <h:outputText value="#{dato.saldoInicial}">
-				                        	<f:convertNumber pattern="#0.00" />
-				                        </h:outputText>
-				                    </f:facet>
-				                    <f:facet name="input">
-				                        <p:inputNumber value="#{dato.saldoInicial}" style="width:100%"/>
-				                    </f:facet>
-				                </p:cellEditor>
+									<f:facet name="output">
+										<h:outputText value="#{dato.saldoInicial}">
+											<f:convertNumber pattern="#0.00" />
+										</h:outputText>
+									</f:facet>
+									<f:facet name="input">
+										<p:inputNumber value="#{dato.saldoInicial}" style="width:100%" />
+									</f:facet>
+								</p:cellEditor>
 							</p:column>
 							<p:column headerText="DETALLE">
 								<p:cellEditor>
-				                    <f:facet name="output">
-				                        <h:outputText value="#{dato.detalle}"/>
-				                    </f:facet>
-				                    <f:facet name="input">
-				                        <p:inputText  value="#{dato.detalle}" style="width:100%"/>
-				                    </f:facet>
-				                </p:cellEditor>
+									<f:facet name="output">
+										<h:outputText value="#{dato.detalle}" />
+									</f:facet>
+									<f:facet name="input">
+										<p:inputText value="#{dato.detalle}" style="width:100%" />
+									</f:facet>
+								</p:cellEditor>
 							</p:column>
 							<p:column headerText="ESTADO" filterBy="#{dato.estado}">
 								<p:cellEditor>
-				                    <f:facet name="output">
-				                        <h:outputText value="#{dato.estado}"/>
-				                    </f:facet>
-				                    <f:facet name="input">
-				                        <h:selectOneMenu id="option" value="#{dato.estado}" style="width:100%">
-									       <f:selectItem itemLabel="Seleccione Valor" noSelectionOption="true"/>
-									       <f:selectItem itemLabel="ACTIVO" itemValue="ACTIVO"/>
-									       <f:selectItem itemLabel="INACTIVO" itemValue="INACTIVO"/>
-									    </h:selectOneMenu>
-				                    </f:facet>
-				                </p:cellEditor>
+									<f:facet name="output">
+										<h:outputText value="#{dato.estado}" />
+									</f:facet>
+									<f:facet name="input">
+										<h:selectOneMenu id="option" value="#{dato.estado}"
+											style="width:100%">
+											<f:selectItem itemLabel="Seleccione Valor"
+												noSelectionOption="true" />
+											<f:selectItem itemLabel="ACTIVO" itemValue="ACTIVO" />
+											<f:selectItem itemLabel="INACTIVO" itemValue="INACTIVO" />
+										</h:selectOneMenu>
+									</f:facet>
+								</p:cellEditor>
 							</p:column>
 							<p:column width="6" exportable="false">
-									<p:rowEditor editTitle="Edit Row" cancelTitle="Cancel Edit" saveTitle="Save Row" 
-										/>
-				            </p:column>
+								<p:rowEditor editTitle="Edit Row" cancelTitle="Cancel Edit"
+									saveTitle="Save Row" />
+							</p:column>
 							<p:column width="17" exportable="false">
-								<p:commandButton icon="fa fa-times" action="#{frmRegistroAportante.eliminarRegistro(dato)}"  update="form2:tblEmp"/>
-				            </p:column>
+								<p:commandButton icon="fa fa-times"
+									action="#{frmRegistroAportante.eliminarRegistro(dato)}"
+									update="form2:tblEmp" />
+							</p:column>
 						</p:dataTable>
 					</p:panel>
-	                </h:form>
-<!-- Inicio de Dialogs -->
+				</h:form>
+				<!-- Inicio de Dialogs -->
 
-<!-- Fin de Dialogs -->
-                </div>
-				<ui:include src="/affordances/footer.xhtml" />
-            </div>
-        </div>
-		
-        <p:ajaxStatus style="width:32px;height:32px;position:fixed;right:7px;bottom:7px">
-           <f:facet name="start">
-               <i class="fa fa-circle-o-notch fa-spin ajax-loader" aria-hidden="true"></i>
-           </f:facet>
+				<!-- Fin de Dialogs -->
+			</div>
+			<ui:include src="/affordances/footer.xhtml" />
+		</div>
+	</div>
 
-           <f:facet name="complete">
-               <h:outputText value="" />
-           </f:facet>
-       </p:ajaxStatus>
+	<p:ajaxStatus
+		style="width:32px;height:32px;position:fixed;right:7px;bottom:7px">
+		<f:facet name="start">
+			<i class="fa fa-circle-o-notch fa-spin ajax-loader"
+				aria-hidden="true"></i>
+		</f:facet>
 
-        <h:outputStylesheet name="css/nanoscroller.css" library="california-layout" />
-        <h:outputStylesheet name="css/layout-#{guestPreferences.theme}.css" library="california-layout" />
-    </h:body>
+		<f:facet name="complete">
+			<h:outputText value="" />
+		</f:facet>
+	</p:ajaxStatus>
+
+	<h:outputStylesheet name="css/nanoscroller.css"
+		library="california-layout" />
+	<h:outputStylesheet name="css/layout-#{guestPreferences.theme}.css"
+		library="california-layout" />
+</h:body>
 </html>
