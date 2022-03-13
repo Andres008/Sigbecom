@@ -53,7 +53,7 @@
 									action="#{frmPrecancelar.inicializar()}" update="@form">
 								</p:commandButton>							
 								<p:commandButton value="Cargar Registros"
-									action="#{frmPrecancelarConvenio.cargarListaCuotasPendientes()}" update="form2:tblUsr">
+									action="#{frmPrecancelarConvenio.cargarListaConvenios()}" update="form2:tblUsr">
 									<p:confirm header="Confirmación"
 									message="Esta seguro de ingresar la información?"
 									icon="pi pi-exclamation-triangle" />
@@ -72,70 +72,125 @@
 	                </h:form>
 	                <h:form id="form2">
 	                	<p:growl id="growl" showDetail="true" sticky="true" />
-	                	<p:panel id="pnl"  header="CUENTAS POR COBRAR - EQUIPOS MOVILES DEL USUARIO">
-						<p:dataTable value="#{frmPrecancelar.lstCuotasPendientes}"
-							id="tblUsr"  var="mov" paginator="true"
-							rows="10">
+	                	<p:panel id="pnl"  header="CUENTAS POR COBRAR - CONVENIOS DEL USUARIO">
+						
+						<p:dataTable value="#{frmPrecancelarConvenio.lstConvAdquirido}"
+							id="tblUsr"  var="con" paginator="true">
 							<f:facet name="header">
-								LISTADO DE CUENTAS POR COBRAR EQUIPOS MOVILES
+								LISTADO DE CUENTAS POR COBRAR CONVENIOS
 							</f:facet>
-							<p:column headerText="Equipo Movil">
-										<h:outputText value="#{mov.planEquipo.equipo}"/>
-									</p:column>
-									<p:column headerText="Valor Equipo">
-										<h:outputText value="#{mov.valorCapital}">
-											<f:convertNumber pattern="#0.00" />
-										</h:outputText>
-									</p:column>
-									<p:column headerText="Comision">
-										<h:outputText value="#{mov.comision}">
-											<f:convertNumber pattern="#0.00" />
-										</h:outputText>
-									</p:column>
-									<p:column headerText="Total">
-										<h:outputText value="#{mov.total}">
-											<f:convertNumber pattern="#0.00" />
-										</h:outputText>
-									</p:column>
-									<p:column headerText="Plazo">
-										<h:outputText value="#{mov.mesesPlazo}"/>
-									</p:column>
-									<p:column headerText="Num Cuota" sortOrder="asc" sortBy="#{mov.numCuota}">
-										<h:outputText value="#{mov.numCuota}"/>
-									</p:column>
-									<p:column headerText="Cuota">
-										<h:outputText value="#{mov.valorCuota}">
-											<f:convertNumber pattern="#0.00" />
-										</h:outputText>
-									</p:column>
-									<p:column headerText="Saldo">
-										<h:outputText value="#{mov.saldo}">
-											<f:convertNumber pattern="#0.00" />
-										</h:outputText>
-									</p:column>
-									<p:column headerText="Mes" >
-										<h:outputText value="#{frmEquipoMovil.convertirMes(mov.mes)}"/>
-									</p:column>
-									<p:column headerText="Año" sortOrder="asc" sortBy="#{mov.anio}">
-										<h:outputText value="#{mov.anio}"/>
-									</p:column>
-									<p:column headerText="Estado">
-										<h:outputText value="#{mov.estado}"/>
-									</p:column>
+							<p:column style="width:2rem" >
+				                <p:rowToggler/>
+				            </p:column>
+				            <p:column headerText="Convenios">
+								<h:outputText value="#{con.convServicio.convEmpresa.empresa}"/>
+							</p:column>
+							<p:column headerText="Nro. Convenio">
+								<h:outputText value="#{con.idConvAdquiridos}"/>
+							</p:column>
+							<p:column headerText="Cedula Socio">
+								<h:outputText value="#{con.convValorMax.usrSocio.cedulaSocio}"/>
+							</p:column>
+							<p:column headerText="Apellidos">
+								<h:outputText value="#{con.convValorMax.usrSocio.gesPersona.apellidos}"/>
+							</p:column>
+							<p:column headerText="Nombres">
+								<h:outputText value="#{con.convValorMax.usrSocio.gesPersona.nombres}"/>
+							</p:column>
+							<p:column headerText="Total">
+								<h:outputText value="#{con.deudaTotal}">
+									<f:convertNumber pattern="#0.00" />
+								</h:outputText>
+							</p:column>
+							<p:rowExpansion>
+								<br/>
+								<br/>	
+								<p:dataTable value="#{con.convAmortizacions}"
+													id="tblCon" var="am">
+										<f:facet name="header">
+								            TABLA DE AMORTIZACION
+										</f:facet>
+										<p:column headerText="Nro Convenio" >
+											<h:outputText value="#{am.convAdquirido.idConvAdquiridos}" />
+										</p:column>
+										<p:column headerText="CUOTA" >
+											<h:outputText value="#{am.numeroCuota}" />
+										</p:column>
+										<p:column headerText="FECHA PAGO">
+								           <h:outputText value="#{am.fechaPago}"/>
+								        </p:column>
+								        <p:column headerText="CAPITAL">
+								           <h:outputText value="#{am.capital}">
+								           		<f:convertNumber pattern="#0.00" />
+								           </h:outputText>
+								           
+								        </p:column>
+								        <p:column headerText="INTERES">
+								           <h:outputText value="#{am.interes}">
+								           		<f:convertNumber pattern="#0.00" />
+								           </h:outputText>
+								        </p:column>
+								        <p:column headerText="VALOR CUOTA">
+								           <h:outputText value="#{am.valorCuota}">
+								           		<f:convertNumber pattern="#0.00" />
+								           </h:outputText>
+								        </p:column>
+								        <p:column headerText="SALDO">
+								           <h:outputText value="#{am.saldo}">
+								           		<f:convertNumber pattern="#0.00" />
+								           </h:outputText>
+								        </p:column>
+								        <p:column headerText="ESTADO">
+								           <h:outputText value="#{am.descEstadoDescuento.estado}">
+								           		<f:convertNumber pattern="#0.00" />
+								           </h:outputText>
+								        </p:column>
+									</p:dataTable>
+									<p:panel styleClass="ui-noborder" style="text-aling:center">
+										<h:panelGrid columns="2" >
+												<p:commandButton value="Cancelar"
+													action="#{frmPrecancelarConvenio.init()}" update="@form">
+												</p:commandButton>							
+												<p:commandButton value="Precancelar"
+													 update="@form">
+													<p:confirm header="Confirmación"
+													message="Esta seguro de ingresar la información?"
+													icon="pi pi-exclamation-triangle" />
+												</p:commandButton>
+										</h:panelGrid>	
+									
+									</p:panel>
+									<div class="card" align="right">
+										<p:commandButton value="Cancelar"
+													action="#{frmPrecancelarConvenio.init()}" update="@form">
+										</p:commandButton>
+										<p:spacer/>						
+										<p:commandButton value="Precancelar"
+											update="@form">
+											<p:confirm header="Confirmación"
+											message="Esta seguro de ingresar la información?"
+											icon="pi pi-exclamation-triangle" />
+										</p:commandButton>
+										
+									</div>
+									<br/>
+									<br/>
+									<p:separator/>
+							</p:rowExpansion>
 						</p:dataTable>
 						<br/>
 						<br/>
 						<p:panelGrid columns="2" styleClass="ui-noborder">
 								<p:commandButton value="Cancelar"
-									action="#{frmPrecancelar.inicializar()}" update="@form">
+									action="#{frmPrecancelarConvenio.init()}" update="@form">
 								</p:commandButton>							
 								<p:commandButton value="Precancelar"
-									action="#{frmPrecancelar.precancelar()}" update="@form">
+									 update="@form">
 									<p:confirm header="Confirmación"
 									message="Esta seguro de ingresar la información?"
 									icon="pi pi-exclamation-triangle" />
 								</p:commandButton>
-							</p:panelGrid>	
+						</p:panelGrid>	
 							<p:confirmDialog global="true" showEffect="fade" hideEffect="fade"
 								responsive="true" width="350">
 								<p:commandButton value="Si" type="button"

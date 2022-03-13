@@ -31,6 +31,7 @@ public class FrmPrecancelarConvenio implements Serializable {
 	private String cedula;
 	private List<UsrSocio> lstUsrSocio;
 	private List<ConvAdquirido> lstConvAdquirido;
+	private List<ConvAmortizacion> lstConvAmortizacion;
 	
 	@Inject
 	private BeanLogin beanLogin;
@@ -39,6 +40,8 @@ public class FrmPrecancelarConvenio implements Serializable {
 	public void init() {
 		lstUsrSocio = new ArrayList<UsrSocio>();
 		cargarListaUsuarios();
+		
+		
 	}
 	public FrmPrecancelarConvenio() {
 		super();
@@ -51,7 +54,7 @@ public class FrmPrecancelarConvenio implements Serializable {
 			JSFUtil.crearMensajeERROR("No se cargo el listado correctamente");
 			e.printStackTrace();
 		}
-	}
+	}//1003688452
 	public void cargarListaConvenios() {
 		lstConvAdquirido = new ArrayList<ConvAdquirido>();
 		try {
@@ -59,7 +62,7 @@ public class FrmPrecancelarConvenio implements Serializable {
 			for (ConvAdquirido convAdquirido : lstConvAdquiridoTmp) {
 				boolean hayDeuda = false;
 				for (ConvAmortizacion convAmortizacion : convAdquirido.getConvAmortizacions()) {
-					if(convAmortizacion.getDescEstadoDescuento().getEstado().equalsIgnoreCase("DESCONTADA")) {
+					if(!convAmortizacion.getDescEstadoDescuento().getEstado().equalsIgnoreCase("DESCONTADA")) {
 						hayDeuda = true;
 					}
 				}
@@ -71,6 +74,16 @@ public class FrmPrecancelarConvenio implements Serializable {
 			
 		} catch (Exception e) {
 			JSFUtil.crearMensajeERROR("No se cargo el listado correctamente los convenios");
+			e.printStackTrace();
+		}
+	}
+	public void cargarConvAmortizacionPendiente() {
+		lstConvAmortizacion = new ArrayList<ConvAmortizacion>();
+		try {
+			lstConvAmortizacion = managerConvenios.findAllConvAmortizacionByCedulaPendientePago(cedula);
+			System.out.println("Lista Amortizacion:"+ lstConvAmortizacion.size());
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
@@ -92,6 +105,18 @@ public class FrmPrecancelarConvenio implements Serializable {
 	}
 	public void setBeanLogin(BeanLogin beanLogin) {
 		this.beanLogin = beanLogin;
+	}
+	public List<ConvAdquirido> getLstConvAdquirido() {
+		return lstConvAdquirido;
+	}
+	public void setLstConvAdquirido(List<ConvAdquirido> lstConvAdquirido) {
+		this.lstConvAdquirido = lstConvAdquirido;
+	}
+	public List<ConvAmortizacion> getLstConvAmortizacion() {
+		return lstConvAmortizacion;
+	}
+	public void setLstConvAmortizacion(List<ConvAmortizacion> lstConvAmortizacion) {
+		this.lstConvAmortizacion = lstConvAmortizacion;
 	}
 	
 }
