@@ -264,7 +264,7 @@
 								           		<f:convertNumber pattern="#0.00" />
 								           </h:outputText>
 								        </p:column>
-								        <p:column headerText="ESTADO" style="width:4rem">
+								        <p:column headerText="ESTADO" style="width:4rem" filterBy="#{frmPrecancelarConvenio.estadoPago(am.descEstadoDescuento.estado)}">
 								           <h:outputText value="#{frmPrecancelarConvenio.estadoPago(am.descEstadoDescuento.estado)}"/>
 								        </p:column>
 						</p:dataTable>
