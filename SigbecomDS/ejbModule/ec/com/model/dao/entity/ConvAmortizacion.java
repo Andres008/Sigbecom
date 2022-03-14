@@ -45,6 +45,10 @@ public class ConvAmortizacion implements Serializable {
 
 	@Column(name="valor_cuota")
 	private BigDecimal valorCuota;
+	
+	@Temporal(TemporalType.DATE)
+	@Column(name="fecha_precancelacion")
+	private Date fechaPrecancelacion;
 
 	//bi-directional many-to-one association to ConvAdquirido
 	@ManyToOne
@@ -153,6 +157,14 @@ public class ConvAmortizacion implements Serializable {
 
 	public void setMes(Integer mes) {
 		this.mes = mes;
+	}
+
+	public Date getFechaPrecancelacion() {
+		return fechaPrecancelacion;
+	}
+
+	public void setFechaPrecancelacion(Date fechaPrecancelacion) {
+		this.fechaPrecancelacion = fechaPrecancelacion;
 	}
 	
 }

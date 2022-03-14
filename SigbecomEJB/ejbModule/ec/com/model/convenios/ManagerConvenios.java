@@ -222,13 +222,13 @@ public class ManagerConvenios {
 	}
 	@SuppressWarnings("unchecked")
 	public List<ConvAmortizacion> findAllConvAmortizacionByMesAnio(Integer anioCon, Integer mesCon) throws Exception{
-		List<ConvAmortizacion> lstConvAmortizacion = managerDAOSegbecom.findWhere(ConvAmortizacion.class,"o.anio = '"+anioCon+"' AND o.mes ='"+mesCon+"'",null);
+		List<ConvAmortizacion> lstConvAmortizacion = managerDAOSegbecom.findWhere(ConvAmortizacion.class,"o.anio = '"+anioCon+"' AND o.mes ='"+mesCon+"'","o.idConvAmortizacion ASC");
 		return lstConvAmortizacion;
 	}
 	
 	@SuppressWarnings("unchecked")
-	public List<ConvAmortizacion> findAllConvAmortizacionByCedulaPendientePago(String cedulaSocio) throws Exception{
-		List<ConvAmortizacion> lstConvAmortizacion = managerDAOSegbecom.findWhere(ConvAmortizacion.class,"o.descEstadoDescuento.estado != 'DESCONTADA' AND o.convAdquirido.convValorMax.usrSocio.cedulaSocio ='"+cedulaSocio+"'","o.idConvAmortizacion ASC");
+	public List<ConvAmortizacion> findAllConvAmortizacionByPeriodo(Integer periodo) throws Exception{
+		List<ConvAmortizacion> lstConvAmortizacion = managerDAOSegbecom.findWhere(ConvAmortizacion.class,"o.anio = '"+periodo+"'","o.idConvAmortizacion ASC");
 		return lstConvAmortizacion;
 	}
 	
