@@ -40,122 +40,40 @@
 	                	<div class="card" align="right">
 						    <h:commandLink >
 						    	<p:graphicImage name="images/logo_excel.png" library="california-layout" />
-						    	<p:dataExporter type="xls" target="tblEmp" fileName="ListPlanMovil"></p:dataExporter>
+						    	<p:dataExporter type="xls" target="tblEmp" fileName="ListAportes"></p:dataExporter>
 						    </h:commandLink>
 					    </div>
 					    <p:separator/>	
-						<p:dataTable value="#{frmMisConvenios.lstConvAdquirido}"
+						<p:dataTable value="#{frmMisAportes.lstAporteDescuento}"
 							id="tblEmp"  var="con" paginator="true"
 							rows="10">
 							
 							<f:facet name="header">
-								<p:outputLabel value="#{frmMisConvenios.beanLogin.credencial.objUsrSocio.cedulaSocio} #{frmMiPlanMovil.beanLogin.credencial.objUsrSocio.gesPersona.apellidos} #{frmMiPlanMovil.beanLogin.credencial.objUsrSocio.gesPersona.nombres}"/>
+								<p:outputLabel value="#{frmMisAportes.beanLogin.credencial.objUsrSocio.cedulaSocio} #{frmMisAportes.beanLogin.credencial.objUsrSocio.gesPersona.apellidos} #{frmMiPlanMovil.beanLogin.credencial.objUsrSocio.gesPersona.nombres}"/>
 							</f:facet>
-							<p:column style="width:2rem">
-				                <p:rowToggler/>
-				            </p:column>
-							<p:column headerText="EMPRESA" >
-								<h:outputText value="#{con.convServicio.convEmpresa.empresa}" />
+							
+							<p:column headerText="APORTE" >
+								<h:outputText value="#{con.aporteCliente.aporteCuenta.cuenta}" />
+							</p:column>
+							<p:column headerText="DETALLE" >
+								<h:outputText value="#{con.aporteCliente.aporteCuenta.detalle}" />
 							</p:column>										
-							<p:column headerText="CONVENIO" >
-								<h:outputText value="#{con.convServicio.servicioProducto}" />
+							<p:column headerText="FECHA DE APORTE" >
+								<h:outputText value="#{con.fechaAporte}" />
 							</p:column>
-							<p:column headerText="FECHA SOLICITUD" >
-								<h:outputText value="#{con.fechaSol}" />
+							<p:column headerText="TOTAL" >
+								<h:outputText value="#{con.valorTotal}" />
 							</p:column>
-							<p:column headerText="FECHA REVISION" >
-								<h:outputText value="#{con.fechaRevision}" />
-							</p:column>
-							<p:column headerText="OBSERVACION" >
-								<h:outputText value="#{con.observacion}" />
-							</p:column>
-							<p:column headerText="FECHA TRAMITE" >
-								<h:outputText value="#{con.fechaAprob}" />
-							</p:column>
-							<p:column headerText="RESOLUCION" >
-								<h:outputText value="#{con.resolucion}" />
-							</p:column>
-							<p:column headerText="PLAZO" >
-								<h:outputText value="#{con.plazo}" />
-							</p:column>
-							<p:column headerText="VALOR" >
-								<h:outputText value="#{con.deudaTotal}" />
-							</p:column>
-							<p:column headerText="PROFORMA">
-						        	<p:commandButton icon="fa fa-search" value="ver" update=":frmPDFT :frmIMAGET"
-						    					action="#{frmMisConvenios.cargarDocumento(sol.adjunto, sol.convValorMax.usrSocio.cedulaSocio)}"/>
-						    </p:column>
-						    <p:column headerText="HOJA DE RUTA">
-						        	<p:commandButton icon="fa fa-search" value="ver" update=":frmPDFT :frmIMAGET"
-						    					action="#{frmMisConvenios.cargarDocumento(sol.hojaRuta, sol.convValorMax.usrSocio.cedulaSocio)}"/>
-						    </p:column>
 							<p:column headerText="ESTADO" >
-								<h:outputText value="#{con.estado}" />
+								<h:outputText value="#{con.descEstadoDescuento.estado}" />
 							</p:column>
-							<p:rowExpansion>
-								<div class="card" align="right">
-								    <h:commandLink >
-								    	<p:graphicImage name="images/logo_excel.png" library="california-layout" />
-								    	<p:dataExporter type="xls" target="tblCon" fileName="ListPlanMovil"></p:dataExporter>
-								    </h:commandLink>
-							    </div>
-							    <p:separator/>	
-								<p:panel>
-									<p:dataTable value="#{con.convAmortizacions}"  
-													id="tblCon" var="am">
-										<f:facet name="header">
-								            TABLA DE AMORTIZACION
-										</f:facet>
-										<p:column headerText="CUOTA" >
-											<h:outputText value="#{am.numeroCuota}" />
-										</p:column>
-										<p:column headerText="FECHA PAGO">
-								           <h:outputText value="#{am.fechaPago}"/>
-								        </p:column>
-								        
-								        <p:column headerText="VALOR CUOTA">
-								           <p:outputLabel value="#{am.valorCuota}">
-								           		<f:convertNumber pattern="#0.00" />
-								           </p:outputLabel>
-								        </p:column>
-								        <p:column headerText="SALDO">
-								           <p:outputLabel value="#{am.saldo}">
-								           		<f:convertNumber pattern="#0.00" />
-								           </p:outputLabel>
-								        </p:column>
-								        <p:column headerText="ESTADO DESCUENTO">
-								           <h:outputText value="#{am.descEstadoDescuento.estado}"/>
-								        </p:column>
-									</p:dataTable>
-								</p:panel>
-							</p:rowExpansion>
+							
 						</p:dataTable>
 						
 					</p:panel>
 	         </h:form>
 <!-- Inicio de Dialogs -->
-						<p:dialog
-							header="DOCUMENTO" resizable="false" position="top" width="90%"
-							widgetVar="dlgPDFT" id="dlgPDF" modal="true"
-							hideEffect="fade">
-							<h:form id="frmPDFT">
-								<p:media value="#{frmMisConvenios.pdf}" width="70%" height="600px" player="pdf"/>
-							</h:form>
-						</p:dialog>
-						<p:dialog
-							header="DOCUMENTO" resizable="false" position="center"
-							widgetVar="dlgImageT" id="dlgImage" modal="true"
-							hideEffect="fade" >
-							<h:form id="frmIMAGET">
-								<p:panelGrid columns="2">
-									<p:outputLabel value="Click en el boton para descargar Imagen"/>
-									<p:commandButton value="Descargar" icon="pi pi-arrow-down" ajax="false" styleClass="ui-button-outlined"
-													 onclick="PF('dlgImageT').hide()">
-										<p:fileDownload value="#{frmMisConvenios.download}"/>
-									</p:commandButton>
-								</p:panelGrid>
-							</h:form>
-						</p:dialog>
+						
 <!-- Fin de Dialogs -->
 			</div>
 				<ui:include src="/affordances/footer.xhtml" />

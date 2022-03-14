@@ -42,6 +42,7 @@ public class FrmMisAportes implements Serializable{
 			e.printStackTrace();
 		}
 		
+		
 	}
 	//GETTERS AND SETTERS
 	public BeanLogin getBeanLogin() {
