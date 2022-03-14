@@ -223,7 +223,7 @@
 										<p:column headerText="Nro Conv" groupRow="true" style="width:1rem">
 											<h:outputText value="#{am.convAdquirido.idConvAdquiridos}" />
 										</p:column>
-										<p:column headerText="Empresa" >
+										<p:column headerText="Empresa" filterBy="#{am.convAdquirido.convServicio.convEmpresa.empresa}">
 											<h:outputText value="#{am.convAdquirido.convServicio.convEmpresa.empresa}" />
 										</p:column>
 										<p:column headerText="Producto" >
