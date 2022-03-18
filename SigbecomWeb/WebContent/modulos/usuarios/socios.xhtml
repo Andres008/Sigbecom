@@ -22,7 +22,7 @@
 
 <h:body styleClass="main-body"
 	onload="#{controladorGestionSocios.inicializarConsultaSocio()}">
-<h:form id="cierreSesion">
+	<h:form id="cierreSesion">
 		<p:idleMonitor timeout="#{beanLogin.tiempoCierreSesion()}"
 			onidle="PF('idleDialog').show()" />
 		<p:dialog header="#{beanLogin.tituloCierreSesion}" resizable="false"
@@ -81,6 +81,11 @@
 							</p:column>
 							<p:column headerText="Rol">
 								<p:outputLabel value="#{socio.autRol.nombre}" />
+							</p:column>
+							<p:column headerText="Fecha Nacimiento" exportable="true" visible="false" >
+								<p:outputLabel value="#{socio.gesPersona.fechaNac}">
+									<f:convertDateTime pattern="dd/MM/yyyy" />
+								</p:outputLabel>
 							</p:column>
 							<p:column headerText="Estado">
 								<p:cellEditor>
