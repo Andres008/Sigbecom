@@ -103,7 +103,7 @@ public class ControladorGestionCreditos implements Serializable {
 
 	private byte[] archivo, reportPdf;
 
-	private String nombreArc, resolucion;
+	private String nombreArc, resolucion, observacionAcreditacion;
 
 	private boolean valorChecked;
 
@@ -581,7 +581,7 @@ public class ControladorGestionCreditos implements Serializable {
 					.setFechaPrimeraCouta(objFinPrestamoSocio.getFinTablaAmortizacions().get(0).getFechaPago());
 			objFinPrestamoSocio.setFechaUltimaCuota(objFinPrestamoSocio.getFinTablaAmortizacions()
 					.get(objFinPrestamoSocio.getFinTablaAmortizacions().size() - 1).getFechaPago());
-			
+
 			objFinPrestamoSocio.setFinEstadoCredito(new FinEstadoCredito(1));
 			objFinPrestamoSocio.setValorRecibido(calcularValorRecibirNovacion(objFinPrestamoSocio));
 			objFinPrestamoSocio.setFinTablaAmortizacions(new ArrayList<FinTablaAmortizacion>());
@@ -829,6 +829,7 @@ public class ControladorGestionCreditos implements Serializable {
 			objFinPrestamoSocio = managerGestionCredito.buscarSolicitudPrestamoById(prestamoSocio.getIdPrestamoSocio());
 			if (objFinPrestamoSocio.getFinResolucionPrestamo() == null)
 				objFinPrestamoSocio.setFinResolucionPrestamo(new FinResolucionPrestamo());
+			observacionAcreditacion = "";
 		} catch (Exception e) {
 			JSFUtil.crearMensajeERROR("Error al buscar Prestamo.");
 		}
@@ -991,7 +992,6 @@ public class ControladorGestionCreditos implements Serializable {
 					"aceptarRevisionSolicitudPrestamo", e.getMessage());
 		}
 	}
-
 	public void ejecutarDescuento() {
 		lstFinPrestamoSocio.forEach(prestamo -> {
 			FinTablaAmortizacion amortizacionActual = cuotaVigenteByPrestamo(prestamo);
@@ -1032,6 +1032,16 @@ public class ControladorGestionCreditos implements Serializable {
 
 	public void registrarAcreditacionPrestamo() {
 		try {
+			if (ModelUtil.isEmpty(observacionAcreditacion))
+				throw new Exception("Es requerido ingresar la observación");
+			if (objFinPrestamoSocio.getFinResolucionPrestamo() == null) {
+				objFinPrestamoSocio.setFinResolucionPrestamo(new FinResolucionPrestamo());
+				objFinPrestamoSocio.getFinResolucionPrestamo().setResolucion(observacionAcreditacion);
+			} else {
+				objFinPrestamoSocio.getFinResolucionPrestamo()
+						.setResolucion(objFinPrestamoSocio.getFinResolucionPrestamo().getResolucion() + "\n"
+								+ observacionAcreditacion);
+			}
 			managerGestionCredito.actualizarResolucionCredito(objFinPrestamoSocio.getFinResolucionPrestamo());
 			objFinPrestamoSocio.getFinEstadoCredito().setIdEstadoCredito(new Long(5));
 			objFinPrestamoSocio.setFinTablaAmortizacions(ModelUtil.calcularTablaAmortizacion(objFinPrestamoSocio));
@@ -1075,7 +1085,7 @@ public class ControladorGestionCreditos implements Serializable {
 		try {
 			FinPrestamoSocio objFinPrestamoSocioAux = managerGestionCredito
 					.buscarSolicitudPrestamoById(objFinPrestamoSocio2.getIdPrestamoSocio());
-			objFinPrestamoSocioAux.getFinTablaAmortizacions().forEach(amortiza->{
+			objFinPrestamoSocioAux.getFinTablaAmortizacions().forEach(amortiza -> {
 				try {
 					managerGestionCredito.eliminarAmortizacion(amortiza);
 				} catch (Exception e) {
@@ -1517,6 +1527,14 @@ public class ControladorGestionCreditos implements Serializable {
 
 	public void setTotalCuota(BigDecimal totalCuota) {
 		this.totalCuota = totalCuota;
+	}
+
+	public String getObservacionAcreditacion() {
+		return observacionAcreditacion;
+	}
+
+	public void setObservacionAcreditacion(String observacionAcreditacion) {
+		this.observacionAcreditacion = observacionAcreditacion;
 	}
 
 }
