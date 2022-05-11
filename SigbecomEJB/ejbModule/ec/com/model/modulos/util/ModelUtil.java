@@ -538,7 +538,7 @@ public class ModelUtil {
 		boolean ultimaCuota = false;
 		BigDecimal cuotaMensual = finPrestamoSocio.getCuotaMensual();
 		Date fechaActual = new Date();
-		if (fechaActual.getDate() < finPrestamoSocio.getFinTipoCredito().getDiaPagoMaximo().intValue())
+		if (fechaActual.getDate() <= finPrestamoSocio.getFinTipoCredito().getDiaPagoMaximo().intValue())
 			fechaActual = sumarRestarMes(fechaActual, -1);
 		fechaActual.setDate(finPrestamoSocio.getFinTipoCredito().getDiaPagoMaximo().intValue());
 		double capital = finPrestamoSocio.getValorPrestamo().doubleValue();
