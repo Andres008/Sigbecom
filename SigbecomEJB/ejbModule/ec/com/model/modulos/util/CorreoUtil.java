@@ -26,9 +26,14 @@ public class CorreoUtil {
 	@EJB
 	private ManagerGestionSistema managerGestionSistema;
 
-	public void enviarCorreoElectronico(String destinatario, String asunto, String mensaje) throws Exception {
-		if (!ModelUtil.isEmpty(destinatario))
-			enviarConGMail(destinatario.trim(), asunto.trim(), crearMensaje(asunto, mensaje, ""));
+	public void enviarCorreoElectronico(String destinatario, String asunto, String mensaje) {
+		try {
+			if (!ModelUtil.isEmpty(destinatario))
+				enviarConGMail(destinatario.trim(), asunto.trim(), crearMensaje(asunto, mensaje, ""));
+		} catch (Exception e) {
+			System.out.println("Error al enviar correo electrónico. "+e.getMessage());
+		}
+		
 	}
 
 	private String crearMensaje(String asunto, String contenido, String nota) {
