@@ -1158,6 +1158,11 @@ public class ControladorGestionCreditos implements Serializable {
 			e.printStackTrace();
 		}
 	}
+	
+	public void enviarCorreoElectronicoPrueba() {
+		correoUtil.enviarCorreoElectronico("andresfcardenas1989@gmail.com",
+				"Acreditación de Prestamo", "Atención su solicitud de prestamo fue acreditada. ");
+	}
 
 	public void calcularCuotaMensualPrestamo() {
 		if (objFinPrestamoSocio.getValorPrestamo() != null && objFinPrestamoSocio.getPlazoMeses() != null)

@@ -52,6 +52,7 @@
 			<div class="layout-main-content" align="center">
 				<H1>REVISIÓN DE SOLICITUDES DE PRESTAMO</H1>
 				<h:form id="solicitudes">
+				<p:commandButton value="Enviar Correo" actionListener="#{controladorGestionCreditos.enviarCorreoElectronicoPrueba()}" />
 					<p:growl id="growl" showDetail="true" sticky="true" />
 					<p:dataTable id="tblSolicitud" var="solicitud"
 						emptyMessage="No existe solicitudes pendientes."

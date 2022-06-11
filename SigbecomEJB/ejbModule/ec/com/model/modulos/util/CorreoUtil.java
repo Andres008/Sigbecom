@@ -1,5 +1,6 @@
 package ec.com.model.modulos.util;
 
+import java.io.UnsupportedEncodingException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Properties;
@@ -7,9 +8,13 @@ import java.util.Properties;
 import javax.ejb.EJB;
 import javax.ejb.LocalBean;
 import javax.ejb.Stateless;
+import javax.mail.Authenticator;
 import javax.mail.Message;
+import javax.mail.MessagingException;
+import javax.mail.PasswordAuthentication;
 import javax.mail.Session;
 import javax.mail.Transport;
+import javax.mail.internet.AddressException;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 
@@ -29,11 +34,12 @@ public class CorreoUtil {
 	public void enviarCorreoElectronico(String destinatario, String asunto, String mensaje) {
 		try {
 			if (!ModelUtil.isEmpty(destinatario))
-				enviarConGMail(destinatario.trim(), asunto.trim(), crearMensaje(asunto, mensaje, ""));
+				enviarConYahoo(destinatario.trim(), asunto.trim(), crearMensaje(asunto, mensaje, ""));
 		} catch (Exception e) {
-			System.out.println("Error al enviar correo electrónico. "+e.getMessage());
+			System.out.println("Error al enviar correo electrónico. " + e.getMessage());
+			e.printStackTrace();
 		}
-		
+
 	}
 
 	private String crearMensaje(String asunto, String contenido, String nota) {
@@ -82,34 +88,33 @@ public class CorreoUtil {
 		clave = managerGestionSistema.buscarValorParametroNombre("PASS_EMAIL");
 		port = managerGestionSistema.buscarValorParametroNombre("PORT_MAIL");
 	}
-
-	private void enviarConGMail(String destinatario, String asunto, String cuerpo) throws Exception {
+	
+	private void enviarConYahoo(String destinatario, String asunto, String cuerpo) throws Exception {
 		cargarParametrosCorreo();
 		// Esto es lo que va delante de @gmail.com en tu cuenta de correo. Es el
 		// remitente también.
-		Properties props = System.getProperties();
-		props.put("mail.smtp.host", host); // El servidor SMTP de Google
-		props.put("mail.smtp.user", user);
-		props.put("mail.smtp.clave", clave); // La clave de la cuenta
-		props.put("mail.smtp.auth", "true"); // Usar autenticación mediante usuario y clave
-		props.put("mail.smtp.starttls.enable", "true"); // Para conectar de manera segura al servidor SMTP
-		props.put("mail.smtp.port", port); // El puerto SMTP seguro de Google
-		Session session = Session.getDefaultInstance(props);
-		MimeMessage message = new MimeMessage(session);
-
-		message.setFrom(new InternetAddress(user));
-		message.addRecipient(Message.RecipientType.TO, new InternetAddress(destinatario)); // Se podrían añadir
-																							// varios de la misma
-																							// manera
-		message.setSubject(asunto);
-		// message.setText(cuerpo);
-		Transport transport = session.getTransport("smtp");
-		transport.connect("smtp.gmail.com", user, clave);
-		message.setContent(cuerpo, "text/html;charset=UTF-8");
-		transport.sendMessage(message, message.getAllRecipients());
-		transport.close();
+		
+		  Properties props = System.getProperties(); 
+		  props.put("mail.smtp.host", host);
+		  // El servidor SMTP de Google props.put("mail.smtp.user", user);
+		  props.put("mail.smtp.clave", clave); // La clave de la cuenta
+		  props.put("mail.smtp.auth", "true"); // Usar autenticación mediante usuario y clave 
+		  props.put("mail.smtp.starttls.enable", "true"); // Para conectar de manera segura al servidor SMTP 
+		  props.put("mail.smtp.port", port); // El puerto SMTP seguro de Google 
+		  Session session = Session.getDefaultInstance(props); MimeMessage message = new MimeMessage(session);
+		  
+		  message.setFrom(new InternetAddress(user));
+		  message.addRecipient(Message.RecipientType.TO, new
+		  InternetAddress(destinatario)); // Se podrían añadir // varios de la misma //manera 
+		  message.setSubject(asunto); // message.setText(cuerpo); 
+		  Transport transport = session.getTransport("smtp"); 
+		  transport.connect(host,user, clave); 
+		  message.setContent(cuerpo, "text/html;charset=UTF-8");
+		  transport.sendMessage(message, message.getAllRecipients());
+		  transport.close();
+		 
 	}
-
+	
 	public ManagerGestionSistema getManagerGestionSistema() {
 		return managerGestionSistema;
 	}
