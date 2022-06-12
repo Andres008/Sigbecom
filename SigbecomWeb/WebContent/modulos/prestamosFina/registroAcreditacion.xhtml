@@ -22,7 +22,7 @@
 
 <h:body styleClass="main-body"
 	onload="#{controladorGestionCreditos.inicializarAcreditacionSolicitudes()}">
-<h:form id="cierreSesion">
+	<h:form id="cierreSesion">
 		<p:idleMonitor timeout="#{beanLogin.tiempoCierreSesion()}"
 			onidle="PF('idleDialog').show()" />
 		<p:dialog header="#{beanLogin.tituloCierreSesion}" resizable="false"
@@ -52,7 +52,6 @@
 			<div class="layout-main-content" align="center">
 				<H1>REVISIÓN DE SOLICITUDES DE PRESTAMO</H1>
 				<h:form id="solicitudes">
-				<p:commandButton value="Enviar Correo" actionListener="#{controladorGestionCreditos.enviarCorreoElectronicoPrueba()}" />
 					<p:growl id="growl" showDetail="true" sticky="true" />
 					<p:dataTable id="tblSolicitud" var="solicitud"
 						emptyMessage="No existe solicitudes pendientes."
