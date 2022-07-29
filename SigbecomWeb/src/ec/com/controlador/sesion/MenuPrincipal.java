@@ -7,6 +7,7 @@ import java.io.InputStream;
 import java.io.Serializable;
 
 import javax.enterprise.context.SessionScoped;
+import javax.faces.context.FacesContext;
 import javax.inject.Inject;
 import javax.inject.Named;
 
@@ -21,6 +22,14 @@ public class MenuPrincipal implements Serializable{
 	private InputStream fis;
 	@Inject
 	private BeanLogin beanLogin;
+	
+	public StreamedContent getPdfInformeAnual() {
+        return DefaultStreamedContent.builder()
+				.name("REPORTE_INGRESOS_GASTOS_2021.pdf")
+                .contentType("application/pdf")
+                .stream(() -> FacesContext.getCurrentInstance().getExternalContext().getResourceAsStream("/resources/archivos/REPORTE_INGRESOS_GASTOS_2021.pdf"))
+                .build();
+    }
 	
 	public void cargarDocumento() {
 		
